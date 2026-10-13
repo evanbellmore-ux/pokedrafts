@@ -50,7 +50,7 @@ const signed = (n: number) => (n < 0 ? `−${-n}` : `+${n}`);
 /** A volatile the move started on the target ↔ a fact naming it. */
 const START_FACTS: Record<string, RegExp> = {
   confusion: /confus/i, taunt: /taunt/i, yawn: /drows|yawn/i, leechseed: /leech seed|seeded/i, substitute: /substitute/i,
-  curse: /curse/i, encore: /encore/i, disable: /disable/i, healblock: /heal block/i, perish3: /perish/i, aquaring: /aqua ring/i,
+  curse: /curse/i, encore: /encore/i, disable: /disable/i, healblock: /heal block/i, perish3: /perish count/i, aquaring: /aqua ring/i,
   ingrain: /ingrain/i, focusenergy: /focus energy/i, dragoncheer: /dragon cheer|critical/i, magnetrise: /magnet rise/i,
   saltcure: /salt cure/i, attract: /infatuat|attract/i,
 };
@@ -249,7 +249,35 @@ export function compareCase(c: Case, oracle: OracleResult | null, result: Double
   // status2 (ADDENDUM2 §2.5, C23): the fact only while a protecting or Endure user has no carried stall counter.
   // status2 integration 1b (M's ask): a Dynamaxed Pokémon's status move is Max Guard, a protecting move (ADDENDUM2 §2.5).
   const maxGuard = (slot: SlotId) => c.slots[slot].choice === "dynamax" && !!c.slots[slot].action.move && isStatus(toID(c.slots[slot].action.move!));
-  const protects = SLOTS.some((slot) => !c.slots[slot].absent && (PROTECT_FAMILY.has((c.slots[slot].action.move ?? "").toLowerCase().replace(/[^a-z]/g, "")) || maxGuard(slot)) && !c.slots[slot].carried?.stall);
+  // Review 2 (R6-3): an instructed one (its last move, an Instruct that can reach it) or a Sleep Talk-called one (among its moves)
+  // too. Round 2 (R6-r2-2): a called Instruct (a foe's Sleep Talk, Copycat or Assist) and a Spotlight's redirect reach it as
+  // well (doubles-turn.ts instructCanReach).
+  const idOf = (name: string | null | undefined) => (name ?? "").toLowerCase().replace(/[^a-z]/g, "");
+  const sideOf = (slot: SlotId) => (slot.startsWith("own") ? "own" : "opponent");
+  const foes = (a: SlotId, b: SlotId) => sideOf(a) !== sideOf(b);
+  const live = (slot: SlotId) => !c.slots[slot].absent;
+  const allyOf = (slot: SlotId) => SLOTS.find((each) => each !== slot && sideOf(each) === sideOf(slot))!;
+  const holdsInstruct = (moves: readonly string[] | undefined) => (moves ?? []).some((each) => idOf(each) === "instruct");
+  const aimed = (other: SlotId) => {
+    const target = c.slots[other].action.target;
+    return target === undefined || live(target) ? target : SLOTS.find((each) => foes(each, other) && live(each));
+  };
+  const reaches = (slot: SlotId) => {
+    const spotlit = SLOTS.some((each) => live(each) && idOf(c.slots[each].action.move) === "spotlight" && aimed(each) === slot);
+    return SLOTS.some((other) => {
+      if (other === slot || !live(other)) return false;
+      const move = idOf(c.slots[other].action.move);
+      if (move === "instruct") { const target = aimed(other); return target === slot || target === undefined || (spotlit && foes(other, slot)); }
+      if (!foes(other, slot)) return false;
+      if (move === "sleeptalk") return holdsInstruct(c.slots[other].moves);
+      if (move === "copycat") return idOf(c.battleLastMove) === "instruct" || SLOTS.some((each) => (live(each) && idOf(c.slots[each].action.move) === "instruct") || idOf(c.slots[each].lastMove) === "instruct");
+      if (move === "assist") return holdsInstruct(c.slots[allyOf(other)].moves) || (c.bench?.[sideOf(other)]?.members ?? []).some((member) => holdsInstruct(member.moves));
+      return false;
+    });
+  };
+  const called = (slot: SlotId) => (idOf(c.slots[slot].action.move) === "sleeptalk" && (c.slots[slot].moves ?? []).some((each) => PROTECT_FAMILY.has(idOf(each))))
+    || (PROTECT_FAMILY.has(idOf(c.slots[slot].lastMove)) && reaches(slot));
+  const protects = SLOTS.some((slot) => !c.slots[slot].absent && (PROTECT_FAMILY.has(idOf(c.slots[slot].action.move)) || maxGuard(slot) || called(slot)) && !c.slots[slot].carried?.stall);
   if (protects !== facts.includes(PROTECT_FACT)) push("turn", "facts", protects ? PROTECT_FACT : `no "${PROTECT_FACT}"`, facts);
   const room = !!c.field?.trickRoom || SLOTS.some((slot) => (c.slots[slot].action.move ?? "") === "Trick Room");
   if (room !== facts.includes(TRICK_ROOM_FACT)) push("turn", "facts", room ? TRICK_ROOM_FACT : `no "${TRICK_ROOM_FACT}"`, facts);
@@ -338,12 +366,13 @@ function compareBench(c: Case, oracle: OracleResult, result: Extract<DoublesTurn
     replaced("endOfTurn.replaced", oracle.afterTurnReplaced, eot.replaced);
     entered("endOfTurn.hpEntered", oracle.afterTurnEntered, eot.hpEntered);
   }
-  // The default replacement's fact: one per slot whose player's switch-out happened (a chosen newcomer, not a drag) with no
-  // Case.replacement, after the moves or after the residual.
-  const chosen = new Set<SlotId>();
+  // The default replacement's fact: one per Pokémon a player's switch-out brought in (a chosen newcomer, not a drag) but the
+  // slot's Case.replacement, after the moves or after the residual (status2 wave 2 gap fix: a newcomer that leaves again
+  // brings in another, with its own fact).
+  const chosen = new Set<string>();
   for (const table of [oracle.walks.all.replaced, oracle.walks.all.afterTurn?.replaced]) {
     for (const [slot, r] of Object.entries(table ?? {}) as [SlotId, NonNullable<NonNullable<typeof table>[SlotId]>][]) {
-      if (r.entered.some((e) => (e.chosen ?? 0) > 1e-12) && !c.replacement?.[slot]) chosen.add(slot);
+      for (const e of r.entered) if ((e.chosen ?? 0) > 1e-12 && c.replacement?.[slot] !== e.id) chosen.add(`${slot}|${e.id}`);
     }
   }
   const said = result.facts.filter((f) => /^Assumes .+ comes in for .+\.$/.test(f));
@@ -376,14 +405,17 @@ function compareCopies(oracle: OracleResult, appSteps: DoublesStep[], near: Near
   };
   const ordered = Object.entries(copies).sort((a, b) => meanPos(a[1].source) - meanPos(b[1].source));
   for (const [key, o] of ordered) {
-    const s = appSteps.find((x) => x.copied === o.copied && x.slot === o.slot && x.moveId === o.moveId && !used.has(x));
-    const where = `${o.slot} (${o.copied} copy)`;
+    // status2 wave 2 gap fix: a newcomer's copy by its id (DoublesStep.id).
+    const s = appSteps.find((x) => x.copied === o.copied && x.slot === o.slot && (x.id ?? null) === (o.id ?? null) && x.moveId === o.moveId && !used.has(x));
+    const where = `${o.slot}${o.id ? `|${o.id}` : ""} (${o.copied} copy)`;
     if (!s) { if (o.picked > 1e-12) push(where, "step", key, "missing"); continue; }
     used.add(s);
     if (!near(s.moves, o.moved)) push(where, "step.moves", o.moved, s.moves);
     const skipped = s.skipped.reduce((sum, f) => sum + f.chance, 0);
     if (!near(skipped, o.picked - o.moved)) push(where, "step.skipped (total)", o.picked - o.moved, skipped, JSON.stringify(s.skipped));
-    const hits = new Map<SlotId, DoublesHit>(s.hits.map((h) => [h.slot as SlotId, h]));
+    // status2 wave 2 gap fix: the hits on a newcomer (DoublesHit.id) against the copy's hitsEntered, the others by slot.
+    const hits = new Map<SlotId, DoublesHit>(s.hits.filter((h) => !h.id).map((h) => [h.slot as SlotId, h]));
+    compareEnteredHits(o.slot, o, s, near, push, isStatus(o.moveId), false);
     for (const target of SLOTS) {
       const oh = o.hits[target], ah = hits.get(target);
       const reached = oh?.reached ?? 0;

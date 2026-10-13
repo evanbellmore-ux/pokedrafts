@@ -1,0 +1,726 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 132,
+    "maximum": 132
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 150,
+    "maximum": 150
+   }
+  },
+  "steps": [
+   {
+    "slot": "opponent-right",
+    "moveId": "uturn",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 38,
+      "max": 45,
+      "minPercent": 16.170212765957448,
+      "maxPercent": 19.148936170212767,
+      "koChance": 0,
+      "row": {
+       "moveId": "uturn",
+       "effectiveName": "U-turn",
+       "effectiveType": "Bug",
+       "effectivePower": 70,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 38,
+       "max": 45,
+       "minPercent": 16.170212765957448,
+       "maxPercent": 19.148936170212767,
+       "rolls": [
+        38,
+        38,
+        39,
+        39,
+        40,
+        40,
+        40,
+        41,
+        41,
+        42,
+        42,
+        43,
+        43,
+        44,
+        44,
+        45
+       ],
+       "ohkoChance": 0,
+       "description": "U-turn: 38–45 HP (16.2–19.1% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Ambipom switches out; Snorlax (opponent's, 2) comes in.",
+      "chance": 1
+     }
+    ]
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 132,
+    "maximum": 132,
+    "low": 132,
+    "average": 132,
+    "high": 132,
+    "min": 132,
+    "max": 132,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 197,
+    "average": 193.8125,
+    "high": 190,
+    "min": 190,
+    "max": 197,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 150,
+    "maximum": 150,
+    "low": 150,
+    "average": 150,
+    "high": 150,
+    "min": 150,
+    "max": 150,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "opponent-right",
+    "target": "own-right",
+    "row": {
+     "moveId": "uturn",
+     "effectiveName": "U-turn",
+     "effectiveType": "Bug",
+     "effectivePower": 70,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 38,
+     "max": 45,
+     "minPercent": 16.170212765957448,
+     "maxPercent": 19.148936170212767,
+     "rolls": [
+      38,
+      38,
+      39,
+      39,
+      40,
+      40,
+      40,
+      41,
+      41,
+      42,
+      42,
+      43,
+      43,
+      44,
+      44,
+      45
+     ],
+     "ohkoChance": 0,
+     "description": "U-turn: 38–45 HP (16.2–19.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 7,
+      "fewest": 6,
+      "fasterChance": 0.9948091506958008,
+      "limit": 32,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 197,
+      "high": 190,
+      "average": 193.8125,
+      "min": 190,
+      "max": 197,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 38,
+        "heals": []
+       },
+       "high": {
+        "dealt": 45,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Snorlax (opponent's, 2) comes in for Ambipom."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 132,
+     "maximum": 132,
+     "low": 132,
+     "average": 132,
+     "high": 132,
+     "min": 132,
+     "max": 132,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 197,
+     "average": 193.8125,
+     "high": 190,
+     "min": 190,
+     "max": 197,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 150,
+     "maximum": 150,
+     "low": 150,
+     "average": 150,
+     "high": 150,
+     "min": 150,
+     "max": 150,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [
+    {
+     "slot": "opponent-right",
+     "id": "lax",
+     "effect": "Future Sight",
+     "other": "own-left",
+     "chance": 1,
+     "min": null,
+     "max": null,
+     "koChance": 0,
+     "facts": []
+    },
+    {
+     "slot": "opponent-right",
+     "id": "lax",
+     "effect": "Future Sight",
+     "other": "own-left",
+     "chance": 1,
+     "min": -97,
+     "max": -82,
+     "koChance": 0,
+     "facts": []
+    }
+   ],
+   "facts": [],
+   "hpEntered": {
+    "opponent-right": {
+     "lax": {
+      "start": 235,
+      "maximum": 235,
+      "low": 153,
+      "average": 145.8125,
+      "high": 138,
+      "min": 138,
+      "max": 153,
+      "koChance": 0,
+      "heals": []
+     }
+    }
+   }
+  },
+  "replaced": {
+   "opponent-right": {
+    "left": [
+     {
+      "id": "slot:opponent-right",
+      "hp": {
+       "start": 150,
+       "maximum": 150,
+       "low": 150,
+       "average": 150,
+       "high": 150,
+       "min": 150,
+       "max": 150,
+       "koChance": 0,
+       "heals": []
+      },
+      "chance": 1
+     }
+    ],
+    "entered": [
+     {
+      "id": "lax",
+      "chance": 1
+     }
+    ]
+   }
+  },
+  "hpEntered": {
+   "opponent-right": {
+    "lax": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   }
+  }
+ },
+ "ms": 12.122107999999571,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 132,
+    "maximum": 132
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 150,
+    "maximum": 150
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 132,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "hatterene",
+       "nature": "Serious",
+       "abilityId": "magicbounce",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 190,
+        "chance": 0.0625
+       },
+       {
+        "hp": 191,
+        "chance": 0.125
+       },
+       {
+        "hp": 192,
+        "chance": 0.125
+       },
+       {
+        "hp": 193,
+        "chance": 0.125
+       },
+       {
+        "hp": 194,
+        "chance": 0.125
+       },
+       {
+        "hp": 195,
+        "chance": 0.1875
+       },
+       {
+        "hp": 196,
+        "chance": 0.125
+       },
+       {
+        "hp": 197,
+        "chance": 0.125
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 32
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 96
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 138,
+        "chance": 0.0625
+       },
+       {
+        "hp": 139,
+        "chance": 0.0625
+       },
+       {
+        "hp": 141,
+        "chance": 0.125
+       },
+       {
+        "hp": 142,
+        "chance": 0.0625
+       },
+       {
+        "hp": 144,
+        "chance": 0.125
+       },
+       {
+        "hp": 145,
+        "chance": 0.0625
+       },
+       {
+        "hp": 147,
+        "chance": 0.125
+       },
+       {
+        "hp": 148,
+        "chance": 0.0625
+       },
+       {
+        "hp": 150,
+        "chance": 0.125
+       },
+       {
+        "hp": 151,
+        "chance": 0.0625
+       },
+       {
+        "hp": 153,
+        "chance": 0.125
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 16
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "id": "lax"
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    },
+    "benched": {
+     "opponent": [
+      {
+       "id": "slot:opponent-right",
+       "slot": "opponent-right",
+       "hp": [
+        {
+         "hp": 150,
+         "chance": 1
+        }
+       ],
+       "build": {
+        "speciesId": "ambipom",
+        "nature": "Serious",
+        "abilityId": "technician",
+        "abilityActive": false,
+        "itemId": "",
+        "boosts": {
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "currentHP": null,
+        "status": "",
+        "game": "scarlet_violet",
+        "native": {
+         "level": 50,
+         "evs": {
+          "hp": 0,
+          "atk": 0,
+          "def": 0,
+          "spa": 0,
+          "spd": 0,
+          "spe": 252
+         },
+         "ivs": {
+          "hp": 31,
+          "atk": 31,
+          "def": 31,
+          "spa": 31,
+          "spd": 31,
+          "spe": 31
+         }
+        }
+       },
+       "protected": false,
+       "moved": true
+      }
+     ]
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

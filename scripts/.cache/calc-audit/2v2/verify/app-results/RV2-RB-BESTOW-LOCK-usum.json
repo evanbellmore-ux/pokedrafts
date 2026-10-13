@@ -1,0 +1,856 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 150,
+    "maximum": 150
+   },
+   "own-right": {
+    "hp": 330,
+    "maximum": 330
+   },
+   "opponent-left": {
+    "hp": 145,
+    "maximum": 145
+   },
+   "opponent-right": {
+    "hp": 183,
+    "maximum": 183
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "airslash",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 49,
+      "max": 58,
+      "minPercent": 33.793103448275865,
+      "maxPercent": 40,
+      "koChance": 0,
+      "row": {
+       "moveId": "airslash",
+       "effectiveName": "Air Slash",
+       "effectiveType": "Flying",
+       "effectivePower": 75,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 49,
+       "max": 58,
+       "minPercent": 33.793103448275865,
+       "maxPercent": 40,
+       "rolls": [
+        49,
+        49,
+        49,
+        51,
+        51,
+        52,
+        52,
+        52,
+        54,
+        54,
+        55,
+        55,
+        55,
+        57,
+        57,
+        58
+       ],
+       "ohkoChance": 0,
+       "description": "Air Slash: 49–58 HP (33.8–40.0% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "knockoff",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 85,
+      "max": 102,
+      "minPercent": 56.666666666666664,
+      "maxPercent": 68,
+      "koChance": 0,
+      "row": {
+       "moveId": "knockoff",
+       "effectiveName": "Knock Off",
+       "effectiveType": "Dark",
+       "effectivePower": 97,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 85,
+       "max": 102,
+       "minPercent": 56.666666666666664,
+       "maxPercent": 68,
+       "rolls": [
+        85,
+        87,
+        88,
+        88,
+        90,
+        91,
+        91,
+        93,
+        94,
+        94,
+        96,
+        97,
+        97,
+        99,
+        100,
+        102
+       ],
+       "ohkoChance": 0,
+       "description": "Knock Off: 85–102 HP (56.7–68.0% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Move power: 97."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-right",
+    "moveId": "bestow",
+    "order": [
+     {
+      "position": 3,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Bestow: Oricorio gets Choice Band; Blissey holds no item.",
+      "chance": 1
+     }
+    ]
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "swordsdance",
+    "order": [
+     {
+      "position": 4,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "+2 Attack.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-left",
+    "moveId": "swordsdance",
+    "order": [],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "+2 Attack.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": [
+     {
+      "text": "Dancer: Oricorio copies Swords Dance.",
+      "chance": 1
+     }
+    ],
+    "copied": "Dancer"
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 150,
+    "maximum": 150,
+    "low": 65,
+    "average": 56.75,
+    "high": 48,
+    "min": 48,
+    "max": 65,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Holds Choice Band.",
+      "chance": 1
+     }
+    ]
+   },
+   "own-right": {
+    "start": 330,
+    "maximum": 330,
+    "low": 330,
+    "average": 330,
+    "high": 330,
+    "min": 330,
+    "max": 330,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Holds no item.",
+      "chance": 1
+     }
+    ]
+   },
+   "opponent-left": {
+    "start": 145,
+    "maximum": 145,
+    "low": 96,
+    "average": 91.875,
+    "high": 87,
+    "min": 87,
+    "max": 96,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 183,
+    "maximum": 183,
+    "low": 183,
+    "average": 183,
+    "high": 183,
+    "min": 183,
+    "max": 183,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "airslash",
+     "effectiveName": "Air Slash",
+     "effectiveType": "Flying",
+     "effectivePower": 75,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 49,
+     "max": 58,
+     "minPercent": 33.793103448275865,
+     "maxPercent": 40,
+     "rolls": [
+      49,
+      49,
+      49,
+      51,
+      51,
+      52,
+      52,
+      52,
+      54,
+      54,
+      55,
+      55,
+      55,
+      57,
+      57,
+      58
+     ],
+     "ohkoChance": 0,
+     "description": "Air Slash: 49–58 HP (33.8–40.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 3,
+      "limit": 12,
+      "limitReason": "pressure",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 145,
+      "low": 96,
+      "high": 87,
+      "average": 91.875,
+      "min": 87,
+      "max": 96,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 49,
+        "heals": []
+       },
+       "high": {
+        "dealt": 58,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "knockoff",
+     "effectiveName": "Knock Off",
+     "effectiveType": "Dark",
+     "effectivePower": 97,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 85,
+     "max": 102,
+     "minPercent": 56.666666666666664,
+     "maxPercent": 68,
+     "rolls": [
+      85,
+      87,
+      88,
+      88,
+      90,
+      91,
+      91,
+      93,
+      94,
+      94,
+      96,
+      97,
+      97,
+      99,
+      100,
+      102
+     ],
+     "ohkoChance": 0,
+     "description": "Knock Off: 85–102 HP (56.7–68.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Move power: 97."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 2,
+      "fasterChance": 0.8515625,
+      "limit": 32,
+      "limitReason": "pp",
+      "carried": [
+       "Knock Off takes the target's item."
+      ],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 150,
+      "low": 65,
+      "high": 48,
+      "average": 56.75,
+      "min": 48,
+      "max": 65,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 85,
+        "heals": []
+       },
+       "high": {
+        "dealt": 102,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 150,
+     "maximum": 150,
+     "low": 65,
+     "average": 56.75,
+     "high": 48,
+     "min": 48,
+     "max": 65,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Holds Choice Band.",
+       "chance": 1
+      }
+     ]
+    },
+    "own-right": {
+     "start": 330,
+     "maximum": 330,
+     "low": 330,
+     "average": 330,
+     "high": 330,
+     "min": 330,
+     "max": 330,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Holds no item.",
+       "chance": 1
+      }
+     ]
+    },
+    "opponent-left": {
+     "start": 145,
+     "maximum": 145,
+     "low": 96,
+     "average": 91.875,
+     "high": 87,
+     "min": 87,
+     "max": 96,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 183,
+     "maximum": 183,
+     "low": 183,
+     "average": 183,
+     "high": 183,
+     "min": 183,
+     "max": 183,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 10.407047000000603,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 150,
+    "maximum": 150
+   },
+   "own-right": {
+    "hp": 330,
+    "maximum": 330
+   },
+   "opponent-left": {
+    "hp": 145,
+    "maximum": 145
+   },
+   "opponent-right": {
+    "hp": 183,
+    "maximum": 183
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 48,
+        "chance": 0.0625
+       },
+       {
+        "hp": 50,
+        "chance": 0.0625
+       },
+       {
+        "hp": 51,
+        "chance": 0.0625
+       },
+       {
+        "hp": 53,
+        "chance": 0.125
+       },
+       {
+        "hp": 54,
+        "chance": 0.0625
+       },
+       {
+        "hp": 56,
+        "chance": 0.125
+       },
+       {
+        "hp": 57,
+        "chance": 0.0625
+       },
+       {
+        "hp": 59,
+        "chance": 0.125
+       },
+       {
+        "hp": 60,
+        "chance": 0.0625
+       },
+       {
+        "hp": 62,
+        "chance": 0.125
+       },
+       {
+        "hp": 63,
+        "chance": 0.0625
+       },
+       {
+        "hp": 65,
+        "chance": 0.0625
+       }
+      ],
+      "build": {
+       "speciesId": "oricorio",
+       "nature": "Serious",
+       "abilityId": "dancer",
+       "abilityActive": false,
+       "itemId": "choiceband",
+       "boosts": {
+        "atk": 2,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 330,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "blissey",
+       "nature": "Serious",
+       "abilityId": "naturalcure",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 87,
+        "chance": 0.0625
+       },
+       {
+        "hp": 88,
+        "chance": 0.125
+       },
+       {
+        "hp": 90,
+        "chance": 0.1875
+       },
+       {
+        "hp": 91,
+        "chance": 0.125
+       },
+       {
+        "hp": 93,
+        "chance": 0.1875
+       },
+       {
+        "hp": 94,
+        "chance": 0.125
+       },
+       {
+        "hp": 96,
+        "chance": 0.1875
+       }
+      ],
+      "build": {
+       "speciesId": "weavile",
+       "nature": "Serious",
+       "abilityId": "pressure",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 183,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "garchomp",
+       "nature": "Brave",
+       "abilityId": "roughskin",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 2,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 0
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

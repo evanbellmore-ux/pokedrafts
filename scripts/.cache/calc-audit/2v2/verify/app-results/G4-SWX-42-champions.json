@@ -1,0 +1,891 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "dragontail",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 60,
+      "max": 72,
+      "minPercent": 25.53191489361702,
+      "maxPercent": 30.638297872340424,
+      "koChance": 0,
+      "row": {
+       "moveId": "dragontail",
+       "effectiveName": "Dragon Tail",
+       "effectiveType": "Dragon",
+       "effectivePower": 60,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 60,
+       "max": 72,
+       "minPercent": 25.53191489361702,
+       "maxPercent": 30.638297872340424,
+       "rolls": [
+        60,
+        61,
+        61,
+        63,
+        63,
+        64,
+        64,
+        66,
+        66,
+        67,
+        67,
+        69,
+        69,
+        70,
+        70,
+        72
+       ],
+       "ohkoChance": 0,
+       "description": "Dragon Tail: 60–72 HP (25.5–30.6% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Dragon Tail: Snorlax (opponent's, 1) is dragged out; Snorlax (opponent's, 3) comes in.",
+      "chance": 0.5
+     },
+     {
+      "text": "Dragon Tail: Snorlax (opponent's, 1) is dragged out; Clefable comes in.",
+      "chance": 0.5
+     }
+    ]
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 183,
+    "maximum": 183,
+    "low": 183,
+    "average": 183,
+    "high": 183,
+    "min": 183,
+    "max": 183,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 175,
+    "average": 169.25,
+    "high": 163,
+    "min": 163,
+    "max": 175,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "dragontail",
+     "effectiveName": "Dragon Tail",
+     "effectiveType": "Dragon",
+     "effectivePower": 60,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 60,
+     "max": 72,
+     "minPercent": 25.53191489361702,
+     "maxPercent": 30.638297872340424,
+     "rolls": [
+      60,
+      61,
+      61,
+      63,
+      63,
+      64,
+      64,
+      66,
+      66,
+      67,
+      67,
+      69,
+      69,
+      70,
+      70,
+      72
+     ],
+     "ohkoChance": 0,
+     "description": "Dragon Tail: 60–72 HP (25.5–30.6% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 4,
+      "fewest": 4,
+      "limit": 12,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 175,
+      "high": 163,
+      "average": 169.25,
+      "min": 163,
+      "max": 175,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 60,
+        "heals": []
+       },
+       "high": {
+        "dealt": 72,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 183,
+     "maximum": 183,
+     "low": 183,
+     "average": 183,
+     "high": 183,
+     "min": 183,
+     "max": 183,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 175,
+     "average": 169.25,
+     "high": 163,
+     "min": 163,
+     "max": 175,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": [],
+   "hpEntered": {
+    "opponent-left": {
+     "lax": {
+      "start": 235,
+      "maximum": 235,
+      "low": 235,
+      "average": 235,
+      "high": 235,
+      "min": 235,
+      "max": 235,
+      "koChance": 0,
+      "heals": []
+     },
+     "bliss": {
+      "start": 170,
+      "maximum": 170,
+      "low": 170,
+      "average": 170,
+      "high": 170,
+      "min": 170,
+      "max": 170,
+      "koChance": 0,
+      "heals": []
+     }
+    }
+   }
+  },
+  "replaced": {
+   "opponent-left": {
+    "left": [
+     {
+      "id": "slot:opponent-left",
+      "hp": {
+       "start": 235,
+       "maximum": 235,
+       "low": 175,
+       "average": 169.25,
+       "high": 163,
+       "min": 163,
+       "max": 175,
+       "koChance": 0,
+       "heals": []
+      },
+      "chance": 1
+     }
+    ],
+    "entered": [
+     {
+      "id": "lax",
+      "chance": 0.5
+     },
+     {
+      "id": "bliss",
+      "chance": 0.5
+     }
+    ]
+   }
+  },
+  "hpEntered": {
+   "opponent-left": {
+    "lax": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "bliss": {
+     "start": 170,
+     "maximum": 170,
+     "low": 170,
+     "average": 170,
+     "high": 170,
+     "min": 170,
+     "max": 170,
+     "koChance": 0,
+     "heals": []
+    }
+   }
+  }
+ },
+ "ms": 9.872260000000097,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 0.5,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 183,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "garchomp",
+       "nature": "Serious",
+       "abilityId": "roughskin",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 1
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 2
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "id": "lax"
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 3
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    },
+    "benched": {
+     "opponent": [
+      {
+       "id": "slot:opponent-left",
+       "slot": "opponent-left",
+       "hp": [
+        {
+         "hp": 163,
+         "chance": 0.0625
+        },
+        {
+         "hp": 165,
+         "chance": 0.125
+        },
+        {
+         "hp": 166,
+         "chance": 0.125
+        },
+        {
+         "hp": 168,
+         "chance": 0.125
+        },
+        {
+         "hp": 169,
+         "chance": 0.125
+        },
+        {
+         "hp": 171,
+         "chance": 0.125
+        },
+        {
+         "hp": 172,
+         "chance": 0.125
+        },
+        {
+         "hp": 174,
+         "chance": 0.125
+        },
+        {
+         "hp": 175,
+         "chance": 0.0625
+        }
+       ],
+       "build": {
+        "speciesId": "snorlax",
+        "nature": "Serious",
+        "abilityId": "thickfat",
+        "abilityActive": false,
+        "itemId": "ejectbutton",
+        "boosts": {
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "currentHP": null,
+        "status": "",
+        "game": "champions",
+        "points": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 4
+        }
+       },
+       "protected": false,
+       "moved": true
+      }
+     ]
+    }
+   },
+   {
+    "chance": 0.5,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 183,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "garchomp",
+       "nature": "Serious",
+       "abilityId": "roughskin",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 1
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 170,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "clefable",
+       "nature": "Serious",
+       "abilityId": "cutecharm",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "id": "bliss"
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 3
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    },
+    "benched": {
+     "opponent": [
+      {
+       "id": "slot:opponent-left",
+       "slot": "opponent-left",
+       "hp": [
+        {
+         "hp": 163,
+         "chance": 0.0625
+        },
+        {
+         "hp": 165,
+         "chance": 0.125
+        },
+        {
+         "hp": 166,
+         "chance": 0.125
+        },
+        {
+         "hp": 168,
+         "chance": 0.125
+        },
+        {
+         "hp": 169,
+         "chance": 0.125
+        },
+        {
+         "hp": 171,
+         "chance": 0.125
+        },
+        {
+         "hp": 172,
+         "chance": 0.125
+        },
+        {
+         "hp": 174,
+         "chance": 0.125
+        },
+        {
+         "hp": 175,
+         "chance": 0.0625
+        }
+       ],
+       "build": {
+        "speciesId": "snorlax",
+        "nature": "Serious",
+        "abilityId": "thickfat",
+        "abilityActive": false,
+        "itemId": "ejectbutton",
+        "boosts": {
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "currentHP": null,
+        "status": "",
+        "game": "champions",
+        "points": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 4
+        }
+       },
+       "protected": false,
+       "moved": true
+      }
+     ]
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

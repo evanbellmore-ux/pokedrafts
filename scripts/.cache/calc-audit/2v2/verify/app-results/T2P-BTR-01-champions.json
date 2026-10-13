@@ -1,0 +1,494 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 150,
+    "maximum": 150
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "beatup",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 36,
+      "max": 45,
+      "minPercent": 15.319148936170212,
+      "maxPercent": 19.148936170212767,
+      "koChance": 0,
+      "row": {
+       "moveId": "beatup",
+       "effectiveName": "Beat Up",
+       "effectiveType": "Dark",
+       "effectivePower": 14,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 36,
+       "max": 45,
+       "minPercent": 15.319148936170212,
+       "maxPercent": 19.148936170212767,
+       "rolls": [
+        [
+         10,
+         10,
+         10,
+         10,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         12,
+         13
+        ],
+        [
+         13,
+         13,
+         13,
+         13,
+         13,
+         13,
+         15,
+         15,
+         15,
+         15,
+         15,
+         15,
+         15,
+         15,
+         15,
+         16
+        ],
+        [
+         13,
+         13,
+         13,
+         13,
+         13,
+         13,
+         15,
+         15,
+         15,
+         15,
+         15,
+         15,
+         15,
+         15,
+         15,
+         16
+        ]
+       ],
+       "ohkoChance": null,
+       "description": "Beat Up: 36–45 HP (15.3–19.1% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Beat Up: 3 hits (Houndoom 14, Snorlax 16, Arcanine 16 power).",
+        "No one-use KO chance for multiple hits.",
+        "Attacker: Flash Fire has been activated — no."
+       ],
+       "reason": null,
+       "hits": 3,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 150,
+    "maximum": 150,
+    "low": 150,
+    "average": 150,
+    "high": 150,
+    "min": 150,
+    "max": 150,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 199,
+    "average": 194.8125,
+    "high": 190,
+    "min": 190,
+    "max": 199,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "beatup",
+     "effectiveName": "Beat Up",
+     "effectiveType": "Dark",
+     "effectivePower": 0,
+     "effectiveCategory": "Physical",
+     "kind": "needs-context",
+     "min": null,
+     "max": null,
+     "minPercent": null,
+     "maxPercent": null,
+     "rolls": null,
+     "ohkoChance": null,
+     "description": "Hits one time for the user and one time for each unfainted Pokemon without a non-volatile status condition in the user's party. The power of each hit is equal to 5+(X/10), where X is each participating Pokemon's base Attack; each hit is considered to come from the user.",
+     "assumptions": [],
+     "reason": "Beat Up: party needed.",
+     "hits": null
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 150,
+     "maximum": 150,
+     "low": 150,
+     "average": 150,
+     "high": 150,
+     "min": 150,
+     "max": 150,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 199,
+     "average": 194.8125,
+     "high": 190,
+     "min": 190,
+     "max": 199,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 9.886171999998624,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 150,
+    "maximum": 150
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 150,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "houndoom",
+       "nature": "Serious",
+       "abilityId": "flashfire",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 1
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 190,
+        "chance": 0.000244140625
+       },
+       {
+        "hp": 191,
+        "chance": 0.007080078125
+       },
+       {
+        "hp": 192,
+        "chance": 0.068115234375
+       },
+       {
+        "hp": 193,
+        "chance": 0.221435546875
+       },
+       {
+        "hp": 194,
+        "chance": 0.076171875
+       },
+       {
+        "hp": 195,
+        "chance": 0.369140625
+       },
+       {
+        "hp": 196,
+        "chance": 0.0205078125
+       },
+       {
+        "hp": 197,
+        "chance": 0.2021484375
+       },
+       {
+        "hp": 199,
+        "chance": 0.03515625
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 4
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 3
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

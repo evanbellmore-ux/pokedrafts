@@ -1,0 +1,2284 @@
+{
+ "id": "RV2-Q2-RC-STALK-SUN-sv",
+ "title": "Asleep Solgaleo's Sleep Talk calls Sunsteel Strike: the called move takes Sleep Talk's ignoreAbility (none), so Clear Body blocks the received Intimidate",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "sim/battle-actions.ts:422-425: a called Sunsteel Strike loses its own ignoreAbility.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 180,
+   "classes": 117,
+   "ms": 401,
+   "decisions": {
+    "sample": 66,
+    "fail:sleeptalk": 66,
+    "roll": 66
+   },
+   "slots": {
+    "own-left": {
+     "species": "Solgaleo",
+     "start": 212,
+     "maximum": 212,
+     "dist": [
+      [
+       212,
+       0.9999999999999999
+      ]
+     ],
+     "koChance": 0,
+     "average": 212,
+     "min": 212,
+     "max": 212,
+     "modeTieUp": 212,
+     "modeTieDown": 212,
+     "status": {
+      "slp": 0.9999999999999999
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999999
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.9999999999999999
+     },
+     "perish": {},
+     "sleepTime": {
+      "1": 0.33333333333333337,
+      "2": 0.33333333333333337,
+      "3": 0.33333333333333337
+     },
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Psychic/Steel": 0.9999999999999999
+     },
+     "ability": {
+      "fullmetalbody": 0.9999999999999999
+     },
+     "forme": {
+      "solgaleo": 0.9999999999999999
+     },
+     "stored": {
+      "157/127/133/109/149": 0.9999999999999999
+     },
+     "weight": {
+      "2300": 0.9999999999999999
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 0.9999999999999999
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "own-right": {
+     "species": "Metagross",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       0.9999999999999999
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 0.9999999999999999
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999999
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.9999999999999999
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Steel/Psychic": 0.9999999999999999
+     },
+     "ability": {
+      "clearbody": 0.9999999999999999
+     },
+     "forme": {
+      "metagross": 0.9999999999999999
+     },
+     "stored": {
+      "155/150/115/110/90": 0.9999999999999999
+     },
+     "weight": {
+      "5500": 0.9999999999999999
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 0.9999999999999999
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "opponent-left": {
+     "species": "Passimian",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       79,
+       0.03125
+      ],
+      [
+       81,
+       0.03125
+      ],
+      [
+       82,
+       0.0625
+      ],
+      [
+       84,
+       0.03125
+      ],
+      [
+       85,
+       0.0625
+      ],
+      [
+       87,
+       0.03125
+      ],
+      [
+       88,
+       0.0625
+      ],
+      [
+       90,
+       0.03125
+      ],
+      [
+       91,
+       0.0625
+      ],
+      [
+       93,
+       0.0625
+      ],
+      [
+       94,
+       0.03125
+      ],
+      [
+       175,
+       0.5
+      ]
+     ],
+     "koChance": 0,
+     "average": 131.03125,
+     "min": 79,
+     "max": 175,
+     "modeTieUp": 175,
+     "modeTieDown": 175,
+     "status": {
+      "": 0.9999999999999999
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999999
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.5,
+      "1": 0.5
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Fighting": 0.9999999999999999
+     },
+     "ability": {
+      "intimidate": 0.5,
+      "receiver": 0.5
+     },
+     "forme": {
+      "passimian": 0.9999999999999999
+     },
+     "stored": {
+      "140/110/60/80/100": 0.9999999999999999
+     },
+     "weight": {
+      "828": 0.9999999999999999
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 0.9999999999999999
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "opponent-right": {
+     "species": "Incineroar",
+     "start": 1,
+     "maximum": 170,
+     "dist": [
+      [
+       0,
+       0.5
+      ],
+      [
+       1,
+       0.5
+      ]
+     ],
+     "koChance": 0.5,
+     "average": 0.5,
+     "min": 0,
+     "max": 1,
+     "modeTieUp": 1,
+     "modeTieDown": 0,
+     "status": {
+      "": 0.9999999999999999
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999999
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.5,
+      "1": 0.5
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Fire/Dark": 0.9999999999999999
+     },
+     "ability": {
+      "intimidate": 0.9999999999999999
+     },
+     "forme": {
+      "incineroar": 0.9999999999999999
+     },
+     "stored": {
+      "135/110/100/110/80": 0.9999999999999999
+     },
+     "weight": {
+      "830": 0.9999999999999999
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 0.9999999999999999
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "sleeptalk",
+     "picked": 0.9999999999999999,
+     "faintedAtPick": 0,
+     "moved": 0.9999999999999999,
+     "cant": {
+      "slp": 0.9999999999999999
+     },
+     "orderAll": {
+      "1": 0.9999999999999999
+     },
+     "orderMoved": {
+      "1": 0.9999999999999999
+     },
+     "hits": {
+      "own-left": {
+       "reached": 0.9999999999999999,
+       "landed": 0.9999999999999999,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 0.5,
+       "landed": 0.5,
+       "ko": 0.5,
+       "dmgMin": 40,
+       "dmgMax": 48,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 0.5,
+       "landed": 0.5,
+       "ko": 0,
+       "dmgMin": 81,
+       "dmgMax": 96,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|cant|p1a: Solgaleo|slp": 0.9999999999999999,
+      "|move|p1a: Solgaleo|Sunsteel Strike|p2a: Incineroar|[from] move: Sleep Talk": 0.5,
+      "|-ability|p2b: Passimian|Intimidate|Receiver|[from] ability: Receiver|[of] p2a: Incineroar": 0.5,
+      "|-ability|p2b: Passimian|Intimidate|boost": 0.5,
+      "|-fail|p1a: Solgaleo|unboost|[from] ability: Full Metal Body|[of] p1a: Solgaleo": 0.5,
+      "|-fail|p1b: Metagross|unboost|[from] ability: Clear Body|[of] p1b: Metagross": 0.5,
+      "|move|p1a: Solgaleo|Sunsteel Strike|p2b: Passimian|[from] move: Sleep Talk": 0.5
+     },
+     "effects": {
+      "own-left": {
+       "cant:slp": 0.9999999999999999,
+       "usedmove:sunsteelstrike:sleeptalk": 0.9999999999999999,
+       "fail:unboost:fullmetalbody": 0.5
+      },
+      "opponent-right": {
+       "damage:-1": 0.5,
+       "faint": 0.5
+      },
+      "opponent-left": {
+       "ability:intimidate": 0.5,
+       "damage:-81": 0.03125,
+       "damage:-82": 0.0625,
+       "damage:-84": 0.0625,
+       "damage:-85": 0.03125,
+       "damage:-87": 0.0625,
+       "damage:-88": 0.03125,
+       "damage:-90": 0.0625,
+       "damage:-91": 0.03125,
+       "damage:-93": 0.0625,
+       "damage:-94": 0.03125,
+       "damage:-96": 0.03125
+      },
+      "own-right": {
+       "fail:unboost:clearbody": 0.5
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -1,
+       "max": -1
+      },
+      "opponent-left": {
+       "min": -96,
+       "max": -81
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-right": {
+       "min": -1,
+       "max": -1,
+       "mass": 0.5
+      },
+      "opponent-left": {
+       "min": -96,
+       "max": -81,
+       "mass": 0.5
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "own-right": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 36,
+    "classes": 36,
+    "ms": 401,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Solgaleo",
+      "start": null,
+      "maximum": 212,
+      "dist": [
+       [
+        212,
+        0.9999999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 212,
+      "min": 212,
+      "max": 212,
+      "modeTieUp": 212,
+      "modeTieDown": 212,
+      "status": {
+       "slp": 0.9999999999999999
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999999
+      },
+      "perish": {},
+      "sleepTime": {
+       "1": 0.33333333333333337,
+       "2": 0.33333333333333337,
+       "3": 0.33333333333333337
+      },
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Psychic/Steel": 0.9999999999999999
+      },
+      "ability": {
+       "fullmetalbody": 0.9999999999999999
+      },
+      "forme": {
+       "solgaleo": 0.9999999999999999
+      },
+      "stored": {
+       "157/127/133/109/149": 0.9999999999999999
+      },
+      "weight": {
+       "2300": 0.9999999999999999
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 0.9999999999999999
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "own-right": {
+      "species": "Metagross",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        0.9999999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 0.9999999999999999
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999999
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Steel/Psychic": 0.9999999999999999
+      },
+      "ability": {
+       "clearbody": 0.9999999999999999
+      },
+      "forme": {
+       "metagross": 0.9999999999999999
+      },
+      "stored": {
+       "155/150/115/110/90": 0.9999999999999999
+      },
+      "weight": {
+       "5500": 0.9999999999999999
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 0.9999999999999999
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "opponent-left": {
+      "species": "Passimian",
+      "start": null,
+      "maximum": 175,
+      "dist": [
+       [
+        79,
+        0.03125
+       ],
+       [
+        81,
+        0.03125
+       ],
+       [
+        82,
+        0.0625
+       ],
+       [
+        84,
+        0.03125
+       ],
+       [
+        85,
+        0.0625
+       ],
+       [
+        87,
+        0.03125
+       ],
+       [
+        88,
+        0.0625
+       ],
+       [
+        90,
+        0.03125
+       ],
+       [
+        91,
+        0.0625
+       ],
+       [
+        93,
+        0.0625
+       ],
+       [
+        94,
+        0.03125
+       ],
+       [
+        175,
+        0.5
+       ]
+      ],
+      "koChance": 0,
+      "average": 131.03125,
+      "min": 79,
+      "max": 175,
+      "modeTieUp": 175,
+      "modeTieDown": 175,
+      "status": {
+       "": 0.9999999999999999
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.5,
+       "1": 0.5
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Fighting": 0.9999999999999999
+      },
+      "ability": {
+       "intimidate": 0.5,
+       "receiver": 0.5
+      },
+      "forme": {
+       "passimian": 0.9999999999999999
+      },
+      "stored": {
+       "140/110/60/80/100": 0.9999999999999999
+      },
+      "weight": {
+       "828": 0.9999999999999999
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 0.9999999999999999
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "opponent-right": {
+      "species": "Incineroar",
+      "start": null,
+      "maximum": 170,
+      "dist": [
+       [
+        0,
+        0.5
+       ],
+       [
+        1,
+        0.5
+       ]
+      ],
+      "koChance": 0.5,
+      "average": 0.5,
+      "min": 0,
+      "max": 1,
+      "modeTieUp": 1,
+      "modeTieDown": 0,
+      "status": {
+       "": 0.5,
+       "fnt": 0.5
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.5,
+       "1": 0.5
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0.5,
+      "types": {
+       "Fire/Dark": 0.9999999999999999
+      },
+      "ability": {
+       "intimidate": 0.9999999999999999
+      },
+      "forme": {
+       "incineroar": 0.9999999999999999
+      },
+      "stored": {
+       "135/110/100/110/80": 0.9999999999999999
+      },
+      "weight": {
+       "830": 0.9999999999999999
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 0.9999999999999999
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 0.9999999999999999,
+     "weather:": 0.9999999999999999
+    },
+    "pseudo": {},
+    "sides": {}
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 30,
+   "classes": 27,
+   "ms": 109,
+   "decisions": {
+    "sample": 6,
+    "fail:sleeptalk": 6,
+    "roll": 6
+   },
+   "slots": {
+    "own-left": {
+     "species": "Solgaleo",
+     "start": 212,
+     "maximum": 212,
+     "dist": [
+      [
+       212,
+       0.9999999999999999
+      ]
+     ],
+     "koChance": 0,
+     "average": 212,
+     "min": 212,
+     "max": 212,
+     "modeTieUp": 212,
+     "modeTieDown": 212,
+     "status": {
+      "slp": 0.9999999999999999
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999999
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.9999999999999999
+     },
+     "perish": {},
+     "sleepTime": {
+      "1": 0.3333333333333333,
+      "2": 0.3333333333333333,
+      "3": 0.3333333333333333
+     },
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Psychic/Steel": 0.9999999999999999
+     },
+     "ability": {
+      "fullmetalbody": 0.9999999999999999
+     },
+     "forme": {
+      "solgaleo": 0.9999999999999999
+     },
+     "stored": {
+      "157/127/133/109/149": 0.9999999999999999
+     },
+     "weight": {
+      "2300": 0.9999999999999999
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 0.9999999999999999
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "own-right": {
+     "species": "Metagross",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       0.9999999999999999
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 0.9999999999999999
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999999
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.9999999999999999
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Steel/Psychic": 0.9999999999999999
+     },
+     "ability": {
+      "clearbody": 0.9999999999999999
+     },
+     "forme": {
+      "metagross": 0.9999999999999999
+     },
+     "stored": {
+      "155/150/115/110/90": 0.9999999999999999
+     },
+     "weight": {
+      "5500": 0.9999999999999999
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 0.9999999999999999
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "opponent-left": {
+     "species": "Passimian",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       94,
+       0.5
+      ],
+      [
+       175,
+       0.5
+      ]
+     ],
+     "koChance": 0,
+     "average": 134.5,
+     "min": 94,
+     "max": 175,
+     "modeTieUp": 175,
+     "modeTieDown": 94,
+     "status": {
+      "": 0.9999999999999999
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999999
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.5,
+      "1": 0.5
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Fighting": 0.9999999999999999
+     },
+     "ability": {
+      "intimidate": 0.5,
+      "receiver": 0.5
+     },
+     "forme": {
+      "passimian": 0.9999999999999999
+     },
+     "stored": {
+      "140/110/60/80/100": 0.9999999999999999
+     },
+     "weight": {
+      "828": 0.9999999999999999
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 0.9999999999999999
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "opponent-right": {
+     "species": "Incineroar",
+     "start": 1,
+     "maximum": 170,
+     "dist": [
+      [
+       0,
+       0.5
+      ],
+      [
+       1,
+       0.5
+      ]
+     ],
+     "koChance": 0.5,
+     "average": 0.5,
+     "min": 0,
+     "max": 1,
+     "modeTieUp": 1,
+     "modeTieDown": 0,
+     "status": {
+      "": 0.9999999999999999
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999999
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.5,
+      "1": 0.5
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Fire/Dark": 0.9999999999999999
+     },
+     "ability": {
+      "intimidate": 0.9999999999999999
+     },
+     "forme": {
+      "incineroar": 0.9999999999999999
+     },
+     "stored": {
+      "135/110/100/110/80": 0.9999999999999999
+     },
+     "weight": {
+      "830": 0.9999999999999999
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 0.9999999999999999
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "sleeptalk",
+     "picked": 0.9999999999999999,
+     "faintedAtPick": 0,
+     "moved": 0.9999999999999999,
+     "cant": {
+      "slp": 0.9999999999999999
+     },
+     "orderAll": {
+      "1": 0.9999999999999999
+     },
+     "orderMoved": {
+      "1": 0.9999999999999999
+     },
+     "hits": {
+      "own-left": {
+       "reached": 0.9999999999999999,
+       "landed": 0.9999999999999999,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 0.5,
+       "landed": 0.5,
+       "ko": 0.5,
+       "dmgMin": 40,
+       "dmgMax": 40,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 0.5,
+       "landed": 0.5,
+       "ko": 0,
+       "dmgMin": 81,
+       "dmgMax": 81,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|cant|p1a: Solgaleo|slp": 0.9999999999999999,
+      "|move|p1a: Solgaleo|Sunsteel Strike|p2a: Incineroar|[from] move: Sleep Talk": 0.5,
+      "|-ability|p2b: Passimian|Intimidate|Receiver|[from] ability: Receiver|[of] p2a: Incineroar": 0.5,
+      "|-ability|p2b: Passimian|Intimidate|boost": 0.5,
+      "|-fail|p1a: Solgaleo|unboost|[from] ability: Full Metal Body|[of] p1a: Solgaleo": 0.5,
+      "|-fail|p1b: Metagross|unboost|[from] ability: Clear Body|[of] p1b: Metagross": 0.5,
+      "|move|p1a: Solgaleo|Sunsteel Strike|p2b: Passimian|[from] move: Sleep Talk": 0.5
+     },
+     "effects": {
+      "own-left": {
+       "cant:slp": 0.9999999999999999,
+       "usedmove:sunsteelstrike:sleeptalk": 0.9999999999999999,
+       "fail:unboost:fullmetalbody": 0.5
+      },
+      "opponent-right": {
+       "damage:-1": 0.5,
+       "faint": 0.5
+      },
+      "opponent-left": {
+       "ability:intimidate": 0.5,
+       "damage:-81": 0.5
+      },
+      "own-right": {
+       "fail:unboost:clearbody": 0.5
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -1,
+       "max": -1
+      },
+      "opponent-left": {
+       "min": -81,
+       "max": -81
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-right": {
+       "min": -1,
+       "max": -1,
+       "mass": 0.5
+      },
+      "opponent-left": {
+       "min": -81,
+       "max": -81,
+       "mass": 0.5
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "own-right": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 6,
+    "classes": 6,
+    "ms": 109,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Solgaleo",
+      "start": null,
+      "maximum": 212,
+      "dist": [
+       [
+        212,
+        0.9999999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 212,
+      "min": 212,
+      "max": 212,
+      "modeTieUp": 212,
+      "modeTieDown": 212,
+      "status": {
+       "slp": 0.9999999999999999
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999999
+      },
+      "perish": {},
+      "sleepTime": {
+       "1": 0.3333333333333333,
+       "2": 0.3333333333333333,
+       "3": 0.3333333333333333
+      },
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Psychic/Steel": 0.9999999999999999
+      },
+      "ability": {
+       "fullmetalbody": 0.9999999999999999
+      },
+      "forme": {
+       "solgaleo": 0.9999999999999999
+      },
+      "stored": {
+       "157/127/133/109/149": 0.9999999999999999
+      },
+      "weight": {
+       "2300": 0.9999999999999999
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 0.9999999999999999
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "own-right": {
+      "species": "Metagross",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        0.9999999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 0.9999999999999999
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999999
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Steel/Psychic": 0.9999999999999999
+      },
+      "ability": {
+       "clearbody": 0.9999999999999999
+      },
+      "forme": {
+       "metagross": 0.9999999999999999
+      },
+      "stored": {
+       "155/150/115/110/90": 0.9999999999999999
+      },
+      "weight": {
+       "5500": 0.9999999999999999
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 0.9999999999999999
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "opponent-left": {
+      "species": "Passimian",
+      "start": null,
+      "maximum": 175,
+      "dist": [
+       [
+        94,
+        0.5
+       ],
+       [
+        175,
+        0.5
+       ]
+      ],
+      "koChance": 0,
+      "average": 134.5,
+      "min": 94,
+      "max": 175,
+      "modeTieUp": 175,
+      "modeTieDown": 94,
+      "status": {
+       "": 0.9999999999999999
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.5,
+       "1": 0.5
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Fighting": 0.9999999999999999
+      },
+      "ability": {
+       "intimidate": 0.5,
+       "receiver": 0.5
+      },
+      "forme": {
+       "passimian": 0.9999999999999999
+      },
+      "stored": {
+       "140/110/60/80/100": 0.9999999999999999
+      },
+      "weight": {
+       "828": 0.9999999999999999
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 0.9999999999999999
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "opponent-right": {
+      "species": "Incineroar",
+      "start": null,
+      "maximum": 170,
+      "dist": [
+       [
+        0,
+        0.5
+       ],
+       [
+        1,
+        0.5
+       ]
+      ],
+      "koChance": 0.5,
+      "average": 0.5,
+      "min": 0,
+      "max": 1,
+      "modeTieUp": 1,
+      "modeTieDown": 0,
+      "status": {
+       "": 0.5,
+       "fnt": 0.5
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.5,
+       "1": 0.5
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0.5,
+      "types": {
+       "Fire/Dark": 0.9999999999999999
+      },
+      "ability": {
+       "intimidate": 0.9999999999999999
+      },
+      "forme": {
+       "incineroar": 0.9999999999999999
+      },
+      "stored": {
+       "135/110/100/110/80": 0.9999999999999999
+      },
+      "weight": {
+       "830": 0.9999999999999999
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 0.9999999999999999
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 0.9999999999999999,
+     "weather:": 0.9999999999999999
+    },
+    "pseudo": {},
+    "sides": {}
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 30,
+   "classes": 27,
+   "ms": 66,
+   "decisions": {
+    "sample": 6,
+    "fail:sleeptalk": 6,
+    "roll": 6
+   },
+   "slots": {
+    "own-left": {
+     "species": "Solgaleo",
+     "start": 212,
+     "maximum": 212,
+     "dist": [
+      [
+       212,
+       0.9999999999999999
+      ]
+     ],
+     "koChance": 0,
+     "average": 212,
+     "min": 212,
+     "max": 212,
+     "modeTieUp": 212,
+     "modeTieDown": 212,
+     "status": {
+      "slp": 0.9999999999999999
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999999
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.9999999999999999
+     },
+     "perish": {},
+     "sleepTime": {
+      "1": 0.3333333333333333,
+      "2": 0.3333333333333333,
+      "3": 0.3333333333333333
+     },
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Psychic/Steel": 0.9999999999999999
+     },
+     "ability": {
+      "fullmetalbody": 0.9999999999999999
+     },
+     "forme": {
+      "solgaleo": 0.9999999999999999
+     },
+     "stored": {
+      "157/127/133/109/149": 0.9999999999999999
+     },
+     "weight": {
+      "2300": 0.9999999999999999
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 0.9999999999999999
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "own-right": {
+     "species": "Metagross",
+     "start": 155,
+     "maximum": 155,
+     "dist": [
+      [
+       155,
+       0.9999999999999999
+      ]
+     ],
+     "koChance": 0,
+     "average": 155,
+     "min": 155,
+     "max": 155,
+     "modeTieUp": 155,
+     "modeTieDown": 155,
+     "status": {
+      "": 0.9999999999999999
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999999
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.9999999999999999
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Steel/Psychic": 0.9999999999999999
+     },
+     "ability": {
+      "clearbody": 0.9999999999999999
+     },
+     "forme": {
+      "metagross": 0.9999999999999999
+     },
+     "stored": {
+      "155/150/115/110/90": 0.9999999999999999
+     },
+     "weight": {
+      "5500": 0.9999999999999999
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 0.9999999999999999
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "opponent-left": {
+     "species": "Passimian",
+     "start": 175,
+     "maximum": 175,
+     "dist": [
+      [
+       79,
+       0.5
+      ],
+      [
+       175,
+       0.5
+      ]
+     ],
+     "koChance": 0,
+     "average": 127,
+     "min": 79,
+     "max": 175,
+     "modeTieUp": 175,
+     "modeTieDown": 79,
+     "status": {
+      "": 0.9999999999999999
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999999
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.5,
+      "1": 0.5
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Fighting": 0.9999999999999999
+     },
+     "ability": {
+      "intimidate": 0.5,
+      "receiver": 0.5
+     },
+     "forme": {
+      "passimian": 0.9999999999999999
+     },
+     "stored": {
+      "140/110/60/80/100": 0.9999999999999999
+     },
+     "weight": {
+      "828": 0.9999999999999999
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 0.9999999999999999
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "opponent-right": {
+     "species": "Incineroar",
+     "start": 1,
+     "maximum": 170,
+     "dist": [
+      [
+       0,
+       0.5
+      ],
+      [
+       1,
+       0.5
+      ]
+     ],
+     "koChance": 0.5,
+     "average": 0.5,
+     "min": 0,
+     "max": 1,
+     "modeTieUp": 1,
+     "modeTieDown": 0,
+     "status": {
+      "": 0.9999999999999999
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 0.9999999999999999
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 0.5,
+      "1": 0.5
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Fire/Dark": 0.9999999999999999
+     },
+     "ability": {
+      "intimidate": 0.9999999999999999
+     },
+     "forme": {
+      "incineroar": 0.9999999999999999
+     },
+     "stored": {
+      "135/110/100/110/80": 0.9999999999999999
+     },
+     "weight": {
+      "830": 0.9999999999999999
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 0.9999999999999999
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "sleeptalk",
+     "picked": 0.9999999999999999,
+     "faintedAtPick": 0,
+     "moved": 0.9999999999999999,
+     "cant": {
+      "slp": 0.9999999999999999
+     },
+     "orderAll": {
+      "1": 0.9999999999999999
+     },
+     "orderMoved": {
+      "1": 0.9999999999999999
+     },
+     "hits": {
+      "own-left": {
+       "reached": 0.9999999999999999,
+       "landed": 0.9999999999999999,
+       "ko": 0,
+       "dmgMin": null,
+       "dmgMax": null,
+       "truncated": 0
+      },
+      "opponent-right": {
+       "reached": 0.5,
+       "landed": 0.5,
+       "ko": 0.5,
+       "dmgMin": 48,
+       "dmgMax": 48,
+       "truncated": 0
+      },
+      "opponent-left": {
+       "reached": 0.5,
+       "landed": 0.5,
+       "ko": 0,
+       "dmgMin": 96,
+       "dmgMax": 96,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|cant|p1a: Solgaleo|slp": 0.9999999999999999,
+      "|move|p1a: Solgaleo|Sunsteel Strike|p2a: Incineroar|[from] move: Sleep Talk": 0.5,
+      "|-ability|p2b: Passimian|Intimidate|Receiver|[from] ability: Receiver|[of] p2a: Incineroar": 0.5,
+      "|-ability|p2b: Passimian|Intimidate|boost": 0.5,
+      "|-fail|p1a: Solgaleo|unboost|[from] ability: Full Metal Body|[of] p1a: Solgaleo": 0.5,
+      "|-fail|p1b: Metagross|unboost|[from] ability: Clear Body|[of] p1b: Metagross": 0.5,
+      "|move|p1a: Solgaleo|Sunsteel Strike|p2b: Passimian|[from] move: Sleep Talk": 0.5
+     },
+     "effects": {
+      "own-left": {
+       "cant:slp": 0.9999999999999999,
+       "usedmove:sunsteelstrike:sleeptalk": 0.9999999999999999,
+       "fail:unboost:fullmetalbody": 0.5
+      },
+      "opponent-right": {
+       "damage:-1": 0.5,
+       "faint": 0.5
+      },
+      "opponent-left": {
+       "ability:intimidate": 0.5,
+       "damage:-96": 0.5
+      },
+      "own-right": {
+       "fail:unboost:clearbody": 0.5
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-right": {
+       "min": -1,
+       "max": -1
+      },
+      "opponent-left": {
+       "min": -96,
+       "max": -96
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-right": {
+       "min": -1,
+       "max": -1,
+       "mass": 0.5
+      },
+      "opponent-left": {
+       "min": -96,
+       "max": -96,
+       "mass": 0.5
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "own-right": {},
+    "opponent-right": {}
+   },
+   "afterTurn": {
+    "runs": 6,
+    "classes": 6,
+    "ms": 66,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Solgaleo",
+      "start": null,
+      "maximum": 212,
+      "dist": [
+       [
+        212,
+        0.9999999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 212,
+      "min": 212,
+      "max": 212,
+      "modeTieUp": 212,
+      "modeTieDown": 212,
+      "status": {
+       "slp": 0.9999999999999999
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999999
+      },
+      "perish": {},
+      "sleepTime": {
+       "1": 0.3333333333333333,
+       "2": 0.3333333333333333,
+       "3": 0.3333333333333333
+      },
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Psychic/Steel": 0.9999999999999999
+      },
+      "ability": {
+       "fullmetalbody": 0.9999999999999999
+      },
+      "forme": {
+       "solgaleo": 0.9999999999999999
+      },
+      "stored": {
+       "157/127/133/109/149": 0.9999999999999999
+      },
+      "weight": {
+       "2300": 0.9999999999999999
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 0.9999999999999999
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "own-right": {
+      "species": "Metagross",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        155,
+        0.9999999999999999
+       ]
+      ],
+      "koChance": 0,
+      "average": 155,
+      "min": 155,
+      "max": 155,
+      "modeTieUp": 155,
+      "modeTieDown": 155,
+      "status": {
+       "": 0.9999999999999999
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.9999999999999999
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Steel/Psychic": 0.9999999999999999
+      },
+      "ability": {
+       "clearbody": 0.9999999999999999
+      },
+      "forme": {
+       "metagross": 0.9999999999999999
+      },
+      "stored": {
+       "155/150/115/110/90": 0.9999999999999999
+      },
+      "weight": {
+       "5500": 0.9999999999999999
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 0.9999999999999999
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "opponent-left": {
+      "species": "Passimian",
+      "start": null,
+      "maximum": 175,
+      "dist": [
+       [
+        79,
+        0.5
+       ],
+       [
+        175,
+        0.5
+       ]
+      ],
+      "koChance": 0,
+      "average": 127,
+      "min": 79,
+      "max": 175,
+      "modeTieUp": 175,
+      "modeTieDown": 79,
+      "status": {
+       "": 0.9999999999999999
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.5,
+       "1": 0.5
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Fighting": 0.9999999999999999
+      },
+      "ability": {
+       "intimidate": 0.5,
+       "receiver": 0.5
+      },
+      "forme": {
+       "passimian": 0.9999999999999999
+      },
+      "stored": {
+       "140/110/60/80/100": 0.9999999999999999
+      },
+      "weight": {
+       "828": 0.9999999999999999
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 0.9999999999999999
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "opponent-right": {
+      "species": "Incineroar",
+      "start": null,
+      "maximum": 170,
+      "dist": [
+       [
+        0,
+        0.5
+       ],
+       [
+        1,
+        0.5
+       ]
+      ],
+      "koChance": 0.5,
+      "average": 0.5,
+      "min": 0,
+      "max": 1,
+      "modeTieUp": 1,
+      "modeTieDown": 0,
+      "status": {
+       "": 0.5,
+       "fnt": 0.5
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.9999999999999999
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 0.5,
+       "1": 0.5
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0.5,
+      "types": {
+       "Fire/Dark": 0.9999999999999999
+      },
+      "ability": {
+       "intimidate": 0.9999999999999999
+      },
+      "forme": {
+       "incineroar": 0.9999999999999999
+      },
+      "stored": {
+       "135/110/100/110/80": 0.9999999999999999
+      },
+      "weight": {
+       "830": 0.9999999999999999
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 0.9999999999999999
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 0.9999999999999999,
+     "weather:": 0.9999999999999999
+    },
+    "pseudo": {},
+    "sides": {}
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 212,
+   "maximum": 212,
+   "low": 212,
+   "high": 212,
+   "average": 212,
+   "min": 212,
+   "max": 212,
+   "koChance": 0,
+   "dist": [
+    [
+     212,
+     0.9999999999999999
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     0.9999999999999999
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 175,
+   "maximum": 175,
+   "low": 175,
+   "high": 79,
+   "average": 131.03125,
+   "min": 79,
+   "max": 175,
+   "koChance": 0,
+   "dist": [
+    [
+     79,
+     0.03125
+    ],
+    [
+     81,
+     0.03125
+    ],
+    [
+     82,
+     0.0625
+    ],
+    [
+     84,
+     0.03125
+    ],
+    [
+     85,
+     0.0625
+    ],
+    [
+     87,
+     0.03125
+    ],
+    [
+     88,
+     0.0625
+    ],
+    [
+     90,
+     0.03125
+    ],
+    [
+     91,
+     0.0625
+    ],
+    [
+     93,
+     0.0625
+    ],
+    [
+     94,
+     0.03125
+    ],
+    [
+     175,
+     0.5
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 1,
+   "maximum": 170,
+   "low": 1,
+   "high": 0,
+   "average": 0.5,
+   "min": 0,
+   "max": 1,
+   "koChance": 0.5,
+   "dist": [
+    [
+     0,
+     0.5
+    ],
+    [
+     1,
+     0.5
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 212,
+   "maximum": 212,
+   "low": 212,
+   "high": 212,
+   "average": 212,
+   "min": 212,
+   "max": 212,
+   "koChance": 0,
+   "dist": [
+    [
+     212,
+     0.9999999999999999
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 155,
+   "maximum": 155,
+   "low": 155,
+   "high": 155,
+   "average": 155,
+   "min": 155,
+   "max": 155,
+   "koChance": 0,
+   "dist": [
+    [
+     155,
+     0.9999999999999999
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 175,
+   "maximum": 175,
+   "low": 175,
+   "high": 79,
+   "average": 131.03125,
+   "min": 79,
+   "max": 175,
+   "koChance": 0,
+   "dist": [
+    [
+     79,
+     0.03125
+    ],
+    [
+     81,
+     0.03125
+    ],
+    [
+     82,
+     0.0625
+    ],
+    [
+     84,
+     0.03125
+    ],
+    [
+     85,
+     0.0625
+    ],
+    [
+     87,
+     0.03125
+    ],
+    [
+     88,
+     0.0625
+    ],
+    [
+     90,
+     0.03125
+    ],
+    [
+     91,
+     0.0625
+    ],
+    [
+     93,
+     0.0625
+    ],
+    [
+     94,
+     0.03125
+    ],
+    [
+     175,
+     0.5
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 1,
+   "maximum": 170,
+   "low": 1,
+   "high": 0,
+   "average": 0.5,
+   "min": 0,
+   "max": 1,
+   "koChance": 0.5,
+   "dist": [
+    [
+     0,
+     0.5
+    ],
+    [
+     1,
+     0.5
+    ]
+   ]
+  }
+ },
+ "residuals": [],
+ "hidden": [
+  {
+   "label": "own-left sleep 2",
+   "weight": 0.3333333333333333
+  },
+  {
+   "label": "own-left sleep 3",
+   "weight": 0.3333333333333333
+  },
+  {
+   "label": "own-left sleep 4",
+   "weight": 0.3333333333333333
+  }
+ ]
+}

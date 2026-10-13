@@ -1,0 +1,845 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 150,
+    "maximum": 150
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "uturn",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 38,
+      "max": 45,
+      "minPercent": 16.170212765957448,
+      "maxPercent": 19.148936170212767,
+      "koChance": 0,
+      "row": {
+       "moveId": "uturn",
+       "effectiveName": "U-turn",
+       "effectiveType": "Bug",
+       "effectivePower": 70,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 38,
+       "max": 45,
+       "minPercent": 16.170212765957448,
+       "maxPercent": 19.148936170212767,
+       "rolls": [
+        38,
+        38,
+        39,
+        39,
+        40,
+        40,
+        40,
+        41,
+        41,
+        42,
+        42,
+        43,
+        43,
+        44,
+        44,
+        45
+       ],
+       "ohkoChance": 0,
+       "description": "U-turn: 38–45 HP (16.2–19.1% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Ambipom switches out; Slowking-Galar comes in.",
+      "chance": 1
+     },
+     {
+      "text": "Snorlax (yours): −2 Attack.",
+      "chance": 1
+     }
+    ]
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "bodyslam",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "id": "king",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 63,
+      "max": 75,
+      "minPercent": 37.05882352941177,
+      "maxPercent": 44.11764705882353,
+      "koChance": 0,
+      "row": {
+       "moveId": "bodyslam",
+       "effectiveName": "Body Slam",
+       "effectiveType": "Normal",
+       "effectivePower": 85,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 63,
+       "max": 75,
+       "minPercent": 37.05882352941177,
+       "maxPercent": 44.11764705882353,
+       "rolls": [
+        63,
+        64,
+        64,
+        66,
+        66,
+        67,
+        67,
+        69,
+        69,
+        70,
+        70,
+        72,
+        72,
+        73,
+        73,
+        75
+       ],
+       "ohkoChance": 0,
+       "description": "Body Slam: 63–75 HP (37.1–44.1% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 150,
+    "maximum": 150,
+    "low": 150,
+    "average": 150,
+    "high": 150,
+    "min": 150,
+    "max": 150,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 197,
+    "average": 193.8125,
+    "high": 190,
+    "min": 190,
+    "max": 197,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "uturn",
+     "effectiveName": "U-turn",
+     "effectiveType": "Bug",
+     "effectivePower": 70,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 38,
+     "max": 45,
+     "minPercent": 16.170212765957448,
+     "maxPercent": 19.148936170212767,
+     "rolls": [
+      38,
+      38,
+      39,
+      39,
+      40,
+      40,
+      40,
+      41,
+      41,
+      42,
+      42,
+      43,
+      43,
+      44,
+      44,
+      45
+     ],
+     "ohkoChance": 0,
+     "description": "U-turn: 38–45 HP (16.2–19.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 7,
+      "fewest": 6,
+      "fasterChance": 0.9948091506958008,
+      "limit": 32,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 197,
+      "high": 190,
+      "average": 193.8125,
+      "min": 190,
+      "max": 197,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 38,
+        "heals": []
+       },
+       "high": {
+        "dealt": 45,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "bodyslam",
+     "effectiveName": "Body Slam",
+     "effectiveType": "Normal",
+     "effectivePower": 85,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 73,
+     "max": 87,
+     "minPercent": 48.66666666666667,
+     "maxPercent": 57.99999999999999,
+     "rolls": [
+      73,
+      73,
+      75,
+      76,
+      76,
+      78,
+      78,
+      79,
+      79,
+      81,
+      82,
+      82,
+      84,
+      84,
+      85,
+      87
+     ],
+     "ohkoChance": 0,
+     "description": "Body Slam: 73–87 HP (48.7–58.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 2,
+      "fasterChance": 0.9375,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 150,
+      "low": 77,
+      "high": 63,
+      "average": 70.5,
+      "min": 63,
+      "max": 77,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 73,
+        "heals": []
+       },
+       "high": {
+        "dealt": 87,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Slowking-Galar comes in for Ambipom."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 150,
+     "maximum": 150,
+     "low": 150,
+     "average": 150,
+     "high": 150,
+     "min": 150,
+     "max": 150,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 197,
+     "average": 193.8125,
+     "high": 190,
+     "min": 190,
+     "max": 197,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": [],
+   "hpEntered": {
+    "own-left": {
+     "king": {
+      "start": 170,
+      "maximum": 170,
+      "low": 107,
+      "average": 101.25,
+      "high": 95,
+      "min": 95,
+      "max": 107,
+      "koChance": 0,
+      "heals": []
+     }
+    }
+   }
+  },
+  "replaced": {
+   "own-left": {
+    "left": [
+     {
+      "id": "slot:own-left",
+      "hp": {
+       "start": 150,
+       "maximum": 150,
+       "low": 150,
+       "average": 150,
+       "high": 150,
+       "min": 150,
+       "max": 150,
+       "koChance": 0,
+       "heals": []
+      },
+      "chance": 1
+     }
+    ],
+    "entered": [
+     {
+      "id": "king",
+      "chance": 1
+     }
+    ]
+   }
+  },
+  "hpEntered": {
+   "own-left": {
+    "king": {
+     "start": 170,
+     "maximum": 170,
+     "low": 107,
+     "average": 101.25,
+     "high": 95,
+     "min": 95,
+     "max": 107,
+     "koChance": 0,
+     "heals": []
+    }
+   }
+  }
+ },
+ "ms": 14.46300699999847,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 150,
+    "maximum": 150
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 95,
+        "chance": 0.0625
+       },
+       {
+        "hp": 97,
+        "chance": 0.125
+       },
+       {
+        "hp": 98,
+        "chance": 0.125
+       },
+       {
+        "hp": 100,
+        "chance": 0.125
+       },
+       {
+        "hp": 101,
+        "chance": 0.125
+       },
+       {
+        "hp": 103,
+        "chance": 0.125
+       },
+       {
+        "hp": 104,
+        "chance": 0.125
+       },
+       {
+        "hp": 106,
+        "chance": 0.125
+       },
+       {
+        "hp": 107,
+        "chance": 0.0625
+       }
+      ],
+      "build": {
+       "speciesId": "slowkinggalar",
+       "nature": "Serious",
+       "abilityId": "curiousmedicine",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "id": "king"
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 8
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 190,
+        "chance": 0.0625
+       },
+       {
+        "hp": 191,
+        "chance": 0.125
+       },
+       {
+        "hp": 192,
+        "chance": 0.125
+       },
+       {
+        "hp": 193,
+        "chance": 0.125
+       },
+       {
+        "hp": 194,
+        "chance": 0.125
+       },
+       {
+        "hp": 195,
+        "chance": 0.1875
+       },
+       {
+        "hp": 196,
+        "chance": 0.125
+       },
+       {
+        "hp": 197,
+        "chance": 0.125
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 32
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 24
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    },
+    "benched": {
+     "own": [
+      {
+       "id": "slot:own-left",
+       "slot": "own-left",
+       "hp": [
+        {
+         "hp": 150,
+         "chance": 1
+        }
+       ],
+       "build": {
+        "speciesId": "ambipom",
+        "nature": "Serious",
+        "abilityId": "technician",
+        "abilityActive": false,
+        "itemId": "",
+        "boosts": {
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "currentHP": null,
+        "status": "",
+        "game": "scarlet_violet",
+        "native": {
+         "level": 50,
+         "evs": {
+          "hp": 0,
+          "atk": 0,
+          "def": 0,
+          "spa": 0,
+          "spd": 0,
+          "spe": 252
+         },
+         "ivs": {
+          "hp": 31,
+          "atk": 31,
+          "def": 31,
+          "spa": 31,
+          "spd": 31,
+          "spe": 31
+         }
+        }
+       },
+       "protected": false,
+       "moved": true
+      }
+     ]
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

@@ -1,0 +1,576 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 165,
+    "maximum": 165
+   },
+   "own-right": {
+    "hp": 170,
+    "maximum": 170
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "instruct",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Instruct fails: Snorlax (1) has used no move.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-right",
+    "moveId": "copycat",
+    "effectiveName": "Instruct",
+    "effectiveType": "Psychic",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": []
+     },
+     {
+      "slot": "opponent-left",
+      "reached": 0.5,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Instruct fails: Snorlax (1) has used no move.",
+        "chance": 0.5
+       }
+      ]
+     },
+     {
+      "slot": "opponent-right",
+      "reached": 0.5,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Copycat calls Instruct.",
+      "chance": 1
+     }
+    ]
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "bodyslam",
+    "order": [],
+    "moves": 0.5,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 0.5,
+      "kind": "calculated",
+      "min": 63,
+      "max": 75,
+      "minPercent": 38.18181818181819,
+      "maxPercent": 45.45454545454545,
+      "koChance": 0,
+      "row": {
+       "moveId": "bodyslam",
+       "effectiveName": "Body Slam",
+       "effectiveType": "Normal",
+       "effectivePower": 85,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 63,
+       "max": 75,
+       "minPercent": 38.18181818181819,
+       "maxPercent": 45.45454545454545,
+       "rolls": [
+        63,
+        64,
+        64,
+        66,
+        66,
+        67,
+        67,
+        69,
+        69,
+        70,
+        70,
+        72,
+        72,
+        73,
+        73,
+        75
+       ],
+       "ohkoChance": 0,
+       "description": "Body Slam: 63–75 HP (38.2–45.5% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Instruct: Snorlax (2) uses Body Slam again.",
+      "chance": 0.5
+     }
+    ],
+    "copied": "Instruct"
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 165,
+    "maximum": 165,
+    "low": 165,
+    "average": 130.625,
+    "high": 90,
+    "min": 90,
+    "max": 165,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 170,
+    "maximum": 170,
+    "low": 170,
+    "average": 170,
+    "high": 170,
+    "min": 170,
+    "max": 170,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Snorlax (2)'s Body Slam has PP left.",
+   "Assumes Oranguru has not used Minimize."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 165,
+     "maximum": 165,
+     "low": 165,
+     "average": 130.625,
+     "high": 90,
+     "min": 90,
+     "max": 165,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 170,
+     "maximum": 170,
+     "low": 170,
+     "average": 170,
+     "high": 170,
+     "min": 170,
+     "max": 170,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 6.858081999998831,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 165,
+    "maximum": 165
+   },
+   "own-right": {
+    "hp": 170,
+    "maximum": 170
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 90,
+        "chance": 0.03125
+       },
+       {
+        "hp": 92,
+        "chance": 0.0625
+       },
+       {
+        "hp": 93,
+        "chance": 0.0625
+       },
+       {
+        "hp": 95,
+        "chance": 0.0625
+       },
+       {
+        "hp": 96,
+        "chance": 0.0625
+       },
+       {
+        "hp": 98,
+        "chance": 0.0625
+       },
+       {
+        "hp": 99,
+        "chance": 0.0625
+       },
+       {
+        "hp": 101,
+        "chance": 0.0625
+       },
+       {
+        "hp": 102,
+        "chance": 0.03125
+       },
+       {
+        "hp": 165,
+        "chance": 0.5
+       }
+      ],
+      "build": {
+       "speciesId": "oranguru",
+       "nature": "Serious",
+       "abilityId": "innerfocus",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 170,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "clefable",
+       "nature": "Serious",
+       "abilityId": "magicguard",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 8
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

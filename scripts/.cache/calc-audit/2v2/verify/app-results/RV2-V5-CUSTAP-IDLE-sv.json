@@ -1,0 +1,542 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "fling",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 7,
+      "max": 9,
+      "minPercent": 2.9787234042553195,
+      "maxPercent": 3.829787234042553,
+      "koChance": 0,
+      "row": {
+       "moveId": "fling",
+       "effectiveName": "Fling",
+       "effectiveType": "Dark",
+       "effectivePower": 10,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 7,
+       "max": 9,
+       "minPercent": 2.9787234042553195,
+       "maxPercent": 3.829787234042553,
+       "rolls": [
+        7,
+        7,
+        7,
+        7,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        9
+       ],
+       "ohkoChance": 0,
+       "description": "Fling: 7–9 HP (3.0–3.8% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Custap Berry: Snorlax eats it."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": [
+       {
+        "text": "Custap Berry: Snorlax (opponent's, 1) eats it.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Holds no item.",
+      "chance": 1
+     }
+    ]
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 228,
+    "average": 227.1875,
+    "high": 226,
+    "min": 226,
+    "max": 228,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "fling",
+     "effectiveName": "Fling",
+     "effectiveType": "Dark",
+     "effectivePower": 10,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 7,
+     "max": 9,
+     "minPercent": 2.9787234042553195,
+     "maxPercent": 3.829787234042553,
+     "rolls": [
+      7,
+      7,
+      7,
+      7,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      9
+     ],
+     "ohkoChance": 0,
+     "description": "Fling: 7–9 HP (3.0–3.8% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Custap Berry: Snorlax eats it."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "single-use",
+      "reason": "Fling throws its item away",
+      "koChance": 0
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 228,
+      "high": 226,
+      "average": 227.1875,
+      "min": 226,
+      "max": 228,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 7,
+        "heals": []
+       },
+       "high": {
+        "dealt": 9,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Holds no item.",
+       "chance": 1
+      }
+     ]
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 228,
+     "average": 227.1875,
+     "high": 226,
+     "min": 226,
+     "max": 228,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 9.661635000000388,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 155,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "sneasler",
+       "nature": "Serious",
+       "abilityId": "poisontouch",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "lastItem": "custapberry"
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 8
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 226,
+        "chance": 0.0625
+       },
+       {
+        "hp": 227,
+        "chance": 0.6875
+       },
+       {
+        "hp": 228,
+        "chance": 0.25
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 16
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 24
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

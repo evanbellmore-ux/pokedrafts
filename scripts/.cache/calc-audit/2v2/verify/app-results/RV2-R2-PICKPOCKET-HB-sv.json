@@ -1,0 +1,588 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 200,
+    "maximum": 235
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 120,
+    "maximum": 145
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "bodyslam",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 75,
+      "max": 88,
+      "minPercent": 51.724137931034484,
+      "maxPercent": 60.689655172413794,
+      "koChance": 0,
+      "row": {
+       "moveId": "bodyslam",
+       "effectiveName": "Body Slam",
+       "effectiveType": "Normal",
+       "effectivePower": 85,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 75,
+       "max": 88,
+       "minPercent": 51.724137931034484,
+       "maxPercent": 60.689655172413794,
+       "rolls": [
+        75,
+        75,
+        76,
+        76,
+        78,
+        79,
+        79,
+        81,
+        81,
+        82,
+        84,
+        84,
+        85,
+        85,
+        87,
+        88
+       ],
+       "ohkoChance": 0,
+       "description": "Body Slam: 75–88 HP (51.7–60.7% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 200,
+    "maximum": 235,
+    "low": 200,
+    "average": 200,
+    "high": 200,
+    "min": 200,
+    "max": 200,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Heal Block.",
+      "chance": 1
+     },
+     {
+      "text": "Holds no item.",
+      "chance": 1
+     }
+    ]
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 120,
+    "maximum": 145,
+    "low": 81,
+    "average": 75.0625,
+    "high": 68,
+    "min": 68,
+    "max": 81,
+    "koChance": 0,
+    "heals": [
+     "Sitrus Berry: +36 HP."
+    ]
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "bodyslam",
+     "effectiveName": "Body Slam",
+     "effectiveType": "Normal",
+     "effectivePower": 85,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 75,
+     "max": 88,
+     "minPercent": 51.724137931034484,
+     "maxPercent": 60.689655172413794,
+     "rolls": [
+      75,
+      75,
+      76,
+      76,
+      78,
+      79,
+      79,
+      81,
+      81,
+      82,
+      84,
+      84,
+      85,
+      85,
+      87,
+      88
+     ],
+     "ohkoChance": 0,
+     "description": "Body Slam: 75–88 HP (51.7–60.7% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 2,
+      "fasterChance": 0.84375,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [
+       "The target's Pickpocket takes the attacker's item."
+      ],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 120,
+      "low": 45,
+      "high": 32,
+      "average": 39.0625,
+      "min": 32,
+      "max": 45,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 75,
+        "heals": []
+       },
+       "high": {
+        "dealt": 88,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Weavile has not used Minimize."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 200,
+     "maximum": 235,
+     "low": 200,
+     "average": 200,
+     "high": 200,
+     "min": 200,
+     "max": 200,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Heal Block.",
+       "chance": 1
+      },
+      {
+       "text": "Holds no item.",
+       "chance": 1
+      }
+     ]
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 120,
+     "maximum": 145,
+     "low": 81,
+     "average": 75.0625,
+     "high": 68,
+     "min": 68,
+     "max": 81,
+     "koChance": 0,
+     "heals": [
+      "Sitrus Berry: +36 HP."
+     ]
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 10.264333999999508,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 200,
+    "maximum": 235
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 120,
+    "maximum": 145
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 200,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "volatiles": [
+       "healblock"
+      ],
+      "turnsLeft": {
+       "healblock": 1
+      }
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 8
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 68,
+        "chance": 0.0625
+       },
+       {
+        "hp": 69,
+        "chance": 0.0625
+       },
+       {
+        "hp": 71,
+        "chance": 0.125
+       },
+       {
+        "hp": 72,
+        "chance": 0.125
+       },
+       {
+        "hp": 74,
+        "chance": 0.0625
+       },
+       {
+        "hp": 75,
+        "chance": 0.125
+       },
+       {
+        "hp": 77,
+        "chance": 0.125
+       },
+       {
+        "hp": 78,
+        "chance": 0.0625
+       },
+       {
+        "hp": 80,
+        "chance": 0.125
+       },
+       {
+        "hp": 81,
+        "chance": 0.125
+       }
+      ],
+      "build": {
+       "speciesId": "weavile",
+       "nature": "Serious",
+       "abilityId": "pickpocket",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 24
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

@@ -1,0 +1,605 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 135,
+    "maximum": 135
+   },
+   "own-right": {
+    "hp": 195,
+    "maximum": 195
+   },
+   "opponent-left": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "encore",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Encore: Perish Song.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "aquajet",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Perish count 3.",
+        "chance": 1
+       }
+      ]
+     },
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Perish count 3.",
+        "chance": 1
+       }
+      ]
+     },
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Perish count 3.",
+        "chance": 1
+       }
+      ]
+     },
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Perish count 3.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": [
+     {
+      "text": "Encore: Azumarill uses Perish Song.",
+      "chance": 1
+     }
+    ]
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 135,
+    "maximum": 135,
+    "low": 135,
+    "average": 135,
+    "high": 135,
+    "min": 135,
+    "max": 135,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Perish count 3.",
+      "chance": 1
+     }
+    ]
+   },
+   "own-right": {
+    "start": 195,
+    "maximum": 195,
+    "low": 195,
+    "average": 195,
+    "high": 195,
+    "min": 195,
+    "max": 195,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Perish count 3.",
+      "chance": 1
+     }
+    ]
+   },
+   "opponent-left": {
+    "start": 175,
+    "maximum": 175,
+    "low": 175,
+    "average": 175,
+    "high": 175,
+    "min": 175,
+    "max": 175,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Encore: Perish Song.",
+      "chance": 1
+     },
+     {
+      "text": "Perish count 3.",
+      "chance": 1
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Perish count 3.",
+      "chance": 1
+     }
+    ]
+   }
+  },
+  "startRows": [
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "aquajet",
+     "effectiveName": "Aqua Jet",
+     "effectiveType": "Water",
+     "effectivePower": 40,
+     "effectiveCategory": "Physical",
+     "kind": "unsupported",
+     "min": null,
+     "max": null,
+     "minPercent": null,
+     "maxPercent": null,
+     "rolls": null,
+     "ohkoChance": null,
+     "description": "No additional effect.",
+     "assumptions": [],
+     "reason": "Aqua Jet fails: Farigiraf has Armor Tail.",
+     "hits": null
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 135,
+     "maximum": 135,
+     "low": 135,
+     "average": 135,
+     "high": 135,
+     "min": 135,
+     "max": 135,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Perish count 3.",
+       "chance": 1
+      }
+     ]
+    },
+    "own-right": {
+     "start": 195,
+     "maximum": 195,
+     "low": 195,
+     "average": 195,
+     "high": 195,
+     "min": 195,
+     "max": 195,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Perish count 3.",
+       "chance": 1
+      }
+     ]
+    },
+    "opponent-left": {
+     "start": 175,
+     "maximum": 175,
+     "low": 175,
+     "average": 175,
+     "high": 175,
+     "min": 175,
+     "max": 175,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Encore: Perish Song.",
+       "chance": 1
+      },
+      {
+       "text": "Perish count 3.",
+       "chance": 1
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Perish count 3.",
+       "chance": 1
+      }
+     ]
+    }
+   },
+   "residuals": [
+    {
+     "slot": "own-left",
+     "effect": "Perish Song",
+     "chance": 1,
+     "min": null,
+     "max": null,
+     "koChance": 0,
+     "facts": [
+      {
+       "text": "Perish count 3.",
+       "chance": 1
+      }
+     ]
+    },
+    {
+     "slot": "own-right",
+     "effect": "Perish Song",
+     "chance": 1,
+     "min": null,
+     "max": null,
+     "koChance": 0,
+     "facts": [
+      {
+       "text": "Perish count 3.",
+       "chance": 1
+      }
+     ]
+    },
+    {
+     "slot": "opponent-left",
+     "effect": "Perish Song",
+     "chance": 1,
+     "min": null,
+     "max": null,
+     "koChance": 0,
+     "facts": [
+      {
+       "text": "Perish count 3.",
+       "chance": 1
+      }
+     ]
+    },
+    {
+     "slot": "opponent-right",
+     "effect": "Perish Song",
+     "chance": 1,
+     "min": null,
+     "max": null,
+     "koChance": 0,
+     "facts": [
+      {
+       "text": "Perish count 3.",
+       "chance": 1
+      }
+     ]
+    }
+   ],
+   "facts": []
+  }
+ },
+ "ms": 6.781553000000713,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 135,
+    "maximum": 135
+   },
+   "own-right": {
+    "hp": 195,
+    "maximum": 195
+   },
+   "opponent-left": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 135,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "whimsicott",
+       "nature": "Serious",
+       "abilityId": "prankster",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 32
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "volatiles": [
+       "perishsong"
+      ],
+      "perishCount": 3
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 195,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "farigiraf",
+       "nature": "Serious",
+       "abilityId": "armortail",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "volatiles": [
+       "perishsong"
+      ],
+      "perishCount": 3
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 175,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "azumarill",
+       "nature": "Serious",
+       "abilityId": "hugepower",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "volatiles": [
+       "encore",
+       "perishsong"
+      ],
+      "perishCount": 3,
+      "turnsLeft": {
+       "encore": 2
+      }
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 3
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "volatiles": [
+       "perishsong"
+      ],
+      "perishCount": 3
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

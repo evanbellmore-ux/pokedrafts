@@ -1,0 +1,550 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "opponent-right": {
+    "hp": 1,
+    "maximum": 170
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "sleeptalk",
+    "effectiveName": "Swift",
+    "effectiveType": "Normal",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": []
+     },
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 16,
+      "max": 19,
+      "minPercent": 9.411764705882353,
+      "maxPercent": 11.176470588235295,
+      "koChance": 1,
+      "row": {
+       "moveId": "swift",
+       "effectiveName": "Swift",
+       "effectiveType": "Normal",
+       "effectivePower": 60,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 16,
+       "max": 19,
+       "minPercent": 9.411764705882353,
+       "maxPercent": 11.176470588235295,
+       "rolls": [
+        16,
+        16,
+        16,
+        16,
+        16,
+        17,
+        17,
+        17,
+        17,
+        17,
+        18,
+        18,
+        18,
+        18,
+        18,
+        19
+       ],
+       "ohkoChance": 0,
+       "description": "Swift: 16–19 HP (9.4–11.2% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     },
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 22,
+      "max": 26,
+      "minPercent": 12.571428571428573,
+      "maxPercent": 14.857142857142858,
+      "koChance": 0,
+      "row": {
+       "moveId": "swift",
+       "effectiveName": "Swift",
+       "effectiveType": "Normal",
+       "effectivePower": 60,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 22,
+       "max": 26,
+       "minPercent": 12.571428571428573,
+       "maxPercent": 14.857142857142858,
+       "rolls": [
+        22,
+        22,
+        22,
+        22,
+        23,
+        23,
+        23,
+        23,
+        24,
+        24,
+        24,
+        24,
+        25,
+        25,
+        25,
+        26
+       ],
+       "ohkoChance": 0,
+       "description": "Swift: 22–26 HP (12.6–14.9% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Asleep.",
+      "chance": 1
+     },
+     {
+      "text": "Sleep Talk calls Swift.",
+      "chance": 1
+     }
+    ]
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 175,
+    "maximum": 175,
+    "low": 153,
+    "average": 151.4375,
+    "high": 149,
+    "min": 149,
+    "max": 153,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Ability: Intimidate.",
+      "chance": 1
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 1,
+    "maximum": 170,
+    "low": 0,
+    "average": 0,
+    "high": 0,
+    "min": 0,
+    "max": 0,
+    "koChance": 1,
+    "heals": []
+   }
+  },
+  "startRows": [],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Toedscruel lost no turns to sleep before this one."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 175,
+     "maximum": 175,
+     "low": 153,
+     "average": 151.4375,
+     "high": 149,
+     "min": 149,
+     "max": 153,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Ability: Intimidate.",
+       "chance": 1
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 1,
+     "maximum": 170,
+     "low": 0,
+     "average": 0,
+     "high": 0,
+     "min": 0,
+     "max": 0,
+     "koChance": 1,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 8.28110899999956,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "opponent-right": {
+    "hp": 1,
+    "maximum": 170
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 155,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "toedscruel",
+       "nature": "Serious",
+       "abilityId": "myceliummight",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": -1,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "slp",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "sleepTurns": 2
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 155,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "metagross",
+       "nature": "Serious",
+       "abilityId": "clearbody",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": -1,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 149,
+        "chance": 0.0625
+       },
+       {
+        "hp": 150,
+        "chance": 0.1875
+       },
+       {
+        "hp": 151,
+        "chance": 0.25
+       },
+       {
+        "hp": 152,
+        "chance": 0.25
+       },
+       {
+        "hp": 153,
+        "chance": 0.25
+       }
+      ],
+      "build": {
+       "speciesId": "passimian",
+       "nature": "Serious",
+       "abilityId": "intimidate",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       },
+       "abilityChanged": true
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 0,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "incineroar",
+       "nature": "Serious",
+       "abilityId": "intimidate",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 1
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

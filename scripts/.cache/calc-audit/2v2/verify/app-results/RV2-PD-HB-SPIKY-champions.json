@@ -1,0 +1,471 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 130,
+    "maximum": 235
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 163,
+    "maximum": 163
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "opponent-left",
+    "moveId": "spikyshield",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [],
+    "facts": []
+   },
+   {
+    "slot": "own-left",
+    "moveId": "bodyslam",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "blocked",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Spiky Shield blocks Body Slam.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 130,
+    "maximum": 235,
+    "low": 101,
+    "average": 101,
+    "high": 101,
+    "min": 101,
+    "max": 101,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Heal Block.",
+      "chance": 1
+     }
+    ]
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 163,
+    "maximum": 163,
+    "low": 163,
+    "average": 163,
+    "high": 163,
+    "min": 163,
+    "max": 163,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "bodyslam",
+     "effectiveName": "Body Slam",
+     "effectiveType": "Normal",
+     "effectivePower": 85,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 45,
+     "max": 54,
+     "minPercent": 27.607361963190186,
+     "maxPercent": 33.12883435582822,
+     "rolls": [
+      45,
+      45,
+      46,
+      46,
+      48,
+      48,
+      48,
+      49,
+      49,
+      49,
+      51,
+      51,
+      51,
+      52,
+      52,
+      54
+     ],
+     "ohkoChance": 0,
+     "description": "Body Slam: 45–54 HP (27.6–33.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 4,
+      "fewest": 4,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 163,
+      "low": 118,
+      "high": 109,
+      "average": 114,
+      "min": 109,
+      "max": 118,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 45,
+        "heals": []
+       },
+       "high": {
+        "dealt": 54,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes no protecting move was used last turn.",
+   "Assumes Chesnaught has not used Minimize."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 130,
+     "maximum": 235,
+     "low": 101,
+     "average": 101,
+     "high": 101,
+     "min": 101,
+     "max": 101,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Heal Block.",
+       "chance": 1
+      }
+     ]
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 163,
+     "maximum": 163,
+     "low": 163,
+     "average": 163,
+     "high": 163,
+     "min": 163,
+     "max": 163,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 4.169260999999096,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 130,
+    "maximum": 235
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 163,
+    "maximum": 163
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 101,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "sitrusberry",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 1
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "volatiles": [
+       "healblock"
+      ],
+      "turnsLeft": {
+       "healblock": 1
+      }
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 163,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "chesnaught",
+       "nature": "Serious",
+       "abilityId": "bulletproof",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 32
+       }
+      },
+      "protected": true,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 2
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

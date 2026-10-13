@@ -1,0 +1,704 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 175,
+    "maximum": 175
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "ironhead",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 54,
+      "max": 64,
+      "minPercent": 22.97872340425532,
+      "maxPercent": 27.23404255319149,
+      "koChance": 0,
+      "row": {
+       "moveId": "ironhead",
+       "effectiveName": "Iron Head",
+       "effectiveType": "Steel",
+       "effectivePower": 80,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 54,
+       "max": 64,
+       "minPercent": 22.97872340425532,
+       "maxPercent": 27.23404255319149,
+       "rolls": [
+        54,
+        55,
+        55,
+        56,
+        56,
+        57,
+        58,
+        58,
+        59,
+        60,
+        60,
+        61,
+        62,
+        62,
+        63,
+        64
+       ],
+       "ohkoChance": 0,
+       "description": "Iron Head: 54–64 HP (23.0–27.2% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Snorlax switches out; Incineroar comes in.",
+      "chance": 1
+     },
+     {
+      "text": "Garchomp: −1 Attack.",
+      "chance": 1
+     }
+    ]
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 183,
+    "maximum": 183,
+    "low": 183,
+    "average": 183,
+    "high": 183,
+    "min": 183,
+    "max": 183,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 181,
+    "average": 176.25,
+    "high": 171,
+    "min": 171,
+    "max": 181,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 175,
+    "maximum": 175,
+    "low": 175,
+    "average": 175,
+    "high": 175,
+    "min": 175,
+    "max": 175,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Ability: Intimidate.",
+      "chance": 1
+     }
+    ]
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "ironhead",
+     "effectiveName": "Iron Head",
+     "effectiveType": "Steel",
+     "effectivePower": 80,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 54,
+     "max": 64,
+     "minPercent": 22.97872340425532,
+     "maxPercent": 27.23404255319149,
+     "rolls": [
+      54,
+      55,
+      55,
+      56,
+      56,
+      57,
+      58,
+      58,
+      59,
+      60,
+      60,
+      61,
+      62,
+      62,
+      63,
+      64
+     ],
+     "ohkoChance": 0,
+     "description": "Iron Head: 54–64 HP (23.0–27.2% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 5,
+      "fewest": 4,
+      "fasterChance": 0.528564453125,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 181,
+      "high": 171,
+      "average": 176.25,
+      "min": 171,
+      "max": 181,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 54,
+        "heals": []
+       },
+       "high": {
+        "dealt": 64,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Incineroar comes in for Snorlax."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 183,
+     "maximum": 183,
+     "low": 183,
+     "average": 183,
+     "high": 183,
+     "min": 183,
+     "max": 183,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 181,
+     "average": 176.25,
+     "high": 171,
+     "min": 171,
+     "max": 181,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 175,
+     "maximum": 175,
+     "low": 175,
+     "average": 175,
+     "high": 175,
+     "min": 175,
+     "max": 175,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Ability: Intimidate.",
+       "chance": 1
+      }
+     ]
+    }
+   },
+   "residuals": [],
+   "facts": [],
+   "hpEntered": {
+    "opponent-left": {
+     "incin": {
+      "start": 10,
+      "maximum": 170,
+      "low": 0,
+      "average": 0,
+      "high": 0,
+      "min": 0,
+      "max": 0,
+      "koChance": 1,
+      "heals": [],
+      "losses": [
+       {
+        "text": "Incineroar loses 42 HP (Stealth Rock).",
+        "chance": 1
+       }
+      ]
+     }
+    }
+   }
+  },
+  "replaced": {
+   "opponent-left": {
+    "left": [
+     {
+      "id": "slot:opponent-left",
+      "hp": {
+       "start": 235,
+       "maximum": 235,
+       "low": 181,
+       "average": 176.25,
+       "high": 171,
+       "min": 171,
+       "max": 181,
+       "koChance": 0,
+       "heals": []
+      },
+      "chance": 1
+     }
+    ],
+    "entered": [
+     {
+      "id": "incin",
+      "chance": 1
+     }
+    ]
+   }
+  },
+  "hpEntered": {
+   "opponent-left": {
+    "incin": {
+     "start": 10,
+     "maximum": 170,
+     "low": 0,
+     "average": 0,
+     "high": 0,
+     "min": 0,
+     "max": 0,
+     "koChance": 1,
+     "heals": [],
+     "losses": [
+      {
+       "text": "Incineroar loses 42 HP (Stealth Rock).",
+       "chance": 1
+      }
+     ]
+    }
+   }
+  }
+ },
+ "ms": 7.4132209999988845,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 175,
+    "maximum": 175
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 183,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "garchomp",
+       "nature": "Serious",
+       "abilityId": "roughskin",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": -1,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 155,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "metagross",
+       "nature": "Serious",
+       "abilityId": "clearbody",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 0,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "incineroar",
+       "nature": "Serious",
+       "abilityId": "intimidate",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "id": "incin"
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 175,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "passimian",
+       "nature": "Serious",
+       "abilityId": "intimidate",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       },
+       "abilityChanged": true
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 1
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    },
+    "benched": {
+     "opponent": [
+      {
+       "id": "slot:opponent-left",
+       "slot": "opponent-left",
+       "hp": [
+        {
+         "hp": 171,
+         "chance": 0.0625
+        },
+        {
+         "hp": 172,
+         "chance": 0.0625
+        },
+        {
+         "hp": 173,
+         "chance": 0.125
+        },
+        {
+         "hp": 174,
+         "chance": 0.0625
+        },
+        {
+         "hp": 175,
+         "chance": 0.125
+        },
+        {
+         "hp": 176,
+         "chance": 0.0625
+        },
+        {
+         "hp": 177,
+         "chance": 0.125
+        },
+        {
+         "hp": 178,
+         "chance": 0.0625
+        },
+        {
+         "hp": 179,
+         "chance": 0.125
+        },
+        {
+         "hp": 180,
+         "chance": 0.125
+        },
+        {
+         "hp": 181,
+         "chance": 0.0625
+        }
+       ],
+       "build": {
+        "speciesId": "snorlax",
+        "nature": "Serious",
+        "abilityId": "thickfat",
+        "abilityActive": false,
+        "itemId": "",
+        "boosts": {
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "currentHP": null,
+        "status": "",
+        "game": "scarlet_violet",
+        "native": {
+         "level": 50,
+         "evs": {
+          "hp": 0,
+          "atk": 0,
+          "def": 0,
+          "spa": 0,
+          "spd": 0,
+          "spe": 16
+         },
+         "ivs": {
+          "hp": 31,
+          "atk": 31,
+          "def": 31,
+          "spa": 31,
+          "spd": 31,
+          "spe": 31
+         }
+        }
+       },
+       "protected": false,
+       "moved": false
+      }
+     ]
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

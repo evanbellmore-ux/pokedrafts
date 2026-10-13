@@ -1,0 +1,676 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 180,
+    "maximum": 180
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 150,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "takedown",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 88,
+      "max": 157,
+      "minPercent": 37.4468085106383,
+      "maxPercent": 66.80851063829788,
+      "koChance": 0,
+      "row": {
+       "moveId": "takedown",
+       "effectiveName": "Take Down",
+       "effectiveType": "Normal",
+       "effectivePower": 90,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 131,
+       "max": 157,
+       "minPercent": 55.74468085106383,
+       "maxPercent": 66.80851063829788,
+       "rolls": [
+        [
+         106,
+         108,
+         109,
+         109,
+         111,
+         112,
+         114,
+         115,
+         117,
+         117,
+         118,
+         120,
+         121,
+         123,
+         124,
+         126
+        ],
+        [
+         25,
+         27,
+         27,
+         27,
+         27,
+         27,
+         28,
+         28,
+         28,
+         28,
+         28,
+         30,
+         30,
+         30,
+         30,
+         31
+        ]
+       ],
+       "ohkoChance": null,
+       "description": "Take Down: 131–157 HP (55.7–66.8% of maximum HP). Applied: Parental Bond.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "No one-use KO chance for multiple hits."
+       ],
+       "reason": null,
+       "hits": 2,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 2,
+      "facts": [
+       {
+        "text": "Snorlax (opponent's, 2) eats its Ganlon Berry after hit 1: +1 Defense.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 180,
+    "maximum": 180,
+    "low": 149,
+    "average": 146.34375,
+    "high": 143,
+    "min": 143,
+    "max": 149,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 150,
+    "maximum": 235,
+    "low": 28,
+    "average": 15.875,
+    "high": 3,
+    "min": 3,
+    "max": 28,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Holds no item.",
+      "chance": 1
+     }
+    ]
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "takedown",
+     "effectiveName": "Take Down",
+     "effectiveType": "Normal",
+     "effectivePower": 90,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 131,
+     "max": 157,
+     "minPercent": 55.74468085106383,
+     "maxPercent": 66.80851063829788,
+     "rolls": [
+      [
+       106,
+       108,
+       109,
+       109,
+       111,
+       112,
+       114,
+       115,
+       117,
+       117,
+       118,
+       120,
+       121,
+       123,
+       124,
+       126
+      ],
+      [
+       25,
+       27,
+       27,
+       27,
+       27,
+       27,
+       28,
+       28,
+       28,
+       28,
+       28,
+       30,
+       30,
+       30,
+       30,
+       31
+      ]
+     ],
+     "ohkoChance": null,
+     "description": "Take Down: 131–157 HP (55.7–66.8% of maximum HP). Applied: Parental Bond.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "No one-use KO chance for multiple hits."
+     ],
+     "reason": null,
+     "hits": 2,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 1,
+      "fasterChance": 0.21875,
+      "limit": 32,
+      "limitReason": "pp",
+      "carried": [
+       "The target's Ganlon Berry raises its Defense at a quarter of its HP."
+      ],
+      "notes": []
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 180,
+     "maximum": 180,
+     "low": 149,
+     "average": 146.34375,
+     "high": 143,
+     "min": 143,
+     "max": 149,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 150,
+     "maximum": 235,
+     "low": 28,
+     "average": 15.875,
+     "high": 3,
+     "min": 3,
+     "max": 28,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Holds no item.",
+       "chance": 1
+      }
+     ]
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 18.783871999999974,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 180,
+    "maximum": 180
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 150,
+    "maximum": 235
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 143,
+        "chance": 0.00390625
+       },
+       {
+        "hp": 144,
+        "chance": 0.15234375
+       },
+       {
+        "hp": 145,
+        "chance": 0.16015625
+       },
+       {
+        "hp": 146,
+        "chance": 0.2109375
+       },
+       {
+        "hp": 147,
+        "chance": 0.1953125
+       },
+       {
+        "hp": 148,
+        "chance": 0.20703125
+       },
+       {
+        "hp": 149,
+        "chance": 0.0703125
+       }
+      ],
+      "build": {
+       "speciesId": "kangaskhanmega",
+       "nature": "Serious",
+       "abilityId": "parentalbond",
+       "abilityActive": false,
+       "itemId": "kangaskhanite",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 252,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 8
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 16
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 3,
+        "chance": 0.00390625
+       },
+       {
+        "hp": 5,
+        "chance": 0.03125
+       },
+       {
+        "hp": 6,
+        "chance": 0.03125
+       },
+       {
+        "hp": 7,
+        "chance": 0.02734375
+       },
+       {
+        "hp": 8,
+        "chance": 0.0625
+       },
+       {
+        "hp": 9,
+        "chance": 0.03125
+       },
+       {
+        "hp": 10,
+        "chance": 0.03125
+       },
+       {
+        "hp": 11,
+        "chance": 0.0625
+       },
+       {
+        "hp": 12,
+        "chance": 0.03515625
+       },
+       {
+        "hp": 13,
+        "chance": 0.03125
+       },
+       {
+        "hp": 14,
+        "chance": 0.08984375
+       },
+       {
+        "hp": 15,
+        "chance": 0.058593749999999986
+       },
+       {
+        "hp": 16,
+        "chance": 0.03125
+       },
+       {
+        "hp": 17,
+        "chance": 0.06640625
+       },
+       {
+        "hp": 18,
+        "chance": 0.03125
+       },
+       {
+        "hp": 19,
+        "chance": 0.03125
+       },
+       {
+        "hp": 20,
+        "chance": 0.06640625
+       },
+       {
+        "hp": 21,
+        "chance": 0.03125
+       },
+       {
+        "hp": 22,
+        "chance": 0.058593749999999986
+       },
+       {
+        "hp": 23,
+        "chance": 0.08984375000000001
+       },
+       {
+        "hp": 24,
+        "chance": 0.02734375
+       },
+       {
+        "hp": 25,
+        "chance": 0.03515625
+       },
+       {
+        "hp": 26,
+        "chance": 0.03125
+       },
+       {
+        "hp": 28,
+        "chance": 0.00390625
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 1,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 24
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

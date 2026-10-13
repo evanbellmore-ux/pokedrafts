@@ -1,0 +1,551 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 150,
+    "maximum": 150
+   },
+   "own-right": {
+    "hp": 150,
+    "maximum": 150
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-right",
+    "moveId": "quiverdance",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "+1 Sp. Atk.",
+        "chance": 1
+       },
+       {
+        "text": "+1 Sp. Def.",
+        "chance": 1
+       },
+       {
+        "text": "+1 Speed.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-left",
+    "moveId": "quiverdance",
+    "order": [],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "+1 Sp. Atk.",
+        "chance": 1
+       },
+       {
+        "text": "+1 Sp. Def.",
+        "chance": 1
+       },
+       {
+        "text": "+1 Speed.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": [
+     {
+      "text": "Dancer: Oricorio copies Quiver Dance.",
+      "chance": 1
+     }
+    ],
+    "copied": "Dancer"
+   },
+   {
+    "slot": "own-left",
+    "moveId": "hurricane",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [],
+    "facts": [
+     {
+      "text": "Hurricane fails: Oricorio is locked into Quiver Dance by Choice Scarf.",
+      "chance": 1
+     }
+    ]
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 150,
+    "maximum": 150,
+    "low": 150,
+    "average": 150,
+    "high": 150,
+    "min": 150,
+    "max": 150,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 150,
+    "maximum": 150,
+    "low": 150,
+    "average": 150,
+    "high": 150,
+    "min": 150,
+    "max": 150,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "hurricane",
+     "effectiveName": "Hurricane",
+     "effectiveType": "Flying",
+     "effectivePower": 110,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 57,
+     "max": 67,
+     "minPercent": 24.25531914893617,
+     "maxPercent": 28.510638297872344,
+     "rolls": [
+      57,
+      57,
+      58,
+      58,
+      60,
+      60,
+      60,
+      61,
+      61,
+      63,
+      63,
+      64,
+      64,
+      66,
+      66,
+      67
+     ],
+     "ohkoChance": 0,
+     "description": "Hurricane: 57–67 HP (24.3–28.5% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 5,
+      "fewest": 4,
+      "fasterChance": 0.9732666015625,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 178,
+      "high": 168,
+      "average": 173.4375,
+      "min": 168,
+      "max": 178,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 57,
+        "heals": []
+       },
+       "high": {
+        "dealt": 67,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Oricorio is not locked into a move by Choice Scarf from an earlier turn."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 150,
+     "maximum": 150,
+     "low": 150,
+     "average": 150,
+     "high": 150,
+     "min": 150,
+     "max": 150,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 150,
+     "maximum": 150,
+     "low": 150,
+     "average": 150,
+     "high": 150,
+     "min": 150,
+     "max": 150,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 12.668843999999808,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 150,
+    "maximum": 150
+   },
+   "own-right": {
+    "hp": 150,
+    "maximum": 150
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 150,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "oricorio",
+       "nature": "Brave",
+       "abilityId": "dancer",
+       "abilityActive": false,
+       "itemId": "choicescarf",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 1,
+        "spd": 1,
+        "spe": 1
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 0
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 150,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "oricoriopompom",
+       "nature": "Serious",
+       "abilityId": "dancer",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 1,
+        "spd": 1,
+        "spe": 1
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 8
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

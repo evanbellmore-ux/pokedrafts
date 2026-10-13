@@ -28,6 +28,14 @@ const all = process.argv.includes("--all");
 const argOf = (name: string) => process.argv.find((a) => a.startsWith(`--${name}=`))?.slice(name.length + 3);
 const compareFile = argOf("compare") ? path.resolve(argOf("compare")!) : path.join(RESULTS, "compare.json");
 const KEEP = new Set<string>(argOf("keep") ? fs.readFileSync(path.resolve(argOf("keep")!), "utf8").split(/\r?\n/).filter(Boolean) : []);
+// status2 wave 2 (Track R-V, cloud session): --keep-rows=<test file> keeps every row of that file. A row whose case does not
+// load here (its case file is a stub: a folder that was not copied) is kept byte for byte and in its place; every other row
+// is generated again (KEEP holds its id), and a new row goes in CASES order among the generated ones.
+const KEEP_ROWS = argOf("keep-rows") ? fs.readFileSync(path.resolve(argOf("keep-rows")!), "utf8").split("\n").flatMap((text) => {
+  const m = /^  \{id:("(?:[^"\\]|\\.)*"),/.exec(text);
+  return m ? [{ id: JSON.parse(m[1]) as string, text }] : [];
+}) : null;
+for (const r of KEEP_ROWS ?? []) KEEP.add(r.id);
 type Report = { id: string; status: string; mismatches: { where: string; field: string }[] };
 /** A base case's rows assert the turn after the moves only: a mismatch elsewhere (the end of turn, E2, facts) does not drop it. */
 const assertedByBase = (m: Report["mismatches"][number]) => !/^(endOfTurn|E2)/.test(m.where) && m.field !== "facts" && !/^(effect|confusion self-hit|hit.change|losses|heals)/.test(m.field);
@@ -113,10 +121,11 @@ function benchRow(c: Case, r: OracleResult, walk: WalkResult) {
       slot: target, id, reached: num(h.reached), koChance: num(h.ko),
       ...(h.landed > 0 && h.dmgMax !== null && h.dmgMax > 0 && !h.sub ? ((h.truncated ?? 0) > 0 ? { kind: "calculated" } : { min: h.dmgMin, max: h.dmgMax }) : h.landed === 0 ? { kind: "blocked" } : {}),
     })))]));
-  // The default replacement's facts: each slot whose player's switch-out happened without Case.replacement.
+  // The default replacement's facts: each Pokémon a player's switch-out brought in but the slot's Case.replacement (status2 wave
+  // 2 gap fix, as compare.ts compareBench: a newcomer that leaves again brings in another, with its own fact).
   const chosen = new Set<string>();
   for (const table of [walk.replaced, walk.afterTurn?.replaced]) {
-    for (const [slot, x] of Object.entries(table ?? {})) if (x!.entered.some((e) => (e.chosen ?? 0) > 1e-12) && !c.replacement?.[slot as SlotId]) chosen.add(slot);
+    for (const [slot, x] of Object.entries(table ?? {})) for (const e of x!.entered) if ((e.chosen ?? 0) > 1e-12 && c.replacement?.[slot as SlotId] !== e.id) chosen.add(`${slot}|${e.id}`);
   }
   const after = !c.endNotEstimated && r.afterTurn;
   const e2 = (after ? walk.afterTurn?.entered : walk.entered) ?? {};
@@ -220,6 +229,12 @@ for (const c of CASES) {
     const effects: unknown[] = [];
     for (const [slot, s] of Object.entries(allWalk.steps) as [SlotId, NonNullable<WalkResult["steps"][SlotId]>][]) {
       const status = catalogs[c.game].get(s.moveId) === "Status";
+      // review 2 round 2: a calling move (Sleep Talk, Nature Power, Copycat, ...) whose called moves are all damaging is compared
+      // as damaging (verify/compare.ts usedStatus over calledMoves, the oracle's usedmove:<called>:<caller> keys), which checks
+      // none of its effects. The row keeps those on the other side (a Lightning Rod rise, as before) and leaves out those on
+      // its user's side, which are not the called move's facts (an Intimidate a Receiver gains after a knock-out).
+      const called = [...new Set(Object.keys(s.effects?.[slot] ?? {}).flatMap((k) => { const m = /^usedmove:([a-z0-9]+):([a-z0-9]+)$/.exec(k); return m && m[2] === s.moveId ? [m[1]] : []; }))];
+      const ownSideOut = called.length > 0 && called.every((m) => catalogs[c.game].get(m) !== "Status");
       for (const [key, mass] of Object.entries(s.effects?.[slot] ?? {})) {
         const cant = /^cant:(\w+)$/.exec(key)?.[1];
         if (cant && CANT[cant] && !(cant === "slp" && ["snore", "sleeptalk"].includes(s.moveId))) effects.push({ slot, on: "skipped", match: CANT[cant], chance: num(mass) });
@@ -231,6 +246,7 @@ for (const c of CASES) {
       if (disguised > 0) effects.push({ slot, on: "skipped", match: "hurts itself in confusion; disguise takes the hit", chance: num(disguised), flags: "i" });
       if (!status || L_MOVES.has(s.moveId)) continue;
       for (const [target, keys] of Object.entries(s.effects ?? {}) as [SlotId, Record<string, number>][]) {
+        if (ownSideOut && target.split("-")[0] === slot.split("-")[0]) continue;
         for (const [key, mass] of Object.entries(keys)) {
           const st = /^status:(\w+)$/.exec(key);
           const bo = /^boost:(\w+):(-?\d+)$/.exec(key);
@@ -438,7 +454,8 @@ async function input(c: Case): Promise<DoublesTurnInput> {
       action: { moveId, target: m.target ?? null },
       ...(state ? { carried: state } : {}),
       ...(m.lastMove !== undefined ? { lastMove: m.lastMove === null ? null : id(m.lastMove) } : {}),
-      ...(m.moves ? { moves: [...new Set([...(moveId ? [moveId] : []), ...m.moves.map(id)])] } : {}),
+      // status2 wave 2 (T2P-AST): a slot with exactMoves has exactly these Showdown slots, so Assist can read them.
+      ...(m.moves || m.exactMoves ? { moves: [...new Set([...(moveId ? [moveId] : []), ...(m.moves ?? []).map(id)])] } : {}),
       ...(m.switchIn ? { switchedIn: true as const } : {}),
       ...(m.earlierThisTurn && Object.keys(m.earlierThisTurn).length ? { earlierThisTurn: { ...m.earlierThisTurn } } : {}),
       ...(m.lastItem !== undefined ? { lastItem: m.lastItem === null ? null : id(m.lastItem) } : {}),
@@ -464,7 +481,7 @@ async function input(c: Case): Promise<DoublesTurnInput> {
   return turn;
 }
 const chanceOf = (facts: DoublesFact[], test: (text: string) => boolean) => facts.filter((f) => test(f.text)).reduce((s, f) => s + f.chance, 0);
-const HAZARD_KEYS: Record<string, keyof DoublesHazards> = { stealthrock: "stealthRock", spikes: "spikes", toxicspikes: "toxicSpikes", stickyweb: "stickyWeb", gmaxsteelsurge: "steelsurge" };
+const HAZARD_KEYS: Record<string, Exclude<keyof DoublesHazards, "order">> = { stealthrock: "stealthRock", spikes: "spikes", toxicspikes: "toxicSpikes", stickyweb: "stickyWeb", gmaxsteelsurge: "steelsurge" };
 /** status2 wave 2 (verify/app-turn.ts caseBenchInput): the bench members, the replacement and the hazards with their layers. */
 function benchInput(c: Case, runtime: BattleRuntime): Pick<DoublesTurnInput, "bench" | "replacement" | "hazards"> {
   const bench: Partial<Record<"own" | "opponent", DoublesBenchPokemon[]>> = {};
@@ -487,6 +504,8 @@ function benchInput(c: Case, runtime: BattleRuntime): Pick<DoublesTurnInput, "be
       else if (key === "toxicSpikes") out.toxicSpikes = s?.layers?.toxicSpikes ?? 1;
       else if (key) out[key] = true;
     }
+    // Review 2 (R7-2): the order they went up (the oracle adds them in the case's order).
+    if ((s?.hazards?.length ?? 0) > 1) out.order = [...s!.hazards!] as DoublesHazards["order"];
     if (Object.keys(out).length) hazards[sideId] = out;
   }
   return {
@@ -783,12 +802,30 @@ describe("the 2v2 turn against pinned Showdown", () => {
 // status2 (Track V1): the table in parts of at most 400 rows (one array literal of 1,400 object types is a union too complex
 // for tsc: TS2590).
 const PART = 400;
-const parts = Array.from({ length: Math.ceil(rows.length / PART) }, (_, i) => rows.slice(i * PART, (i + 1) * PART));
+let lines = rows.map((r) => ({ id: r.id, text: `  ${js(r)},` }));
+if (KEEP_ROWS) {
+  const loaded = new Set(CASES.map((c) => c.id)), at = new Map(lines.map((l, i) => [l.id, i]));
+  const out: typeof lines = [], done = new Set<string>();
+  let next = 0, stub = 0;
+  const upTo = (i: number) => { for (; next <= i; next++) if (!done.has(lines[next].id)) { out.push(lines[next]); done.add(lines[next].id); } };
+  for (const old of KEEP_ROWS) {
+    if (!loaded.has(old.id)) { out.push(old); done.add(old.id); stub++; continue; }
+    const i = at.get(old.id);
+    if (i === undefined) { console.log(`keep-rows: ${old.id} loads but has no row now (left out)`); continue; }
+    if (lines[i].text !== old.text) console.log(`keep-rows: ${old.id} has a different row now`);
+    upTo(i);
+  }
+  upTo(lines.length - 1);
+  const before = new Set(KEEP_ROWS.map((r) => r.id));
+  console.log(`keep-rows: ${KEEP_ROWS.length} rows before, ${stub} kept as they were (their case does not load), ${out.filter((l) => !before.has(l.id)).length} new`);
+  lines = out;
+}
+const parts = Array.from({ length: Math.ceil(lines.length / PART) }, (_, i) => lines.slice(i * PART, (i + 1) * PART));
 const table = `/** The oracle's cases (verify/cases.ts) with their expected values (verify/results/<id>.json), in parts of ${PART}. */
 ${parts.map((part, i) => `const CASES_${i + 1}: Case[] = [
-${part.map((r) => `  ${js(r)},`).join("\n")}
+${part.map((l) => l.text).join("\n")}
 ];
 `).join("")}const CASES: Case[] = [${parts.map((_, i) => `...CASES_${i + 1}`).join(", ")}];
 `;
 fs.writeFileSync(OUT, header + table + body);
-console.log(`wrote ${rows.length} cases to ${OUT}${agreeing && !all ? ` (${skipped} cases that do not agree with the app left out)` : ""}`);
+console.log(`wrote ${lines.length} cases to ${OUT}${agreeing && !all ? ` (${skipped} cases that do not agree with the app left out)` : ""}`);

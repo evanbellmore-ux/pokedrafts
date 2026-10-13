@@ -1,0 +1,824 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 123,
+    "maximum": 123
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 180,
+    "maximum": 180
+   },
+   "opponent-right": {
+    "hp": 260,
+    "maximum": 260
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "transform",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Ditto transforms into Kingler.",
+      "chance": 1
+     }
+    ]
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "xscissor",
+    "effectiveName": "Max Flutterby",
+    "effectiveType": "Bug",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 86,
+      "max": 102,
+      "minPercent": 36.59574468085106,
+      "maxPercent": 43.40425531914894,
+      "koChance": 0,
+      "row": {
+       "moveId": "xscissor",
+       "effectiveName": "Max Flutterby",
+       "effectiveType": "Bug",
+       "effectivePower": 130,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 86,
+       "max": 102,
+       "minPercent": 36.59574468085106,
+       "maxPercent": 43.40425531914894,
+       "rolls": [
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        92,
+        93,
+        94,
+        95,
+        96,
+        97,
+        98,
+        99,
+        100,
+        102
+       ],
+       "ohkoChance": 0,
+       "description": "Max Flutterby: 86–102 HP (36.6–43.4% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "One Max/G-Max attack."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "lowkick",
+    "order": [
+     {
+      "position": 3,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 40,
+      "max": 48,
+      "minPercent": 32.52032520325203,
+      "maxPercent": 39.02439024390244,
+      "koChance": 0,
+      "row": {
+       "moveId": "lowkick",
+       "effectiveName": "Low Kick",
+       "effectiveType": "Fighting",
+       "effectivePower": 80,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 40,
+       "max": 48,
+       "minPercent": 32.52032520325203,
+       "maxPercent": 39.02439024390244,
+       "rolls": [
+        40,
+        40,
+        40,
+        42,
+        42,
+        42,
+        43,
+        43,
+        43,
+        45,
+        45,
+        45,
+        46,
+        46,
+        46,
+        48
+       ],
+       "ohkoChance": 0,
+       "description": "Low Kick: 40–48 HP (32.5–39.0% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Move power: 80."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 123,
+    "maximum": 123,
+    "low": 83,
+    "average": 79.5,
+    "high": 75,
+    "min": 75,
+    "max": 83,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Transformed into Kingler.",
+      "chance": 1
+     }
+    ]
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 149,
+    "average": 141.4375,
+    "high": 133,
+    "min": 133,
+    "max": 149,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 180,
+    "maximum": 180,
+    "low": 180,
+    "average": 180,
+    "high": 180,
+    "min": 180,
+    "max": 180,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 260,
+    "maximum": 260,
+    "low": 260,
+    "average": 260,
+    "high": 260,
+    "min": 260,
+    "max": 260,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "lowkick",
+     "effectiveName": "Low Kick",
+     "effectiveType": "Fighting",
+     "effectivePower": 20,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 60,
+     "max": 72,
+     "minPercent": 48.78048780487805,
+     "maxPercent": 58.536585365853654,
+     "rolls": [
+      60,
+      60,
+      60,
+      62,
+      62,
+      62,
+      62,
+      66,
+      66,
+      66,
+      66,
+      68,
+      68,
+      68,
+      68,
+      72
+     ],
+     "ohkoChance": 0,
+     "description": "Low Kick: 60–72 HP (48.8–58.5% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Move power: 20."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 2,
+      "fasterChance": 0.87109375,
+      "limit": 32,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 123,
+      "low": 63,
+      "high": 51,
+      "average": 58.25,
+      "min": 51,
+      "max": 63,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 60,
+        "heals": []
+       },
+       "high": {
+        "dealt": 72,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "own-right",
+    "row": {
+     "moveId": "xscissor",
+     "effectiveName": "Max Flutterby",
+     "effectiveType": "Bug",
+     "effectivePower": 130,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 86,
+     "max": 102,
+     "minPercent": 36.59574468085106,
+     "maxPercent": 43.40425531914894,
+     "rolls": [
+      86,
+      87,
+      88,
+      89,
+      90,
+      91,
+      92,
+      93,
+      94,
+      95,
+      96,
+      97,
+      98,
+      99,
+      100,
+      102
+     ],
+     "ohkoChance": 0,
+     "description": "Max Flutterby: 86–102 HP (36.6–43.4% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "One Max/G-Max attack."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 3,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [
+       "Dynamax ends after 3 turns."
+      ],
+      "notes": [
+       "Assumes Dynamax started this turn."
+      ]
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 149,
+      "high": 133,
+      "average": 141.4375,
+      "min": 133,
+      "max": 149,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 86,
+        "heals": []
+       },
+       "high": {
+        "dealt": 102,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Dynamax started this turn."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 123,
+     "maximum": 123,
+     "low": 83,
+     "average": 79.5,
+     "high": 75,
+     "min": 75,
+     "max": 83,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Transformed into Kingler.",
+       "chance": 1
+      }
+     ]
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 149,
+     "average": 141.4375,
+     "high": 133,
+     "min": 133,
+     "max": 149,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 180,
+     "maximum": 180,
+     "low": 180,
+     "average": 180,
+     "high": 180,
+     "min": 180,
+     "max": 180,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 260,
+     "maximum": 260,
+     "low": 260,
+     "average": 260,
+     "high": 260,
+     "min": 260,
+     "max": 260,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 14.222215000001597,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 123,
+    "maximum": 123
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 180,
+    "maximum": 180
+   },
+   "opponent-right": {
+    "hp": 260,
+    "maximum": 260
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 75,
+        "chance": 0.0625
+       },
+       {
+        "hp": 77,
+        "chance": 0.1875
+       },
+       {
+        "hp": 78,
+        "chance": 0.1875
+       },
+       {
+        "hp": 80,
+        "chance": 0.1875
+       },
+       {
+        "hp": 81,
+        "chance": 0.1875
+       },
+       {
+        "hp": 83,
+        "chance": 0.1875
+       }
+      ],
+      "build": {
+       "speciesId": "kingler",
+       "nature": "Serious",
+       "abilityId": "hypercutter",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 1,
+        "spa": -1,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       },
+       "configuration": {
+        "gender": "N"
+       },
+       "transformedFrom": {
+        "speciesId": "ditto",
+        "baseHP": 48
+       },
+       "storedStats": {
+        "atk": 150,
+        "def": 135,
+        "spa": 70,
+        "spd": 70,
+        "spe": 95
+       },
+       "abilityChanged": true
+      },
+      "protected": false,
+      "moved": true,
+      "volatiles": [
+       "transform"
+      ],
+      "moves": [
+       "xscissor"
+      ]
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 133,
+        "chance": 0.0625
+       },
+       {
+        "hp": 135,
+        "chance": 0.0625
+       },
+       {
+        "hp": 136,
+        "chance": 0.0625
+       },
+       {
+        "hp": 137,
+        "chance": 0.0625
+       },
+       {
+        "hp": 138,
+        "chance": 0.0625
+       },
+       {
+        "hp": 139,
+        "chance": 0.0625
+       },
+       {
+        "hp": 140,
+        "chance": 0.0625
+       },
+       {
+        "hp": 141,
+        "chance": 0.0625
+       },
+       {
+        "hp": 142,
+        "chance": 0.0625
+       },
+       {
+        "hp": 143,
+        "chance": 0.0625
+       },
+       {
+        "hp": 144,
+        "chance": 0.0625
+       },
+       {
+        "hp": 145,
+        "chance": 0.0625
+       },
+       {
+        "hp": 146,
+        "chance": 0.0625
+       },
+       {
+        "hp": 147,
+        "chance": 0.0625
+       },
+       {
+        "hp": 148,
+        "chance": 0.0625
+       },
+       {
+        "hp": 149,
+        "chance": 0.0625
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": -1,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 180,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "conkeldurr",
+       "nature": "Brave",
+       "abilityId": "guts",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 0
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 260,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "kingler",
+       "nature": "Serious",
+       "abilityId": "hypercutter",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 1,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       },
+       "mechanic": "gigantamax",
+       "configuration": {
+        "dynamaxLevel": 10,
+        "gigantamax": true
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

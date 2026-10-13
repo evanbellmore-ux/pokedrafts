@@ -1,0 +1,702 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 10,
+    "maximum": 175
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "uturn",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 34,
+      "max": 40,
+      "minPercent": 18.579234972677597,
+      "maxPercent": 21.85792349726776,
+      "koChance": 0,
+      "row": {
+       "moveId": "uturn",
+       "effectiveName": "U-turn",
+       "effectiveType": "Bug",
+       "effectivePower": 70,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 34,
+       "max": 40,
+       "minPercent": 18.579234972677597,
+       "maxPercent": 21.85792349726776,
+       "rolls": [
+        34,
+        34,
+        34,
+        35,
+        35,
+        36,
+        36,
+        36,
+        37,
+        37,
+        38,
+        38,
+        38,
+        39,
+        39,
+        40
+       ],
+       "ohkoChance": 0,
+       "description": "U-turn: 34–40 HP (18.6–21.9% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Rillaboom faints (Rough Skin).",
+      "chance": 1
+     }
+    ]
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "bodyslam",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 57,
+      "max": 68,
+      "minPercent": 24.25531914893617,
+      "maxPercent": 28.936170212765955,
+      "koChance": 0,
+      "row": {
+       "moveId": "bodyslam",
+       "effectiveName": "Body Slam",
+       "effectiveType": "Normal",
+       "effectivePower": 85,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 57,
+       "max": 68,
+       "minPercent": 24.25531914893617,
+       "maxPercent": 28.936170212765955,
+       "rolls": [
+        57,
+        58,
+        59,
+        59,
+        60,
+        61,
+        61,
+        62,
+        63,
+        63,
+        64,
+        65,
+        65,
+        66,
+        67,
+        68
+       ],
+       "ohkoChance": 0,
+       "description": "Body Slam: 57–68 HP (24.3–28.9% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Rillaboom fainted: Body Slam hits Snorlax (yours).",
+      "chance": 1
+     }
+    ]
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 10,
+    "maximum": 175,
+    "low": 0,
+    "average": 0,
+    "high": 0,
+    "min": 0,
+    "max": 0,
+    "koChance": 1,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 178,
+    "average": 172.625,
+    "high": 167,
+    "min": 167,
+    "max": 178,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 183,
+    "maximum": 183,
+    "low": 149,
+    "average": 146.375,
+    "high": 143,
+    "min": 143,
+    "max": 149,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "uturn",
+     "effectiveName": "U-turn",
+     "effectiveType": "Bug",
+     "effectivePower": 70,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 34,
+     "max": 40,
+     "minPercent": 18.579234972677597,
+     "maxPercent": 21.85792349726776,
+     "rolls": [
+      34,
+      34,
+      34,
+      35,
+      35,
+      36,
+      36,
+      36,
+      37,
+      37,
+      38,
+      38,
+      38,
+      39,
+      39,
+      40
+     ],
+     "ohkoChance": 0,
+     "description": "U-turn: 34–40 HP (18.6–21.9% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": null,
+      "fewest": null,
+      "faintsFirst": true,
+      "limit": 20,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [],
+      "attackerFaints": {
+       "lowest": 1,
+       "highest": 1
+      }
+     },
+     "afterUse": {
+      "start": 183,
+      "low": 149,
+      "high": 143,
+      "average": 146.375,
+      "min": 143,
+      "max": 149,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 34,
+        "heals": []
+       },
+       "high": {
+        "dealt": 40,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "bodyslam",
+     "effectiveName": "Body Slam",
+     "effectiveType": "Normal",
+     "effectivePower": 85,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 45,
+     "max": 53,
+     "minPercent": 25.71428571428571,
+     "maxPercent": 30.28571428571429,
+     "rolls": [
+      45,
+      45,
+      46,
+      46,
+      47,
+      47,
+      48,
+      48,
+      49,
+      49,
+      50,
+      50,
+      51,
+      51,
+      52,
+      53
+     ],
+     "ohkoChance": 1,
+     "description": "Body Slam: 45–53 HP (25.7–30.3% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 1,
+      "fewest": 1,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 10,
+      "low": 0,
+      "high": 0,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "koChance": 1,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 10,
+        "heals": []
+       },
+       "high": {
+        "dealt": 10,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Rillaboom has not used Minimize."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 10,
+     "maximum": 175,
+     "low": 0,
+     "average": 0,
+     "high": 0,
+     "min": 0,
+     "max": 0,
+     "koChance": 1,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 178,
+     "average": 172.625,
+     "high": 167,
+     "min": 167,
+     "max": 178,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 183,
+     "maximum": 183,
+     "low": 149,
+     "average": 146.375,
+     "high": 143,
+     "min": 143,
+     "max": 149,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 12.835907000000589,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 10,
+    "maximum": 175
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 0,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "rillaboom",
+       "nature": "Serious",
+       "abilityId": "overgrow",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 32
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 167,
+        "chance": 0.0625
+       },
+       {
+        "hp": 168,
+        "chance": 0.0625
+       },
+       {
+        "hp": 169,
+        "chance": 0.0625
+       },
+       {
+        "hp": 170,
+        "chance": 0.125
+       },
+       {
+        "hp": 171,
+        "chance": 0.0625
+       },
+       {
+        "hp": 172,
+        "chance": 0.125
+       },
+       {
+        "hp": 173,
+        "chance": 0.0625
+       },
+       {
+        "hp": 174,
+        "chance": 0.125
+       },
+       {
+        "hp": 175,
+        "chance": 0.0625
+       },
+       {
+        "hp": 176,
+        "chance": 0.125
+       },
+       {
+        "hp": 177,
+        "chance": 0.0625
+       },
+       {
+        "hp": 178,
+        "chance": 0.0625
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 1
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 143,
+        "chance": 0.0625
+       },
+       {
+        "hp": 144,
+        "chance": 0.125
+       },
+       {
+        "hp": 145,
+        "chance": 0.1875
+       },
+       {
+        "hp": 146,
+        "chance": 0.125
+       },
+       {
+        "hp": 147,
+        "chance": 0.1875
+       },
+       {
+        "hp": 148,
+        "chance": 0.125
+       },
+       {
+        "hp": 149,
+        "chance": 0.1875
+       }
+      ],
+      "build": {
+       "speciesId": "garchomp",
+       "nature": "Serious",
+       "abilityId": "roughskin",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 3
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 1
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

@@ -1,0 +1,1162 @@
+{
+ "rows": [
+  {
+   "gate": "Legality (open)",
+   "threshold": "0 exceptions/issues/fallbacks/errors; all end < turn 200",
+   "result": "0 errors, 0 engine issues, 0 fallbacks, 0 capped (n=2600)",
+   "status": "pass"
+  },
+  {
+   "gate": "Legality (closed)",
+   "threshold": "0 exceptions/issues/fallbacks/errors; all end < turn 200",
+   "result": "0 errors, 0 engine issues, 0 fallbacks, 0 capped (n=200)",
+   "status": "pass"
+  },
+  {
+   "gate": "Legality (perfect)",
+   "threshold": "0 exceptions/issues/fallbacks/errors; all end < turn 200",
+   "result": "0 errors, 0 engine issues, 0 fallbacks, 0 capped (n=400)",
+   "status": "pass"
+  },
+  {
+   "gate": "Plays safe vs RandomLegal",
+   "threshold": "≥ 90% (Wilson low ≥ 85%)",
+   "result": "99.0% [96.4%, 99.7%] n=200",
+   "status": "pass"
+  },
+  {
+   "gate": "Plays safe vs MaxDamage",
+   "threshold": "≥ 60%",
+   "result": "62.0% [57.2%, 66.6%] n=400",
+   "status": "pass"
+  },
+  {
+   "gate": "Reads you vs MaxDamage",
+   "threshold": "≥ 60%",
+   "result": "74.0% [69.5%, 78.1%] n=400",
+   "status": "pass"
+  },
+  {
+   "gate": "Reads you − Plays safe, both vs HabitBot",
+   "threshold": "≥ +5 points (same seeds)",
+   "result": "3.3 pts [-0.7, 7.2] n=400",
+   "status": "fail"
+  },
+  {
+   "gate": "Self-play, Plays safe both seats",
+   "threshold": "p2 50% ± 7",
+   "result": "48.5% [41.7%, 55.4%] n=200",
+   "status": "pass"
+  },
+  {
+   "gate": "Closed team sheets: Plays safe vs RandomLegal",
+   "threshold": "≥ 85%",
+   "result": "99.0% [96.4%, 99.7%] n=200",
+   "status": "pass"
+  },
+  {
+   "gate": "Information cost: open vs perfect (vs MaxDamage)",
+   "threshold": "open ≥ perfect − 10 points",
+   "result": "open 62.0% perfect 66.8%; -4.8 pts [-9.0, -0.5] n=400",
+   "status": "pass"
+  },
+  {
+   "gate": "Turn decision time (Node, worst run)",
+   "threshold": "p50 ≤ 400, p95 ≤ 800, max ≤ 2,000 ms",
+   "result": "p50 1861 ms p95 4507 ms max 10311 ms (n=16058)",
+   "status": "fail"
+  },
+  {
+   "gate": "Preview / replacement time",
+   "threshold": "p95 ≤ 150 / ≤ 60 ms",
+   "result": "259 ms / 65 ms",
+   "status": "fail"
+  },
+  {
+   "gate": "Belief update per turn",
+   "threshold": "p95 ≤ 30 ms (closed), ≤ 8 ms (open)",
+   "result": "closed 111 ms, open 44 ms",
+   "status": "fail"
+  },
+  {
+   "gate": "Work budget per decision",
+   "threshold": "engine ≤ 240, rollouts ≤ 160, builds ≤ 4",
+   "result": "engine 240, rollouts 160, builds 4",
+   "status": "pass"
+  },
+  {
+   "gate": "Dropped cells (deterministic)",
+   "threshold": "0",
+   "result": "0",
+   "status": "pass"
+  },
+  {
+   "gate": "Cell methods on pool S (soft)",
+   "threshold": "engine + prelude ≥ 80%",
+   "result": "100.0% of 23262",
+   "status": "pass"
+  },
+  {
+   "gate": "Exploitability",
+   "threshold": "p95 ≤ 2% of the matrix spread",
+   "result": "0.01%",
+   "status": "pass"
+  },
+  {
+   "gate": "Determinism",
+   "threshold": "20 battles rerun, identical choice-log hashes",
+   "result": "20/20",
+   "status": "pass"
+  },
+  {
+   "gate": "A1.4 status moves used (pool U)",
+   "threshold": "Tailwind, Trick Room, Follow Me, Rage Powder each chosen on some turns",
+   "result": "chosen turns {\"tailwind\":42,\"trickroom\":13,\"followme\":5,\"ragepowder\":1} of usable turns {\"tailwind\":185,\"trickroom\":48,\"followme\":38,\"ragepowder\":1}",
+   "status": "pass",
+   "detail": ""
+  },
+  {
+   "gate": "A1.5 Mega-now-worse positions: keeps",
+   "threshold": "Mega in < 50% of samples, each",
+   "result": "K1-charizard-x-ground 0.0% [0.0%, 8.8%] n=40; K2-gyarados-fighting 0.0% [0.0%, 8.8%] n=40; K3-garchomp-speed 0.0% [0.0%, 8.8%] n=40; K4-charizard-y-sun-feeds-fire 0.0% [0.0%, 8.8%] n=40",
+   "status": "pass"
+  },
+  {
+   "gate": "A1.5 KO-race positions: Mega Evolves with the KO move",
+   "threshold": "Mega + the race's move in > 50% of samples, each",
+   "result": "R1-charizard-y-double-ko 100.0% [91.2%, 100.0%] n=40; R2-gengar-speed 100.0% [91.2%, 100.0%] n=40",
+   "status": "pass"
+  },
+  {
+   "gate": "A1.5 per-turn vs first-chance Mega (vs MaxDamage)",
+   "threshold": "per-turn ≥ first-chance − 2 points",
+   "result": "per-turn 62.0% first-chance 62.5%; -0.5 pts [-2.9, 1.9] n=400",
+   "status": "pass"
+  }
+ ],
+ "runs": {
+  "safe-random-open": {
+   "spec": {
+    "name": "safe-random-open",
+    "p2": "safe",
+    "p1": "random",
+    "battles": 200,
+    "pools": "S,V",
+    "info": "open",
+    "run": "s1-step1"
+   },
+   "n": 200,
+   "winRate": {
+    "estimate": 0.99,
+    "low": 0.9642782382838231,
+    "high": 0.9972533418664555,
+    "n": 200
+   },
+   "record": {
+    "wins": 198,
+    "losses": 2,
+    "ties": 0
+   },
+   "turnsPerBattle": 5.395,
+   "capped": 0,
+   "time": {
+    "turn": {
+     "p50": 1476.8189589999965,
+     "p95": 3065.230368000004,
+     "max": 6211.662812000002,
+     "n": 1079
+    },
+    "preview": {
+     "p95": 192.8782390000124,
+     "n": 200
+    },
+    "switch": {
+     "p95": 55.31471099999908,
+     "n": 114
+    },
+    "belief": {
+     "p95": 32.210350000008475
+    }
+   },
+   "budget": {
+    "engineCalls": 210,
+    "rolloutSamples": 144,
+    "builds": 4
+   },
+   "methods": {
+    "engine": 30548,
+    "prelude": 30193,
+    "rollout": 215,
+    "dropped": 0
+   },
+   "cells": 60956,
+   "enginePreludeShare": 0.9964728656736006,
+   "exploitability": {
+    "p95": 0.00008141691138627615,
+    "max": 0.0002515864926351858
+   },
+   "valve": 0,
+   "engineIssues": 0,
+   "approximations": [],
+   "errors": [],
+   "recoveries": [],
+   "fallbacks": 0,
+   "status": {
+    "held": {
+     "followme": 33,
+     "trickroom": 39,
+     "tailwind": 67,
+     "ragepowder": 20
+    },
+    "available": {
+     "trickroom": 60,
+     "followme": 54,
+     "tailwind": 119,
+     "ragepowder": 5
+    },
+    "chosen": {
+     "followme": 8,
+     "tailwind": 18,
+     "trickroom": 8,
+     "ragepowder": 2
+    },
+    "optionsIts": 1.4050046339202966
+   },
+   "mega": {
+    "turns": 177,
+    "megaShare": 0.8033504187915298,
+    "evolved": 143
+   },
+   "engineSeat": true
+  },
+  "safe-maxdamage-open": {
+   "spec": {
+    "name": "safe-maxdamage-open",
+    "p2": "safe",
+    "p1": "maxdamage",
+    "battles": 400,
+    "pools": "S,V",
+    "info": "open",
+    "run": "s1-step1"
+   },
+   "n": 400,
+   "winRate": {
+    "estimate": 0.62,
+    "low": 0.5715045437377642,
+    "high": 0.6662125056220047,
+    "n": 400
+   },
+   "record": {
+    "wins": 248,
+    "losses": 152,
+    "ties": 0
+   },
+   "turnsPerBattle": 4.8275,
+   "capped": 0,
+   "time": {
+    "turn": {
+     "p50": 1265.0216329999967,
+     "p95": 3078.467665999997,
+     "max": 5192.623121999997,
+     "n": 1931
+    },
+    "preview": {
+     "p95": 179.52014899999995,
+     "n": 400
+    },
+    "switch": {
+     "p95": 45.50711999999476,
+     "n": 594
+    },
+    "belief": {
+     "p95": 33.03290500000003
+    }
+   },
+   "budget": {
+    "engineCalls": 221,
+    "rolloutSamples": 160,
+    "builds": 4
+   },
+   "methods": {
+    "engine": 52636,
+    "prelude": 53047,
+    "rollout": 236,
+    "dropped": 0
+   },
+   "cells": 105919,
+   "enginePreludeShare": 0.9977718822874083,
+   "exploitability": {
+    "p95": 0.00007766109943852641,
+    "max": 0.00029559399172894037
+   },
+   "valve": 0,
+   "engineIssues": 0,
+   "approximations": [],
+   "errors": [],
+   "recoveries": [],
+   "fallbacks": 0,
+   "status": {
+    "held": {
+     "followme": 63,
+     "trickroom": 85,
+     "tailwind": 144,
+     "ragepowder": 45
+    },
+    "available": {
+     "trickroom": 119,
+     "followme": 100,
+     "tailwind": 255,
+     "ragepowder": 9
+    },
+    "chosen": {
+     "tailwind": 47,
+     "trickroom": 25,
+     "followme": 24,
+     "ragepowder": 3
+    },
+    "optionsIts": 1.4396685655100985
+   },
+   "mega": {
+    "turns": 379,
+    "megaShare": 0.8053344432124953,
+    "evolved": 306
+   },
+   "engineSeat": true
+  },
+  "reads-maxdamage-open": {
+   "spec": {
+    "name": "reads-maxdamage-open",
+    "p2": "reads",
+    "p1": "maxdamage",
+    "battles": 400,
+    "pools": "S,V",
+    "info": "open",
+    "run": "s1-step1"
+   },
+   "n": 400,
+   "winRate": {
+    "estimate": 0.74,
+    "low": 0.6948757457668063,
+    "high": 0.7805583529527312,
+    "n": 400
+   },
+   "record": {
+    "wins": 296,
+    "losses": 104,
+    "ties": 0
+   },
+   "turnsPerBattle": 4.505,
+   "capped": 0,
+   "time": {
+    "turn": {
+     "p50": 1379.904402999964,
+     "p95": 3089.49987900001,
+     "max": 4968.787791999988,
+     "n": 1802
+    },
+    "preview": {
+     "p95": 175.61995600000228,
+     "n": 400
+    },
+    "switch": {
+     "p95": 44.60527000000002,
+     "n": 535
+    },
+    "belief": {
+     "p95": 35.649105000004056
+    }
+   },
+   "budget": {
+    "engineCalls": 221,
+    "rolloutSamples": 160,
+    "builds": 4
+   },
+   "methods": {
+    "engine": 48704,
+    "prelude": 52518,
+    "rollout": 247,
+    "dropped": 0
+   },
+   "cells": 101469,
+   "enginePreludeShare": 0.9975657590002858,
+   "exploitability": {
+    "p95": 0.000076474559391133,
+    "max": 0.0002896627407031782
+   },
+   "valve": 0,
+   "engineIssues": 0,
+   "approximations": [],
+   "errors": [],
+   "recoveries": [],
+   "fallbacks": 0,
+   "status": {
+    "held": {
+     "followme": 63,
+     "trickroom": 85,
+     "tailwind": 144,
+     "ragepowder": 45
+    },
+    "available": {
+     "followme": 78,
+     "trickroom": 116,
+     "tailwind": 194,
+     "ragepowder": 12
+    },
+    "chosen": {
+     "trickroom": 20,
+     "tailwind": 29,
+     "followme": 16,
+     "ragepowder": 3
+    },
+    "optionsIts": 1.3035516093229744
+   },
+   "mega": {
+    "turns": 369,
+    "megaShare": 0.8180142642830994,
+    "evolved": 301
+   },
+   "engineSeat": true
+  },
+  "safe-habitbot-open": {
+   "spec": {
+    "name": "safe-habitbot-open",
+    "p2": "safe",
+    "p1": "habitbot",
+    "battles": 400,
+    "pools": "S,V",
+    "info": "open",
+    "run": "s1-step1"
+   },
+   "n": 400,
+   "winRate": {
+    "estimate": 0.71,
+    "low": 0.6637014956653163,
+    "high": 0.7523033407142791,
+    "n": 400
+   },
+   "record": {
+    "wins": 284,
+    "losses": 116,
+    "ties": 0
+   },
+   "turnsPerBattle": 5.24,
+   "capped": 0,
+   "time": {
+    "turn": {
+     "p50": 1322.5472350000055,
+     "p95": 3043.913894000012,
+     "max": 6165.301564999998,
+     "n": 2096
+    },
+    "preview": {
+     "p95": 169.79102499998407,
+     "n": 400
+    },
+    "switch": {
+     "p95": 45.43806399998721,
+     "n": 579
+    },
+    "belief": {
+     "p95": 33.43453600000066
+    }
+   },
+   "budget": {
+    "engineCalls": 221,
+    "rolloutSamples": 160,
+    "builds": 4
+   },
+   "methods": {
+    "engine": 60691,
+    "prelude": 55791,
+    "rollout": 173,
+    "dropped": 0
+   },
+   "cells": 116655,
+   "enginePreludeShare": 0.9985169945565985,
+   "exploitability": {
+    "p95": 0.00007527243447806424,
+    "max": 0.0004944905545631646
+   },
+   "valve": 0,
+   "engineIssues": 0,
+   "approximations": [],
+   "errors": [],
+   "recoveries": [],
+   "fallbacks": 0,
+   "status": {
+    "held": {
+     "followme": 63,
+     "trickroom": 85,
+     "tailwind": 144,
+     "ragepowder": 45
+    },
+    "available": {
+     "trickroom": 152,
+     "followme": 91,
+     "tailwind": 259,
+     "ragepowder": 17
+    },
+    "chosen": {
+     "tailwind": 49,
+     "trickroom": 37,
+     "followme": 20,
+     "ragepowder": 2
+    },
+    "optionsIts": 1.4413167938931297
+   },
+   "mega": {
+    "turns": 387,
+    "megaShare": 0.7894782623486009,
+    "evolved": 305
+   },
+   "engineSeat": true
+  },
+  "reads-habitbot-open": {
+   "spec": {
+    "name": "reads-habitbot-open",
+    "p2": "reads",
+    "p1": "habitbot",
+    "battles": 400,
+    "pools": "S,V",
+    "info": "open",
+    "run": "s1-step1"
+   },
+   "n": 400,
+   "winRate": {
+    "estimate": 0.7425,
+    "low": 0.697484812382584,
+    "high": 0.7829017248652822,
+    "n": 400
+   },
+   "record": {
+    "wins": 297,
+    "losses": 103,
+    "ties": 0
+   },
+   "turnsPerBattle": 5.045,
+   "capped": 0,
+   "time": {
+    "turn": {
+     "p50": 1320.7711879999842,
+     "p95": 3030.540538000001,
+     "max": 5306.861510000001,
+     "n": 2018
+    },
+    "preview": {
+     "p95": 172.06727300000057,
+     "n": 400
+    },
+    "switch": {
+     "p95": 44.910968999989564,
+     "n": 536
+    },
+    "belief": {
+     "p95": 34.65747900004499
+    }
+   },
+   "budget": {
+    "engineCalls": 221,
+    "rolloutSamples": 160,
+    "builds": 4
+   },
+   "methods": {
+    "engine": 57004,
+    "prelude": 54774,
+    "rollout": 196,
+    "dropped": 0
+   },
+   "cells": 111974,
+   "enginePreludeShare": 0.9982495936556701,
+   "exploitability": {
+    "p95": 0.00007538816136224887,
+    "max": 0.00036987521168848866
+   },
+   "valve": 0,
+   "engineIssues": 0,
+   "approximations": [],
+   "errors": [],
+   "recoveries": [],
+   "fallbacks": 0,
+   "status": {
+    "held": {
+     "followme": 63,
+     "trickroom": 85,
+     "tailwind": 144,
+     "ragepowder": 45
+    },
+    "available": {
+     "followme": 108,
+     "tailwind": 221,
+     "trickroom": 123,
+     "ragepowder": 14
+    },
+    "chosen": {
+     "tailwind": 38,
+     "followme": 20,
+     "trickroom": 23,
+     "ragepowder": 4
+    },
+    "optionsIts": 1.4514370664023786
+   },
+   "mega": {
+    "turns": 375,
+    "megaShare": 0.779505703424861,
+    "evolved": 294
+   },
+   "engineSeat": true
+  },
+  "safe-safe-open": {
+   "spec": {
+    "name": "safe-safe-open",
+    "p2": "safe",
+    "p1": "safe",
+    "battles": 200,
+    "pools": "S,V",
+    "info": "open",
+    "run": "s1-step1"
+   },
+   "n": 200,
+   "winRate": {
+    "estimate": 0.485,
+    "low": 0.41667385171877513,
+    "high": 0.5538915080725428,
+    "n": 200
+   },
+   "record": {
+    "wins": 97,
+    "losses": 103,
+    "ties": 0
+   },
+   "turnsPerBattle": 5.845,
+   "capped": 0,
+   "time": {
+    "turn": {
+     "p50": 1314.4510250000167,
+     "p95": 2957.872690999997,
+     "max": 10310.551006999998,
+     "n": 1169
+    },
+    "preview": {
+     "p95": 188.69242499999973,
+     "n": 200
+    },
+    "switch": {
+     "p95": 54.37856099999044,
+     "n": 303
+    },
+    "belief": {
+     "p95": 30.62989200001175
+    }
+   },
+   "budget": {
+    "engineCalls": 240,
+    "rolloutSamples": 144,
+    "builds": 4
+   },
+   "methods": {
+    "engine": 33442,
+    "prelude": 31254,
+    "rollout": 573,
+    "dropped": 0
+   },
+   "cells": 65269,
+   "enginePreludeShare": 0.9912209471571496,
+   "exploitability": {
+    "p95": 0.00007635476713935754,
+    "max": 0.00024461205108995644
+   },
+   "valve": 0,
+   "engineIssues": 0,
+   "approximations": [],
+   "errors": [],
+   "recoveries": [],
+   "fallbacks": 0,
+   "status": {
+    "held": {
+     "followme": 33,
+     "trickroom": 39,
+     "tailwind": 67,
+     "ragepowder": 20
+    },
+    "available": {
+     "trickroom": 94,
+     "followme": 65,
+     "tailwind": 140,
+     "ragepowder": 5
+    },
+    "chosen": {
+     "followme": 9,
+     "tailwind": 23,
+     "trickroom": 17,
+     "ragepowder": 2
+    },
+    "optionsIts": 1.583404619332763
+   },
+   "mega": {
+    "turns": 195,
+    "megaShare": 0.777639151776781,
+    "evolved": 154
+   },
+   "engineSeat": true
+  },
+  "safe-random-closed": {
+   "spec": {
+    "name": "safe-random-closed",
+    "p2": "safe",
+    "p1": "random",
+    "battles": 200,
+    "pools": "S,V",
+    "info": "closed",
+    "run": "s1-step1"
+   },
+   "n": 200,
+   "winRate": {
+    "estimate": 0.99,
+    "low": 0.9642782382838231,
+    "high": 0.9972533418664555,
+    "n": 200
+   },
+   "record": {
+    "wins": 198,
+    "losses": 2,
+    "ties": 0
+   },
+   "turnsPerBattle": 5.715,
+   "capped": 0,
+   "time": {
+    "turn": {
+     "p50": 1576.2340369999984,
+     "p95": 3427.693446999998,
+     "max": 6479.230208,
+     "n": 1143
+    },
+    "preview": {
+     "p95": 225.15490999999975,
+     "n": 200
+    },
+    "switch": {
+     "p95": 65.38488899999356,
+     "n": 115
+    },
+    "belief": {
+     "p95": 111.3878990000012
+    }
+   },
+   "budget": {
+    "engineCalls": 240,
+    "rolloutSamples": 52,
+    "builds": 4
+   },
+   "methods": {
+    "engine": 34175,
+    "prelude": 32066,
+    "rollout": 77,
+    "dropped": 0
+   },
+   "cells": 66318,
+   "enginePreludeShare": 0.9988389275913026,
+   "exploitability": {
+    "p95": 0.00007701890979132756,
+    "max": 0.00022963801129816458
+   },
+   "valve": 0,
+   "engineIssues": 0,
+   "approximations": [
+    [
+     "A rollout stopped early.",
+     2
+    ]
+   ],
+   "errors": [],
+   "recoveries": [],
+   "fallbacks": 0,
+   "status": {
+    "held": {
+     "followme": 33,
+     "trickroom": 39,
+     "tailwind": 67,
+     "ragepowder": 20
+    },
+    "available": {
+     "followme": 63,
+     "trickroom": 47,
+     "tailwind": 166,
+     "ragepowder": 4
+    },
+    "chosen": {
+     "followme": 14,
+     "trickroom": 8,
+     "tailwind": 37
+    },
+    "optionsIts": 1.4068241469816274
+   },
+   "mega": {
+    "turns": 200,
+    "megaShare": 0.724186396341143,
+    "evolved": 141
+   },
+   "engineSeat": true
+  },
+  "safe-maxdamage-perfect": {
+   "spec": {
+    "name": "safe-maxdamage-perfect",
+    "p2": "safe",
+    "p1": "maxdamage",
+    "battles": 400,
+    "pools": "S,V",
+    "info": "perfect",
+    "run": "s1-step1"
+   },
+   "n": 400,
+   "winRate": {
+    "estimate": 0.6675,
+    "low": 0.6199313395835853,
+    "high": 0.7118820418144254,
+    "n": 400
+   },
+   "record": {
+    "wins": 267,
+    "losses": 133,
+    "ties": 0
+   },
+   "turnsPerBattle": 4.78,
+   "capped": 0,
+   "time": {
+    "turn": {
+     "p50": 1422.2071699999797,
+     "p95": 3379.926405999984,
+     "max": 6068.578817,
+     "n": 1912
+    },
+    "preview": {
+     "p95": 187.29552099999273,
+     "n": 400
+    },
+    "switch": {
+     "p95": 47.98573399998713,
+     "n": 600
+    },
+    "belief": {
+     "p95": 1.0197109999999157
+    }
+   },
+   "budget": {
+    "engineCalls": 212,
+    "rolloutSamples": 160,
+    "builds": 4
+   },
+   "methods": {
+    "engine": 50962,
+    "prelude": 53813,
+    "rollout": 232,
+    "dropped": 0
+   },
+   "cells": 105007,
+   "enginePreludeShare": 0.997790623482244,
+   "exploitability": {
+    "p95": 0.00007543297764393295,
+    "max": 0.0004373170299921574
+   },
+   "valve": 0,
+   "engineIssues": 0,
+   "approximations": [],
+   "errors": [],
+   "recoveries": [],
+   "fallbacks": 0,
+   "status": {
+    "held": {
+     "followme": 63,
+     "trickroom": 85,
+     "tailwind": 144,
+     "ragepowder": 45
+    },
+    "available": {
+     "trickroom": 128,
+     "followme": 100,
+     "tailwind": 225,
+     "ragepowder": 13
+    },
+    "chosen": {
+     "tailwind": 47,
+     "trickroom": 23,
+     "followme": 20,
+     "ragepowder": 2
+    },
+    "optionsIts": 1.4466527196652719
+   },
+   "mega": {
+    "turns": 393,
+    "megaShare": 0.7684367212843376,
+    "evolved": 305
+   },
+   "engineSeat": true
+  },
+  "safefirst-maxdamage-open": {
+   "spec": {
+    "name": "safefirst-maxdamage-open",
+    "p2": "safe-first",
+    "p1": "maxdamage",
+    "battles": 400,
+    "pools": "S,V",
+    "info": "open",
+    "run": "s1-step1"
+   },
+   "n": 400,
+   "winRate": {
+    "estimate": 0.625,
+    "low": 0.5765790058795889,
+    "high": 0.671042920536837,
+    "n": 400
+   },
+   "record": {
+    "wins": 250,
+    "losses": 150,
+    "ties": 0
+   },
+   "turnsPerBattle": 4.7525,
+   "capped": 0,
+   "time": {
+    "turn": {
+     "p50": 1306.6313979999977,
+     "p95": 2737.5494449999997,
+     "max": 5396.240365,
+     "n": 1901
+    },
+    "preview": {
+     "p95": 196.9501889999956,
+     "n": 400
+    },
+    "switch": {
+     "p95": 46.54477400000178,
+     "n": 587
+    },
+    "belief": {
+     "p95": 36.456898000004
+    }
+   },
+   "budget": {
+    "engineCalls": 206,
+    "rolloutSamples": 160,
+    "builds": 4
+   },
+   "methods": {
+    "engine": 45363,
+    "prelude": 50203,
+    "rollout": 220,
+    "dropped": 0
+   },
+   "cells": 95786,
+   "enginePreludeShare": 0.9977032134132336,
+   "exploitability": {
+    "p95": 0.00007722510041184586,
+    "max": 0.0003140453380990066
+   },
+   "valve": 0,
+   "engineIssues": 0,
+   "approximations": [],
+   "errors": [],
+   "recoveries": [],
+   "fallbacks": 0,
+   "status": {
+    "held": {
+     "followme": 63,
+     "trickroom": 85,
+     "tailwind": 144,
+     "ragepowder": 45
+    },
+    "available": {
+     "trickroom": 114,
+     "followme": 99,
+     "tailwind": 262,
+     "ragepowder": 10
+    },
+    "chosen": {
+     "tailwind": 46,
+     "trickroom": 26,
+     "followme": 18,
+     "ragepowder": 2
+    },
+    "optionsIts": 1.3719095213045764
+   },
+   "mega": {
+    "turns": 360,
+    "megaShare": 0.9227287782892606,
+    "evolved": 334
+   },
+   "engineSeat": true
+  },
+  "safe-maxdamage-usage": {
+   "spec": {
+    "name": "safe-maxdamage-usage",
+    "p2": "safe",
+    "p1": "maxdamage",
+    "battles": 100,
+    "pools": "U",
+    "info": "open",
+    "run": "s1-step1"
+   },
+   "n": 100,
+   "winRate": {
+    "estimate": 0.71,
+    "low": 0.6146110882442888,
+    "high": 0.7898516425087772,
+    "n": 100
+   },
+   "record": {
+    "wins": 71,
+    "losses": 29,
+    "ties": 0
+   },
+   "turnsPerBattle": 5.83,
+   "capped": 0,
+   "time": {
+    "turn": {
+     "p50": 1378.2725530000025,
+     "p95": 3113.8597609999997,
+     "max": 4780.557019,
+     "n": 583
+    },
+    "preview": {
+     "p95": 179.7304750000003,
+     "n": 100
+    },
+    "switch": {
+     "p95": 45.5311270000002,
+     "n": 149
+    },
+    "belief": {
+     "p95": 44.04661499999929
+    }
+   },
+   "budget": {
+    "engineCalls": 195,
+    "rolloutSamples": 0,
+    "builds": 4
+   },
+   "methods": {
+    "engine": 16690,
+    "prelude": 14173,
+    "rollout": 0,
+    "dropped": 0
+   },
+   "cells": 30863,
+   "enginePreludeShare": 1,
+   "exploitability": {
+    "p95": 0.00009174588616146728,
+    "max": 0.00021346056563752118
+   },
+   "valve": 0,
+   "engineIssues": 0,
+   "approximations": [],
+   "errors": [],
+   "recoveries": [],
+   "fallbacks": 0,
+   "status": {
+    "held": {
+     "tailwind": 83,
+     "ragepowder": 36,
+     "trickroom": 64,
+     "followme": 36
+    },
+    "available": {
+     "tailwind": 185,
+     "trickroom": 48,
+     "followme": 38,
+     "ragepowder": 1
+    },
+    "chosen": {
+     "tailwind": 42,
+     "trickroom": 13,
+     "followme": 5,
+     "ragepowder": 1
+    },
+    "optionsIts": 1.7615780445969125
+   },
+   "mega": {
+    "turns": 103,
+    "megaShare": 0.7157618948012487,
+    "evolved": 74
+   },
+   "engineSeat": true
+  },
+  "safe-maxdamage-suggested": {
+   "spec": {
+    "name": "safe-maxdamage-suggested",
+    "p2": "safe",
+    "p1": "maxdamage",
+    "battles": 100,
+    "pools": "S",
+    "info": "open",
+    "run": "s1-step1"
+   },
+   "n": 100,
+   "winRate": {
+    "estimate": 0.68,
+    "low": 0.5833738138954762,
+    "high": 0.7633085267500092,
+    "n": 100
+   },
+   "record": {
+    "wins": 68,
+    "losses": 32,
+    "ties": 0
+   },
+   "turnsPerBattle": 4.24,
+   "capped": 0,
+   "time": {
+    "turn": {
+     "p50": 1860.571763,
+     "p95": 4507.407622999999,
+     "max": 7504.068796,
+     "n": 424
+    },
+    "preview": {
+     "p95": 258.619021,
+     "n": 100
+    },
+    "switch": {
+     "p95": 53.359824999999546,
+     "n": 136
+    },
+    "belief": {
+     "p95": 33.29156900000089
+    }
+   },
+   "budget": {
+    "engineCalls": 212,
+    "rolloutSamples": 0,
+    "builds": 4
+   },
+   "methods": {
+    "engine": 10441,
+    "prelude": 12821,
+    "rollout": 0,
+    "dropped": 0
+   },
+   "cells": 23262,
+   "enginePreludeShare": 1,
+   "exploitability": {
+    "p95": 0.00006593156005649561,
+    "max": 0.00020070436822349023
+   },
+   "valve": 0,
+   "engineIssues": 0,
+   "approximations": [],
+   "errors": [],
+   "recoveries": [],
+   "fallbacks": 0,
+   "status": {
+    "held": {},
+    "available": {},
+    "chosen": {},
+    "optionsIts": 0
+   },
+   "mega": {
+    "turns": 101,
+    "megaShare": 0.7873349805015029,
+    "evolved": 78
+   },
+   "engineSeat": true
+  }
+ }
+}

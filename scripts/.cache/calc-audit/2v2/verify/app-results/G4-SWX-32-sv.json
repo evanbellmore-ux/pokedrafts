@@ -1,0 +1,1013 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 145,
+    "maximum": 145
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "circlethrow",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 104,
+      "max": 126,
+      "minPercent": 44.25531914893617,
+      "maxPercent": 53.61702127659574,
+      "koChance": 0,
+      "row": {
+       "moveId": "circlethrow",
+       "effectiveName": "Circle Throw",
+       "effectiveType": "Fighting",
+       "effectivePower": 60,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 104,
+       "max": 126,
+       "minPercent": 44.25531914893617,
+       "maxPercent": 53.61702127659574,
+       "rolls": [
+        104,
+        108,
+        108,
+        108,
+        110,
+        110,
+        114,
+        114,
+        116,
+        116,
+        116,
+        120,
+        120,
+        122,
+        122,
+        126
+       ],
+       "ohkoChance": 0,
+       "description": "Circle Throw: 104–126 HP (44.3–53.6% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Circle Throw: Snorlax (opponent's, 1) is dragged out; Incineroar comes in.",
+      "chance": 0.5
+     },
+     {
+      "text": "Lucario: −1 Attack.",
+      "chance": 0.5
+     },
+     {
+      "text": "Snorlax (yours): −1 Attack.",
+      "chance": 0.5
+     },
+     {
+      "text": "Circle Throw: Snorlax (opponent's, 1) is dragged out; Snorlax (opponent's, 3) comes in.",
+      "chance": 0.5
+     }
+    ]
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 145,
+    "maximum": 145,
+    "low": 145,
+    "average": 145,
+    "high": 145,
+    "min": 145,
+    "max": 145,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 131,
+    "average": 120.375,
+    "high": 109,
+    "min": 109,
+    "max": 131,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "circlethrow",
+     "effectiveName": "Circle Throw",
+     "effectiveType": "Fighting",
+     "effectivePower": 60,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 104,
+     "max": 126,
+     "minPercent": 44.25531914893617,
+     "maxPercent": 53.61702127659574,
+     "rolls": [
+      104,
+      108,
+      108,
+      108,
+      110,
+      110,
+      114,
+      114,
+      116,
+      116,
+      116,
+      120,
+      120,
+      122,
+      122,
+      126
+     ],
+     "ohkoChance": 0,
+     "description": "Circle Throw: 104–126 HP (44.3–53.6% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 2,
+      "fasterChance": 0.27734375,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 131,
+      "high": 109,
+      "average": 120.375,
+      "min": 109,
+      "max": 131,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 104,
+        "heals": []
+       },
+       "high": {
+        "dealt": 126,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 145,
+     "maximum": 145,
+     "low": 145,
+     "average": 145,
+     "high": 145,
+     "min": 145,
+     "max": 145,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 131,
+     "average": 120.375,
+     "high": 109,
+     "min": 109,
+     "max": 131,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [
+    {
+     "slot": "opponent-left",
+     "id": "lax",
+     "effect": "Leftovers",
+     "chance": 0.5,
+     "min": 14,
+     "max": 14,
+     "koChance": 0,
+     "facts": []
+    }
+   ],
+   "facts": [],
+   "hpEntered": {
+    "opponent-left": {
+     "inci": {
+      "start": 170,
+      "maximum": 170,
+      "low": 170,
+      "average": 170,
+      "high": 170,
+      "min": 170,
+      "max": 170,
+      "koChance": 0,
+      "heals": []
+     },
+     "lax": {
+      "start": 150,
+      "maximum": 235,
+      "low": 164,
+      "average": 164,
+      "high": 164,
+      "min": 164,
+      "max": 164,
+      "koChance": 0,
+      "heals": []
+     }
+    }
+   }
+  },
+  "replaced": {
+   "opponent-left": {
+    "left": [
+     {
+      "id": "slot:opponent-left",
+      "hp": {
+       "start": 235,
+       "maximum": 235,
+       "low": 131,
+       "average": 120.375,
+       "high": 109,
+       "min": 109,
+       "max": 131,
+       "koChance": 0,
+       "heals": []
+      },
+      "chance": 1
+     }
+    ],
+    "entered": [
+     {
+      "id": "inci",
+      "chance": 0.5
+     },
+     {
+      "id": "lax",
+      "chance": 0.5
+     }
+    ]
+   }
+  },
+  "hpEntered": {
+   "opponent-left": {
+    "inci": {
+     "start": 170,
+     "maximum": 170,
+     "low": 170,
+     "average": 170,
+     "high": 170,
+     "min": 170,
+     "max": 170,
+     "koChance": 0,
+     "heals": []
+    },
+    "lax": {
+     "start": 150,
+     "maximum": 235,
+     "low": 150,
+     "average": 150,
+     "high": 150,
+     "min": 150,
+     "max": 150,
+     "koChance": 0,
+     "heals": []
+    }
+   }
+  }
+ },
+ "ms": 17.532686000002286,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 145,
+    "maximum": 145
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 0.5,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 145,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "lucario",
+       "nature": "Serious",
+       "abilityId": "justified",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": -1,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": -1,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 8
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 170,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "incineroar",
+       "nature": "Serious",
+       "abilityId": "intimidate",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "id": "inci"
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 24
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    },
+    "benched": {
+     "opponent": [
+      {
+       "id": "slot:opponent-left",
+       "slot": "opponent-left",
+       "hp": [
+        {
+         "hp": 109,
+         "chance": 0.0625
+        },
+        {
+         "hp": 113,
+         "chance": 0.125
+        },
+        {
+         "hp": 115,
+         "chance": 0.125
+        },
+        {
+         "hp": 119,
+         "chance": 0.1875
+        },
+        {
+         "hp": 121,
+         "chance": 0.125
+        },
+        {
+         "hp": 125,
+         "chance": 0.125
+        },
+        {
+         "hp": 127,
+         "chance": 0.1875
+        },
+        {
+         "hp": 131,
+         "chance": 0.0625
+        }
+       ],
+       "build": {
+        "speciesId": "snorlax",
+        "nature": "Serious",
+        "abilityId": "thickfat",
+        "abilityActive": false,
+        "itemId": "",
+        "boosts": {
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "currentHP": null,
+        "status": "",
+        "game": "scarlet_violet",
+        "native": {
+         "level": 50,
+         "evs": {
+          "hp": 0,
+          "atk": 0,
+          "def": 0,
+          "spa": 0,
+          "spd": 0,
+          "spe": 32
+         },
+         "ivs": {
+          "hp": 31,
+          "atk": 31,
+          "def": 31,
+          "spa": 31,
+          "spd": 31,
+          "spe": 31
+         }
+        }
+       },
+       "protected": false,
+       "moved": true
+      }
+     ]
+    }
+   },
+   {
+    "chance": 0.5,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 145,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "lucario",
+       "nature": "Serious",
+       "abilityId": "justified",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 8
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 164,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "leftovers",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 16
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "id": "lax"
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 24
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    },
+    "benched": {
+     "opponent": [
+      {
+       "id": "slot:opponent-left",
+       "slot": "opponent-left",
+       "hp": [
+        {
+         "hp": 109,
+         "chance": 0.0625
+        },
+        {
+         "hp": 113,
+         "chance": 0.125
+        },
+        {
+         "hp": 115,
+         "chance": 0.125
+        },
+        {
+         "hp": 119,
+         "chance": 0.1875
+        },
+        {
+         "hp": 121,
+         "chance": 0.125
+        },
+        {
+         "hp": 125,
+         "chance": 0.125
+        },
+        {
+         "hp": 127,
+         "chance": 0.1875
+        },
+        {
+         "hp": 131,
+         "chance": 0.0625
+        }
+       ],
+       "build": {
+        "speciesId": "snorlax",
+        "nature": "Serious",
+        "abilityId": "thickfat",
+        "abilityActive": false,
+        "itemId": "",
+        "boosts": {
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "currentHP": null,
+        "status": "",
+        "game": "scarlet_violet",
+        "native": {
+         "level": 50,
+         "evs": {
+          "hp": 0,
+          "atk": 0,
+          "def": 0,
+          "spa": 0,
+          "spd": 0,
+          "spe": 32
+         },
+         "ivs": {
+          "hp": 31,
+          "atk": 31,
+          "def": 31,
+          "spa": 31,
+          "spd": 31,
+          "spe": 31
+         }
+        }
+       },
+       "protected": false,
+       "moved": true
+      }
+     ]
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

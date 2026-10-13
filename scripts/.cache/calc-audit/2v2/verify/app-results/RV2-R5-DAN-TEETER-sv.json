@@ -1,0 +1,1229 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 150,
+    "maximum": 150
+   },
+   "own-right": {
+    "hp": 150,
+    "maximum": 150
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-right",
+    "moveId": "teeterdance",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Becomes confused.",
+        "chance": 1
+       }
+      ]
+     },
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Becomes confused.",
+        "chance": 1
+       }
+      ]
+     },
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Becomes confused.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-left",
+    "moveId": "teeterdance",
+    "order": [],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Becomes confused.",
+        "chance": 1
+       }
+      ]
+     },
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Becomes confused.",
+        "chance": 1
+       }
+      ]
+     },
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Becomes confused.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": [
+     {
+      "text": "Dancer: Oricorio copies Teeter Dance.",
+      "chance": 1
+     }
+    ],
+    "copied": "Dancer"
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "bodyslam",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 0.67,
+    "skipped": [
+     {
+      "text": "Hurts itself in confusion: 23–28 HP.",
+      "chance": 0.33
+     }
+    ],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 0.67,
+      "kind": "calculated",
+      "min": 70,
+      "max": 84,
+      "minPercent": 46.666666666666664,
+      "maxPercent": 56.00000000000001,
+      "koChance": 0,
+      "row": {
+       "moveId": "bodyslam",
+       "effectiveName": "Body Slam",
+       "effectiveType": "Normal",
+       "effectivePower": 85,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 70,
+       "max": 84,
+       "minPercent": 46.666666666666664,
+       "maxPercent": 56.00000000000001,
+       "rolls": [
+        70,
+        72,
+        72,
+        73,
+        73,
+        75,
+        75,
+        76,
+        78,
+        78,
+        79,
+        79,
+        81,
+        81,
+        82,
+        84
+       ],
+       "ohkoChance": 0,
+       "description": "Body Slam: 70–84 HP (46.7–56.0% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "bodyslam",
+    "order": [
+     {
+      "position": 3,
+      "chance": 1
+     }
+    ],
+    "moves": 0.6700000000000002,
+    "skipped": [
+     {
+      "text": "Hurts itself in confusion: 23–28 HP.",
+      "chance": 0.33
+     }
+    ],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 0.6700000000000002,
+      "kind": "calculated",
+      "min": 70,
+      "max": 84,
+      "minPercent": 46.666666666666664,
+      "maxPercent": 56.00000000000001,
+      "koChance": 0.33842851562500004,
+      "row": {
+       "moveId": "bodyslam",
+       "effectiveName": "Body Slam",
+       "effectiveType": "Normal",
+       "effectivePower": 85,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 70,
+       "max": 84,
+       "minPercent": 46.666666666666664,
+       "maxPercent": 56.00000000000001,
+       "rolls": [
+        70,
+        72,
+        72,
+        73,
+        73,
+        75,
+        75,
+        76,
+        78,
+        78,
+        79,
+        79,
+        81,
+        81,
+        82,
+        84
+       ],
+       "ohkoChance": 0,
+       "description": "Body Slam: 70–84 HP (46.7–56.0% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 150,
+    "maximum": 150,
+    "low": 10,
+    "average": 49.15050078125,
+    "high": 0,
+    "min": 0,
+    "max": 150,
+    "koChance": 0.33842851562500004,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Holds no item.",
+      "chance": 0.661571484375
+     }
+    ]
+   },
+   "own-right": {
+    "start": 150,
+    "maximum": 150,
+    "low": 150,
+    "average": 150,
+    "high": 150,
+    "min": 150,
+    "max": 150,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Holds no item.",
+      "chance": 1
+     }
+    ]
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 226.60562499999997,
+    "high": 235,
+    "min": 207,
+    "max": 235,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Confused.",
+      "chance": 1
+     },
+     {
+      "text": "Holds no item.",
+      "chance": 1
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 226.60562499999997,
+    "high": 235,
+    "min": 207,
+    "max": 235,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Confused.",
+      "chance": 1
+     },
+     {
+      "text": "Holds no item.",
+      "chance": 1
+     }
+    ]
+   }
+  },
+  "startRows": [
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "bodyslam",
+     "effectiveName": "Body Slam",
+     "effectiveType": "Normal",
+     "effectivePower": 85,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 70,
+     "max": 84,
+     "minPercent": 46.666666666666664,
+     "maxPercent": 56.00000000000001,
+     "rolls": [
+      70,
+      72,
+      72,
+      73,
+      73,
+      75,
+      75,
+      76,
+      78,
+      78,
+      79,
+      79,
+      81,
+      81,
+      82,
+      84
+     ],
+     "ohkoChance": 0,
+     "description": "Body Slam: 70–84 HP (46.7–56.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 2,
+      "fasterChance": 0.75390625,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 150,
+      "low": 80,
+      "high": 66,
+      "average": 73.25,
+      "min": 66,
+      "max": 80,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 70,
+        "heals": []
+       },
+       "high": {
+        "dealt": 84,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "bodyslam",
+     "effectiveName": "Body Slam",
+     "effectiveType": "Normal",
+     "effectivePower": 85,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 70,
+     "max": 84,
+     "minPercent": 46.666666666666664,
+     "maxPercent": 56.00000000000001,
+     "rolls": [
+      70,
+      72,
+      72,
+      73,
+      73,
+      75,
+      75,
+      76,
+      78,
+      78,
+      79,
+      79,
+      81,
+      81,
+      82,
+      84
+     ],
+     "ohkoChance": 0,
+     "description": "Body Slam: 70–84 HP (46.7–56.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 2,
+      "fasterChance": 0.75390625,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 150,
+      "low": 80,
+      "high": 66,
+      "average": 73.25,
+      "min": 66,
+      "max": 80,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 70,
+        "heals": []
+       },
+       "high": {
+        "dealt": 84,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Oricorio has not used Minimize."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 150,
+     "maximum": 150,
+     "low": 10,
+     "average": 49.15050078125,
+     "high": 0,
+     "min": 0,
+     "max": 150,
+     "koChance": 0.33842851562500004,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Holds no item.",
+       "chance": 0.661571484375
+      }
+     ]
+    },
+    "own-right": {
+     "start": 150,
+     "maximum": 150,
+     "low": 150,
+     "average": 150,
+     "high": 150,
+     "min": 150,
+     "max": 150,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Holds no item.",
+       "chance": 1
+      }
+     ]
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 226.60562499999997,
+     "high": 235,
+     "min": 207,
+     "max": 235,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Confused.",
+       "chance": 1
+      },
+      {
+       "text": "Holds no item.",
+       "chance": 1
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 226.60562499999997,
+     "high": 235,
+     "min": 207,
+     "max": 235,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Confused.",
+       "chance": 1
+      },
+      {
+       "text": "Holds no item.",
+       "chance": 1
+      }
+     ]
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 16.91370900000038,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 150,
+    "maximum": 150
+   },
+   "own-right": {
+    "hp": 150,
+    "maximum": 150
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 0.661571484375,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 1,
+        "chance": 0.02120424675385254
+       },
+       {
+        "hp": 2,
+        "chance": 0.04240849350770508
+       },
+       {
+        "hp": 3,
+        "chance": 0.02120424675385254
+       },
+       {
+        "hp": 4,
+        "chance": 0.015903185065389406
+       },
+       {
+        "hp": 5,
+        "chance": 0.03180637013077881
+       },
+       {
+        "hp": 6,
+        "chance": 0.01060212337692627
+       },
+       {
+        "hp": 7,
+        "chance": 0.01060212337692627
+       },
+       {
+        "hp": 8,
+        "chance": 0.01060212337692627
+       },
+       {
+        "hp": 10,
+        "chance": 0.0026505308442315674
+       },
+       {
+        "hp": 66,
+        "chance": 0.041775530918037845
+       },
+       {
+        "hp": 68,
+        "chance": 0.041775530918037845
+       },
+       {
+        "hp": 69,
+        "chance": 0.08355106183607569
+       },
+       {
+        "hp": 71,
+        "chance": 0.08355106183607569
+       },
+       {
+        "hp": 72,
+        "chance": 0.08355106183607569
+       },
+       {
+        "hp": 74,
+        "chance": 0.041775530918037845
+       },
+       {
+        "hp": 75,
+        "chance": 0.08355106183607569
+       },
+       {
+        "hp": 77,
+        "chance": 0.08355106183607569
+       },
+       {
+        "hp": 78,
+        "chance": 0.08355106183607569
+       },
+       {
+        "hp": 80,
+        "chance": 0.041775530918037845
+       },
+       {
+        "hp": 150,
+        "chance": 0.16460806212480583
+       }
+      ],
+      "build": {
+       "speciesId": "oricorio",
+       "nature": "Serious",
+       "abilityId": "dancer",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 150,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "oricoriopompom",
+       "nature": "Serious",
+       "abilityId": "dancer",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 207,
+        "chance": 0.031175769341819284
+       },
+       {
+        "hp": 208,
+        "chance": 0.09352730802545785
+       },
+       {
+        "hp": 209,
+        "chance": 0.12470307736727713
+       },
+       {
+        "hp": 210,
+        "chance": 0.09352730802545785
+       },
+       {
+        "hp": 211,
+        "chance": 0.12470307736727713
+       },
+       {
+        "hp": 212,
+        "chance": 0.031175769341819284
+       },
+       {
+        "hp": 235,
+        "chance": 0.5011876905308915
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "volatiles": [
+       "confusion"
+      ]
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 207,
+        "chance": 0.031175769341819284
+       },
+       {
+        "hp": 208,
+        "chance": 0.09352730802545785
+       },
+       {
+        "hp": 209,
+        "chance": 0.12470307736727713
+       },
+       {
+        "hp": 210,
+        "chance": 0.09352730802545785
+       },
+       {
+        "hp": 211,
+        "chance": 0.12470307736727713
+       },
+       {
+        "hp": 212,
+        "chance": 0.031175769341819284
+       },
+       {
+        "hp": 235,
+        "chance": 0.5011876905308915
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 8
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "volatiles": [
+       "confusion"
+      ]
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   },
+   {
+    "chance": 0.33842851562500004,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 0,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "oricorio",
+       "nature": "Serious",
+       "abilityId": "dancer",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 150,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "oricoriopompom",
+       "nature": "Serious",
+       "abilityId": "dancer",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "volatiles": [
+       "confusion"
+      ]
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 8
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "volatiles": [
+       "confusion"
+      ]
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 1
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

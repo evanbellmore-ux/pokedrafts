@@ -1,0 +1,545 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 350,
+    "maximum": 350
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "opponent-right": {
+    "hp": 1,
+    "maximum": 170
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "woodhammer",
+    "effectiveName": "G-Max Drum Solo",
+    "effectiveType": "Grass",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 59,
+      "max": 70,
+      "minPercent": 34.705882352941174,
+      "maxPercent": 41.17647058823529,
+      "koChance": 1,
+      "row": {
+       "moveId": "woodhammer",
+       "effectiveName": "G-Max Drum Solo",
+       "effectiveType": "Grass",
+       "effectivePower": 160,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 59,
+       "max": 70,
+       "minPercent": 34.705882352941174,
+       "maxPercent": 41.17647058823529,
+       "rolls": [
+        59,
+        60,
+        60,
+        61,
+        62,
+        63,
+        63,
+        64,
+        65,
+        66,
+        66,
+        67,
+        68,
+        69,
+        69,
+        70
+       ],
+       "ohkoChance": 0,
+       "description": "G-Max Drum Solo: 59–70 HP (34.7–41.2% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "One Max/G-Max attack."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 350,
+    "maximum": 350,
+    "low": 350,
+    "average": 350,
+    "high": 350,
+    "min": 350,
+    "max": 350,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 175,
+    "maximum": 175,
+    "low": 175,
+    "average": 175,
+    "high": 175,
+    "min": 175,
+    "max": 175,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Ability: Intimidate.",
+      "chance": 1
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 1,
+    "maximum": 170,
+    "low": 0,
+    "average": 0,
+    "high": 0,
+    "min": 0,
+    "max": 0,
+    "koChance": 1,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "woodhammer",
+     "effectiveName": "G-Max Drum Solo",
+     "effectiveType": "Grass",
+     "effectivePower": 160,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 59,
+     "max": 70,
+     "minPercent": 34.705882352941174,
+     "maxPercent": 41.17647058823529,
+     "rolls": [
+      59,
+      60,
+      60,
+      61,
+      62,
+      63,
+      63,
+      64,
+      65,
+      66,
+      66,
+      67,
+      68,
+      69,
+      69,
+      70
+     ],
+     "ohkoChance": 1,
+     "description": "G-Max Drum Solo: 59–70 HP (34.7–41.2% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "One Max/G-Max attack."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 1,
+      "fewest": 1,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [
+       "Dynamax ends after 3 turns."
+      ],
+      "notes": [
+       "Assumes Dynamax started this turn."
+      ]
+     },
+     "afterUse": {
+      "start": 1,
+      "low": 0,
+      "high": 0,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "koChance": 1,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 1,
+        "heals": []
+       },
+       "high": {
+        "dealt": 1,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Dynamax started this turn."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 350,
+     "maximum": 350,
+     "low": 350,
+     "average": 350,
+     "high": 350,
+     "min": 350,
+     "max": 350,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 175,
+     "maximum": 175,
+     "low": 175,
+     "average": 175,
+     "high": 175,
+     "min": 175,
+     "max": 175,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Ability: Intimidate.",
+       "chance": 1
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 1,
+     "maximum": 170,
+     "low": 0,
+     "average": 0,
+     "high": 0,
+     "min": 0,
+     "max": 0,
+     "koChance": 1,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 7.671376000002056,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 350,
+    "maximum": 350
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "opponent-right": {
+    "hp": 1,
+    "maximum": 170
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 350,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "rillaboom",
+       "nature": "Serious",
+       "abilityId": "overgrow",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": -1,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       },
+       "mechanic": "gigantamax",
+       "configuration": {
+        "dynamaxLevel": 10,
+        "gigantamax": true
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 155,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "metagross",
+       "nature": "Serious",
+       "abilityId": "clearbody",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": -1,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 175,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "passimian",
+       "nature": "Serious",
+       "abilityId": "intimidate",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       },
+       "abilityChanged": true
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 0,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "incineroar",
+       "nature": "Serious",
+       "abilityId": "intimidate",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": false
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 1
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

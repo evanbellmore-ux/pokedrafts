@@ -1,0 +1,570 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 160,
+    "maximum": 160
+   },
+   "own-right": {
+    "hp": 150,
+    "maximum": 150
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "aquastep",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "substitute",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "row": {
+       "moveId": "aquastep",
+       "effectiveName": "Aqua Step",
+       "effectiveType": "Water",
+       "effectivePower": 80,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 75,
+       "max": 88,
+       "minPercent": 31.914893617021278,
+       "maxPercent": 37.4468085106383,
+       "rolls": [
+        75,
+        75,
+        76,
+        76,
+        78,
+        79,
+        79,
+        81,
+        81,
+        82,
+        84,
+        84,
+        85,
+        85,
+        87,
+        88
+       ],
+       "ohkoChance": 0,
+       "description": "Aqua Step: 75–88 HP (31.9–37.4% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Its Substitute breaks.",
+        "chance": 1
+       }
+      ],
+      "substitute": {
+       "chance": 1,
+       "min": 58,
+       "max": 58,
+       "breaks": 1
+      }
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-right",
+    "moveId": "aquastep",
+    "order": [],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 33,
+      "max": 39,
+      "minPercent": 14.042553191489363,
+      "maxPercent": 16.595744680851062,
+      "koChance": 0,
+      "row": {
+       "moveId": "aquastep",
+       "effectiveName": "Aqua Step",
+       "effectiveType": "Water",
+       "effectivePower": 80,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 33,
+       "max": 39,
+       "minPercent": 14.042553191489363,
+       "maxPercent": 16.595744680851062,
+       "rolls": [
+        33,
+        33,
+        33,
+        34,
+        34,
+        35,
+        35,
+        35,
+        36,
+        36,
+        37,
+        37,
+        37,
+        38,
+        38,
+        39
+       ],
+       "ohkoChance": 0,
+       "description": "Aqua Step: 33–39 HP (14.0–16.6% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Dancer: Oricorio copies Aqua Step.",
+      "chance": 1
+     }
+    ],
+    "copied": "Dancer"
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 160,
+    "maximum": 160,
+    "low": 160,
+    "average": 160,
+    "high": 160,
+    "min": 160,
+    "max": 160,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 150,
+    "maximum": 150,
+    "low": 150,
+    "average": 150,
+    "high": 150,
+    "min": 150,
+    "max": 150,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 202,
+    "average": 199.375,
+    "high": 196,
+    "min": 196,
+    "max": 202,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "aquastep",
+     "effectiveName": "Aqua Step",
+     "effectiveType": "Water",
+     "effectivePower": 80,
+     "effectiveCategory": "Physical",
+     "kind": "unsupported",
+     "min": null,
+     "max": null,
+     "minPercent": null,
+     "maxPercent": null,
+     "rolls": null,
+     "ohkoChance": null,
+     "description": "Has a 100% chance to raise the user's Speed by 1 stage.",
+     "assumptions": [],
+     "reason": "Snorlax (2) is behind a Substitute.",
+     "hits": null
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 160,
+     "maximum": 160,
+     "low": 160,
+     "average": 160,
+     "high": 160,
+     "min": 160,
+     "max": 160,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 150,
+     "maximum": 150,
+     "low": 150,
+     "average": 150,
+     "high": 150,
+     "min": 150,
+     "max": 150,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 202,
+     "average": 199.375,
+     "high": 196,
+     "min": 196,
+     "max": 202,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 8.574214000000211,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 160,
+    "maximum": 160
+   },
+   "own-right": {
+    "hp": 150,
+    "maximum": 150
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 160,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "quaquaval",
+       "nature": "Serious",
+       "abilityId": "moxie",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 1
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 150,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "oricorio",
+       "nature": "Serious",
+       "abilityId": "dancer",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 1
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 16
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 196,
+        "chance": 0.0625
+       },
+       {
+        "hp": 197,
+        "chance": 0.125
+       },
+       {
+        "hp": 198,
+        "chance": 0.1875
+       },
+       {
+        "hp": 199,
+        "chance": 0.125
+       },
+       {
+        "hp": 200,
+        "chance": 0.1875
+       },
+       {
+        "hp": 201,
+        "chance": 0.125
+       },
+       {
+        "hp": 202,
+        "chance": 0.1875
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

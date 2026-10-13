@@ -1,0 +1,623 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 160,
+    "maximum": 160
+   },
+   "own-right": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "conversion",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Conversion fails: Porygon2 is already Normal type.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-right",
+    "moveId": "copycat",
+    "effectiveName": "Conversion",
+    "effectiveType": "Normal",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Becomes Normal type.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": [
+     {
+      "text": "Copycat calls Conversion.",
+      "chance": 1
+     }
+    ]
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "firepunch",
+    "order": [
+     {
+      "position": 3,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 21,
+      "max": 25,
+      "minPercent": 12,
+      "maxPercent": 14.285714285714285,
+      "koChance": 0,
+      "row": {
+       "moveId": "firepunch",
+       "effectiveName": "Fire Punch",
+       "effectiveType": "Fire",
+       "effectivePower": 75,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 21,
+       "max": 25,
+       "minPercent": 12,
+       "maxPercent": 14.285714285714285,
+       "rolls": [
+        21,
+        21,
+        21,
+        22,
+        22,
+        22,
+        22,
+        23,
+        23,
+        23,
+        23,
+        24,
+        24,
+        24,
+        24,
+        25
+       ],
+       "ohkoChance": 0,
+       "description": "Fire Punch: 21–25 HP (12.0–14.3% of maximum HP). Applied: Thick Fat.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 160,
+    "maximum": 160,
+    "low": 160,
+    "average": 160,
+    "high": 160,
+    "min": 160,
+    "max": 160,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 175,
+    "maximum": 175,
+    "low": 154,
+    "average": 152.25,
+    "high": 150,
+    "min": 150,
+    "max": 154,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Type: Normal.",
+      "chance": 1
+     }
+    ]
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "opponent-left",
+    "target": "own-right",
+    "row": {
+     "moveId": "firepunch",
+     "effectiveName": "Fire Punch",
+     "effectiveType": "Fire",
+     "effectivePower": 75,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 10,
+     "max": 12,
+     "minPercent": 5.714285714285714,
+     "maxPercent": 6.857142857142858,
+     "rolls": [
+      10,
+      10,
+      10,
+      11,
+      11,
+      11,
+      11,
+      11,
+      11,
+      11,
+      11,
+      12,
+      12,
+      12,
+      12,
+      12
+     ],
+     "ohkoChance": 0,
+     "description": "Fire Punch: 10–12 HP (5.7–6.9% of maximum HP). Applied: Thick Fat.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 18,
+      "fewest": 15,
+      "fasterChance": 0.9999999299699445,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 175,
+      "low": 165,
+      "high": 163,
+      "average": 163.875,
+      "min": 163,
+      "max": 165,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 10,
+        "heals": []
+       },
+       "high": {
+        "dealt": 12,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Conversion is Porygon2's first move.",
+   "Assumes Copycat is Azumarill's first move."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 160,
+     "maximum": 160,
+     "low": 160,
+     "average": 160,
+     "high": 160,
+     "min": 160,
+     "max": 160,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 175,
+     "maximum": 175,
+     "low": 154,
+     "average": 152.25,
+     "high": 150,
+     "min": 150,
+     "max": 154,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Type: Normal.",
+       "chance": 1
+      }
+     ]
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 5.11384199999884,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 160,
+    "maximum": 160
+   },
+   "own-right": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 160,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "porygon2",
+       "nature": "Serious",
+       "abilityId": "analytic",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 150,
+        "chance": 0.0625
+       },
+       {
+        "hp": 151,
+        "chance": 0.25
+       },
+       {
+        "hp": 152,
+        "chance": 0.25
+       },
+       {
+        "hp": 153,
+        "chance": 0.25
+       },
+       {
+        "hp": 154,
+        "chance": 0.1875
+       }
+      ],
+      "build": {
+       "speciesId": "azumarill",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       },
+       "types": [
+        "Normal"
+       ]
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Brave",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 0
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 8
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

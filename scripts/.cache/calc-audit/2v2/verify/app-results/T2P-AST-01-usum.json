@@ -1,0 +1,914 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 139,
+    "maximum": 139
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "assist",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": []
+     },
+     {
+      "slot": "opponent-left",
+      "reached": 0.5,
+      "kind": "calculated",
+      "min": 15,
+      "max": 49,
+      "minPercent": 6.382978723404255,
+      "maxPercent": 20.851063829787233,
+      "koChance": 0,
+      "row": {
+       "moveId": "bodyslam",
+       "effectiveName": "Body Slam",
+       "effectiveType": "Normal",
+       "effectivePower": 85,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 41,
+       "max": 49,
+       "minPercent": 17.4468085106383,
+       "maxPercent": 20.851063829787233,
+       "rolls": [
+        41,
+        42,
+        42,
+        43,
+        43,
+        44,
+        44,
+        45,
+        45,
+        46,
+        46,
+        47,
+        47,
+        48,
+        48,
+        49
+       ],
+       "ohkoChance": 0,
+       "description": "Body Slam: 41–49 HP (17.4–20.9% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 3,
+      "facts": []
+     },
+     {
+      "slot": "opponent-right",
+      "reached": 0.5,
+      "kind": "calculated",
+      "min": 15,
+      "max": 49,
+      "minPercent": 6.382978723404255,
+      "maxPercent": 20.851063829787233,
+      "koChance": 0,
+      "row": {
+       "moveId": "bodyslam",
+       "effectiveName": "Body Slam",
+       "effectiveType": "Normal",
+       "effectivePower": 85,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 41,
+       "max": 49,
+       "minPercent": 17.4468085106383,
+       "maxPercent": 20.851063829787233,
+       "rolls": [
+        41,
+        42,
+        42,
+        43,
+        43,
+        44,
+        44,
+        45,
+        45,
+        46,
+        46,
+        47,
+        47,
+        48,
+        48,
+        49
+       ],
+       "ohkoChance": 0,
+       "description": "Body Slam: 41–49 HP (17.4–20.9% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 3,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Assist calls Body Slam.",
+      "chance": 0.3333333333333333
+     },
+     {
+      "text": "Assist calls Flamethrower.",
+      "chance": 0.3333333333333333
+     },
+     {
+      "text": "Assist calls Ice Beam.",
+      "chance": 0.3333333333333333
+     }
+    ]
+   },
+   {
+    "slot": "own-right",
+    "moveId": "bodyslam",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 75,
+      "max": 88,
+      "minPercent": 31.914893617021278,
+      "maxPercent": 37.4468085106383,
+      "koChance": 0,
+      "row": {
+       "moveId": "bodyslam",
+       "effectiveName": "Body Slam",
+       "effectiveType": "Normal",
+       "effectivePower": 85,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 75,
+       "max": 88,
+       "minPercent": 31.914893617021278,
+       "maxPercent": 37.4468085106383,
+       "rolls": [
+        75,
+        75,
+        76,
+        76,
+        78,
+        79,
+        79,
+        81,
+        81,
+        82,
+        84,
+        84,
+        85,
+        85,
+        87,
+        88
+       ],
+       "ohkoChance": 0,
+       "description": "Body Slam: 75–88 HP (31.9–37.4% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 139,
+    "maximum": 139,
+    "low": 139,
+    "average": 139,
+    "high": 139,
+    "min": 139,
+    "max": 139,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 160,
+    "average": 141.1666666666667,
+    "high": 147,
+    "min": 98,
+    "max": 160,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 222.10416666666666,
+    "high": 235,
+    "min": 186,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-right",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "bodyslam",
+     "effectiveName": "Body Slam",
+     "effectiveType": "Normal",
+     "effectivePower": 85,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 75,
+     "max": 88,
+     "minPercent": 31.914893617021278,
+     "maxPercent": 37.4468085106383,
+     "rolls": [
+      75,
+      75,
+      76,
+      76,
+      78,
+      79,
+      79,
+      81,
+      81,
+      82,
+      84,
+      84,
+      85,
+      85,
+      87,
+      88
+     ],
+     "ohkoChance": 0,
+     "description": "Body Slam: 75–88 HP (31.9–37.4% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 4,
+      "fewest": 3,
+      "fasterChance": 0.875732421875,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 160,
+      "high": 147,
+      "average": 154.0625,
+      "min": 147,
+      "max": 160,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 75,
+        "heals": []
+       },
+       "high": {
+        "dealt": 88,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes no Pokémon of Liepard's party fainted before this turn.",
+   "Assumes Snorlax (opponent's, 1) has not used Minimize.",
+   "Assumes Snorlax (opponent's, 2) has not used Minimize."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 139,
+     "maximum": 139,
+     "low": 139,
+     "average": 139,
+     "high": 139,
+     "min": 139,
+     "max": 139,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 160,
+     "average": 141.1666666666667,
+     "high": 147,
+     "min": 98,
+     "max": 160,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 222.10416666666666,
+     "high": 235,
+     "min": 186,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 27.08496599999853,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 139,
+    "maximum": 139
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 139,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "liepard",
+       "nature": "Serious",
+       "abilityId": "limber",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 8
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 98,
+        "chance": 0.0006510416666666668
+       },
+       {
+        "hp": 99,
+        "chance": 0.001953125000000001
+       },
+       {
+        "hp": 100,
+        "chance": 0.0026041666666666674
+       },
+       {
+        "hp": 101,
+        "chance": 0.003906250000000002
+       },
+       {
+        "hp": 102,
+        "chance": 0.006510416666666669
+       },
+       {
+        "hp": 103,
+        "chance": 0.007812500000000003
+       },
+       {
+        "hp": 104,
+        "chance": 0.00846354166666667
+       },
+       {
+        "hp": 105,
+        "chance": 0.010416666666666671
+       },
+       {
+        "hp": 106,
+        "chance": 0.011067708333333336
+       },
+       {
+        "hp": 107,
+        "chance": 0.011067708333333337
+       },
+       {
+        "hp": 108,
+        "chance": 0.01236979166666667
+       },
+       {
+        "hp": 109,
+        "chance": 0.011718750000000005
+       },
+       {
+        "hp": 110,
+        "chance": 0.010416666666666671
+       },
+       {
+        "hp": 111,
+        "chance": 0.011718750000000005
+       },
+       {
+        "hp": 112,
+        "chance": 0.012369791666666671
+       },
+       {
+        "hp": 113,
+        "chance": 0.01041666666666667
+       },
+       {
+        "hp": 114,
+        "chance": 0.009114583333333336
+       },
+       {
+        "hp": 115,
+        "chance": 0.007812500000000003
+       },
+       {
+        "hp": 116,
+        "chance": 0.005859375000000003
+       },
+       {
+        "hp": 117,
+        "chance": 0.005208333333333335
+       },
+       {
+        "hp": 118,
+        "chance": 0.003906250000000002
+       },
+       {
+        "hp": 119,
+        "chance": 0.0013020833333333337
+       },
+       {
+        "hp": 129,
+        "chance": 0.0013020833333333337
+       },
+       {
+        "hp": 130,
+        "chance": 0.007812500000000003
+       },
+       {
+        "hp": 131,
+        "chance": 0.014322916666666671
+       },
+       {
+        "hp": 132,
+        "chance": 0.015625000000000007
+       },
+       {
+        "hp": 133,
+        "chance": 0.02083333333333334
+       },
+       {
+        "hp": 134,
+        "chance": 0.028645833333333343
+       },
+       {
+        "hp": 135,
+        "chance": 0.027343750000000007
+       },
+       {
+        "hp": 136,
+        "chance": 0.019531250000000007
+       },
+       {
+        "hp": 137,
+        "chance": 0.02083333333333334
+       },
+       {
+        "hp": 138,
+        "chance": 0.02343750000000001
+       },
+       {
+        "hp": 139,
+        "chance": 0.024739583333333343
+       },
+       {
+        "hp": 140,
+        "chance": 0.02213541666666667
+       },
+       {
+        "hp": 141,
+        "chance": 0.02083333333333334
+       },
+       {
+        "hp": 142,
+        "chance": 0.02083333333333334
+       },
+       {
+        "hp": 143,
+        "chance": 0.028645833333333343
+       },
+       {
+        "hp": 144,
+        "chance": 0.026041666666666675
+       },
+       {
+        "hp": 145,
+        "chance": 0.01041666666666667
+       },
+       {
+        "hp": 147,
+        "chance": 0.03125000000000001
+       },
+       {
+        "hp": 148,
+        "chance": 0.03125000000000001
+       },
+       {
+        "hp": 150,
+        "chance": 0.06250000000000001
+       },
+       {
+        "hp": 151,
+        "chance": 0.06250000000000001
+       },
+       {
+        "hp": 153,
+        "chance": 0.03125000000000001
+       },
+       {
+        "hp": 154,
+        "chance": 0.06250000000000001
+       },
+       {
+        "hp": 156,
+        "chance": 0.06250000000000001
+       },
+       {
+        "hp": 157,
+        "chance": 0.03125000000000001
+       },
+       {
+        "hp": 159,
+        "chance": 0.06250000000000001
+       },
+       {
+        "hp": 160,
+        "chance": 0.06250000000000001
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 32
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 186,
+        "chance": 0.01041666666666667
+       },
+       {
+        "hp": 187,
+        "chance": 0.02083333333333334
+       },
+       {
+        "hp": 188,
+        "chance": 0.02083333333333334
+       },
+       {
+        "hp": 189,
+        "chance": 0.02083333333333334
+       },
+       {
+        "hp": 190,
+        "chance": 0.02083333333333334
+       },
+       {
+        "hp": 191,
+        "chance": 0.02083333333333334
+       },
+       {
+        "hp": 192,
+        "chance": 0.02083333333333334
+       },
+       {
+        "hp": 193,
+        "chance": 0.02083333333333334
+       },
+       {
+        "hp": 194,
+        "chance": 0.01041666666666667
+       },
+       {
+        "hp": 217,
+        "chance": 0.02083333333333334
+       },
+       {
+        "hp": 218,
+        "chance": 0.10416666666666669
+       },
+       {
+        "hp": 219,
+        "chance": 0.12500000000000006
+       },
+       {
+        "hp": 220,
+        "chance": 0.08333333333333336
+       },
+       {
+        "hp": 235,
+        "chance": 0.49999999999999994
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 24
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

@@ -16,6 +16,7 @@ import { VG_CASES } from "../../ngas-pp/verify/cases-vg";
 import { VGX_CASES } from "../../ngas-pp/verify/cases-vgx";
 import { STATUS_EOT_CASES, STATUS_EOT_REEXPECT } from "./cases-se";
 import { WAVE1A_CASES } from "./cases-wave1a";
+import { WAVE2_CASES } from "./cases-wave2";
 import { REEXPECT_TO, removalOf } from "./status2-removed";
 
 type Slot = CaseMon & { action: CaseAction };
@@ -1492,7 +1493,10 @@ CASES.push(...STATUS_EOT_CASES);
   const waves = (process.env.STATUS2_REEXPECT ?? "").split(",").map((w) => w.trim()).filter(Boolean);
   if (waves.length) {
     const wave1a = new Set(WAVE1A_CASES.map((c) => c.id));
+    // A wave 2 case states wave 2's expectations (its kept reasons too: G4-SWX-20's Commander), so no removal applies to it.
+    const wave2 = new Set(WAVE2_CASES.map((c) => c.id));
     for (const c of CASES) {
+      if (wave2.has(c.id)) continue;
       for (const key of ["notEstimated", "endNotEstimated"] as const) {
         const r = c[key] ? removalOf(c[key]!) : null;
         // A wave 1a case states 1a's expectations; from 1b's view it is stored (Track V2: FS08e, G4-WHR-01).

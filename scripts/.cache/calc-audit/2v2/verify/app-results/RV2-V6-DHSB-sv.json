@@ -1,0 +1,804 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 60,
+    "maximum": 150
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 75,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "doublehit",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 56,
+      "max": 102,
+      "minPercent": 23.829787234042556,
+      "maxPercent": 43.40425531914894,
+      "koChance": 0.78125,
+      "row": {
+       "moveId": "doublehit",
+       "effectiveName": "Double Hit",
+       "effectiveType": "Normal",
+       "effectivePower": 35,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 84,
+       "max": 102,
+       "minPercent": 35.74468085106383,
+       "maxPercent": 43.40425531914894,
+       "rolls": [
+        [
+         42,
+         43,
+         43,
+         43,
+         45,
+         45,
+         45,
+         46,
+         46,
+         46,
+         48,
+         48,
+         48,
+         49,
+         49,
+         51
+        ],
+        [
+         42,
+         43,
+         43,
+         43,
+         45,
+         45,
+         45,
+         46,
+         46,
+         46,
+         48,
+         48,
+         48,
+         49,
+         49,
+         51
+        ]
+       ],
+       "ohkoChance": null,
+       "description": "Double Hit: 84–102 HP (35.7–43.4% of maximum HP). Applied: Technician.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "No one-use KO chance for multiple hits."
+       ],
+       "reason": null,
+       "hits": 2,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 2,
+        "reason": null
+       }
+      },
+      "cases": 2,
+      "facts": [
+       {
+        "text": "Snorlax (opponent's, 2) eats its Ganlon Berry after hit 1: +1 Defense.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 60,
+    "maximum": 150,
+    "low": 68,
+    "average": 68.96875,
+    "high": 69,
+    "min": 68,
+    "max": 69,
+    "koChance": 0,
+    "heals": [
+     "Shell Bell: +8–9 HP."
+    ]
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 75,
+    "maximum": 235,
+    "low": 5,
+    "average": 0.45703125,
+    "high": 0,
+    "min": 0,
+    "max": 5,
+    "koChance": 0.78125,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Holds no item.",
+      "chance": 0.21875
+     }
+    ]
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "doublehit",
+     "effectiveName": "Double Hit",
+     "effectiveType": "Normal",
+     "effectivePower": 35,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 84,
+     "max": 102,
+     "minPercent": 35.74468085106383,
+     "maxPercent": 43.40425531914894,
+     "rolls": [
+      [
+       42,
+       43,
+       43,
+       43,
+       45,
+       45,
+       45,
+       46,
+       46,
+       46,
+       48,
+       48,
+       48,
+       49,
+       49,
+       51
+      ],
+      [
+       42,
+       43,
+       43,
+       43,
+       45,
+       45,
+       45,
+       46,
+       46,
+       46,
+       48,
+       48,
+       48,
+       49,
+       49,
+       51
+      ]
+     ],
+     "ohkoChance": null,
+     "description": "Double Hit: 84–102 HP (35.7–43.4% of maximum HP). Applied: Technician.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "No one-use KO chance for multiple hits."
+     ],
+     "reason": null,
+     "hits": 2,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 2,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 1,
+      "fewest": 1,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [
+       "The target's Ganlon Berry raises its Defense at a quarter of its HP."
+      ],
+      "notes": []
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 60,
+     "maximum": 150,
+     "low": 68,
+     "average": 68.96875,
+     "high": 69,
+     "min": 68,
+     "max": 69,
+     "koChance": 0,
+     "heals": [
+      "Shell Bell: +8–9 HP."
+     ]
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 75,
+     "maximum": 235,
+     "low": 5,
+     "average": 0.45703125,
+     "high": 0,
+     "min": 0,
+     "max": 5,
+     "koChance": 0.78125,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Holds no item.",
+       "chance": 0.21875
+      }
+     ]
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 12.016234999999142,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 60,
+    "maximum": 150
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 75,
+    "maximum": 235
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 0.21875,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 68,
+        "chance": 0.14285714285714285
+       },
+       {
+        "hp": 69,
+        "chance": 0.8571428571428571
+       }
+      ],
+      "build": {
+       "speciesId": "ambipom",
+       "nature": "Serious",
+       "abilityId": "technician",
+       "abilityActive": false,
+       "itemId": "shellbell",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 8
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 16
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 1,
+        "chance": 0.32142857142857145
+       },
+       {
+        "hp": 2,
+        "chance": 0.44642857142857145
+       },
+       {
+        "hp": 3,
+        "chance": 0.08928571428571429
+       },
+       {
+        "hp": 4,
+        "chance": 0.10714285714285716
+       },
+       {
+        "hp": 5,
+        "chance": 0.03571428571428572
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 1,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 24
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   },
+   {
+    "chance": 0.78125,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 69,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "ambipom",
+       "nature": "Serious",
+       "abilityId": "technician",
+       "abilityActive": false,
+       "itemId": "shellbell",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 8
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 16
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 0,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 1,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 24
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": false
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 1
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

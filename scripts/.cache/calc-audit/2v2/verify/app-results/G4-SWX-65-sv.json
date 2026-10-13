@@ -1,0 +1,913 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 195,
+    "maximum": 195
+   },
+   "own-right": {
+    "hp": 150,
+    "maximum": 150
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "allyswitch",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Ally Switch: Farigiraf and Ambipom swap places.",
+      "chance": 1
+     }
+    ]
+   },
+   {
+    "slot": "own-right",
+    "moveId": "uturn",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 38,
+      "max": 45,
+      "minPercent": 16.170212765957448,
+      "maxPercent": 19.148936170212767,
+      "koChance": 0,
+      "row": {
+       "moveId": "uturn",
+       "effectiveName": "U-turn",
+       "effectiveType": "Bug",
+       "effectivePower": 70,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 38,
+       "max": 45,
+       "minPercent": 16.170212765957448,
+       "maxPercent": 19.148936170212767,
+       "rolls": [
+        38,
+        38,
+        39,
+        39,
+        40,
+        40,
+        40,
+        41,
+        41,
+        42,
+        42,
+        43,
+        43,
+        44,
+        44,
+        45
+       ],
+       "ohkoChance": 0,
+       "description": "U-turn: 38–45 HP (16.2–19.1% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Ambipom switches out; Snorlax (yours) comes in.",
+      "chance": 1
+     }
+    ]
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "bodyslam",
+    "order": [
+     {
+      "position": 3,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-right",
+      "id": "lax",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 75,
+      "max": 88,
+      "minPercent": 31.914893617021278,
+      "maxPercent": 37.4468085106383,
+      "koChance": 0,
+      "row": {
+       "moveId": "bodyslam",
+       "effectiveName": "Body Slam",
+       "effectiveType": "Normal",
+       "effectivePower": 85,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 75,
+       "max": 88,
+       "minPercent": 31.914893617021278,
+       "maxPercent": 37.4468085106383,
+       "rolls": [
+        75,
+        75,
+        76,
+        76,
+        78,
+        79,
+        79,
+        81,
+        81,
+        82,
+        84,
+        84,
+        85,
+        85,
+        87,
+        88
+       ],
+       "ohkoChance": 0,
+       "description": "Body Slam: 75–88 HP (31.9–37.4% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Ally Switch: Body Slam hits Snorlax (yours) in Farigiraf's place.",
+      "chance": 1
+     }
+    ]
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 195,
+    "maximum": 195,
+    "low": 195,
+    "average": 195,
+    "high": 195,
+    "min": 195,
+    "max": 195,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Swapped places with Snorlax (yours).",
+      "chance": 1
+     }
+    ]
+   },
+   "own-right": {
+    "start": 150,
+    "maximum": 150,
+    "low": 150,
+    "average": 150,
+    "high": 150,
+    "min": 150,
+    "max": 150,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 197,
+    "average": 193.8125,
+    "high": 190,
+    "min": 190,
+    "max": 197,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-right",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "uturn",
+     "effectiveName": "U-turn",
+     "effectiveType": "Bug",
+     "effectivePower": 70,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 38,
+     "max": 45,
+     "minPercent": 16.170212765957448,
+     "maxPercent": 19.148936170212767,
+     "rolls": [
+      38,
+      38,
+      39,
+      39,
+      40,
+      40,
+      40,
+      41,
+      41,
+      42,
+      42,
+      43,
+      43,
+      44,
+      44,
+      45
+     ],
+     "ohkoChance": 0,
+     "description": "U-turn: 38–45 HP (16.2–19.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 7,
+      "fewest": 6,
+      "fasterChance": 0.9948091506958008,
+      "limit": 32,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 197,
+      "high": 190,
+      "average": 193.8125,
+      "min": 190,
+      "max": 197,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 38,
+        "heals": []
+       },
+       "high": {
+        "dealt": 45,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "bodyslam",
+     "effectiveName": "Body Slam",
+     "effectiveType": "Normal",
+     "effectivePower": 85,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 70,
+     "max": 84,
+     "minPercent": 35.8974358974359,
+     "maxPercent": 43.07692307692308,
+     "rolls": [
+      70,
+      72,
+      72,
+      73,
+      73,
+      75,
+      75,
+      76,
+      78,
+      78,
+      79,
+      79,
+      81,
+      81,
+      82,
+      84
+     ],
+     "ohkoChance": 0,
+     "description": "Body Slam: 70–84 HP (35.9–43.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 3,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 195,
+      "low": 125,
+      "high": 111,
+      "average": 118.25,
+      "min": 111,
+      "max": 125,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 70,
+        "heals": []
+       },
+       "high": {
+        "dealt": 84,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Farigiraf did not use Ally Switch last turn.",
+   "Assumes Snorlax (yours) comes in for Ambipom."
+  ],
+  "swapped": {
+   "own": 1
+  },
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 195,
+     "maximum": 195,
+     "low": 195,
+     "average": 195,
+     "high": 195,
+     "min": 195,
+     "max": 195,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Swapped places with Snorlax (yours).",
+       "chance": 1
+      }
+     ]
+    },
+    "own-right": {
+     "start": 150,
+     "maximum": 150,
+     "low": 150,
+     "average": 150,
+     "high": 150,
+     "min": 150,
+     "max": 150,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 197,
+     "average": 193.8125,
+     "high": 190,
+     "min": 190,
+     "max": 197,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": [],
+   "hpEntered": {
+    "own-right": {
+     "lax": {
+      "start": 235,
+      "maximum": 235,
+      "low": 160,
+      "average": 154.0625,
+      "high": 147,
+      "min": 147,
+      "max": 160,
+      "koChance": 0,
+      "heals": [],
+      "conditions": [
+       {
+        "text": "Swapped places with Farigiraf.",
+        "chance": 1
+       }
+      ]
+     }
+    }
+   }
+  },
+  "replaced": {
+   "own-right": {
+    "left": [
+     {
+      "id": "slot:own-right",
+      "hp": {
+       "start": 150,
+       "maximum": 150,
+       "low": 150,
+       "average": 150,
+       "high": 150,
+       "min": 150,
+       "max": 150,
+       "koChance": 0,
+       "heals": []
+      },
+      "chance": 1
+     }
+    ],
+    "entered": [
+     {
+      "id": "lax",
+      "chance": 1
+     }
+    ]
+   }
+  },
+  "hpEntered": {
+   "own-right": {
+    "lax": {
+     "start": 235,
+     "maximum": 235,
+     "low": 160,
+     "average": 154.0625,
+     "high": 147,
+     "min": 147,
+     "max": 160,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Swapped places with Farigiraf.",
+       "chance": 1
+      }
+     ]
+    }
+   }
+  }
+ },
+ "ms": 19.257477999999537,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 195,
+    "maximum": 195
+   },
+   "own-right": {
+    "hp": 150,
+    "maximum": 150
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 195,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "farigiraf",
+       "nature": "Serious",
+       "abilityId": "armortail",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "volatiles": [
+       "allyswitch"
+      ],
+      "allySwitch": 3
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 147,
+        "chance": 0.0625
+       },
+       {
+        "hp": 148,
+        "chance": 0.0625
+       },
+       {
+        "hp": 150,
+        "chance": 0.125
+       },
+       {
+        "hp": 151,
+        "chance": 0.125
+       },
+       {
+        "hp": 153,
+        "chance": 0.0625
+       },
+       {
+        "hp": 154,
+        "chance": 0.125
+       },
+       {
+        "hp": 156,
+        "chance": 0.125
+       },
+       {
+        "hp": 157,
+        "chance": 0.0625
+       },
+       {
+        "hp": 159,
+        "chance": 0.125
+       },
+       {
+        "hp": 160,
+        "chance": 0.125
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 16
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "id": "lax"
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 190,
+        "chance": 0.0625
+       },
+       {
+        "hp": 191,
+        "chance": 0.125
+       },
+       {
+        "hp": 192,
+        "chance": 0.125
+       },
+       {
+        "hp": 193,
+        "chance": 0.125
+       },
+       {
+        "hp": 194,
+        "chance": 0.125
+       },
+       {
+        "hp": 195,
+        "chance": 0.1875
+       },
+       {
+        "hp": 196,
+        "chance": 0.125
+       },
+       {
+        "hp": 197,
+        "chance": 0.125
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 32
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 24
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "swapped",
+     "opponent": "kept"
+    },
+    "benched": {
+     "own": [
+      {
+       "id": "slot:own-right",
+       "slot": "own-right",
+       "hp": [
+        {
+         "hp": 150,
+         "chance": 1
+        }
+       ],
+       "build": {
+        "speciesId": "ambipom",
+        "nature": "Serious",
+        "abilityId": "technician",
+        "abilityActive": false,
+        "itemId": "",
+        "boosts": {
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "currentHP": null,
+        "status": "",
+        "game": "scarlet_violet",
+        "native": {
+         "level": 50,
+         "evs": {
+          "hp": 0,
+          "atk": 0,
+          "def": 0,
+          "spa": 0,
+          "spd": 0,
+          "spe": 252
+         },
+         "ivs": {
+          "hp": 31,
+          "atk": 31,
+          "def": 31,
+          "spa": 31,
+          "spd": 31,
+          "spe": 31
+         }
+        }
+       },
+       "protected": false,
+       "moved": true
+      }
+     ]
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

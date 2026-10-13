@@ -1,0 +1,627 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 165,
+    "maximum": 165
+   },
+   "own-right": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "instruct",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-right",
+    "moveId": "dragonclaw",
+    "order": [],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 132,
+      "max": 156,
+      "minPercent": 56.17021276595745,
+      "maxPercent": 66.38297872340425,
+      "koChance": 0,
+      "row": {
+       "moveId": "dragonclaw",
+       "effectiveName": "Dragon Claw",
+       "effectiveType": "Dragon",
+       "effectivePower": 80,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 132,
+       "max": 156,
+       "minPercent": 56.17021276595745,
+       "maxPercent": 66.38297872340425,
+       "rolls": [
+        132,
+        133,
+        135,
+        136,
+        138,
+        139,
+        141,
+        142,
+        144,
+        145,
+        147,
+        148,
+        150,
+        151,
+        153,
+        156
+       ],
+       "ohkoChance": 0,
+       "description": "Dragon Claw: 132–156 HP (56.2–66.4% of maximum HP). Applied: Choice Band.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Instruct: Garchomp uses Dragon Claw again.",
+      "chance": 1
+     }
+    ],
+    "copied": "Instruct"
+   },
+   {
+    "slot": "own-right",
+    "moveId": "stoneedge",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [],
+    "facts": [
+     {
+      "text": "Stone Edge fails: Garchomp is locked into Dragon Claw by Choice Band.",
+      "chance": 1
+     }
+    ]
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 165,
+    "maximum": 165,
+    "low": 165,
+    "average": 165,
+    "high": 165,
+    "min": 165,
+    "max": 165,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 183,
+    "maximum": 183,
+    "low": 183,
+    "average": 183,
+    "high": 183,
+    "min": 183,
+    "max": 183,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 103,
+    "average": 91.875,
+    "high": 79,
+    "min": 79,
+    "max": 103,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-right",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "stoneedge",
+     "effectiveName": "Stone Edge",
+     "effectiveType": "Rock",
+     "effectivePower": 100,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 109,
+     "max": 129,
+     "minPercent": 46.38297872340426,
+     "maxPercent": 54.8936170212766,
+     "rolls": [
+      109,
+      110,
+      112,
+      113,
+      114,
+      116,
+      117,
+      118,
+      119,
+      121,
+      122,
+      123,
+      125,
+      126,
+      127,
+      129
+     ],
+     "ohkoChance": 0,
+     "description": "Stone Edge: 109–129 HP (46.4–54.9% of maximum HP). Applied: Choice Band.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 2,
+      "fasterChance": 0.64453125,
+      "limit": 8,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 126,
+      "high": 106,
+      "average": 116.1875,
+      "min": 106,
+      "max": 126,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 109,
+        "heals": []
+       },
+       "high": {
+        "dealt": 129,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Garchomp's Dragon Claw has PP left."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 165,
+     "maximum": 165,
+     "low": 165,
+     "average": 165,
+     "high": 165,
+     "min": 165,
+     "max": 165,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 183,
+     "maximum": 183,
+     "low": 183,
+     "average": 183,
+     "high": 183,
+     "min": 183,
+     "max": 183,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 103,
+     "average": 91.875,
+     "high": 79,
+     "min": 79,
+     "max": 103,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 6.326219000002311,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 165,
+    "maximum": 165
+   },
+   "own-right": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 165,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "oranguru",
+       "nature": "Serious",
+       "abilityId": "innerfocus",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 183,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "garchomp",
+       "nature": "Brave",
+       "abilityId": "roughskin",
+       "abilityActive": false,
+       "itemId": "choiceband",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 0
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 79,
+        "chance": 0.0625
+       },
+       {
+        "hp": 82,
+        "chance": 0.0625
+       },
+       {
+        "hp": 84,
+        "chance": 0.0625
+       },
+       {
+        "hp": 85,
+        "chance": 0.0625
+       },
+       {
+        "hp": 87,
+        "chance": 0.0625
+       },
+       {
+        "hp": 88,
+        "chance": 0.0625
+       },
+       {
+        "hp": 90,
+        "chance": 0.0625
+       },
+       {
+        "hp": 91,
+        "chance": 0.0625
+       },
+       {
+        "hp": 93,
+        "chance": 0.0625
+       },
+       {
+        "hp": 94,
+        "chance": 0.0625
+       },
+       {
+        "hp": 96,
+        "chance": 0.0625
+       },
+       {
+        "hp": 97,
+        "chance": 0.0625
+       },
+       {
+        "hp": 99,
+        "chance": 0.0625
+       },
+       {
+        "hp": 100,
+        "chance": 0.0625
+       },
+       {
+        "hp": 102,
+        "chance": 0.0625
+       },
+       {
+        "hp": 103,
+        "chance": 0.0625
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 8
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

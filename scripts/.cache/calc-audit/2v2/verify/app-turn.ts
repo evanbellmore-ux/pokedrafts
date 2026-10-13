@@ -161,7 +161,8 @@ export function caseInput(c: Case, runtime: BattleRuntime): DoublesTurnInput {
       action: { moveId, target: (m.action.target ?? null) as DoublesSlotId | null },
       ...(carried ? { carried } : {}),
       ...(m.lastMove !== undefined ? { lastMove: m.lastMove === null ? null : toID(m.lastMove) } : {}),
-      ...(m.moves ? { moves: [...new Set([...(moveId ? [moveId] : []), ...m.moves.map(toID)])] } : {}),
+      // status2 wave 2 (T2P-AST): a slot with exactMoves has exactly these Showdown slots (sim-dfs sdSet), so Assist can read them.
+      ...(m.moves || m.exactMoves ? { moves: [...new Set([...(moveId ? [moveId] : []), ...(m.moves ?? []).map(toID)])] } : {}),
       // status2 Step 1 #11 (C19) and #14: what happened earlier this turn; a Pokémon that switched in this turn (no action).
       ...(m.earlierThisTurn && Object.keys(m.earlierThisTurn).length ? { earlierThisTurn: { ...m.earlierThisTurn } } : {}),
       ...(m.action.switchIn ? { switchedIn: true as const } : {}),
@@ -207,7 +208,7 @@ export function benchPokemon(m: CaseBenchMon, runtime: BattleRuntime): DoublesBe
   return { id: m.id, build: caseBuild(m, runtime), ...(Object.keys(carried).length ? { carried } : {}), ...(m.moves?.length ? { moves: [...new Set(m.moves.map(toID))] } : {}) };
 }
 /** The hazard ids of CaseSide.hazards as DoublesHazards (with CaseSide.layers). */
-const HAZARD_KEYS: Record<string, keyof DoublesHazards> = { stealthrock: "stealthRock", spikes: "spikes", toxicspikes: "toxicSpikes", stickyweb: "stickyWeb", gmaxsteelsurge: "steelsurge" };
+const HAZARD_KEYS: Record<string, Exclude<keyof DoublesHazards, "order">> = { stealthrock: "stealthRock", spikes: "spikes", toxicspikes: "toxicSpikes", stickyweb: "stickyWeb", gmaxsteelsurge: "steelsurge" };
 export function caseHazards(s: CaseSide | undefined): DoublesHazards | null {
   const out: DoublesHazards = {};
   for (const id of s?.hazards ?? []) {
@@ -217,6 +218,8 @@ export function caseHazards(s: CaseSide | undefined): DoublesHazards | null {
     else if (key === "toxicSpikes") out.toxicSpikes = s?.layers?.toxicSpikes ?? 1;
     else out[key] = true;
   }
+  // Review 2 (R7-2): the order they went up (sim-dfs adds them in the case's order: effectOrder).
+  if ((s?.hazards?.length ?? 0) > 1) out.order = [...s!.hazards!] as DoublesHazards["order"];
   return Object.keys(out).length ? out : null;
 }
 /** status2 wave 2: the input's bench (a side with members, [] included), replacement and hazards (each only when the case has it). */

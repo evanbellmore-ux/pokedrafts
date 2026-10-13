@@ -1,0 +1,777 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "uturn",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 45,
+      "max": 54,
+      "minPercent": 19.148936170212767,
+      "maxPercent": 22.97872340425532,
+      "koChance": 0,
+      "row": {
+       "moveId": "uturn",
+       "effectiveName": "U-turn",
+       "effectiveType": "Bug",
+       "effectivePower": 70,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 45,
+       "max": 54,
+       "minPercent": 19.148936170212767,
+       "maxPercent": 22.97872340425532,
+       "rolls": [
+        45,
+        46,
+        46,
+        47,
+        48,
+        48,
+        49,
+        49,
+        50,
+        50,
+        51,
+        51,
+        52,
+        52,
+        53,
+        54
+       ],
+       "ohkoChance": 0,
+       "description": "U-turn: 45–54 HP (19.1–23.0% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Rillaboom switches out; Drampa comes in.",
+      "chance": 1
+     }
+    ]
+   },
+   {
+    "slot": "opponent-right",
+    "moveId": "flamethrower",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 11,
+      "max": 14,
+      "minPercent": 4.680851063829787,
+      "maxPercent": 5.957446808510639,
+      "koChance": 0,
+      "row": {
+       "moveId": "flamethrower",
+       "effectiveName": "Flamethrower",
+       "effectiveType": "Fire",
+       "effectivePower": 90,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 11,
+       "max": 14,
+       "minPercent": 4.680851063829787,
+       "maxPercent": 5.957446808510639,
+       "rolls": [
+        11,
+        12,
+        12,
+        12,
+        12,
+        12,
+        12,
+        12,
+        13,
+        13,
+        13,
+        13,
+        13,
+        13,
+        13,
+        14
+       ],
+       "ohkoChance": 0,
+       "description": "Flamethrower: 11–14 HP (4.7–6.0% of maximum HP). Applied: Thick Fat.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 175,
+    "maximum": 175,
+    "low": 175,
+    "average": 175,
+    "high": 175,
+    "min": 175,
+    "max": 175,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 224,
+    "average": 222.5,
+    "high": 221,
+    "min": 221,
+    "max": 224,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 190,
+    "average": 185.5625,
+    "high": 181,
+    "min": 181,
+    "max": 190,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "uturn",
+     "effectiveName": "U-turn",
+     "effectiveType": "Bug",
+     "effectivePower": 70,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 45,
+     "max": 54,
+     "minPercent": 19.148936170212767,
+     "maxPercent": 22.97872340425532,
+     "rolls": [
+      45,
+      46,
+      46,
+      47,
+      48,
+      48,
+      49,
+      49,
+      50,
+      50,
+      51,
+      51,
+      52,
+      52,
+      53,
+      54
+     ],
+     "ohkoChance": 0,
+     "description": "U-turn: 45–54 HP (19.1–23.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 6,
+      "fewest": 5,
+      "fasterChance": 0.9874277114868164,
+      "limit": 20,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the weather lasts through every use."
+      ]
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 190,
+      "high": 181,
+      "average": 185.5625,
+      "min": 181,
+      "max": 190,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 45,
+        "heals": []
+       },
+       "high": {
+        "dealt": 54,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-right",
+    "target": "own-right",
+    "row": {
+     "moveId": "flamethrower",
+     "effectiveName": "Flamethrower",
+     "effectiveType": "Fire",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 17,
+     "max": 21,
+     "minPercent": 7.234042553191489,
+     "maxPercent": 8.936170212765958,
+     "rolls": [
+      17,
+      18,
+      18,
+      18,
+      18,
+      18,
+      19,
+      19,
+      19,
+      19,
+      19,
+      20,
+      20,
+      20,
+      20,
+      21
+     ],
+     "ohkoChance": 0,
+     "description": "Flamethrower: 17–21 HP (7.2–8.9% of maximum HP). Applied: Thick Fat, Sun.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 14,
+      "fewest": 12,
+      "fasterChance": 0.999475556206868,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the weather lasts through every use."
+      ]
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 218,
+      "high": 214,
+      "average": 216.0625,
+      "min": 214,
+      "max": 218,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 17,
+        "heals": []
+       },
+       "high": {
+        "dealt": 21,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Drampa comes in for Rillaboom."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 175,
+     "maximum": 175,
+     "low": 175,
+     "average": 175,
+     "high": 175,
+     "min": 175,
+     "max": 175,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 224,
+     "average": 222.5,
+     "high": 221,
+     "min": 221,
+     "max": 224,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 190,
+     "average": 185.5625,
+     "high": 181,
+     "min": 181,
+     "max": 190,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": [],
+   "hpEntered": {
+    "own-left": {
+     "nine": {
+      "start": 153,
+      "maximum": 153,
+      "low": 153,
+      "average": 153,
+      "high": 153,
+      "min": 153,
+      "max": 153,
+      "koChance": 0,
+      "heals": []
+     }
+    }
+   }
+  },
+  "replaced": {
+   "own-left": {
+    "left": [
+     {
+      "id": "slot:own-left",
+      "hp": {
+       "start": 175,
+       "maximum": 175,
+       "low": 175,
+       "average": 175,
+       "high": 175,
+       "min": 175,
+       "max": 175,
+       "koChance": 0,
+       "heals": []
+      },
+      "chance": 1
+     }
+    ],
+    "entered": [
+     {
+      "id": "nine",
+      "chance": 1
+     }
+    ]
+   }
+  },
+  "hpEntered": {
+   "own-left": {
+    "nine": {
+     "start": 153,
+     "maximum": 153,
+     "low": 153,
+     "average": 153,
+     "high": 153,
+     "min": 153,
+     "max": 153,
+     "koChance": 0,
+     "heals": []
+    }
+   }
+  }
+ },
+ "ms": 16.968944000000192,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 153,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "drampa",
+       "nature": "Serious",
+       "abilityId": "cloudnine",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "id": "nine"
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 221,
+        "chance": 0.0625
+       },
+       {
+        "hp": 222,
+        "chance": 0.4375
+       },
+       {
+        "hp": 223,
+        "chance": 0.4375
+       },
+       {
+        "hp": 224,
+        "chance": 0.0625
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 1
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 181,
+        "chance": 0.0625
+       },
+       {
+        "hp": 182,
+        "chance": 0.0625
+       },
+       {
+        "hp": 183,
+        "chance": 0.125
+       },
+       {
+        "hp": 184,
+        "chance": 0.125
+       },
+       {
+        "hp": 185,
+        "chance": 0.125
+       },
+       {
+        "hp": 186,
+        "chance": 0.125
+       },
+       {
+        "hp": 187,
+        "chance": 0.125
+       },
+       {
+        "hp": 188,
+        "chance": 0.0625
+       },
+       {
+        "hp": 189,
+        "chance": 0.125
+       },
+       {
+        "hp": 190,
+        "chance": 0.0625
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 4
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 3
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "Sun",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    },
+    "benched": {
+     "own": [
+      {
+       "id": "slot:own-left",
+       "slot": "own-left",
+       "hp": [
+        {
+         "hp": 175,
+         "chance": 1
+        }
+       ],
+       "build": {
+        "speciesId": "rillaboom",
+        "nature": "Serious",
+        "abilityId": "overgrow",
+        "abilityActive": false,
+        "itemId": "",
+        "boosts": {
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "currentHP": null,
+        "status": "",
+        "game": "champions",
+        "points": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 32
+        }
+       },
+       "protected": false,
+       "moved": true
+      }
+     ]
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

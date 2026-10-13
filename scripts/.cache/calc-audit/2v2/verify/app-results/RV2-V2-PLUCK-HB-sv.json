@@ -1,0 +1,574 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 80,
+    "maximum": 145
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 200,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "pluck",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 51,
+      "max": 60,
+      "minPercent": 21.70212765957447,
+      "maxPercent": 25.53191489361702,
+      "koChance": 0,
+      "row": {
+       "moveId": "pluck",
+       "effectiveName": "Pluck",
+       "effectiveType": "Flying",
+       "effectivePower": 60,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 51,
+       "max": 60,
+       "minPercent": 21.70212765957447,
+       "maxPercent": 25.53191489361702,
+       "rolls": [
+        51,
+        51,
+        51,
+        52,
+        52,
+        54,
+        54,
+        54,
+        55,
+        55,
+        57,
+        57,
+        57,
+        58,
+        58,
+        60
+       ],
+       "ohkoChance": 0,
+       "description": "Pluck: 51–60 HP (21.7–25.5% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 80,
+    "maximum": 145,
+    "low": 116,
+    "average": 116,
+    "high": 116,
+    "min": 116,
+    "max": 116,
+    "koChance": 0,
+    "heals": [
+     "Bombirdier eats Snorlax (opponent's, 1)'s Sitrus Berry: +36 HP."
+    ]
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 200,
+    "maximum": 235,
+    "low": 149,
+    "average": 145.25,
+    "high": 140,
+    "min": 140,
+    "max": 149,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Heal Block.",
+      "chance": 1
+     },
+     {
+      "text": "Holds no item.",
+      "chance": 1
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "pluck",
+     "effectiveName": "Pluck",
+     "effectiveType": "Flying",
+     "effectivePower": 60,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 51,
+     "max": 60,
+     "minPercent": 21.70212765957447,
+     "maxPercent": 25.53191489361702,
+     "rolls": [
+      51,
+      51,
+      51,
+      52,
+      52,
+      54,
+      54,
+      54,
+      55,
+      55,
+      57,
+      57,
+      57,
+      58,
+      58,
+      60
+     ],
+     "ohkoChance": 0,
+     "description": "Pluck: 51–60 HP (21.7–25.5% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 4,
+      "fewest": 4,
+      "limit": 32,
+      "limitReason": "pp",
+      "carried": [
+       "Pluck takes the target's item."
+      ],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 200,
+      "low": 149,
+      "high": 140,
+      "average": 145.25,
+      "min": 140,
+      "max": 149,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 51,
+        "heals": []
+       },
+       "high": {
+        "dealt": 60,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 80,
+     "maximum": 145,
+     "low": 116,
+     "average": 116,
+     "high": 116,
+     "min": 116,
+     "max": 116,
+     "koChance": 0,
+     "heals": [
+      "Bombirdier eats Snorlax (opponent's, 1)'s Sitrus Berry: +36 HP."
+     ]
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 200,
+     "maximum": 235,
+     "low": 149,
+     "average": 145.25,
+     "high": 140,
+     "min": 140,
+     "max": 149,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Heal Block.",
+       "chance": 1
+      },
+      {
+       "text": "Holds no item.",
+       "chance": 1
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 10.348903999998583,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 80,
+    "maximum": 145
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 200,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 116,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "bombirdier",
+       "nature": "Serious",
+       "abilityId": "bigpecks",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 8
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 140,
+        "chance": 0.0625
+       },
+       {
+        "hp": 142,
+        "chance": 0.125
+       },
+       {
+        "hp": 143,
+        "chance": 0.1875
+       },
+       {
+        "hp": 145,
+        "chance": 0.125
+       },
+       {
+        "hp": 146,
+        "chance": 0.1875
+       },
+       {
+        "hp": 148,
+        "chance": 0.125
+       },
+       {
+        "hp": 149,
+        "chance": 0.1875
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 16
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "volatiles": [
+       "healblock"
+      ],
+      "turnsLeft": {
+       "healblock": 1
+      }
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 24
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

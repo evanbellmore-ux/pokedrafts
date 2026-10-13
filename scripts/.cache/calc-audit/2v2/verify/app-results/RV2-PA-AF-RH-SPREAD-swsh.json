@@ -1,0 +1,711 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 130,
+    "maximum": 183
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 1,
+    "maximum": 225
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "breakingswipe",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 58,
+      "max": 70,
+      "minPercent": 25.77777777777778,
+      "maxPercent": 31.11111111111111,
+      "koChance": 1,
+      "row": {
+       "moveId": "breakingswipe",
+       "effectiveName": "Breaking Swipe",
+       "effectiveType": "Dragon",
+       "effectivePower": 60,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 58,
+       "max": 70,
+       "minPercent": 25.77777777777778,
+       "maxPercent": 31.11111111111111,
+       "rolls": [
+        58,
+        60,
+        60,
+        61,
+        61,
+        63,
+        63,
+        64,
+        64,
+        66,
+        66,
+        67,
+        67,
+        69,
+        69,
+        70
+       ],
+       "ohkoChance": 0,
+       "description": "Breaking Swipe: 58–70 HP (25.8–31.1% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     },
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 45,
+      "max": 54,
+      "minPercent": 19.148936170212767,
+      "maxPercent": 22.97872340425532,
+      "koChance": 0,
+      "row": {
+       "moveId": "breakingswipe",
+       "effectiveName": "Breaking Swipe",
+       "effectiveType": "Dragon",
+       "effectivePower": 60,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 45,
+       "max": 54,
+       "minPercent": 19.148936170212767,
+       "maxPercent": 22.97872340425532,
+       "rolls": [
+        45,
+        45,
+        46,
+        46,
+        48,
+        48,
+        48,
+        49,
+        49,
+        49,
+        51,
+        51,
+        51,
+        52,
+        52,
+        54
+       ],
+       "ohkoChance": 0,
+       "description": "Breaking Swipe: 45–54 HP (19.1–23.0% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 130,
+    "maximum": 183,
+    "low": 100,
+    "average": 100,
+    "high": 100,
+    "min": 100,
+    "max": 100,
+    "koChance": 0,
+    "heals": [
+     "Sitrus Berry: +45 HP."
+    ],
+    "losses": [
+     {
+      "text": "Garchomp loses 45 HP (Aftermath).",
+      "chance": 1
+     }
+    ],
+    "conditions": [
+     {
+      "text": "Holds no item.",
+      "chance": 1
+     }
+    ]
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 190,
+    "average": 186,
+    "high": 181,
+    "min": 181,
+    "max": 190,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 1,
+    "maximum": 225,
+    "low": 0,
+    "average": 0,
+    "high": 0,
+    "min": 0,
+    "max": 0,
+    "koChance": 1,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "breakingswipe",
+     "effectiveName": "Breaking Swipe",
+     "effectiveType": "Dragon",
+     "effectivePower": 60,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 45,
+     "max": 54,
+     "minPercent": 19.148936170212767,
+     "maxPercent": 22.97872340425532,
+     "rolls": [
+      45,
+      45,
+      46,
+      46,
+      48,
+      48,
+      48,
+      49,
+      49,
+      49,
+      51,
+      51,
+      51,
+      52,
+      52,
+      54
+     ],
+     "ohkoChance": 0,
+     "description": "Breaking Swipe: 45–54 HP (19.1–23.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 6,
+      "fewest": 5,
+      "fasterChance": 0.9662551879882812,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [
+       "The attacker's Sitrus Berry heals it once, at half its HP or less."
+      ],
+      "notes": [
+       "Assumes the target's partner stays in for every use.",
+       "Assumes the target's partner has no Pressure."
+      ],
+      "attackerFaints": {
+       "lowest": 6
+      }
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 190,
+      "high": 181,
+      "average": 186,
+      "min": 181,
+      "max": 190,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 45,
+        "heals": []
+       },
+       "high": {
+        "dealt": 54,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "breakingswipe",
+     "effectiveName": "Breaking Swipe",
+     "effectiveType": "Dragon",
+     "effectivePower": 60,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 58,
+     "max": 70,
+     "minPercent": 25.77777777777778,
+     "maxPercent": 31.11111111111111,
+     "rolls": [
+      58,
+      60,
+      60,
+      61,
+      61,
+      63,
+      63,
+      64,
+      64,
+      66,
+      66,
+      67,
+      67,
+      69,
+      69,
+      70
+     ],
+     "ohkoChance": 1,
+     "description": "Breaking Swipe: 58–70 HP (25.8–31.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 1,
+      "fewest": 1,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the target's partner stays in for every use.",
+       "Assumes the target's partner has no Pressure."
+      ]
+     },
+     "afterUse": {
+      "start": 1,
+      "low": 0,
+      "high": 0,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "koChance": 1,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 1,
+        "heals": []
+       },
+       "high": {
+        "dealt": 1,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 130,
+     "maximum": 183,
+     "low": 100,
+     "average": 100,
+     "high": 100,
+     "min": 100,
+     "max": 100,
+     "koChance": 0,
+     "heals": [
+      "Sitrus Berry: +45 HP."
+     ],
+     "losses": [
+      {
+       "text": "Garchomp loses 45 HP (Aftermath).",
+       "chance": 1
+      }
+     ],
+     "conditions": [
+      {
+       "text": "Holds no item.",
+       "chance": 1
+      }
+     ]
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 190,
+     "average": 186,
+     "high": 181,
+     "min": 181,
+     "max": 190,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 1,
+     "maximum": 225,
+     "low": 0,
+     "average": 0,
+     "high": 0,
+     "min": 0,
+     "max": 0,
+     "koChance": 1,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 13.84915700000056,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 130,
+    "maximum": 183
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 1,
+    "maximum": 225
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 100,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "garchomp",
+       "nature": "Serious",
+       "abilityId": "roughskin",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 181,
+        "chance": 0.0625
+       },
+       {
+        "hp": 183,
+        "chance": 0.125
+       },
+       {
+        "hp": 184,
+        "chance": 0.1875
+       },
+       {
+        "hp": 186,
+        "chance": 0.1875
+       },
+       {
+        "hp": 187,
+        "chance": 0.1875
+       },
+       {
+        "hp": 189,
+        "chance": 0.125
+       },
+       {
+        "hp": 190,
+        "chance": 0.125
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "rockyhelmet",
+       "boosts": {
+        "atk": -1,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 16
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 0,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "drifblim",
+       "nature": "Serious",
+       "abilityId": "aftermath",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": -1,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": false
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 1
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

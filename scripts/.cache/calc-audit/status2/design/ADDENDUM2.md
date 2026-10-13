@@ -933,11 +933,11 @@ as the heading): checkboxes in the two-column grid, then selects in the compact 
 | `Octolock by` | `data-doubles-octolock` | ch, swsh | IN §5.2 | None, each such foe | `carried.octolock` |
 | `Accuracy stage`, `Evasion stage` | `data-doubles-accuracy`, `-evasion` | all | IN §5.2 | −6..+6 (0) | `carried.stages` |
 | `Locked on to` | `data-doubles-lock-on` | all | it learns Lock-On or Mind Reader | None, each foe | `carried.lockOn` |
-| `Last move` | `data-doubles-last-move` | all | Disable, Encore, Instruct or Mirror Move in the turn can reach it; its own action is Conversion 2 | **Unknown**, None since it came in, its quick moves, its action's move | `lastMove` |
+| `Last move` | `data-doubles-last-move` | all | Disable, Encore, Instruct or Mirror Move in the turn can reach it; a Conversion 2 of the turn can reach it (review 2 R6-1: pinned conversion2 reads its target's lastMoveUsed; round 2 R6-r2-4: any Conversion 2 in the turn, as a fainted target's retarget or a Spotlight can bring it there) | **Unknown**, None since it came in, its quick moves, its action's move | `lastMove` |
 | `Last move's target` | `data-doubles-last-target` | all | an Instruct in the turn can reach it and its `Last move` is a single-target move | **Unknown**, each Pokémon of the turn | `lastMoveTarget` |
 | `Item used earlier` | `data-doubles-last-item` | all | it holds no item, and its action is Recycle, its ability Harvest, a Pickup holder or a G-Max Replenish user is in the turn | **Unknown**, None, the game's items (Berries first) | `lastItem` |
 | `Berry eaten last turn` | `data-doubles-cud-chew` | sv, ch | its ability is Cud Chew | None (fact without a Berry held, C29), the Berries | `carried.cudChew` |
-| `Protecting moves in a row` | `data-doubles-stall` | all | its action is a protecting move, Endure, or Max Guard (a Dynamaxed status move) | — (absent: the fact), 0–6 (0 → 1, n → 3^n capped at 729) | `carried.stall` (C23) |
+| `Protecting moves in a row` | `data-doubles-stall` | all | its action is a protecting move, Endure, or Max Guard (a Dynamaxed status move); or (review 2 R6-3) an Instruct of the turn aimed at it while its `Last move` is one, or its Sleep Talk with one among its quick moves | — (absent: the fact), 0–6 (0 → 1, n → 3^n capped at 729) | `carried.stall` (C23) |
 | `Ally Switch in a row` | `data-doubles-ally-switch` | sv, ch | its action is Ally Switch | — , 0–6 (as above) | `carried.allySwitch` |
 | `Uproar turns left` | `data-doubles-uproar` | all | its action is Uproar | — (absent: the fact), 1, 2 | `carried.uproar` |
 | `Fury Cutter uses in a row` | `data-doubles-fury-cutter` | sv swsh usum | its action is Fury Cutter | **Unknown**, 0–4 | `carried.furyCutter` |
@@ -972,7 +972,8 @@ as the heading): checkboxes in the two-column grid, then selects in the compact 
 
 **State and reset rules** (IN §5.4), plus: an action change drops `charging`, `stall`, `allySwitch`, `uproar`, `bide`,
 `furyCutter`, `rollout`, `ppLeft`, `firstTurn` and `mustRecharge` unless the new action reads them; `Switched in` clears the
-Pokémon's action-bound controls; a game change drops every control the new game does not have.
+Pokémon's action-bound controls and every state a switch ends, its `Last move` and types included (review 2, R6-5); a game
+change drops every control the new game does not have.
 
 **Summary toggles** (IN §5.5), plus: `Recharging`, `Not its first turn`, `Stats rose earlier this turn`, `Used an item earlier
 this turn`, `Locked on to`, `Bide stored`, the G-Max boxes and `Switched in` count when set; `Fury Cutter uses in a row`,

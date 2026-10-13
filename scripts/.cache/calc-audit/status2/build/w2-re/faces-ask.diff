@@ -1,0 +1,45 @@
+--- app/lib/battle/doubles-faces.ts	2026-10-11 22:08:19.895326284 +0000
++++ app/lib/battle/doubles-faces.ts	2026-10-11 22:51:41.875694977 +0000
+@@ -1,6 +1,6 @@
+ import { getBerryResistType } from "@smogon/calc/dist/items";
+ import { calculateTurnMove, usesHelpers } from "./calculate";
+-import { BUSTED_FORMS, DRAG_MOVES, REASONS, SWITCH_MOVES } from "./doubles-actions";
++import { BUSTED_FORMS, DRAG_MOVES, REASONS } from "./doubles-actions";
+ import * as switchNs from "./doubles-switch";
+ import { sideCanSwitch, type DoublesSlotId } from "./doubles-types";
+ import { setVol, stageFact } from "./doubles-use";
+@@ -287,23 +287,27 @@
+     kernel.hitFact(action, target, `${kernel.names[target]} eats its ${kernel.itemName(item)}${amount ? `: ${stageFact(berry.stat, amount)}` : "."}`, w.mass);
+     return;
+   }
+-  // Eject Button and Red Card need a Pokémon to come in (canSwitch); Eject Button waits for none already switching (a
+-  // U-turn's user: its selfSwitch is set in the hit); each is used up as it acts.
++  // Eject Button and Red Card need a Pokémon to come in (canSwitch); each is used up as it acts. A U-turn's switchFlag is its
++  // move id, which Eject Button does not wait for (only a switchFlag of `true`): the holder leaves, the U-turn's switch is
++  // cancelled (R's replaceSlot).
+   const canSwitch = (slot: DoublesSlotId) => sideCanSwitch(kernel.input, sideOfSlot(slot)) !== false;
+-  const selfSwitch = !info.transformed && SWITCH_MOVES.has(action.moveId!) && kernel.alive(w, attacker);
+   // Dragon Tail and Circle Throw set the holder's forceSwitchFlag in the hit (sim/battle-actions.ts forceSwitch), before these.
+   const dragged = !info.transformed && DRAG_MOVES.has(action.moveId!) && !isMaxActive(receiver.build);
+   if (dragged) return;
+-  if (item === "ejectbutton" && canSwitch(target) && !selfSwitch) {
++  // status2 R: with the leaver's side's bench, R's switchOut decides whether the item acts and uses it up (doubles-switch.ts replaceSlot).
++  const takeItem = (slot: DoublesSlotId) => {
++    if (kernel.input.bench?.[sideOfSlot(slot)]) return;
+     receiver.build = { ...receiver.build, itemId: "" };
+     kernel.noteItemUse(w, target, item);
++  };
++  if (item === "ejectbutton" && canSwitch(target)) {
++    takeItem(target);
+     kernel.gasEnds(w, target);
+     switchHooks.switchOut(kernel, w, target, "ejectbutton", null);
+   } else if (item === "redcard" && kernel.alive(w, attacker) && attacker !== target && canSwitch(attacker)) {
+-    receiver.build = { ...receiver.build, itemId: "" };
+-    kernel.noteItemUse(w, target, item);
++    takeItem(attacker);
+     kernel.gasEnds(w, attacker);
+-    switchHooks.switchOut(kernel, w, attacker, "redcard", null);
++    switchHooks.switchOut(kernel, w, attacker, "redcard", null, target);
+   }
+ }
+ 

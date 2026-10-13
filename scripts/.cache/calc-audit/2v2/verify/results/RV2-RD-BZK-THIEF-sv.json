@@ -1,0 +1,1931 @@
+{
+ "id": "RV2-RD-BZK-THIEF-sv",
+ "title": "A Berserk holder (Sitrus locked last turn) at 70 HP; an itemless foe at 70 HP Thiefs it: the thief holds the Sitrus and eats it",
+ "game": "sv",
+ "format": "gen9doublescustomgame",
+ "checks": "thief onAfterHit takeItem/setItem before the Update.",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 21,
+   "classes": 15,
+   "ms": 63,
+   "decisions": {
+    "fail:?": 7,
+    "roll": 7,
+    "fail:poisontouch": 7
+   },
+   "slots": {
+    "own-left": {
+     "species": "Sneasler",
+     "start": 70,
+     "maximum": 155,
+     "dist": [
+      [
+       108,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 108,
+     "min": 108,
+     "max": 108,
+     "modeTieUp": 108,
+     "modeTieDown": 108,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Fighting/Poison": 1
+     },
+     "ability": {
+      "poisontouch": 1
+     },
+     "forme": {
+      "sneasler": 1
+     },
+     "stored": {
+      "150/80/60/100/172": 1
+     },
+     "weight": {
+      "430": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "sitrusberry": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Normal": 1
+     },
+     "ability": {
+      "thickfat": 1
+     },
+     "forme": {
+      "snorlax": 1
+     },
+     "stored": {
+      "130/85/85/130/51": 1
+     },
+     "weight": {
+      "4600": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "opponent-left": {
+     "species": "Moltres-Galar",
+     "start": 70,
+     "maximum": 165,
+     "dist": [
+      [
+       51,
+       0.0625
+      ],
+      [
+       52,
+       0.3125
+      ],
+      [
+       53,
+       0.3125
+      ],
+      [
+       54,
+       0.3125
+      ]
+     ],
+     "koChance": 0,
+     "average": 52.875,
+     "min": 51,
+     "max": 54,
+     "modeTieUp": 54,
+     "modeTieDown": 52,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Dark/Flying": 1
+     },
+     "ability": {
+      "berserk": 1
+     },
+     "forme": {
+      "moltresgalar": 1
+     },
+     "stored": {
+      "105/110/120/145/110": 1
+     },
+     "weight": {
+      "660": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Normal": 1
+     },
+     "ability": {
+      "thickfat": 1
+     },
+     "forme": {
+      "snorlax": 1
+     },
+     "stored": {
+      "130/85/85/130/53": 1
+     },
+     "weight": {
+      "4600": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "thief",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 16,
+       "dmgMax": 19,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2b: Moltres|Sitrus Berry|[silent]|[from] move: Thief|[of] p1a: Sneasler": 1,
+      "|-item|p1a: Sneasler|Sitrus Berry|[from] move: Thief|[of] p2b: Moltres": 1,
+      "|-enditem|p1a: Sneasler|Sitrus Berry|[eat]": 1,
+      "|-heal|p1a: Sneasler|hp|[from] item: Sitrus Berry": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-16": 0.3125,
+       "enditem:sitrusberry": 1,
+       "damage:-17": 0.3125,
+       "damage:-18": 0.3125,
+       "damage:-19": 0.0625
+      },
+      "own-left": {
+       "item:sitrusberry": 1,
+       "enditem:sitrusberry:eat": 1,
+       "heal:sitrusberry:38": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 38,
+       "max": 38
+      },
+      "opponent-left": {
+       "min": -19,
+       "max": -16
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -19,
+       "max": -16,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "opponent-right": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 4,
+    "classes": 4,
+    "ms": 63,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Sneasler",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        108,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 108,
+      "min": 108,
+      "max": 108,
+      "modeTieUp": 108,
+      "modeTieDown": 108,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Fighting/Poison": 1
+      },
+      "ability": {
+       "poisontouch": 1
+      },
+      "forme": {
+       "sneasler": 1
+      },
+      "stored": {
+       "150/80/60/100/172": 1
+      },
+      "weight": {
+       "430": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "sitrusberry": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal": 1
+      },
+      "ability": {
+       "thickfat": 1
+      },
+      "forme": {
+       "snorlax": 1
+      },
+      "stored": {
+       "130/85/85/130/51": 1
+      },
+      "weight": {
+       "4600": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "opponent-left": {
+      "species": "Moltres-Galar",
+      "start": null,
+      "maximum": 165,
+      "dist": [
+       [
+        51,
+        0.0625
+       ],
+       [
+        52,
+        0.3125
+       ],
+       [
+        53,
+        0.3125
+       ],
+       [
+        54,
+        0.3125
+       ]
+      ],
+      "koChance": 0,
+      "average": 52.875,
+      "min": 51,
+      "max": 54,
+      "modeTieUp": 54,
+      "modeTieDown": 52,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Dark/Flying": 1
+      },
+      "ability": {
+       "berserk": 1
+      },
+      "forme": {
+       "moltresgalar": 1
+      },
+      "stored": {
+       "105/110/120/145/110": 1
+      },
+      "weight": {
+       "660": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "opponent-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal": 1
+      },
+      "ability": {
+       "thickfat": 1
+      },
+      "forme": {
+       "snorlax": 1
+      },
+      "stored": {
+       "130/85/85/130/53": 1
+      },
+      "weight": {
+       "4600": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    },
+    "pseudo": {},
+    "sides": {}
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 25,
+   "decisions": {
+    "fail:?": 1,
+    "roll": 1,
+    "fail:poisontouch": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Sneasler",
+     "start": 70,
+     "maximum": 155,
+     "dist": [
+      [
+       108,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 108,
+     "min": 108,
+     "max": 108,
+     "modeTieUp": 108,
+     "modeTieDown": 108,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Fighting/Poison": 1
+     },
+     "ability": {
+      "poisontouch": 1
+     },
+     "forme": {
+      "sneasler": 1
+     },
+     "stored": {
+      "150/80/60/100/172": 1
+     },
+     "weight": {
+      "430": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "sitrusberry": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Normal": 1
+     },
+     "ability": {
+      "thickfat": 1
+     },
+     "forme": {
+      "snorlax": 1
+     },
+     "stored": {
+      "130/85/85/130/51": 1
+     },
+     "weight": {
+      "4600": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "opponent-left": {
+     "species": "Moltres-Galar",
+     "start": 70,
+     "maximum": 165,
+     "dist": [
+      [
+       54,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 54,
+     "min": 54,
+     "max": 54,
+     "modeTieUp": 54,
+     "modeTieDown": 54,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Dark/Flying": 1
+     },
+     "ability": {
+      "berserk": 1
+     },
+     "forme": {
+      "moltresgalar": 1
+     },
+     "stored": {
+      "105/110/120/145/110": 1
+     },
+     "weight": {
+      "660": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Normal": 1
+     },
+     "ability": {
+      "thickfat": 1
+     },
+     "forme": {
+      "snorlax": 1
+     },
+     "stored": {
+      "130/85/85/130/53": 1
+     },
+     "weight": {
+      "4600": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "thief",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 16,
+       "dmgMax": 16,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2b: Moltres|Sitrus Berry|[silent]|[from] move: Thief|[of] p1a: Sneasler": 1,
+      "|-item|p1a: Sneasler|Sitrus Berry|[from] move: Thief|[of] p2b: Moltres": 1,
+      "|-enditem|p1a: Sneasler|Sitrus Berry|[eat]": 1,
+      "|-heal|p1a: Sneasler|hp|[from] item: Sitrus Berry": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-16": 1,
+       "enditem:sitrusberry": 1
+      },
+      "own-left": {
+       "item:sitrusberry": 1,
+       "enditem:sitrusberry:eat": 1,
+       "heal:sitrusberry:38": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 38,
+       "max": 38
+      },
+      "opponent-left": {
+       "min": -16,
+       "max": -16
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -16,
+       "max": -16,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "opponent-right": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 25,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Sneasler",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        108,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 108,
+      "min": 108,
+      "max": 108,
+      "modeTieUp": 108,
+      "modeTieDown": 108,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Fighting/Poison": 1
+      },
+      "ability": {
+       "poisontouch": 1
+      },
+      "forme": {
+       "sneasler": 1
+      },
+      "stored": {
+       "150/80/60/100/172": 1
+      },
+      "weight": {
+       "430": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "sitrusberry": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal": 1
+      },
+      "ability": {
+       "thickfat": 1
+      },
+      "forme": {
+       "snorlax": 1
+      },
+      "stored": {
+       "130/85/85/130/51": 1
+      },
+      "weight": {
+       "4600": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "opponent-left": {
+      "species": "Moltres-Galar",
+      "start": null,
+      "maximum": 165,
+      "dist": [
+       [
+        54,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 54,
+      "min": 54,
+      "max": 54,
+      "modeTieUp": 54,
+      "modeTieDown": 54,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Dark/Flying": 1
+      },
+      "ability": {
+       "berserk": 1
+      },
+      "forme": {
+       "moltresgalar": 1
+      },
+      "stored": {
+       "105/110/120/145/110": 1
+      },
+      "weight": {
+       "660": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "opponent-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal": 1
+      },
+      "ability": {
+       "thickfat": 1
+      },
+      "forme": {
+       "snorlax": 1
+      },
+      "stored": {
+       "130/85/85/130/53": 1
+      },
+      "weight": {
+       "4600": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    },
+    "pseudo": {},
+    "sides": {}
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 6,
+   "classes": 6,
+   "ms": 12,
+   "decisions": {
+    "fail:?": 1,
+    "roll": 1,
+    "fail:poisontouch": 1
+   },
+   "slots": {
+    "own-left": {
+     "species": "Sneasler",
+     "start": 70,
+     "maximum": 155,
+     "dist": [
+      [
+       108,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 108,
+     "min": 108,
+     "max": 108,
+     "modeTieUp": 108,
+     "modeTieDown": 108,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Fighting/Poison": 1
+     },
+     "ability": {
+      "poisontouch": 1
+     },
+     "forme": {
+      "sneasler": 1
+     },
+     "stored": {
+      "150/80/60/100/172": 1
+     },
+     "weight": {
+      "430": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "sitrusberry": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Normal": 1
+     },
+     "ability": {
+      "thickfat": 1
+     },
+     "forme": {
+      "snorlax": 1
+     },
+     "stored": {
+      "130/85/85/130/51": 1
+     },
+     "weight": {
+      "4600": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "opponent-left": {
+     "species": "Moltres-Galar",
+     "start": 70,
+     "maximum": 165,
+     "dist": [
+      [
+       51,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 51,
+     "min": 51,
+     "max": 51,
+     "modeTieUp": 51,
+     "modeTieDown": 51,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Dark/Flying": 1
+     },
+     "ability": {
+      "berserk": 1
+     },
+     "forme": {
+      "moltresgalar": 1
+     },
+     "stored": {
+      "105/110/120/145/110": 1
+     },
+     "weight": {
+      "660": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "opponent-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Normal": 1
+     },
+     "ability": {
+      "thickfat": 1
+     },
+     "forme": {
+      "snorlax": 1
+     },
+     "stored": {
+      "130/85/85/130/53": 1
+     },
+     "weight": {
+      "4600": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "thief",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 19,
+       "dmgMax": 19,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2b: Moltres|Sitrus Berry|[silent]|[from] move: Thief|[of] p1a: Sneasler": 1,
+      "|-item|p1a: Sneasler|Sitrus Berry|[from] move: Thief|[of] p2b: Moltres": 1,
+      "|-enditem|p1a: Sneasler|Sitrus Berry|[eat]": 1,
+      "|-heal|p1a: Sneasler|hp|[from] item: Sitrus Berry": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-19": 1,
+       "enditem:sitrusberry": 1
+      },
+      "own-left": {
+       "item:sitrusberry": 1,
+       "enditem:sitrusberry:eat": 1,
+       "heal:sitrusberry:38": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 38,
+       "max": 38
+      },
+      "opponent-left": {
+       "min": -19,
+       "max": -19
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -19,
+       "max": -19,
+       "mass": 1
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "opponent-right": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 1,
+    "classes": 1,
+    "ms": 13,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Sneasler",
+      "start": null,
+      "maximum": 155,
+      "dist": [
+       [
+        108,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 108,
+      "min": 108,
+      "max": 108,
+      "modeTieUp": 108,
+      "modeTieDown": 108,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Fighting/Poison": 1
+      },
+      "ability": {
+       "poisontouch": 1
+      },
+      "forme": {
+       "sneasler": 1
+      },
+      "stored": {
+       "150/80/60/100/172": 1
+      },
+      "weight": {
+       "430": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "sitrusberry": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal": 1
+      },
+      "ability": {
+       "thickfat": 1
+      },
+      "forme": {
+       "snorlax": 1
+      },
+      "stored": {
+       "130/85/85/130/51": 1
+      },
+      "weight": {
+       "4600": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "opponent-left": {
+      "species": "Moltres-Galar",
+      "start": null,
+      "maximum": 165,
+      "dist": [
+       [
+        51,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 51,
+      "min": 51,
+      "max": 51,
+      "modeTieUp": 51,
+      "modeTieDown": 51,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Dark/Flying": 1
+      },
+      "ability": {
+       "berserk": 1
+      },
+      "forme": {
+       "moltresgalar": 1
+      },
+      "stored": {
+       "105/110/120/145/110": 1
+      },
+      "weight": {
+       "660": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "opponent-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal": 1
+      },
+      "ability": {
+       "thickfat": 1
+      },
+      "forme": {
+       "snorlax": 1
+      },
+      "stored": {
+       "130/85/85/130/53": 1
+      },
+      "weight": {
+       "4600": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    },
+    "pseudo": {},
+    "sides": {}
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 70,
+   "maximum": 155,
+   "low": 108,
+   "high": 108,
+   "average": 108,
+   "min": 108,
+   "max": 108,
+   "koChance": 0,
+   "dist": [
+    [
+     108,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 70,
+   "maximum": 165,
+   "low": 54,
+   "high": 51,
+   "average": 52.875,
+   "min": 51,
+   "max": 54,
+   "koChance": 0,
+   "dist": [
+    [
+     51,
+     0.0625
+    ],
+    [
+     52,
+     0.3125
+    ],
+    [
+     53,
+     0.3125
+    ],
+    [
+     54,
+     0.3125
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 70,
+   "maximum": 155,
+   "low": 108,
+   "high": 108,
+   "average": 108,
+   "min": 108,
+   "max": 108,
+   "koChance": 0,
+   "dist": [
+    [
+     108,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 70,
+   "maximum": 165,
+   "low": 54,
+   "high": 51,
+   "average": 52.875,
+   "min": 51,
+   "max": 54,
+   "koChance": 0,
+   "dist": [
+    [
+     51,
+     0.0625
+    ],
+    [
+     52,
+     0.3125
+    ],
+    [
+     53,
+     0.3125
+    ],
+    [
+     54,
+     0.3125
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  }
+ },
+ "residuals": []
+}

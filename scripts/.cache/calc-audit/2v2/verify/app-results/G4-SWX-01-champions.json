@@ -1,0 +1,781 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "uturn",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 34,
+      "max": 40,
+      "minPercent": 18.579234972677597,
+      "maxPercent": 21.85792349726776,
+      "koChance": 0,
+      "row": {
+       "moveId": "uturn",
+       "effectiveName": "U-turn",
+       "effectiveType": "Bug",
+       "effectivePower": 70,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 34,
+       "max": 40,
+       "minPercent": 18.579234972677597,
+       "maxPercent": 21.85792349726776,
+       "rolls": [
+        34,
+        34,
+        34,
+        35,
+        35,
+        36,
+        36,
+        36,
+        37,
+        37,
+        38,
+        38,
+        38,
+        39,
+        39,
+        40
+       ],
+       "ohkoChance": 0,
+       "description": "U-turn: 34–40 HP (18.6–21.9% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Rillaboom switches out; Incineroar comes in.",
+      "chance": 1
+     },
+     {
+      "text": "Garchomp: −1 Attack.",
+      "chance": 1
+     },
+     {
+      "text": "Snorlax (opponent's): −1 Attack.",
+      "chance": 1
+     }
+    ]
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "dragonclaw",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "id": "inci",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 42,
+      "max": 51,
+      "minPercent": 24.705882352941178,
+      "maxPercent": 30,
+      "koChance": 0,
+      "row": {
+       "moveId": "dragonclaw",
+       "effectiveName": "Dragon Claw",
+       "effectiveType": "Dragon",
+       "effectivePower": 80,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 42,
+       "max": 51,
+       "minPercent": 24.705882352941178,
+       "maxPercent": 30,
+       "rolls": [
+        42,
+        43,
+        43,
+        43,
+        45,
+        45,
+        45,
+        46,
+        46,
+        46,
+        48,
+        48,
+        48,
+        49,
+        49,
+        51
+       ],
+       "ohkoChance": 0,
+       "description": "Dragon Claw: 42–51 HP (24.7–30.0% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 175,
+    "maximum": 175,
+    "low": 154,
+    "average": 154,
+    "high": 154,
+    "min": 154,
+    "max": 154,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 183,
+    "maximum": 183,
+    "low": 149,
+    "average": 146.375,
+    "high": 143,
+    "min": 143,
+    "max": 149,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "uturn",
+     "effectiveName": "U-turn",
+     "effectiveType": "Bug",
+     "effectivePower": 70,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 34,
+     "max": 40,
+     "minPercent": 18.579234972677597,
+     "maxPercent": 21.85792349726776,
+     "rolls": [
+      34,
+      34,
+      34,
+      35,
+      35,
+      36,
+      36,
+      36,
+      37,
+      37,
+      38,
+      38,
+      38,
+      39,
+      39,
+      40
+     ],
+     "ohkoChance": 0,
+     "description": "U-turn: 34–40 HP (18.6–21.9% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 6,
+      "fewest": 5,
+      "fasterChance": 0.5552988052368164,
+      "limit": 20,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 183,
+      "low": 149,
+      "high": 143,
+      "average": 146.375,
+      "min": 143,
+      "max": 149,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 34,
+        "heals": []
+       },
+       "high": {
+        "dealt": 40,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "dragonclaw",
+     "effectiveName": "Dragon Claw",
+     "effectiveType": "Dragon",
+     "effectivePower": 80,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 63,
+     "max": 75,
+     "minPercent": 36,
+     "maxPercent": 42.857142857142854,
+     "rolls": [
+      63,
+      64,
+      64,
+      66,
+      66,
+      67,
+      67,
+      69,
+      69,
+      70,
+      70,
+      72,
+      72,
+      73,
+      73,
+      75
+     ],
+     "ohkoChance": 0,
+     "description": "Dragon Claw: 63–75 HP (36.0–42.9% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 3,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 175,
+      "low": 112,
+      "high": 100,
+      "average": 106.25,
+      "min": 100,
+      "max": 112,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 63,
+        "heals": []
+       },
+       "high": {
+        "dealt": 75,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Incineroar comes in for Rillaboom."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 175,
+     "maximum": 175,
+     "low": 154,
+     "average": 154,
+     "high": 154,
+     "min": 154,
+     "max": 154,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 183,
+     "maximum": 183,
+     "low": 149,
+     "average": 146.375,
+     "high": 143,
+     "min": 143,
+     "max": 149,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": [],
+   "hpEntered": {
+    "own-left": {
+     "inci": {
+      "start": 170,
+      "maximum": 170,
+      "low": 128,
+      "average": 123.9375,
+      "high": 119,
+      "min": 119,
+      "max": 128,
+      "koChance": 0,
+      "heals": []
+     }
+    }
+   }
+  },
+  "replaced": {
+   "own-left": {
+    "left": [
+     {
+      "id": "slot:own-left",
+      "hp": {
+       "start": 175,
+       "maximum": 175,
+       "low": 154,
+       "average": 154,
+       "high": 154,
+       "min": 154,
+       "max": 154,
+       "koChance": 0,
+       "heals": []
+      },
+      "chance": 1
+     }
+    ],
+    "entered": [
+     {
+      "id": "inci",
+      "chance": 1
+     }
+    ]
+   }
+  },
+  "hpEntered": {
+   "own-left": {
+    "inci": {
+     "start": 170,
+     "maximum": 170,
+     "low": 128,
+     "average": 123.9375,
+     "high": 119,
+     "min": 119,
+     "max": 128,
+     "koChance": 0,
+     "heals": []
+    }
+   }
+  }
+ },
+ "ms": 13.509984000000259,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 119,
+        "chance": 0.0625
+       },
+       {
+        "hp": 121,
+        "chance": 0.125
+       },
+       {
+        "hp": 122,
+        "chance": 0.1875
+       },
+       {
+        "hp": 124,
+        "chance": 0.1875
+       },
+       {
+        "hp": 125,
+        "chance": 0.1875
+       },
+       {
+        "hp": 127,
+        "chance": 0.1875
+       },
+       {
+        "hp": 128,
+        "chance": 0.0625
+       }
+      ],
+      "build": {
+       "speciesId": "incineroar",
+       "nature": "Serious",
+       "abilityId": "intimidate",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "id": "inci"
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 1
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 143,
+        "chance": 0.0625
+       },
+       {
+        "hp": 144,
+        "chance": 0.125
+       },
+       {
+        "hp": 145,
+        "chance": 0.1875
+       },
+       {
+        "hp": 146,
+        "chance": 0.125
+       },
+       {
+        "hp": 147,
+        "chance": 0.1875
+       },
+       {
+        "hp": 148,
+        "chance": 0.125
+       },
+       {
+        "hp": 149,
+        "chance": 0.1875
+       }
+      ],
+      "build": {
+       "speciesId": "garchomp",
+       "nature": "Serious",
+       "abilityId": "roughskin",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": -1,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": -1,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 3
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    },
+    "benched": {
+     "own": [
+      {
+       "id": "slot:own-left",
+       "slot": "own-left",
+       "hp": [
+        {
+         "hp": 154,
+         "chance": 1
+        }
+       ],
+       "build": {
+        "speciesId": "rillaboom",
+        "nature": "Serious",
+        "abilityId": "overgrow",
+        "abilityActive": false,
+        "itemId": "",
+        "boosts": {
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "currentHP": null,
+        "status": "",
+        "game": "champions",
+        "points": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 32
+        }
+       },
+       "protected": false,
+       "moved": true
+      }
+     ]
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

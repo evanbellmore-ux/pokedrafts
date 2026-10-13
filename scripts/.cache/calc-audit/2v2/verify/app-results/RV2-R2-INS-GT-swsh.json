@@ -1,0 +1,603 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 165,
+    "maximum": 165
+   },
+   "own-right": {
+    "hp": 180,
+    "maximum": 180
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "instruct",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-right",
+    "moveId": "iciclecrash",
+    "order": [],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 76,
+      "max": 90,
+      "minPercent": 32.340425531914896,
+      "maxPercent": 38.297872340425535,
+      "koChance": 0,
+      "row": {
+       "moveId": "iciclecrash",
+       "effectiveName": "Icicle Crash",
+       "effectiveType": "Ice",
+       "effectivePower": 85,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 76,
+       "max": 90,
+       "minPercent": 32.340425531914896,
+       "maxPercent": 38.297872340425535,
+       "rolls": [
+        76,
+        76,
+        78,
+        78,
+        79,
+        81,
+        81,
+        82,
+        82,
+        84,
+        85,
+        85,
+        87,
+        87,
+        88,
+        90
+       ],
+       "ohkoChance": 0,
+       "description": "Icicle Crash: 76–90 HP (32.3–38.3% of maximum HP). Applied: Gorilla Tactics, Thick Fat.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Instruct: Darmanitan-Galar uses Icicle Crash again.",
+      "chance": 1
+     }
+    ],
+    "copied": "Instruct"
+   },
+   {
+    "slot": "own-right",
+    "moveId": "flareblitz",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [],
+    "facts": [
+     {
+      "text": "Flare Blitz fails: Darmanitan-Galar is locked into Icicle Crash by Gorilla Tactics.",
+      "chance": 1
+     }
+    ]
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 165,
+    "maximum": 165,
+    "low": 165,
+    "average": 165,
+    "high": 165,
+    "min": 165,
+    "max": 165,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 180,
+    "maximum": 180,
+    "low": 180,
+    "average": 180,
+    "high": 180,
+    "min": 180,
+    "max": 180,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 159,
+    "average": 152.5625,
+    "high": 145,
+    "min": 145,
+    "max": 159,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-right",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "flareblitz",
+     "effectiveName": "Flare Blitz",
+     "effectiveType": "Fire",
+     "effectivePower": 120,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 70,
+     "max": 83,
+     "minPercent": 29.78723404255319,
+     "maxPercent": 35.319148936170215,
+     "rolls": [
+      70,
+      71,
+      72,
+      73,
+      73,
+      74,
+      75,
+      76,
+      77,
+      78,
+      78,
+      79,
+      80,
+      81,
+      82,
+      83
+     ],
+     "ohkoChance": 0,
+     "description": "Flare Blitz: 70–83 HP (29.8–35.3% of maximum HP). Applied: Gorilla Tactics, Thick Fat.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 4,
+      "fewest": 3,
+      "fasterChance": 0.22021484375,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 165,
+      "high": 152,
+      "average": 158.625,
+      "min": 152,
+      "max": 165,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 70,
+        "heals": []
+       },
+       "high": {
+        "dealt": 83,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Darmanitan-Galar's Icicle Crash has PP left."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 165,
+     "maximum": 165,
+     "low": 165,
+     "average": 165,
+     "high": 165,
+     "min": 165,
+     "max": 165,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 180,
+     "maximum": 180,
+     "low": 180,
+     "average": 180,
+     "high": 180,
+     "min": 180,
+     "max": 180,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 159,
+     "average": 152.5625,
+     "high": 145,
+     "min": 145,
+     "max": 159,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 7.157701000003726,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 165,
+    "maximum": 165
+   },
+   "own-right": {
+    "hp": 180,
+    "maximum": 180
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 165,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "oranguru",
+       "nature": "Serious",
+       "abilityId": "innerfocus",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 180,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "darmanitangalar",
+       "nature": "Brave",
+       "abilityId": "gorillatactics",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 0
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 145,
+        "chance": 0.0625
+       },
+       {
+        "hp": 147,
+        "chance": 0.0625
+       },
+       {
+        "hp": 148,
+        "chance": 0.125
+       },
+       {
+        "hp": 150,
+        "chance": 0.125
+       },
+       {
+        "hp": 151,
+        "chance": 0.0625
+       },
+       {
+        "hp": 153,
+        "chance": 0.125
+       },
+       {
+        "hp": 154,
+        "chance": 0.125
+       },
+       {
+        "hp": 156,
+        "chance": 0.0625
+       },
+       {
+        "hp": 157,
+        "chance": 0.125
+       },
+       {
+        "hp": 159,
+        "chance": 0.125
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 16
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 8
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

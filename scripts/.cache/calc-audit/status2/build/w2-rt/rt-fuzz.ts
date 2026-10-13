@@ -6,11 +6,15 @@
 //   - the bridge's bench, hazards and replacements against the real battle: each side's living bench in party order with its
 //     real HP and status; the hazards with their layers; the player's replacement its healthiest bench Pokémon;
 //   - one-turn logs with no hidden counter;
-//   - the services' engine worlds for a few cells: no engine issue (E2 too), the not-estimated reasons counted.
+//   - the services' engine worlds for a few cells: no engine issue (E2 too), the not-estimated reasons counted; again with a
+//     ReplacePolicy for the AI's side (the evaluator passes one); each outcome id a bench id or a slot's start id (a starter
+//     that left and came back in, here or at the other slot); the prelude's newcomers (a replacement before the moves) and
+//     the outcomes where a side switched out twice (one pick the engine's default: the input names one per slot).
 //   npx --no-install tsx scripts/.cache/calc-audit/status2/build/w2-rt/rt-fuzz.ts [battles=40] [seed=1]
 import { calculateDoublesOutcomes } from "@/app/lib/battle/doubles-turn";
 import { DOUBLES_SLOTS } from "@/app/lib/battle/doubles-types";
 import { championsRuntime as runtime } from "@/app/lib/battle/runtime";
+import { postFromOutcome } from "@/app/(app)/training/ai/evaluate";
 import type { CellActions } from "@/app/(app)/training/model/ai-view";
 import { buildBeliefBattle } from "@/app/(app)/training/sim/belief-battle";
 import { createTurnServices } from "@/app/(app)/training/sim/services";
@@ -78,7 +82,7 @@ function choiceFor(request: Request | null): string {
 }
 
 const stats = { decisions: 0, compared: 0, mismatches: 0, benchChecked: 0, hazardsChecked: 0, logsClean: 0, logsSame: 0, cells: 0, engineCells: 0, issues: 0, notEstimated: 0, ready: 0,
-  withBench: 0, withHazards: 0, withReplacement: 0, replacedOutcomes: 0, reasons: {} as Record<string, number>, seen: {} as Record<string, number> };
+  withBench: 0, withHazards: 0, withReplacement: 0, replacedOutcomes: 0, preludeCells: 0, preludeNewcomers: 0, secondPick: 0, secondPickOwn: 0, policyCells: 0, policyIssues: 0, policyReady: 0, postChecked: 0, reasons: {} as Record<string, number>, seen: {} as Record<string, number> };
 const notes: string[] = [];
 const printed = new Set<number>();
 const note = (text: string) => { stats.mismatches++; if (notes.length < 80) notes.push(text); };
@@ -152,10 +156,9 @@ for (let index = 0; index < battles; index++) {
             stats.hazardsChecked++;
             if (JSON.stringify(hazards) !== JSON.stringify(bridged)) { note(`${where} ${engineSide} hazards: real ${JSON.stringify(hazards)} bridge ${JSON.stringify(bridged)}`); if (process.env.SIDELOG && !printed.has(index)) { printed.add(index); console.log(`SIDELOG #${index}`, seat.battle.log.filter((line) => /sidestart|sideend|Toxic Debris|Court Change/.test(line)).join(String.fromCharCode(10))); console.log("PUBLIC", JSON.stringify(inputs.public.sides)); } }
             if (Object.values(hazards).some(Boolean)) seen(`hazards.${engineSide}`);
-            if (engineSide === "own" && bench.length) {
-              const healthiest = [...real].map((each, i) => ({ each, i })).sort((x, y) => y.each.hp / y.each.maxhp - x.each.hp / x.each.maxhp || x.i - y.i)[0];
-              const id = `own:${seat.keys.keyOf("p1", healthiest.each.name)}`;
-              for (const slot of ["own-left", "own-right"] as const) if (input.pokemon[slot] && input.replacement?.[slot] !== id) note(`${where} ${slot} replacement ${input.replacement?.[slot]} (healthiest ${id})`);
+            // Gap fix (Q9 at every switch): the player's side passes replacementOrder "healthiest" and no per-slot replacement.
+            if (engineSide === "own" && bench.length && (input.replacementOrder?.own !== "healthiest" || input.replacement?.["own-left"] || input.replacement?.["own-right"])) {
+              note(`${where} own replacement order ${JSON.stringify(input.replacementOrder?.own)} replacement ${JSON.stringify(input.replacement)}`);
             }
           }
         }
@@ -168,6 +171,24 @@ for (let index = 0; index < battles; index++) {
             continue;
           }
           stats.engineCells++;
+          if (worlds.source === "prelude") {
+            stats.preludeCells++;
+            const input0 = worlds.worlds[0].input;
+            for (const slot of DOUBLES_SLOTS) {
+              const chosen = (slot.startsWith("own") ? cell.own : cell.opponent)[slot];
+              if (input0.pokemon[slot]?.switchedIn && chosen?.kind !== "switch") stats.preludeNewcomers++;
+            }
+          }
+          // With the AI's own ReplacePolicy (as the evaluator passes one): the last option, every cell (no issue, no throw).
+          {
+            const policy = (_side: unknown, slots: readonly unknown[], options: readonly string[]) => slots.map(() => options[options.length - 1]) as never;
+            const withPolicy = services.engineWorlds(cell, policy as never);
+            if (withPolicy.kind === "engine") for (const engineWorld of withPolicy.worlds) {
+              stats.policyCells++;
+              try { const r = calculateDoublesOutcomes(engineWorld.input); if (r.status === "issues") { stats.policyIssues++; note(`${where} policy issues ${JSON.stringify(r.issues).slice(0, 300)}`); } if (r.status === "ready") stats.policyReady++; }
+              catch (error) { note(`${where} policy engine threw ${(error as Error).message.slice(0, 120)} cell ${JSON.stringify(cell)}`); }
+            }
+          }
           for (const engineWorld of worlds.worlds) {
             const input = engineWorld.input;
             if (input.bench && (input.bench.own?.length || input.bench.opponent?.length)) stats.withBench++;
@@ -181,9 +202,25 @@ for (let index = 0; index < battles; index++) {
             if (result.status === "ready") {
               stats.ready++;
               if (result.outcomes.some((each) => each.benched && Object.values(each.benched).some((list) => list?.length))) stats.replacedOutcomes++;
+              // A side with two leavers in one outcome: one of its picks was the engine's default (two starters out, or a newcomer out again).
+              if (result.outcomes.some((each) => Object.values(each.benched ?? {}).some((list) => (list?.length ?? 0) >= 2))) stats.secondPick++;
+              if (result.outcomes.some((each) => (each.benched?.own?.length ?? 0) >= 2)) stats.secondPickOwn++;
+              // Training's reader of the outcomes (ai/evaluate.ts postFromOutcome): every Pokémon once, under a belief-world key, the slots distinct.
+              const base = services.current();
+              const known = new Set(base.mons.map((mon) => mon.key));
+              for (const each of result.outcomes) {
+                stats.postChecked++;
+                const post = postFromOutcome({ view: services.view, base, residual: {}, outcome: each, start: result.start, world: engineWorld, cell, endOfTurn: result.endOfTurn });
+                const strange = post.mons.filter((mon) => !known.has(mon.key)).map((mon) => mon.key);
+                const slots = post.mons.filter((mon) => mon.slot !== null).map((mon) => mon.slot);
+                if (strange.length || new Set(post.mons.map((mon) => mon.key)).size !== post.mons.length || new Set(slots).size !== slots.length) note(`${where} post: unknown ${strange.join(",")} keys ${post.mons.map((mon) => `${mon.key}@${mon.slot}`).join(" ")}`);
+              }
               for (const each of result.outcomes) for (const slot of DOUBLES_SLOTS) {
                 const id = each.mons[slot]?.id;
-                if (id && !(input.bench?.own ?? []).concat(input.bench?.opponent ?? []).some((entry) => entry.id === id)) note(`${where} outcome ${slot} id ${id} not on a bench`);
+                // A bench id, or the start id of a slot's starting Pokémon (one that left and came back in, here or at the other slot).
+                const startSlot = id?.startsWith("slot:") ? id.slice(5) as keyof typeof input.pokemon : null;
+                if (startSlot) { stats.seen.startIdBack = (stats.seen.startIdBack ?? 0) + 1; if (!input.pokemon[startSlot] || startSlot.split("-")[0] !== slot.split("-")[0]) note(`${where} outcome ${slot} id ${id}: no such starter on its side`); }
+                else if (id && !(input.bench?.own ?? []).concat(input.bench?.opponent ?? []).some((entry) => entry.id === id)) note(`${where} outcome ${slot} id ${id} not on a bench`);
               }
               if (result.endOfTurn !== "applied") { const key = `end of turn: ${result.endOfTurn.notEstimated.replace(/^[A-Z][^ ]* /, "{Name} ")}`; stats.reasons[key] = (stats.reasons[key] ?? 0) + 1; }
             }

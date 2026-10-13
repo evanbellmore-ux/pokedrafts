@@ -1,0 +1,701 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 200,
+    "maximum": 200
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "opponent-right": {
+    "hp": 1,
+    "maximum": 170
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "ironhead",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 26,
+      "max": 31,
+      "minPercent": 15.294117647058824,
+      "maxPercent": 18.235294117647058,
+      "koChance": 1,
+      "row": {
+       "moveId": "ironhead",
+       "effectiveName": "Iron Head",
+       "effectiveType": "Steel",
+       "effectivePower": 80,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 26,
+       "max": 31,
+       "minPercent": 15.294117647058824,
+       "maxPercent": 18.235294117647058,
+       "rolls": [
+        26,
+        26,
+        26,
+        27,
+        27,
+        27,
+        28,
+        28,
+        28,
+        29,
+        29,
+        29,
+        30,
+        30,
+        30,
+        31
+       ],
+       "ohkoChance": 0,
+       "description": "Iron Head: 26–31 HP (15.3–18.2% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-right",
+    "moveId": "bodyslam",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 34,
+      "max": 40,
+      "minPercent": 19.428571428571427,
+      "maxPercent": 22.857142857142858,
+      "koChance": 0,
+      "row": {
+       "moveId": "bodyslam",
+       "effectiveName": "Body Slam",
+       "effectiveType": "Normal",
+       "effectivePower": 85,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 34,
+       "max": 40,
+       "minPercent": 19.428571428571427,
+       "maxPercent": 22.857142857142858,
+       "rolls": [
+        34,
+        34,
+        34,
+        35,
+        35,
+        36,
+        36,
+        36,
+        37,
+        37,
+        38,
+        38,
+        38,
+        39,
+        39,
+        40
+       ],
+       "ohkoChance": 0,
+       "description": "Body Slam: 34–40 HP (19.4–22.9% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 200,
+    "maximum": 200,
+    "low": 200,
+    "average": 200,
+    "high": 200,
+    "min": 200,
+    "max": 200,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 175,
+    "maximum": 175,
+    "low": 141,
+    "average": 138.375,
+    "high": 135,
+    "min": 135,
+    "max": 141,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Ability: Intimidate.",
+      "chance": 1
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 1,
+    "maximum": 170,
+    "low": 0,
+    "average": 0,
+    "high": 0,
+    "min": 0,
+    "max": 0,
+    "koChance": 1,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "ironhead",
+     "effectiveName": "Iron Head",
+     "effectiveType": "Steel",
+     "effectivePower": 80,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 26,
+     "max": 31,
+     "minPercent": 15.294117647058824,
+     "maxPercent": 18.235294117647058,
+     "rolls": [
+      26,
+      26,
+      26,
+      27,
+      27,
+      27,
+      28,
+      28,
+      28,
+      29,
+      29,
+      29,
+      30,
+      30,
+      30,
+      31
+     ],
+     "ohkoChance": 1,
+     "description": "Iron Head: 26–31 HP (15.3–18.2% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 1,
+      "fewest": 1,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 1,
+      "low": 0,
+      "high": 0,
+      "average": 0,
+      "min": 0,
+      "max": 0,
+      "koChance": 1,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 1,
+        "heals": []
+       },
+       "high": {
+        "dealt": 1,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "own-right",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "bodyslam",
+     "effectiveName": "Body Slam",
+     "effectiveType": "Normal",
+     "effectivePower": 85,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 50,
+     "max": 59,
+     "minPercent": 28.57142857142857,
+     "maxPercent": 33.714285714285715,
+     "rolls": [
+      50,
+      50,
+      51,
+      51,
+      52,
+      53,
+      53,
+      54,
+      54,
+      55,
+      56,
+      56,
+      57,
+      57,
+      58,
+      59
+     ],
+     "ohkoChance": 0,
+     "description": "Body Slam: 50–59 HP (28.6–33.7% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 4,
+      "fewest": 3,
+      "fasterChance": 0.003173828125,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 175,
+      "low": 125,
+      "high": 116,
+      "average": 120.875,
+      "min": 116,
+      "max": 125,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 50,
+        "heals": []
+       },
+       "high": {
+        "dealt": 59,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Passimian has not used Minimize."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 200,
+     "maximum": 200,
+     "low": 200,
+     "average": 200,
+     "high": 200,
+     "min": 200,
+     "max": 200,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 175,
+     "maximum": 175,
+     "low": 141,
+     "average": 138.375,
+     "high": 135,
+     "min": 135,
+     "max": 141,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Ability: Intimidate.",
+       "chance": 1
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 1,
+     "maximum": 170,
+     "low": 0,
+     "average": 0,
+     "high": 0,
+     "min": 0,
+     "max": 0,
+     "koChance": 1,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 8.106461000003037,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 200,
+    "maximum": 200
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "opponent-right": {
+    "hp": 1,
+    "maximum": 170
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 200,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "kyuremblack",
+       "nature": "Serious",
+       "abilityId": "teravolt",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": -1,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 155,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "metagross",
+       "nature": "Brave",
+       "abilityId": "clearbody",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": -1,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 0
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 135,
+        "chance": 0.0625
+       },
+       {
+        "hp": 136,
+        "chance": 0.125
+       },
+       {
+        "hp": 137,
+        "chance": 0.1875
+       },
+       {
+        "hp": 138,
+        "chance": 0.125
+       },
+       {
+        "hp": 139,
+        "chance": 0.1875
+       },
+       {
+        "hp": 140,
+        "chance": 0.125
+       },
+       {
+        "hp": 141,
+        "chance": 0.1875
+       }
+      ],
+      "build": {
+       "speciesId": "passimian",
+       "nature": "Serious",
+       "abilityId": "intimidate",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       },
+       "abilityChanged": true
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 0,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "incineroar",
+       "nature": "Serious",
+       "abilityId": "intimidate",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": false
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 1
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

@@ -1,0 +1,548 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 165,
+    "maximum": 165
+   },
+   "own-right": {
+    "hp": 170,
+    "maximum": 170
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "instruct",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-right",
+    "moveId": "trumpcard",
+    "order": [],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 47,
+      "max": 56,
+      "minPercent": 20,
+      "maxPercent": 23.829787234042556,
+      "koChance": 0,
+      "row": {
+       "moveId": "trumpcard",
+       "effectiveName": "Trump Card",
+       "effectiveType": "Normal",
+       "effectivePower": 200,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 47,
+       "max": 56,
+       "minPercent": 20,
+       "maxPercent": 23.829787234042556,
+       "rolls": [
+        47,
+        48,
+        48,
+        49,
+        49,
+        50,
+        50,
+        51,
+        52,
+        52,
+        53,
+        53,
+        54,
+        54,
+        55,
+        56
+       ],
+       "ohkoChance": 0,
+       "description": "Trump Card: 47–56 HP (20.0–23.8% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Instruct: Umbreon uses Trump Card again.",
+      "chance": 1
+     }
+    ],
+    "copied": "Instruct"
+   },
+   {
+    "slot": "own-right",
+    "moveId": "trumpcard",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 0,
+    "skipped": [
+     {
+      "text": "No PP left for Trump Card.",
+      "chance": 1
+     }
+    ],
+    "hits": [],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 165,
+    "maximum": 165,
+    "low": 165,
+    "average": 165,
+    "high": 165,
+    "min": 165,
+    "max": 165,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 170,
+    "maximum": 170,
+    "low": 170,
+    "average": 170,
+    "high": 170,
+    "min": 170,
+    "max": 170,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 188,
+    "average": 183.6875,
+    "high": 179,
+    "min": 179,
+    "max": 188,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-right",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "trumpcard",
+     "effectiveName": "Trump Card",
+     "effectiveType": "Normal",
+     "effectivePower": 0,
+     "effectiveCategory": "Special",
+     "kind": "needs-context",
+     "min": null,
+     "max": null,
+     "minPercent": null,
+     "maxPercent": null,
+     "rolls": null,
+     "ohkoChance": null,
+     "description": "The power of this move is based on the amount of PP remaining after normal PP reduction and the Pressure Ability resolve. 200 power for 0 PP, 80 power for 1 PP, 60 power for 2 PP, 50 power for 3 PP, and 40 power for 4 or more PP.",
+     "assumptions": [],
+     "reason": "Needs the move's remaining PP.",
+     "hits": null
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 165,
+     "maximum": 165,
+     "low": 165,
+     "average": 165,
+     "high": 165,
+     "min": 165,
+     "max": 165,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 170,
+     "maximum": 170,
+     "low": 170,
+     "average": 170,
+     "high": 170,
+     "min": 170,
+     "max": 170,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 188,
+     "average": 183.6875,
+     "high": 179,
+     "min": 179,
+     "max": 188,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 5.458511999997427,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 165,
+    "maximum": 165
+   },
+   "own-right": {
+    "hp": 170,
+    "maximum": 170
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 165,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "oranguru",
+       "nature": "Serious",
+       "abilityId": "innerfocus",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 170,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "umbreon",
+       "nature": "Serious",
+       "abilityId": "synchronize",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 179,
+        "chance": 0.0625
+       },
+       {
+        "hp": 180,
+        "chance": 0.0625
+       },
+       {
+        "hp": 181,
+        "chance": 0.125
+       },
+       {
+        "hp": 182,
+        "chance": 0.125
+       },
+       {
+        "hp": 183,
+        "chance": 0.125
+       },
+       {
+        "hp": 184,
+        "chance": 0.0625
+       },
+       {
+        "hp": 185,
+        "chance": 0.125
+       },
+       {
+        "hp": 186,
+        "chance": 0.125
+       },
+       {
+        "hp": 187,
+        "chance": 0.125
+       },
+       {
+        "hp": 188,
+        "chance": 0.0625
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 16
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 8
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

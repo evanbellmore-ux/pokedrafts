@@ -1,0 +1,617 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 77,
+    "maximum": 153
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 130,
+    "maximum": 130
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "eruption",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 16,
+      "max": 19,
+      "minPercent": 6.808510638297872,
+      "maxPercent": 8.085106382978724,
+      "koChance": 0,
+      "row": {
+       "moveId": "eruption",
+       "effectiveName": "Eruption",
+       "effectiveType": "Fire",
+       "effectivePower": 75,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 16,
+       "max": 19,
+       "minPercent": 6.808510638297872,
+       "maxPercent": 8.085106382978724,
+       "rolls": [
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        18,
+        18,
+        18,
+        18,
+        18,
+        18,
+        18,
+        19
+       ],
+       "ohkoChance": 0,
+       "description": "Eruption: 16–19 HP (6.8–8.1% of maximum HP). Applied: Thick Fat.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Attacker: Flash Fire has been activated — no.",
+        "Move power: 75."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     },
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 33,
+      "max": 40,
+      "minPercent": 25.384615384615383,
+      "maxPercent": 30.76923076923077,
+      "koChance": 0,
+      "row": {
+       "moveId": "eruption",
+       "effectiveName": "Eruption",
+       "effectiveType": "Fire",
+       "effectivePower": 75,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 33,
+       "max": 40,
+       "minPercent": 25.384615384615383,
+       "maxPercent": 30.76923076923077,
+       "rolls": [
+        33,
+        34,
+        34,
+        34,
+        36,
+        36,
+        36,
+        36,
+        37,
+        37,
+        37,
+        37,
+        39,
+        39,
+        39,
+        40
+       ],
+       "ohkoChance": 0,
+       "description": "Eruption: 33–40 HP (25.4–30.8% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Attacker: Flash Fire has been activated — no.",
+        "Move power: 75."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": [
+       {
+        "text": "Disguise: Mimikyu takes no damage.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 77,
+    "maximum": 153,
+    "low": 77,
+    "average": 77,
+    "high": 77,
+    "min": 77,
+    "max": 77,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 130,
+    "maximum": 130,
+    "low": 114,
+    "average": 114,
+    "high": 114,
+    "min": 114,
+    "max": 114,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 219,
+    "average": 217.9375,
+    "high": 216,
+    "min": 216,
+    "max": 219,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "eruption",
+     "effectiveName": "Eruption",
+     "effectiveType": "Fire",
+     "effectivePower": 150,
+     "effectiveCategory": "Special",
+     "kind": "needs-context",
+     "min": null,
+     "max": null,
+     "minPercent": null,
+     "maxPercent": null,
+     "rolls": null,
+     "ohkoChance": null,
+     "description": "Power is equal to (user's current HP × 150 / user's maximum HP), rounded down, but not less than 1.",
+     "assumptions": [],
+     "reason": "Intact Disguise takes the first hit.",
+     "hits": null
+    }
+   },
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "eruption",
+     "effectiveName": "Eruption",
+     "effectiveType": "Fire",
+     "effectivePower": 75,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 16,
+     "max": 19,
+     "minPercent": 6.808510638297872,
+     "maxPercent": 8.085106382978724,
+     "rolls": [
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      18,
+      18,
+      18,
+      18,
+      18,
+      18,
+      18,
+      19
+     ],
+     "ohkoChance": 0,
+     "description": "Eruption: 16–19 HP (6.8–8.1% of maximum HP). Applied: Thick Fat.",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Attacker: Flash Fire has been activated — no.",
+      "Move power: 75."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": null,
+      "fewest": null,
+      "limit": 8,
+      "limitReason": "pp",
+      "needed": 15,
+      "carried": [],
+      "notes": [
+       "Assumes the target's partner stays in for every use.",
+       "Assumes the target's partner has no Pressure."
+      ]
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 219,
+      "high": 216,
+      "average": 217.9375,
+      "min": 216,
+      "max": 219,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 16,
+        "heals": []
+       },
+       "high": {
+        "dealt": 19,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 77,
+     "maximum": 153,
+     "low": 77,
+     "average": 77,
+     "high": 77,
+     "min": 77,
+     "max": 77,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 130,
+     "maximum": 130,
+     "low": 114,
+     "average": 114,
+     "high": 114,
+     "min": 114,
+     "max": 114,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 219,
+     "average": 217.9375,
+     "high": 216,
+     "min": 216,
+     "max": 219,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 11.39193200000227,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 77,
+    "maximum": 153
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 130,
+    "maximum": 130
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 77,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "typhlosion",
+       "nature": "Serious",
+       "abilityId": "flashfire",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 8
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 114,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "mimikyubusted",
+       "nature": "Serious",
+       "abilityId": "disguise",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 216,
+        "chance": 0.0625
+       },
+       {
+        "hp": 217,
+        "chance": 0.4375
+       },
+       {
+        "hp": 219,
+        "chance": 0.5
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 16
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

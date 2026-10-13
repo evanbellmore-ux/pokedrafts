@@ -1,0 +1,110 @@
+{
+ "result": {
+  "status": "not-estimated",
+  "reason": "Encore changes Scizor's move: not modelled.",
+  "start": {
+   "own-left": {
+    "hp": 135,
+    "maximum": 135
+   },
+   "own-right": {
+    "hp": 195,
+    "maximum": 195
+   },
+   "opponent-left": {
+    "hp": 145,
+    "maximum": 145
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "startRows": [
+   {
+    "slot": "opponent-left",
+    "target": "own-right",
+    "row": {
+     "moveId": "xscissor",
+     "effectiveName": "X-Scissor",
+     "effectiveType": "Bug",
+     "effectivePower": 80,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 152,
+     "max": 180,
+     "minPercent": 77.94871794871796,
+     "maxPercent": 92.3076923076923,
+     "rolls": [
+      152,
+      152,
+      156,
+      156,
+      158,
+      162,
+      162,
+      164,
+      164,
+      168,
+      170,
+      170,
+      174,
+      174,
+      176,
+      180
+     ],
+     "ohkoChance": 0,
+     "description": "X-Scissor: 152–180 HP (77.9–92.3% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 195,
+      "low": 43,
+      "high": 15,
+      "average": 30.125,
+      "min": 15,
+      "max": 43,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 152,
+        "heals": []
+       },
+       "high": {
+        "dealt": 180,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ]
+ },
+ "ms": 2.23083399999814,
+ "preflight": [],
+ "outcomes": {
+  "status": "not-estimated",
+  "reason": "Encore changes Scizor's move: not modelled."
+ }
+}

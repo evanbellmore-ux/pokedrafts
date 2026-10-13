@@ -495,7 +495,8 @@ export type WalkResult = {
    * action's step: a Dancer's copy (inside the dance's action) or an instructed move (its own queue action), keyed
    * "<Dancer|Instruct>:<slot>:<move id>"; `picked` is the mass of the paths where it happened.
    */
-  copies?: Record<string, StepResult & { slot: SlotId; copied: "Dancer" | "Instruct"; source?: SlotId }>;
+  /** status2 wave 2 gap fix: `id`, a copy by a bench Pokémon that came in for `slot` (DoublesStep.id). */
+  copies?: Record<string, StepResult & { slot: SlotId; copied: "Dancer" | "Instruct"; source?: SlotId; id?: string }>;
   // status2 wave 2 (Track R-V; DoublesTurnResult.replaced and hpEntered): only a case with a bench (Case.bench.{side}.members).
   /** Each slot whose Pokémon left during the moves (mid-turn switches, drags), as it stands after the moves. */
   replaced?: Partial<Record<SlotId, ReplacedResult>>;

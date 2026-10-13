@@ -1,0 +1,3284 @@
+{
+ "id": "CQ-PUR-R-04-usum",
+ "title": "USUM: a Red Card drags Garchomp out (no BeforeSwitchOut); the foe's slower Pursuit hits the newcomer at 40 power",
+ "game": "usum",
+ "format": "gen7doublescustomgame",
+ "checks": "battle-actions.ts dragIn: no BeforeSwitchOut for a drag; Pursuit's basePowerCallback 40 at the newcomer (no switchFlag).",
+ "walks": {
+  "all": {
+   "mode": "all",
+   "exact": true,
+   "runs": 355,
+   "classes": 246,
+   "ms": 593,
+   "decisions": {
+    "fail:?": 132,
+    "roll": 132,
+    "drag": 22
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Dragon/Ground": 1
+     },
+     "ability": {
+      "roughskin": 1
+     },
+     "forme": {
+      "garchomp": 1
+     },
+     "stored": {
+      "150/115/100/105/154": 1
+     },
+     "weight": {
+      "950": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Normal": 1
+     },
+     "ability": {
+      "thickfat": 1
+     },
+     "forme": {
+      "snorlax": 1
+     },
+     "stored": {
+      "130/85/85/130/51": 1
+     },
+     "weight": {
+      "4600": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       139,
+       0.0625
+      ],
+      [
+       141,
+       0.0625
+      ],
+      [
+       142,
+       0.125
+      ],
+      [
+       144,
+       0.0625
+      ],
+      [
+       145,
+       0.125
+      ],
+      [
+       147,
+       0.0625
+      ],
+      [
+       148,
+       0.125
+      ],
+      [
+       150,
+       0.0625
+      ],
+      [
+       151,
+       0.125
+      ],
+      [
+       153,
+       0.125
+      ],
+      [
+       154,
+       0.0625
+      ]
+     ],
+     "koChance": 0,
+     "average": 147.0625,
+     "min": 139,
+     "max": 154,
+     "modeTieUp": 153,
+     "modeTieDown": 142,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Normal": 1
+     },
+     "ability": {
+      "thickfat": 1
+     },
+     "forme": {
+      "snorlax": 1
+     },
+     "stored": {
+      "130/85/85/130/54": 1
+     },
+     "weight": {
+      "4600": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "redcard": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "opponent-right": {
+     "species": "Houndoom",
+     "start": 150,
+     "maximum": 150,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "pursuit": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Dark/Fire": 1
+     },
+     "ability": {
+      "flashfire": 1
+     },
+     "forme": {
+      "houndoom": 1
+     },
+     "stored": {
+      "110/70/130/100/115": 1
+     },
+     "weight": {
+      "350": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 81,
+       "dmgMax": 96,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2b: Snorlax|Red Card|[of] p1a: Garchomp": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-81": 0.0625,
+       "enditem:redcard": 1,
+       "damage:-82": 0.125,
+       "damage:-84": 0.125,
+       "damage:-85": 0.0625,
+       "damage:-87": 0.125,
+       "damage:-88": 0.0625,
+       "damage:-90": 0.125,
+       "damage:-91": 0.0625,
+       "damage:-93": 0.125,
+       "damage:-94": 0.0625,
+       "damage:-96": 0.0625
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -96,
+       "max": -81
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -96,
+       "max": -81,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-right": {
+     "moveId": "pursuit",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {},
+     "lines": {},
+     "effects": {},
+     "change": {
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "hitsEntered": {
+      "own-left": {
+       "lax": {
+        "reached": 0.5,
+        "landed": 0.5,
+        "ko": 0,
+        "dmgMin": 30,
+        "dmgMax": 36,
+        "truncated": 0
+       },
+       "lax9": {
+        "reached": 0.5,
+        "landed": 0.5,
+        "ko": 0,
+        "dmgMin": 30,
+        "dmgMax": 36,
+        "truncated": 0
+       }
+      }
+     },
+     "effectsEntered": {
+      "own-left": {
+       "lax": {
+        "damage:-30": 0.09375,
+        "damage:-31": 0.125,
+        "damage:-33": 0.125,
+        "damage:-34": 0.125,
+        "damage:-36": 0.03125
+       },
+       "lax9": {
+        "damage:-30": 0.09375,
+        "damage:-31": 0.125,
+        "damage:-33": 0.125,
+        "damage:-34": 0.125,
+        "damage:-36": 0.03125
+       }
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 110,
+    "classes": 110,
+    "ms": 593,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        183,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 183,
+      "min": 183,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Dragon/Ground": 1
+      },
+      "ability": {
+       "roughskin": 1
+      },
+      "forme": {
+       "garchomp": 1
+      },
+      "stored": {
+       "150/115/100/105/154": 1
+      },
+      "weight": {
+       "950": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal": 1
+      },
+      "ability": {
+       "thickfat": 1
+      },
+      "forme": {
+       "snorlax": 1
+      },
+      "stored": {
+       "130/85/85/130/51": 1
+      },
+      "weight": {
+       "4600": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "opponent-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        139,
+        0.0625
+       ],
+       [
+        141,
+        0.0625
+       ],
+       [
+        142,
+        0.125
+       ],
+       [
+        144,
+        0.0625
+       ],
+       [
+        145,
+        0.125
+       ],
+       [
+        147,
+        0.0625
+       ],
+       [
+        148,
+        0.125
+       ],
+       [
+        150,
+        0.0625
+       ],
+       [
+        151,
+        0.125
+       ],
+       [
+        153,
+        0.125
+       ],
+       [
+        154,
+        0.0625
+       ]
+      ],
+      "koChance": 0,
+      "average": 147.0625,
+      "min": 139,
+      "max": 154,
+      "modeTieUp": 153,
+      "modeTieDown": 142,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal": 1
+      },
+      "ability": {
+       "thickfat": 1
+      },
+      "forme": {
+       "snorlax": 1
+      },
+      "stored": {
+       "130/85/85/130/54": 1
+      },
+      "weight": {
+       "4600": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "redcard": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "opponent-right": {
+      "species": "Houndoom",
+      "start": null,
+      "maximum": 150,
+      "dist": [
+       [
+        150,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 150,
+      "min": 150,
+      "max": 150,
+      "modeTieUp": 150,
+      "modeTieDown": 150,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Dark/Fire": 1
+      },
+      "ability": {
+       "flashfire": 1
+      },
+      "forme": {
+       "houndoom": 1
+      },
+      "stored": {
+       "110/70/130/100/115": 1
+      },
+      "weight": {
+       "350": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    },
+    "pseudo": {},
+    "sides": {},
+    "replaced": {},
+    "entered": {
+     "own-left": {
+      "lax": {
+       "id": "lax",
+       "chance": 0.5,
+       "species": "Snorlax",
+       "start": 235,
+       "maximum": 235,
+       "dist": [
+        [
+         199,
+         0.0625
+        ],
+        [
+         201,
+         0.25
+        ],
+        [
+         202,
+         0.25
+        ],
+        [
+         204,
+         0.25
+        ],
+        [
+         205,
+         0.1875
+        ]
+       ],
+       "koChance": 0,
+       "average": 202.625,
+       "min": 199,
+       "max": 205,
+       "modeTieUp": 204,
+       "modeTieDown": 201,
+       "status": {
+        "": 0.5
+       },
+       "volatiles": {},
+       "boosts": {},
+       "item": {
+        "": 0.5
+       },
+       "sub": [],
+       "timesAttacked": {
+        "1": 0.5
+       },
+       "perish": {},
+       "sleepTime": {},
+       "toxicStage": {},
+       "swapped": 0,
+       "switchFlag": 0,
+       "types": {
+        "Normal": 0.5
+       },
+       "ability": {
+        "thickfat": 0.5
+       },
+       "forme": {
+        "snorlax": 0.5
+       },
+       "stored": {
+        "130/85/85/130/53": 0.5
+       },
+       "weight": {
+        "4600": 0.5
+       },
+       "stockpile": {},
+       "lastItem": {
+        "": 0.5
+       },
+       "durations": {},
+       "pendingCopy": {},
+       "charging": {},
+       "cudChew": {},
+       "onceUsed": {},
+       "chiStrike": {},
+       "berryLocked": 0
+      },
+      "lax9": {
+       "id": "lax9",
+       "chance": 0.5,
+       "species": "Snorlax",
+       "start": 235,
+       "maximum": 235,
+       "dist": [
+        [
+         199,
+         0.0625
+        ],
+        [
+         201,
+         0.25
+        ],
+        [
+         202,
+         0.25
+        ],
+        [
+         204,
+         0.25
+        ],
+        [
+         205,
+         0.1875
+        ]
+       ],
+       "koChance": 0,
+       "average": 202.625,
+       "min": 199,
+       "max": 205,
+       "modeTieUp": 204,
+       "modeTieDown": 201,
+       "status": {
+        "": 0.5
+       },
+       "volatiles": {},
+       "boosts": {},
+       "item": {
+        "": 0.5
+       },
+       "sub": [],
+       "timesAttacked": {
+        "1": 0.5
+       },
+       "perish": {},
+       "sleepTime": {},
+       "toxicStage": {},
+       "swapped": 0,
+       "switchFlag": 0,
+       "types": {
+        "Normal": 0.5
+       },
+       "ability": {
+        "thickfat": 0.5
+       },
+       "forme": {
+        "snorlax": 0.5
+       },
+       "stored": {
+        "130/85/85/130/59": 0.5
+       },
+       "weight": {
+        "4600": 0.5
+       },
+       "stockpile": {},
+       "lastItem": {
+        "": 0.5
+       },
+       "durations": {},
+       "pendingCopy": {},
+       "charging": {},
+       "cudChew": {},
+       "onceUsed": {},
+       "chiStrike": {},
+       "berryLocked": 0
+      }
+     }
+    }
+   },
+   "replaced": {
+    "own-left": {
+     "left": [
+      {
+       "id": "slot:own-left",
+       "hp": [
+        [
+         183,
+         1
+        ]
+       ],
+       "chance": 1
+      }
+     ],
+     "entered": [
+      {
+       "id": "lax",
+       "chance": 0.5
+      },
+      {
+       "id": "lax9",
+       "chance": 0.5
+      }
+     ]
+    }
+   },
+   "entered": {
+    "own-left": {
+     "lax": {
+      "id": "lax",
+      "chance": 0.5,
+      "species": "Snorlax",
+      "start": 235,
+      "maximum": 235,
+      "dist": [
+       [
+        199,
+        0.0625
+       ],
+       [
+        201,
+        0.25
+       ],
+       [
+        202,
+        0.25
+       ],
+       [
+        204,
+        0.25
+       ],
+       [
+        205,
+        0.1875
+       ]
+      ],
+      "koChance": 0,
+      "average": 202.625,
+      "min": 199,
+      "max": 205,
+      "modeTieUp": 204,
+      "modeTieDown": 201,
+      "status": {
+       "": 0.5
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.5
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 0.5
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal": 0.5
+      },
+      "ability": {
+       "thickfat": 0.5
+      },
+      "forme": {
+       "snorlax": 0.5
+      },
+      "stored": {
+       "130/85/85/130/53": 0.5
+      },
+      "weight": {
+       "4600": 0.5
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 0.5
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "lax9": {
+      "id": "lax9",
+      "chance": 0.5,
+      "species": "Snorlax",
+      "start": 235,
+      "maximum": 235,
+      "dist": [
+       [
+        199,
+        0.0625
+       ],
+       [
+        201,
+        0.25
+       ],
+       [
+        202,
+        0.25
+       ],
+       [
+        204,
+        0.25
+       ],
+       [
+        205,
+        0.1875
+       ]
+      ],
+      "koChance": 0,
+      "average": 202.625,
+      "min": 199,
+      "max": 205,
+      "modeTieUp": 204,
+      "modeTieDown": 201,
+      "status": {
+       "": 0.5
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.5
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 0.5
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal": 0.5
+      },
+      "ability": {
+       "thickfat": 0.5
+      },
+      "forme": {
+       "snorlax": 0.5
+      },
+      "stored": {
+       "130/85/85/130/59": 0.5
+      },
+      "weight": {
+       "4600": 0.5
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 0.5
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     }
+    }
+   }
+  },
+  "lowest": {
+   "mode": "lowest",
+   "exact": true,
+   "runs": 11,
+   "classes": 10,
+   "ms": 23,
+   "decisions": {
+    "fail:?": 4,
+    "roll": 4,
+    "drag": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Dragon/Ground": 1
+     },
+     "ability": {
+      "roughskin": 1
+     },
+     "forme": {
+      "garchomp": 1
+     },
+     "stored": {
+      "150/115/100/105/154": 1
+     },
+     "weight": {
+      "950": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Normal": 1
+     },
+     "ability": {
+      "thickfat": 1
+     },
+     "forme": {
+      "snorlax": 1
+     },
+     "stored": {
+      "130/85/85/130/51": 1
+     },
+     "weight": {
+      "4600": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       154,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 154,
+     "min": 154,
+     "max": 154,
+     "modeTieUp": 154,
+     "modeTieDown": 154,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Normal": 1
+     },
+     "ability": {
+      "thickfat": 1
+     },
+     "forme": {
+      "snorlax": 1
+     },
+     "stored": {
+      "130/85/85/130/54": 1
+     },
+     "weight": {
+      "4600": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "redcard": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "opponent-right": {
+     "species": "Houndoom",
+     "start": 150,
+     "maximum": 150,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "pursuit": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Dark/Fire": 1
+     },
+     "ability": {
+      "flashfire": 1
+     },
+     "forme": {
+      "houndoom": 1
+     },
+     "stored": {
+      "110/70/130/100/115": 1
+     },
+     "weight": {
+      "350": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 81,
+       "dmgMax": 81,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2b: Snorlax|Red Card|[of] p1a: Garchomp": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-81": 1,
+       "enditem:redcard": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -81,
+       "max": -81
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -81,
+       "max": -81,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-right": {
+     "moveId": "pursuit",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {},
+     "lines": {},
+     "effects": {},
+     "change": {
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "hitsEntered": {
+      "own-left": {
+       "lax": {
+        "reached": 0.5,
+        "landed": 0.5,
+        "ko": 0,
+        "dmgMin": 30,
+        "dmgMax": 30,
+        "truncated": 0
+       },
+       "lax9": {
+        "reached": 0.5,
+        "landed": 0.5,
+        "ko": 0,
+        "dmgMin": 30,
+        "dmgMax": 30,
+        "truncated": 0
+       }
+      }
+     },
+     "effectsEntered": {
+      "own-left": {
+       "lax": {
+        "damage:-30": 0.5
+       },
+       "lax9": {
+        "damage:-30": 0.5
+       }
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 2,
+    "classes": 2,
+    "ms": 23,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        183,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 183,
+      "min": 183,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Dragon/Ground": 1
+      },
+      "ability": {
+       "roughskin": 1
+      },
+      "forme": {
+       "garchomp": 1
+      },
+      "stored": {
+       "150/115/100/105/154": 1
+      },
+      "weight": {
+       "950": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal": 1
+      },
+      "ability": {
+       "thickfat": 1
+      },
+      "forme": {
+       "snorlax": 1
+      },
+      "stored": {
+       "130/85/85/130/51": 1
+      },
+      "weight": {
+       "4600": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "opponent-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        154,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 154,
+      "min": 154,
+      "max": 154,
+      "modeTieUp": 154,
+      "modeTieDown": 154,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal": 1
+      },
+      "ability": {
+       "thickfat": 1
+      },
+      "forme": {
+       "snorlax": 1
+      },
+      "stored": {
+       "130/85/85/130/54": 1
+      },
+      "weight": {
+       "4600": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "redcard": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "opponent-right": {
+      "species": "Houndoom",
+      "start": null,
+      "maximum": 150,
+      "dist": [
+       [
+        150,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 150,
+      "min": 150,
+      "max": 150,
+      "modeTieUp": 150,
+      "modeTieDown": 150,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Dark/Fire": 1
+      },
+      "ability": {
+       "flashfire": 1
+      },
+      "forme": {
+       "houndoom": 1
+      },
+      "stored": {
+       "110/70/130/100/115": 1
+      },
+      "weight": {
+       "350": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    },
+    "pseudo": {},
+    "sides": {},
+    "replaced": {},
+    "entered": {
+     "own-left": {
+      "lax": {
+       "id": "lax",
+       "chance": 0.5,
+       "species": "Snorlax",
+       "start": 235,
+       "maximum": 235,
+       "dist": [
+        [
+         205,
+         1
+        ]
+       ],
+       "koChance": 0,
+       "average": 205,
+       "min": 205,
+       "max": 205,
+       "modeTieUp": 205,
+       "modeTieDown": 205,
+       "status": {
+        "": 0.5
+       },
+       "volatiles": {},
+       "boosts": {},
+       "item": {
+        "": 0.5
+       },
+       "sub": [],
+       "timesAttacked": {
+        "1": 0.5
+       },
+       "perish": {},
+       "sleepTime": {},
+       "toxicStage": {},
+       "swapped": 0,
+       "switchFlag": 0,
+       "types": {
+        "Normal": 0.5
+       },
+       "ability": {
+        "thickfat": 0.5
+       },
+       "forme": {
+        "snorlax": 0.5
+       },
+       "stored": {
+        "130/85/85/130/53": 0.5
+       },
+       "weight": {
+        "4600": 0.5
+       },
+       "stockpile": {},
+       "lastItem": {
+        "": 0.5
+       },
+       "durations": {},
+       "pendingCopy": {},
+       "charging": {},
+       "cudChew": {},
+       "onceUsed": {},
+       "chiStrike": {},
+       "berryLocked": 0
+      },
+      "lax9": {
+       "id": "lax9",
+       "chance": 0.5,
+       "species": "Snorlax",
+       "start": 235,
+       "maximum": 235,
+       "dist": [
+        [
+         205,
+         1
+        ]
+       ],
+       "koChance": 0,
+       "average": 205,
+       "min": 205,
+       "max": 205,
+       "modeTieUp": 205,
+       "modeTieDown": 205,
+       "status": {
+        "": 0.5
+       },
+       "volatiles": {},
+       "boosts": {},
+       "item": {
+        "": 0.5
+       },
+       "sub": [],
+       "timesAttacked": {
+        "1": 0.5
+       },
+       "perish": {},
+       "sleepTime": {},
+       "toxicStage": {},
+       "swapped": 0,
+       "switchFlag": 0,
+       "types": {
+        "Normal": 0.5
+       },
+       "ability": {
+        "thickfat": 0.5
+       },
+       "forme": {
+        "snorlax": 0.5
+       },
+       "stored": {
+        "130/85/85/130/59": 0.5
+       },
+       "weight": {
+        "4600": 0.5
+       },
+       "stockpile": {},
+       "lastItem": {
+        "": 0.5
+       },
+       "durations": {},
+       "pendingCopy": {},
+       "charging": {},
+       "cudChew": {},
+       "onceUsed": {},
+       "chiStrike": {},
+       "berryLocked": 0
+      }
+     }
+    }
+   },
+   "replaced": {
+    "own-left": {
+     "left": [
+      {
+       "id": "slot:own-left",
+       "hp": [
+        [
+         183,
+         1
+        ]
+       ],
+       "chance": 1
+      }
+     ],
+     "entered": [
+      {
+       "id": "lax",
+       "chance": 0.5
+      },
+      {
+       "id": "lax9",
+       "chance": 0.5
+      }
+     ]
+    }
+   },
+   "entered": {
+    "own-left": {
+     "lax": {
+      "id": "lax",
+      "chance": 0.5,
+      "species": "Snorlax",
+      "start": 235,
+      "maximum": 235,
+      "dist": [
+       [
+        205,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 205,
+      "min": 205,
+      "max": 205,
+      "modeTieUp": 205,
+      "modeTieDown": 205,
+      "status": {
+       "": 0.5
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.5
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 0.5
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal": 0.5
+      },
+      "ability": {
+       "thickfat": 0.5
+      },
+      "forme": {
+       "snorlax": 0.5
+      },
+      "stored": {
+       "130/85/85/130/53": 0.5
+      },
+      "weight": {
+       "4600": 0.5
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 0.5
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "lax9": {
+      "id": "lax9",
+      "chance": 0.5,
+      "species": "Snorlax",
+      "start": 235,
+      "maximum": 235,
+      "dist": [
+       [
+        205,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 205,
+      "min": 205,
+      "max": 205,
+      "modeTieUp": 205,
+      "modeTieDown": 205,
+      "status": {
+       "": 0.5
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.5
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 0.5
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal": 0.5
+      },
+      "ability": {
+       "thickfat": 0.5
+      },
+      "forme": {
+       "snorlax": 0.5
+      },
+      "stored": {
+       "130/85/85/130/59": 0.5
+      },
+      "weight": {
+       "4600": 0.5
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 0.5
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     }
+    }
+   }
+  },
+  "highest": {
+   "mode": "highest",
+   "exact": true,
+   "runs": 11,
+   "classes": 10,
+   "ms": 23,
+   "decisions": {
+    "fail:?": 4,
+    "roll": 4,
+    "drag": 2
+   },
+   "slots": {
+    "own-left": {
+     "species": "Garchomp",
+     "start": 183,
+     "maximum": 183,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "modeTieUp": 183,
+     "modeTieDown": 183,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Dragon/Ground": 1
+     },
+     "ability": {
+      "roughskin": 1
+     },
+     "forme": {
+      "garchomp": 1
+     },
+     "stored": {
+      "150/115/100/105/154": 1
+     },
+     "weight": {
+      "950": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "own-right": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       235,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 235,
+     "min": 235,
+     "max": 235,
+     "modeTieUp": 235,
+     "modeTieDown": 235,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Normal": 1
+     },
+     "ability": {
+      "thickfat": 1
+     },
+     "forme": {
+      "snorlax": 1
+     },
+     "stored": {
+      "130/85/85/130/51": 1
+     },
+     "weight": {
+      "4600": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "opponent-left": {
+     "species": "Snorlax",
+     "start": 235,
+     "maximum": 235,
+     "dist": [
+      [
+       139,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 139,
+     "min": 139,
+     "max": 139,
+     "modeTieUp": 139,
+     "modeTieDown": 139,
+     "status": {
+      "": 1
+     },
+     "volatiles": {},
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "1": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Normal": 1
+     },
+     "ability": {
+      "thickfat": 1
+     },
+     "forme": {
+      "snorlax": 1
+     },
+     "stored": {
+      "130/85/85/130/54": 1
+     },
+     "weight": {
+      "4600": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "redcard": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    },
+    "opponent-right": {
+     "species": "Houndoom",
+     "start": 150,
+     "maximum": 150,
+     "dist": [
+      [
+       150,
+       1
+      ]
+     ],
+     "koChance": 0,
+     "average": 150,
+     "min": 150,
+     "max": 150,
+     "modeTieUp": 150,
+     "modeTieDown": 150,
+     "status": {
+      "": 1
+     },
+     "volatiles": {
+      "pursuit": 1
+     },
+     "boosts": {},
+     "item": {
+      "": 1
+     },
+     "sub": [],
+     "timesAttacked": {
+      "0": 1
+     },
+     "perish": {},
+     "sleepTime": {},
+     "toxicStage": {},
+     "swapped": 0,
+     "switchFlag": 0,
+     "types": {
+      "Dark/Fire": 1
+     },
+     "ability": {
+      "flashfire": 1
+     },
+     "forme": {
+      "houndoom": 1
+     },
+     "stored": {
+      "110/70/130/100/115": 1
+     },
+     "weight": {
+      "350": 1
+     },
+     "stockpile": {},
+     "lastItem": {
+      "": 1
+     },
+     "durations": {},
+     "pendingCopy": {},
+     "charging": {},
+     "cudChew": {},
+     "onceUsed": {},
+     "chiStrike": {},
+     "berryLocked": 0
+    }
+   },
+   "steps": {
+    "own-left": {
+     "moveId": "dragonclaw",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "1": 1
+     },
+     "orderMoved": {
+      "1": 1
+     },
+     "hits": {
+      "opponent-left": {
+       "reached": 1,
+       "landed": 1,
+       "ko": 0,
+       "dmgMin": 96,
+       "dmgMax": 96,
+       "truncated": 0
+      }
+     },
+     "lines": {
+      "|-enditem|p2b: Snorlax|Red Card|[of] p1a: Garchomp": 1
+     },
+     "effects": {
+      "opponent-left": {
+       "damage:-96": 1,
+       "enditem:redcard": 1
+      }
+     },
+     "change": {
+      "own-left": {
+       "min": 0,
+       "max": 0
+      },
+      "opponent-left": {
+       "min": -96,
+       "max": -96
+      }
+     },
+     "sides": {},
+     "moveChange": {
+      "opponent-left": {
+       "min": -96,
+       "max": -96,
+       "mass": 1
+      }
+     }
+    },
+    "opponent-right": {
+     "moveId": "pursuit",
+     "picked": 1,
+     "faintedAtPick": 0,
+     "moved": 1,
+     "cant": {},
+     "orderAll": {
+      "2": 1
+     },
+     "orderMoved": {
+      "2": 1
+     },
+     "hits": {},
+     "lines": {},
+     "effects": {},
+     "change": {
+      "opponent-right": {
+       "min": 0,
+       "max": 0
+      }
+     },
+     "sides": {},
+     "hitsEntered": {
+      "own-left": {
+       "lax": {
+        "reached": 0.5,
+        "landed": 0.5,
+        "ko": 0,
+        "dmgMin": 36,
+        "dmgMax": 36,
+        "truncated": 0
+       },
+       "lax9": {
+        "reached": 0.5,
+        "landed": 0.5,
+        "ko": 0,
+        "dmgMin": 36,
+        "dmgMax": 36,
+        "truncated": 0
+       }
+      }
+     },
+     "effectsEntered": {
+      "own-left": {
+       "lax": {
+        "damage:-36": 0.5
+       },
+       "lax9": {
+        "damage:-36": 0.5
+       }
+      }
+     }
+    }
+   },
+   "sideConditions": {
+    "own": {},
+    "opponent": {}
+   },
+   "noMove": {
+    "opponent-left": {},
+    "own-right": {}
+   },
+   "afterTurn": {
+    "runs": 2,
+    "classes": 2,
+    "ms": 23,
+    "decisions": {},
+    "slots": {
+     "own-left": {
+      "species": "Garchomp",
+      "start": null,
+      "maximum": 183,
+      "dist": [
+       [
+        183,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 183,
+      "min": 183,
+      "max": 183,
+      "modeTieUp": 183,
+      "modeTieDown": 183,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Dragon/Ground": 1
+      },
+      "ability": {
+       "roughskin": 1
+      },
+      "forme": {
+       "garchomp": 1
+      },
+      "stored": {
+       "150/115/100/105/154": 1
+      },
+      "weight": {
+       "950": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "own-right": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        235,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 235,
+      "min": 235,
+      "max": 235,
+      "modeTieUp": 235,
+      "modeTieDown": 235,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal": 1
+      },
+      "ability": {
+       "thickfat": 1
+      },
+      "forme": {
+       "snorlax": 1
+      },
+      "stored": {
+       "130/85/85/130/51": 1
+      },
+      "weight": {
+       "4600": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "opponent-left": {
+      "species": "Snorlax",
+      "start": null,
+      "maximum": 235,
+      "dist": [
+       [
+        139,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 139,
+      "min": 139,
+      "max": 139,
+      "modeTieUp": 139,
+      "modeTieDown": 139,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal": 1
+      },
+      "ability": {
+       "thickfat": 1
+      },
+      "forme": {
+       "snorlax": 1
+      },
+      "stored": {
+       "130/85/85/130/54": 1
+      },
+      "weight": {
+       "4600": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "redcard": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "opponent-right": {
+      "species": "Houndoom",
+      "start": null,
+      "maximum": 150,
+      "dist": [
+       [
+        150,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 150,
+      "min": 150,
+      "max": 150,
+      "modeTieUp": 150,
+      "modeTieDown": 150,
+      "status": {
+       "": 1
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 1
+      },
+      "sub": [],
+      "timesAttacked": {
+       "0": 1
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Dark/Fire": 1
+      },
+      "ability": {
+       "flashfire": 1
+      },
+      "forme": {
+       "houndoom": 1
+      },
+      "stored": {
+       "110/70/130/100/115": 1
+      },
+      "weight": {
+       "350": 1
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 1
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     }
+    },
+    "residuals": [],
+    "noResidual": 0,
+    "field": {
+     "terrain:": 1,
+     "weather:": 1
+    },
+    "pseudo": {},
+    "sides": {},
+    "replaced": {},
+    "entered": {
+     "own-left": {
+      "lax": {
+       "id": "lax",
+       "chance": 0.5,
+       "species": "Snorlax",
+       "start": 235,
+       "maximum": 235,
+       "dist": [
+        [
+         199,
+         1
+        ]
+       ],
+       "koChance": 0,
+       "average": 199,
+       "min": 199,
+       "max": 199,
+       "modeTieUp": 199,
+       "modeTieDown": 199,
+       "status": {
+        "": 0.5
+       },
+       "volatiles": {},
+       "boosts": {},
+       "item": {
+        "": 0.5
+       },
+       "sub": [],
+       "timesAttacked": {
+        "1": 0.5
+       },
+       "perish": {},
+       "sleepTime": {},
+       "toxicStage": {},
+       "swapped": 0,
+       "switchFlag": 0,
+       "types": {
+        "Normal": 0.5
+       },
+       "ability": {
+        "thickfat": 0.5
+       },
+       "forme": {
+        "snorlax": 0.5
+       },
+       "stored": {
+        "130/85/85/130/53": 0.5
+       },
+       "weight": {
+        "4600": 0.5
+       },
+       "stockpile": {},
+       "lastItem": {
+        "": 0.5
+       },
+       "durations": {},
+       "pendingCopy": {},
+       "charging": {},
+       "cudChew": {},
+       "onceUsed": {},
+       "chiStrike": {},
+       "berryLocked": 0
+      },
+      "lax9": {
+       "id": "lax9",
+       "chance": 0.5,
+       "species": "Snorlax",
+       "start": 235,
+       "maximum": 235,
+       "dist": [
+        [
+         199,
+         1
+        ]
+       ],
+       "koChance": 0,
+       "average": 199,
+       "min": 199,
+       "max": 199,
+       "modeTieUp": 199,
+       "modeTieDown": 199,
+       "status": {
+        "": 0.5
+       },
+       "volatiles": {},
+       "boosts": {},
+       "item": {
+        "": 0.5
+       },
+       "sub": [],
+       "timesAttacked": {
+        "1": 0.5
+       },
+       "perish": {},
+       "sleepTime": {},
+       "toxicStage": {},
+       "swapped": 0,
+       "switchFlag": 0,
+       "types": {
+        "Normal": 0.5
+       },
+       "ability": {
+        "thickfat": 0.5
+       },
+       "forme": {
+        "snorlax": 0.5
+       },
+       "stored": {
+        "130/85/85/130/59": 0.5
+       },
+       "weight": {
+        "4600": 0.5
+       },
+       "stockpile": {},
+       "lastItem": {
+        "": 0.5
+       },
+       "durations": {},
+       "pendingCopy": {},
+       "charging": {},
+       "cudChew": {},
+       "onceUsed": {},
+       "chiStrike": {},
+       "berryLocked": 0
+      }
+     }
+    }
+   },
+   "replaced": {
+    "own-left": {
+     "left": [
+      {
+       "id": "slot:own-left",
+       "hp": [
+        [
+         183,
+         1
+        ]
+       ],
+       "chance": 1
+      }
+     ],
+     "entered": [
+      {
+       "id": "lax",
+       "chance": 0.5
+      },
+      {
+       "id": "lax9",
+       "chance": 0.5
+      }
+     ]
+    }
+   },
+   "entered": {
+    "own-left": {
+     "lax": {
+      "id": "lax",
+      "chance": 0.5,
+      "species": "Snorlax",
+      "start": 235,
+      "maximum": 235,
+      "dist": [
+       [
+        199,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 199,
+      "min": 199,
+      "max": 199,
+      "modeTieUp": 199,
+      "modeTieDown": 199,
+      "status": {
+       "": 0.5
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.5
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 0.5
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal": 0.5
+      },
+      "ability": {
+       "thickfat": 0.5
+      },
+      "forme": {
+       "snorlax": 0.5
+      },
+      "stored": {
+       "130/85/85/130/53": 0.5
+      },
+      "weight": {
+       "4600": 0.5
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 0.5
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     },
+     "lax9": {
+      "id": "lax9",
+      "chance": 0.5,
+      "species": "Snorlax",
+      "start": 235,
+      "maximum": 235,
+      "dist": [
+       [
+        199,
+        1
+       ]
+      ],
+      "koChance": 0,
+      "average": 199,
+      "min": 199,
+      "max": 199,
+      "modeTieUp": 199,
+      "modeTieDown": 199,
+      "status": {
+       "": 0.5
+      },
+      "volatiles": {},
+      "boosts": {},
+      "item": {
+       "": 0.5
+      },
+      "sub": [],
+      "timesAttacked": {
+       "1": 0.5
+      },
+      "perish": {},
+      "sleepTime": {},
+      "toxicStage": {},
+      "swapped": 0,
+      "switchFlag": 0,
+      "types": {
+       "Normal": 0.5
+      },
+      "ability": {
+       "thickfat": 0.5
+      },
+      "forme": {
+       "snorlax": 0.5
+      },
+      "stored": {
+       "130/85/85/130/59": 0.5
+      },
+      "weight": {
+       "4600": 0.5
+      },
+      "stockpile": {},
+      "lastItem": {
+       "": 0.5
+      },
+      "durations": {},
+      "pendingCopy": {},
+      "charging": {},
+      "cudChew": {},
+      "onceUsed": {},
+      "chiStrike": {},
+      "berryLocked": 0
+     }
+    }
+   }
+  }
+ },
+ "expected": {
+  "own-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 154,
+   "high": 139,
+   "average": 147.0625,
+   "min": 139,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     139,
+     0.0625
+    ],
+    [
+     141,
+     0.0625
+    ],
+    [
+     142,
+     0.125
+    ],
+    [
+     144,
+     0.0625
+    ],
+    [
+     145,
+     0.125
+    ],
+    [
+     147,
+     0.0625
+    ],
+    [
+     148,
+     0.125
+    ],
+    [
+     150,
+     0.0625
+    ],
+    [
+     151,
+     0.125
+    ],
+    [
+     153,
+     0.125
+    ],
+    [
+     154,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 150,
+   "maximum": 150,
+   "low": 150,
+   "high": 150,
+   "average": 150,
+   "min": 150,
+   "max": 150,
+   "koChance": 0,
+   "dist": [
+    [
+     150,
+     1
+    ]
+   ]
+  }
+ },
+ "warnings": [],
+ "afterTurn": {
+  "own-left": {
+   "start": 183,
+   "maximum": 183,
+   "low": 183,
+   "high": 183,
+   "average": 183,
+   "min": 183,
+   "max": 183,
+   "koChance": 0,
+   "dist": [
+    [
+     183,
+     1
+    ]
+   ]
+  },
+  "own-right": {
+   "start": 235,
+   "maximum": 235,
+   "low": 235,
+   "high": 235,
+   "average": 235,
+   "min": 235,
+   "max": 235,
+   "koChance": 0,
+   "dist": [
+    [
+     235,
+     1
+    ]
+   ]
+  },
+  "opponent-left": {
+   "start": 235,
+   "maximum": 235,
+   "low": 154,
+   "high": 139,
+   "average": 147.0625,
+   "min": 139,
+   "max": 154,
+   "koChance": 0,
+   "dist": [
+    [
+     139,
+     0.0625
+    ],
+    [
+     141,
+     0.0625
+    ],
+    [
+     142,
+     0.125
+    ],
+    [
+     144,
+     0.0625
+    ],
+    [
+     145,
+     0.125
+    ],
+    [
+     147,
+     0.0625
+    ],
+    [
+     148,
+     0.125
+    ],
+    [
+     150,
+     0.0625
+    ],
+    [
+     151,
+     0.125
+    ],
+    [
+     153,
+     0.125
+    ],
+    [
+     154,
+     0.0625
+    ]
+   ]
+  },
+  "opponent-right": {
+   "start": 150,
+   "maximum": 150,
+   "low": 150,
+   "high": 150,
+   "average": 150,
+   "min": 150,
+   "max": 150,
+   "koChance": 0,
+   "dist": [
+    [
+     150,
+     1
+    ]
+   ]
+  }
+ },
+ "residuals": [],
+ "expectedReplaced": {
+  "own-left": {
+   "left": [
+    {
+     "id": "slot:own-left",
+     "chance": 1,
+     "start": 183,
+     "maximum": 183,
+     "low": 183,
+     "high": 183,
+     "average": 183,
+     "min": 183,
+     "max": 183,
+     "koChance": 0,
+     "dist": [
+      [
+       183,
+       1
+      ]
+     ]
+    }
+   ],
+   "entered": [
+    {
+     "id": "lax",
+     "chance": 0.5
+    },
+    {
+     "id": "lax9",
+     "chance": 0.5
+    }
+   ]
+  }
+ },
+ "expectedEntered": {
+  "own-left": {
+   "lax": {
+    "chance": 0.5,
+    "start": 235,
+    "maximum": 235,
+    "low": 205,
+    "high": 199,
+    "average": 202.625,
+    "min": 199,
+    "max": 205,
+    "koChance": 0,
+    "dist": [
+     [
+      199,
+      0.0625
+     ],
+     [
+      201,
+      0.25
+     ],
+     [
+      202,
+      0.25
+     ],
+     [
+      204,
+      0.25
+     ],
+     [
+      205,
+      0.1875
+     ]
+    ]
+   },
+   "lax9": {
+    "chance": 0.5,
+    "start": 235,
+    "maximum": 235,
+    "low": 205,
+    "high": 199,
+    "average": 202.625,
+    "min": 199,
+    "max": 205,
+    "koChance": 0,
+    "dist": [
+     [
+      199,
+      0.0625
+     ],
+     [
+      201,
+      0.25
+     ],
+     [
+      202,
+      0.25
+     ],
+     [
+      204,
+      0.25
+     ],
+     [
+      205,
+      0.1875
+     ]
+    ]
+   }
+  }
+ },
+ "afterTurnReplaced": {},
+ "afterTurnEntered": {
+  "own-left": {
+   "lax": {
+    "chance": 0.5,
+    "start": 235,
+    "maximum": 235,
+    "low": 205,
+    "high": 199,
+    "average": 202.625,
+    "min": 199,
+    "max": 205,
+    "koChance": 0,
+    "dist": [
+     [
+      199,
+      0.0625
+     ],
+     [
+      201,
+      0.25
+     ],
+     [
+      202,
+      0.25
+     ],
+     [
+      204,
+      0.25
+     ],
+     [
+      205,
+      0.1875
+     ]
+    ]
+   },
+   "lax9": {
+    "chance": 0.5,
+    "start": 235,
+    "maximum": 235,
+    "low": 205,
+    "high": 199,
+    "average": 202.625,
+    "min": 199,
+    "max": 205,
+    "koChance": 0,
+    "dist": [
+     [
+      199,
+      0.0625
+     ],
+     [
+      201,
+      0.25
+     ],
+     [
+      202,
+      0.25
+     ],
+     [
+      204,
+      0.25
+     ],
+     [
+      205,
+      0.1875
+     ]
+    ]
+   }
+  }
+ }
+}

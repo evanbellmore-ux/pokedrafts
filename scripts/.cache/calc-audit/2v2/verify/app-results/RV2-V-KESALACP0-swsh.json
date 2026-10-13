@@ -1,0 +1,581 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 260,
+    "maximum": 260
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 90,
+    "maximum": 140
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "liquidation",
+    "effectiveName": "G-Max Foam Burst",
+    "effectiveType": "Water",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 69,
+      "max": 82,
+      "minPercent": 49.28571428571429,
+      "maxPercent": 58.57142857142858,
+      "koChance": 0,
+      "row": {
+       "moveId": "liquidation",
+       "effectiveName": "G-Max Foam Burst",
+       "effectiveType": "Water",
+       "effectivePower": 130,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 69,
+       "max": 82,
+       "minPercent": 49.28571428571429,
+       "maxPercent": 58.57142857142858,
+       "rolls": [
+        69,
+        70,
+        70,
+        72,
+        72,
+        73,
+        75,
+        75,
+        76,
+        76,
+        78,
+        78,
+        79,
+        79,
+        81,
+        82
+       ],
+       "ohkoChance": 0,
+       "description": "G-Max Foam Burst: 69–82 HP (49.3–58.6% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "One Max/G-Max attack."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 260,
+    "maximum": 260,
+    "low": 260,
+    "average": 260,
+    "high": 260,
+    "min": 260,
+    "max": 260,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 90,
+    "maximum": 140,
+    "low": 21,
+    "average": 14.6875,
+    "high": 8,
+    "min": 8,
+    "max": 21,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Holds no item.",
+      "chance": 1
+     }
+    ]
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "liquidation",
+     "effectiveName": "G-Max Foam Burst",
+     "effectiveType": "Water",
+     "effectivePower": 130,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 69,
+     "max": 82,
+     "minPercent": 49.28571428571429,
+     "maxPercent": 58.57142857142858,
+     "rolls": [
+      69,
+      70,
+      70,
+      72,
+      72,
+      73,
+      75,
+      75,
+      76,
+      76,
+      78,
+      78,
+      79,
+      79,
+      81,
+      82
+     ],
+     "ohkoChance": 0,
+     "description": "G-Max Foam Burst: 69–82 HP (49.3–58.6% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "One Max/G-Max attack."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 2,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [
+       "Dynamax ends after 3 turns."
+      ],
+      "notes": [
+       "Assumes Dynamax started this turn."
+      ]
+     },
+     "afterUse": {
+      "start": 90,
+      "low": 21,
+      "high": 8,
+      "average": 14.6875,
+      "min": 8,
+      "max": 21,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 69,
+        "heals": []
+       },
+       "high": {
+        "dealt": 82,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Dynamax started this turn."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 260,
+     "maximum": 260,
+     "low": 260,
+     "average": 260,
+     "high": 260,
+     "min": 260,
+     "max": 260,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 90,
+     "maximum": 140,
+     "low": 21,
+     "average": 14.6875,
+     "high": 8,
+     "min": 8,
+     "max": 21,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Holds no item.",
+       "chance": 1
+      }
+     ]
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 10.634547000001476,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 260,
+    "maximum": 260
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 90,
+    "maximum": 140
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 260,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "kingler",
+       "nature": "Serious",
+       "abilityId": "shellarmor",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       },
+       "mechanic": "gigantamax",
+       "configuration": {
+        "gender": "M",
+        "dynamaxLevel": 10,
+        "gigantamax": true
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 24
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": -2
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 32
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 8,
+        "chance": 0.0625
+       },
+       {
+        "hp": 9,
+        "chance": 0.0625
+       },
+       {
+        "hp": 11,
+        "chance": 0.125
+       },
+       {
+        "hp": 12,
+        "chance": 0.125
+       },
+       {
+        "hp": 14,
+        "chance": 0.125
+       },
+       {
+        "hp": 15,
+        "chance": 0.125
+       },
+       {
+        "hp": 17,
+        "chance": 0.0625
+       },
+       {
+        "hp": 18,
+        "chance": 0.125
+       },
+       {
+        "hp": 20,
+        "chance": 0.125
+       },
+       {
+        "hp": 21,
+        "chance": 0.0625
+       }
+      ],
+      "build": {
+       "speciesId": "skarmory",
+       "nature": "Serious",
+       "abilityId": "keeneye",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": -1
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

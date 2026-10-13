@@ -1,0 +1,698 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 135,
+    "maximum": 135
+   },
+   "own-right": {
+    "hp": 125,
+    "maximum": 125
+   },
+   "opponent-left": {
+    "hp": 145,
+    "maximum": 145
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-right",
+    "moveId": "quickguard",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [],
+    "facts": []
+   },
+   {
+    "slot": "own-left",
+    "moveId": "encore",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Encore: Bullet Punch.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "xscissor",
+    "order": [
+     {
+      "position": 3,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 0.5,
+      "kind": "calculated",
+      "min": 98,
+      "max": 116,
+      "minPercent": 72.5925925925926,
+      "maxPercent": 85.92592592592592,
+      "koChance": 0,
+      "row": {
+       "moveId": "bulletpunch",
+       "effectiveName": "Bullet Punch",
+       "effectiveType": "Steel",
+       "effectivePower": 40,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 98,
+       "max": 116,
+       "minPercent": 72.5925925925926,
+       "maxPercent": 85.92592592592592,
+       "rolls": [
+        98,
+        98,
+        98,
+        102,
+        102,
+        104,
+        104,
+        104,
+        108,
+        108,
+        110,
+        110,
+        110,
+        114,
+        114,
+        116
+       ],
+       "ohkoChance": 0,
+       "description": "Bullet Punch: 98–116 HP (72.6–85.9% of maximum HP). Applied: Technician.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     },
+     {
+      "slot": "own-right",
+      "reached": 0.5,
+      "kind": "calculated",
+      "min": 45,
+      "max": 54,
+      "minPercent": 36,
+      "maxPercent": 43.2,
+      "koChance": 0,
+      "row": {
+       "moveId": "bulletpunch",
+       "effectiveName": "Bullet Punch",
+       "effectiveType": "Steel",
+       "effectivePower": 40,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 45,
+       "max": 54,
+       "minPercent": 36,
+       "maxPercent": 43.2,
+       "rolls": [
+        45,
+        45,
+        46,
+        46,
+        48,
+        48,
+        48,
+        49,
+        49,
+        49,
+        51,
+        51,
+        51,
+        52,
+        52,
+        54
+       ],
+       "ohkoChance": 0,
+       "description": "Bullet Punch: 45–54 HP (36.0–43.2% of maximum HP). Applied: Technician.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Encore: Scizor uses Bullet Punch.",
+      "chance": 1
+     }
+    ]
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 135,
+    "maximum": 135,
+    "low": 135,
+    "average": 81.875,
+    "high": 19,
+    "min": 19,
+    "max": 135,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 125,
+    "maximum": 125,
+    "low": 125,
+    "average": 100.5,
+    "high": 71,
+    "min": 71,
+    "max": 125,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 145,
+    "maximum": 145,
+    "low": 145,
+    "average": 145,
+    "high": 145,
+    "min": 145,
+    "max": 145,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Encore: Bullet Punch.",
+      "chance": 1
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "opponent-left",
+    "target": "own-right",
+    "row": {
+     "moveId": "xscissor",
+     "effectiveName": "X-Scissor",
+     "effectiveType": "Bug",
+     "effectivePower": 80,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 29,
+     "max": 35,
+     "minPercent": 23.200000000000003,
+     "maxPercent": 28.000000000000004,
+     "rolls": [
+      29,
+      30,
+      30,
+      30,
+      30,
+      31,
+      31,
+      32,
+      32,
+      33,
+      33,
+      33,
+      33,
+      34,
+      34,
+      35
+     ],
+     "ohkoChance": 0,
+     "description": "X-Scissor: 29–35 HP (23.2–28.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 5,
+      "fewest": 4,
+      "fasterChance": 0.8004608154296875,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 125,
+      "low": 96,
+      "high": 90,
+      "average": 93.125,
+      "min": 90,
+      "max": 96,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 29,
+        "heals": []
+       },
+       "high": {
+        "dealt": 35,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 135,
+     "maximum": 135,
+     "low": 135,
+     "average": 81.875,
+     "high": 19,
+     "min": 19,
+     "max": 135,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 125,
+     "maximum": 125,
+     "low": 125,
+     "average": 100.5,
+     "high": 71,
+     "min": 71,
+     "max": 125,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 145,
+     "maximum": 145,
+     "low": 145,
+     "average": 145,
+     "high": 145,
+     "min": 145,
+     "max": 145,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Encore: Bullet Punch.",
+       "chance": 1
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 8.613367999998445,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 135,
+    "maximum": 135
+   },
+   "own-right": {
+    "hp": 125,
+    "maximum": 125
+   },
+   "opponent-left": {
+    "hp": 145,
+    "maximum": 145
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 19,
+        "chance": 0.03125
+       },
+       {
+        "hp": 21,
+        "chance": 0.0625
+       },
+       {
+        "hp": 25,
+        "chance": 0.09375
+       },
+       {
+        "hp": 27,
+        "chance": 0.0625
+       },
+       {
+        "hp": 31,
+        "chance": 0.09375
+       },
+       {
+        "hp": 33,
+        "chance": 0.0625
+       },
+       {
+        "hp": 37,
+        "chance": 0.09375
+       },
+       {
+        "hp": 135,
+        "chance": 0.5
+       }
+      ],
+      "build": {
+       "speciesId": "whimsicott",
+       "nature": "Serious",
+       "abilityId": "infiltrator",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 71,
+        "chance": 0.03125
+       },
+       {
+        "hp": 73,
+        "chance": 0.0625
+       },
+       {
+        "hp": 74,
+        "chance": 0.09375
+       },
+       {
+        "hp": 76,
+        "chance": 0.09375
+       },
+       {
+        "hp": 77,
+        "chance": 0.09375
+       },
+       {
+        "hp": 79,
+        "chance": 0.0625
+       },
+       {
+        "hp": 80,
+        "chance": 0.0625
+       },
+       {
+        "hp": 125,
+        "chance": 0.5
+       }
+      ],
+      "build": {
+       "speciesId": "hitmontop",
+       "nature": "Serious",
+       "abilityId": "steadfast",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 145,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "scizor",
+       "nature": "Serious",
+       "abilityId": "technician",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "volatiles": [
+       "encore"
+      ],
+      "turnsLeft": {
+       "encore": 2
+      }
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 24
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

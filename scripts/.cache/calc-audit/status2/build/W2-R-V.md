@@ -249,3 +249,200 @@ At integration 2, run `changed-cases.ts diff <app-results before> <after> --wave
   stored result byte-equal. The Pledges and Round also pass a move to `prioritizeAction` (moves.ts:5405, 7604, 15519,
   20547), and that action's sourceEffect may cross a snapshot as the same unreadable `[DataMove:…]`-style string. Their
   stored cases agree, but the integrator may want to look at it in a later wave.
+
+## Finish (cloud session)
+
+Track R-V was finished in the cloud session of 2026-10-11, after R-E's finish. `git branch --show-current` printed
+`calc-2v2-status-2` before the work and again before this report. Nothing was committed, pushed, switched or merged. No app
+file, no `tests/` file and no stub was edited. `tests/unit/doubles-turn-showdown.test.ts` was not regenerated: the
+regeneration was dry-run into the scratchpad (F5). Line endings are kept: cases.ts and gen-tests.ts are CRLF on every line;
+app-turn.ts, sim-dfs.ts, cases-r.ts and v3/harness.test.ts are LF. The scratchpad is
+`/tmp/claude-0/-home-user-pokedrafts/1fff6e15-9f52-5b3b-bbb9-2b51ed040eae/scratchpad/r-v/` (`$RV` below).
+
+**What this cloud tree lacks.** These are missing here:
+- the gitignored case folders that are stubs (the orchestrator's list: 544 stored ids that do not load);
+- `verify/v1/fixtures/`, and `v3/gen/`, `v3/gen-r/`, `v3/logs/`, `v3/tools/`, `v3/tsc/`, `v3/app-hz/`. Only the files directly
+  under `v1/`, `v2/` and `v3/` were pushed.
+
+So every compare below covers only the cases that load. The R rows of `v3/gen-r/r.test.ts` were run as part of the dry-run
+regeneration instead (F5).
+
+### F1. The start, and the harness side of R-E's three asks
+
+- **Start:** `v3/run.ts --wave2` gave `85/87 cases match.` Only the two Assist cases differed (`Assist needs the moves of
+  Liepard's party.`).
+- **`app-turn.ts caseInput` and `gen-tests.ts` (R-E's ask 2).** A slot with `exactMoves` and no `moves` now passes its action
+  move as `moves`: `...(m.moves || m.exactMoves ? { moves: [...] } : {})`. Its Showdown slots are exactly that (sim-dfs
+  `sdSet`), and Assist reads the ally's slots. The only other `exactMoves` cases are wave 1b's Sleep Talk cases, and they all
+  have `moves`, so their input is unchanged. Result: T2P-AST-01-usum and -02-usum agree, giving `87/87 cases match.`
+- **`cases.ts` STATUS2_REEXPECT block (R-E's ask 3).** A wave 2 case (`WAVE2_CASES`) is skipped, as wave 1a's are, because
+  it states wave 2's expectations. Without the skip, G4-SWX-20-sv's kept `Commander is not modelled in 2v2.` was dropped by
+  a 1b removal pattern. Result: `STATUS2_REEXPECT=1a,1b v3/run.ts --wave2` agrees on every case.
+- **R-E's ask 1** (doubles-faces.ts, `w2-re/faces-ask.diff`) is an app file, so it stays with the integrator. None of the
+  stored cases depend on it.
+
+### F2. A harness fix found by the new cases: a dragged newcomer's lines inside the move
+
+**What was wrong.** `sim-dfs.ts parseLines` read every HP line of an action against the position map at the action's
+start. A drag inside the action (Roar, Whirlwind, Dragon Tail, Circle Throw, Red Card) brings a newcomer in mid-action.
+Its later lines in that same action (Stealth Rock damage, an Intimidate) were then counted as the slot's starting
+Pokémon's. G4-SWX-31 (Whirlwind onto Stealth Rock) failed on `own-left→opponent-right hit.change: expected
+{"min":-158,"max":-114}, got "absent"`. That change was the dragged newcomer's Stealth Rock damage, measured against the
+dragged-out Snorlax's 235.
+
+**The fix.** For a bench case's action records only, parseLines takes a `member` predicate. A `|switch|` or `|drag|` line
+of a bench member now re-keys its position to `<slot>|<id>`. Its later lines then go to `effectsEntered`, and no
+`moveChange` is recorded on the slot. Without a bench `member` is undefined, so nothing changes.
+
+**Checks:**
+- Every wave 2 case run again (`sim-dfs.ts … --out=$RV/oracle-after`): 103 of the 107 estimated results are byte-equal to the
+  stored ones (`ms` aside). The 4 that changed are the new G4-SWX-31 and -32 (sv, champions), and their fixed results are
+  stored.
+- Without a bench (`$RV/ab-pin.ts`: `sim-dfs.ts` against `sim-dfs-pre-r.ts`), E31c, ER32a, S1-RSP-champions,
+  T2P-CMD-05-sv, T2P-CMD-05b-sv, T2P-BKB-02-champions, S48-Teleport-noSwitch, E32a and ER29c are each `byte-equal`.
+
+### F3. The switch family's coverage (census-guards.md §4, SPEC2 §4.8, guards.md §5.4 step 6)
+
+**42 new cases** were added to `cases-r.ts`: 41 in 22 new families (G4-SWX-31…52) and G4-SWX-21-sv. Each one was run as follows:
+- the oracle first (`v3/run.ts --oracle`, exhaustive);
+- `--validate` (`sim-dfs.ts … --validate --out=$RV/oracle-validate*`): 132 `equal to N whole-turn replays` lines (3 walks ×
+  44 runs: the 42 cases plus G4-SWX-36 ×2 again after its title change), and none differ. The validated results equal the
+  stored ones (warnings and `ms` aside).
+- the app: every one agrees.
+
+G4-SWX-50-swsh first carried `onceUsed` on the bench Zacian. The app correctly refuses that input outside generation 9
+(`Only generation 9 counts once-a-battle effects.`), so the case was split: SV has it used, SwSh has a plain entry.
+
+| Trigger (census §4) | Cases (games) |
+|---|---|
+| U-turn | G4-SWX-01 (sv, champions), -03 (sv, usum), -18 (sv, usum), -23 (sv, usum), IN-BNC-01 (sv, champions), and most entry cases |
+| Volt Switch | G4-SWX-27 (sv, champions); no switch into Ground: -22 (sv, champions) |
+| Flip Turn | G4-SWX-28, **-38**, **-43** (sv, champions); not in USUM |
+| Parting Shot | G4-SWX-02 (champions, sv), -24 (sv, swsh), IN-BNC-02 (sv, champions) |
+| Teleport | G4-SWX-21 (swsh, usum: fails; **sv new**); Champions: isNonstandard Past |
+| Baton Pass | G4-SWX-09 (sv, usum) |
+| Shed Tail | G4-SWX-19 (sv, champions) |
+| Chilly Reception | G4-SWX-07 (sv, champions), T2E-BL-03 (sv, champions) |
+| Roar | G4-SWX-04 (swsh, sv); stopped by Ingrain **-47** (sv, champions) and by Suction Cups **-48** (swsh, usum; no holder in SV) |
+| Whirlwind | **G4-SWX-31** (sv, champions): a random drag onto Stealth Rock |
+| Dragon Tail | G4-SWX-22 (sv, champions); stopped by Guard Dog **-40** (sv, champions); into an Eject Button **-42** (sv, champions: the drag first, the button unused) |
+| Circle Throw | **G4-SWX-32** (sv, champions): a random drag of an Intimidate newcomer |
+| Eject Button | G4-SWX-08 (champions, sv), -23 (sv, usum), -25 (sv, kept reason), -42 |
+| Eject Pack | G4-SWX-05 (sv, swsh), -13 (sv, swsh: after the residual), -24 (sv, swsh: not by Parting Shot), -30 (sv, swsh); none in Champions |
+| Red Card | G4-SWX-11 (sv, swsh) |
+| Emergency Exit | G4-SWX-10 (champions, swsh), -12 (champions, usum: after the residual); no Golisopod in SV |
+| Wimp Out | G4-SWX-29 (swsh, usum); no Wimpod in SV |
+
+| Entry or leaving effect | Cases (games) |
+|---|---|
+| Stealth Rock, Spikes, Toxic Spikes, Sticky Web, G-Max Steelsurge, Heavy-Duty Boots | G4-SWX-03, -12, **-31** (drag), IN-HZD-01…05 (sv with swsh, usum or champions; Steelsurge swsh only) |
+| Air Balloon (not grounded: no Spikes, Earthquake immune) | **G4-SWX-39** (sv, champions) |
+| Intimidate | G4-SWX-01 (sv, champions), -30 (sv, swsh), **-32** (sv, champions) |
+| Weather setters, the re-sort | G4-SWX-06 Drought (usum, sv), -17 Drizzle (sv, champions) |
+| Terrain setter | **G4-SWX-43** Grassy Surge (sv, champions: Earthquake halved, the terrain's heal) |
+| Weather suppression | **G4-SWX-45** Cloud Nine (Golduck sv, Drampa champions) |
+| Seeds | **G4-SWX-33** Electric Seed (sv, champions) |
+| Booster Energy / Quark Drive | **G4-SWX-34** (sv only) |
+| Trace (random among the foes) | **G4-SWX-36** (sv, champions) |
+| Download | **G4-SWX-41** (sv, usum) |
+| Hospitality | **G4-SWX-35** (sv, champions) |
+| Unnerve newcomer | **G4-SWX-37** (sv, swsh) |
+| Supersweet Syrup | **G4-SWX-44** (sv, champions) |
+| Curious Medicine | **G4-SWX-46** (sv, champions) |
+| Costar | **G4-SWX-49** (sv only) |
+| Intrepid Sword | **G4-SWX-50** (sv: once used, no boost; swsh: +1 at every entry) |
+| Wind Rider under Tailwind | **G4-SWX-51** (sv only) |
+| Screen Cleaner | **G4-SWX-52** (champions, swsh; no Mr. Rime in SV) |
+| Neutralizing Gas: newcomer under it, gas newcomer (kept), the leaver's gas ending (kept) | G4-SWX-14 (sv, swsh), -15 (sv, swsh), -25 (sv) |
+| Imposter | G4-SWX-16 (sv, champions) |
+| Commander (kept) | G4-SWX-20 (sv only) |
+| A second Eject Pack at SwitchIn | G4-SWX-05, -30 |
+| Leaving: Regenerator, Natural Cure, Zero to Hero | G4-SWX-07 (sv, champions), -18 (sv, usum), **-38** (sv, champions: Palafin-Hero on the bench) |
+| Baton Pass stages, Shed Tail's Substitute | G4-SWX-09, -19 |
+| Landings and Wish at a newcomer's position, a benched source | T2E-BL-01…03, IN-FSL-02 |
+| Assist, Beat Up, Pursuit with the bench | T2P-AST-01/02 (usum), T2P-BTR-01 (sv, champions, swsh), CQ-PUR-R-01/02 (usum) |
+
+**Still only in R-E's quick probes, not stored:**
+- Room Service, a Protosynthesis newcomer in sun without Booster Energy, Embody Aspect, Dauntless Shield, Psychic and
+  Electric Surge newcomers;
+- the Mirror Herb copy at SwitchIn (R4-WEB-MIRRORHERB);
+- Wimp Out after the residual (G4-SWX-12's Emergency Exit uses the same handler);
+- Red Card in Champions.
+
+R-E's own `w2-re/cases-re.ts` cases (Sheer Force with the after-move items, Red Card with Life Orb, Pursuit with Technician
+or Destiny Bond) are still not stored. `tests/unit/doubles-switch.test.ts` pins their numbers.
+
+Wave 2 is now `v3/count.ts`: `129 cases in 68 families; 4 not estimated (*); oracle results missing: none`.
+
+### F4. Harness tests
+
+`v3/harness.test.ts` gained 3 tests, now 25 in all:
+- a newcomer dragged in inside the move owns its later lines (G4-SWX-31, -32);
+- `exactMoves` passes the action move as `moves` (T2P-AST-01);
+- `gen-tests.ts --keep-rows` keeps a stub's row in place and byte for byte (a child process into `os.tmpdir()`).
+
+The 4 tests that fail here fail on missing files only. Each failing id or file is absent from this tree:
+
+| Suite | Result | Failing test and its cause |
+|---|---|---|
+| v3 | `Tests  1 failed \| 24 passed (25)` | `without a bench the oracle is the one before wave 2`: `Error: no case ZS16` (zmove-status is a stub). F2's ab-pin covers the same check on loaded cases. |
+| V1 | `Tests  2 failed \| 16 passed (18)` | `ENOENT … v1/fixtures/G4-OPP-11-sv.oracle.json`; `expected '' to match /fieldSet/` for RT-RV02 (a stub id) |
+| V2 | `Tests  1 failed \| 25 passed (26)` | `R09: expected false to be true` (R09 is a stub id, review-engine) |
+
+All three results are the same before and after this finish's edits.
+
+### F5. The regeneration, dry-run (integration 2 runs it for real)
+
+**`gen-tests.ts --keep-rows=<test file>`** (new) reads the rows of the existing test file:
+- A row whose case does not load (a stub) is kept byte for byte, in its place.
+- Every other row is generated again (its id joins KEEP), and the run logs any row that comes out different.
+- A new row goes in CASES order among the generated ones.
+
+**The dry-run** used `$RV/gen/before.test.ts`, a copy of today's `tests/unit/doubles-turn-showdown.test.ts`, and wrote
+`$RV/gen/doubles-turn-showdown.test.ts`:
+
+```
+STATUS2_REEXPECT=1a,1b npx --no-install tsx scripts/.cache/calc-audit/2v2/verify/gen-tests.ts --compare=$RV/compare-final.json --keep-rows=$RV/gen/before.test.ts --out=$RV/gen/doubles-turn-showdown.test.ts
+keep-rows: 1985 rows before, 282 kept as they were (their case does not load), 125 new
+wrote 2110 cases to …/r-v/gen/doubles-turn-showdown.test.ts (0 cases that do not agree with the app left out)
+```
+
+- **Rows.** All 1985 old rows are byte-equal and in their order, the 282 stub rows among them. The 125 new rows are wave 2's
+  estimated cases (129 − 4 not estimated), after the old ones. No row was logged as different.
+- **Code.** The checking code differs from today's file in two places only: the `exactMoves` line, and a sixth table part
+  (`CASES_6`).
+- **Checks.** Copied to `v3/gen/` for the run (then removed):
+  - `vitest.gen.config.mts`: `Test Files  1 passed (1)`, `Tests  2110 passed (2110)`;
+  - `tsc` (scratch tsconfig extending the root's): exit 0;
+  - `eslint --no-ignore`: exit 0.
+- **The file:** `$RV/gen/doubles-turn-showdown.test.ts`, sha256 `493817026f4f789331f8f8e66539a5a359359d9d7fe6b1d1c3f967c88b4ed76c`.
+
+**For integration 2, after compare.ts (STATUS2_REEXPECT=1a,1b) has written results/compare.json:**
+
+`STATUS2_REEXPECT=1a,1b npx --no-install tsx scripts/.cache/calc-audit/2v2/verify/gen-tests.ts --keep-rows=tests/unit/doubles-turn-showdown.test.ts`
+
+### F6. changed-cases.ts (wave 2)
+
+- **Before set:** the committed `verify/app-results/` of `origin/wip/status2-cache`, 2336 files, extracted with `git
+  archive` to `$RV/before-root/`. It is identical to the tree's copy.
+- **After set:** `STATUS2_REEXPECT=1a,1b v3/run.ts --store-dir=$RV/app-final`, every case that loads.
+- **Result:** `changed-cases.ts diff <before> $RV/app-final --wave=all` printed `1898 cases: 1769 unchanged, 0 stored cases
+  changed, 0 failing the gate.` and exited 0.
+
+So no stored case's app output changed in wave 2 (for the 1769 that load), and none is NOT LISTED. `listChanged2`'s four
+hazard rows (S1-RSP ×2, FS07b/FS08c-champions) stay listed. Their output is unchanged, as §4 expected.
+
+### F7. Gates (final code; the lines as printed)
+
+1. `npx --no-install tsx scripts/.cache/calc-audit/2v2/verify/v3/run.ts --wave2 --quiet`: `129/129 cases match.` The same
+   with `STATUS2_REEXPECT=1a,1b`: `129/129 cases match.`
+2. `STATUS2_REEXPECT=1a,1b npx --no-install tsx scripts/.cache/calc-audit/2v2/verify/v3/run.ts --quiet` (every case that
+   loads): `1898/1898 cases match.` That is 1769 stored cases and 129 wave 2 cases; the 544 stub ids are not run.
+3. `--validate` on the 42 new cases: every walk `equal to N whole-turn replays` (F3).
+4. changed-cases.ts: `1898 cases: 1769 unchanged, 0 stored cases changed, 0 failing the gate.` (F6).
+5. The regeneration dry-run: `Tests  2110 passed (2110)`; tsc exit 0; eslint exit 0 (F5).
+6. Harness tests: v3 `24 passed`, V1 `16 passed`, V2 `25 passed`. Their 4 failures are missing files (F4).
+7. Type check of the edited harness files (scratch tsconfig with node types; app-turn, gen-tests, cases, cases-r, sim-dfs,
+   v3/harness.test.ts, v3/run.ts, changed-cases.ts): no error in any edited line. The errors left are the older ones §7
+   lists (cases-cq-1b.ts, compare.ts's note argument and `outcomes`, sim-dfs's `ch`, sim-dfs-pre-r.ts, cases.ts
+   `sdNoTarget`) and the Showdown copy's own sources.

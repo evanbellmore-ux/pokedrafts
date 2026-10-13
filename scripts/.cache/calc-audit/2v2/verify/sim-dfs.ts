@@ -542,6 +542,20 @@ export function prepare(c: Case, hidden: Hidden = hiddenCases(c)[0].hidden, opts
       for (const once of m.carried?.onceUsed ?? []) {
         p[{ battlebond: "bondTriggered", intrepidsword: "swordBoost", dauntlessshield: "shieldBoost", supersweetsyrup: "syrupTriggered" }[once]] = true;
       }
+      // status2 wave 2 gap fix: a member with choice "terastallize" Terastallized on an earlier turn (the app's bench build
+      // mechanic "tera"): sim/battle-actions.ts terastallize's state, an Ogerpon in its mask's Tera form (formeChange(…, null,
+      // true): a permanent form with that form's ability). Its ability state is made fresh as it comes in (switchIn).
+      if (m.choice === "terastallize") {
+        if (!m.teraType) throw new Error(`${c.id} bench ${m.id}: Terastallized with no teraType`);
+        p.terastallized = m.teraType;
+        p.knownType = true;
+        p.apparentType = m.teraType;
+        for (const ally of p.side.pokemon) ally.canTerastallize = null;
+        if (p.species.baseSpecies === "Ogerpon") {
+          const form = toID(p.species.battleOnly || p.species.id);
+          p.formeChange(form === "ogerpon" ? "ogerpontealtera" : `${form}tera`, null, true);
+        }
+      } else if (m.choice) throw new Error(`${c.id} bench ${m.id}: choice ${m.choice} on a bench member`);
     }
   }
   const warnings: string[] = [];
@@ -1038,7 +1052,12 @@ type ParsedLine = {
   from: string | null; of: string | null;
 };
 /** Parses one action's (or the residual's) lines, tracking positions (|swap|) and each Pokémon's HP from its secret lines. */
-function parseLines(lines: string[], pos: PosMap, hp: Record<string, number>): (ParsedLine & { index: number })[] {
+/**
+ * `member` (status2 wave 2, the R-V finish; a bench case's action records only): whether a set name on a side ("p1" / "p2")
+ * is a bench member. A member dragged or switched in inside the lines (Roar, Whirlwind, Dragon Tail, Circle Throw, Red Card)
+ * then takes its position, so its later lines there (Stealth Rock, Spikes) are the newcomer's ("<slot>|<id>"), not the slot's.
+ */
+function parseLines(lines: string[], pos: PosMap, hp: Record<string, number>, member?: (side: "p1" | "p2", name: string) => boolean): (ParsedLine & { index: number })[] {
   const out: (ParsedLine & { index: number })[] = [];
   const identSlot = (text: string | undefined): string | null => {
     const m = text ? /^(p[12][ab])(: |$)/.exec(text) : null;
@@ -1091,6 +1110,16 @@ function parseLines(lines: string[], pos: PosMap, hp: Record<string, number>): (
       case "-hitcount": if (slot) push({ slot, key: `hitcount:${parts[3]}`, from, of }); break;
       case "faint": if (slot) push({ slot, key: "faint", from, of }); break;
       case "move": if (slot) push({ slot, key: `usedmove:${eid(parts[3] ?? "")}${from ? `:${eid(from)}` : ""}`, from, of }); break;
+      case "switch": case "drag": {
+        const m = member ? /^(p[12])([ab]): (.*)$/.exec(parts[2] ?? "") : null;
+        const at = m ? pos[`${m[1]}${m[2]}`] : null;
+        if (!m || !at || !member!(m[1] as "p1" | "p2", m[3])) break;
+        const key = `${splitKey(at)[0]}|${m[3]}`;
+        pos[`${m[1]}${m[2]}`] = key;
+        const now = hpOfText(parts[4]);
+        if (now !== null) hp[key] = now;
+        break;
+      }
       case "swap": {
         const side = sideOf(parts[2]);
         if (!side) break;
@@ -1142,6 +1171,9 @@ function monState(p: any, slot: SlotId): MonState {
   const st = p?.statusState ?? {};
   // status2 wave 2: a starting Pokémon on the bench (it switched out) stands at no position and has no switch pending.
   const benched = !!p?.m?.keep && !p.isActive;
+  // status2 wave 2 gap fix: its slot's position is then its newcomer's (the active Pokémon that came in for the slot), so the
+  // slot is swapped where that one stands at the other position (Ally Switch before the switch: DoublesOutcome.positions).
+  const at = benched ? p.side.active.find((x: any) => x?.isActive && x.m?.enteredFor === slot) ?? null : p;
   return {
     hp: hpOf(p), max: p?.maxhp ?? 0, status: p?.status ?? "",
     // status2: a transformed Pokémon (pokemon.ts transformInto sets `transformed`, no volatile) is E2's "transform".
@@ -1150,7 +1182,7 @@ function monState(p: any, slot: SlotId): MonState {
     item: p?.item ?? "", sub: p?.volatiles?.substitute ? p.volatiles.substitute.hp : null, timesAttacked: p?.timesAttacked ?? 0,
     perish: p?.volatiles?.perishsong ? p.volatiles.perishsong.duration : null,
     sleepTime: p?.status === "slp" ? st.time : null, toxicStage: p?.status === "tox" ? st.stage : null,
-    swapped: !!p && !benched && p.position !== SD[slot].position, switchFlag: !benched && !!p?.switchFlag,
+    swapped: !!at && at.position !== SD[slot].position, switchFlag: !benched && !!p?.switchFlag,
     types: p ? p.getTypes().join("/") : "", ability: p?.ability ?? "", forme: p?.species?.id ?? "",
     stored: p ? ["atk", "def", "spa", "spd", "spe"].map((k) => p.storedStats[k]).join("/") : "", weight: String(p?.weighthg ?? ""),
     stockpile: p?.volatiles?.stockpile ? `${p.volatiles.stockpile.layers}:${p.volatiles.stockpile.def}:${p.volatiles.stockpile.spd}` : null,
@@ -1202,6 +1234,8 @@ type ActionRec = {
   copied?: "Dancer" | "Instruct";
   /** The slot of the Pokémon whose dance it copies (or whose Instruct made it). */
   source?: SlotId;
+  /** status2 wave 2 gap fix: a copy by a bench Pokémon that came in for `slot` (its bench id; DoublesStep.id). */
+  id?: string;
 };
 type Ctx = { c: Case; pass: Set<SlotId>; absent: Set<SlotId>; totalMoves: number; critical: boolean; switching: Set<SlotId>; commanding?: Set<SlotId>;
   /** status2 wave 2: the case has a bench (hasBench): switch requests answered, identity tracked. */
@@ -1290,11 +1324,14 @@ class Recorder {
           rec.current = outer;
         }
       }
-      const dancer = options?.externalMove && options?.sourceEffect?.id === "dancer" ? slotOf(pokemon) : null;
-      if (!outer || !dancer) return runMove.call(this, moveOrId, pokemon, targetLoc, options);
+      // status2 wave 2 gap fix: a bench Pokémon that came in (keyOf "<slot>|<id>") copies under its slot with its id.
+      const dancerKey = options?.externalMove && options?.sourceEffect?.id === "dancer" ? keyOf(pokemon) : null;
+      if (!outer || !dancerKey) return runMove.call(this, moveOrId, pokemon, targetLoc, options);
+      const [dancer, dancerId] = splitKey(dancerKey);
       if (!outer.frozen) outer.frozen = { log: rec.b.log.length, hp: hpAll(rec.b), sub: subNow(rec.b) };
       rec.current = rec.open(dancer, toID(typeof moveOrId === "string" ? moveOrId : moveOrId.id), pokemon, "Dancer");
       rec.current.source = outer.slot;
+      if (dancerId) rec.current.id = dancerId;
       try {
         return runMove.call(this, moveOrId, pokemon, targetLoc, options);
       } finally {
@@ -1367,10 +1404,11 @@ class Recorder {
     cur.lines = lines.filter((l) => /^\|(-fail|-activate|-immune|-miss|-block|cant|-enditem|-ability|-heal|-boost|-unboost|-start|-singleturn|-sidestart|-fieldstart|-weather|-status|-clearallboost)\||\[from\]|\[notarget\]|\[still\]/.test(l) && !/^\|debug\|/.test(l))
       .map((l) => l.replace(/\|\d+\/\d+( [a-z]+)?/g, "|hp").replace(/\|\[of\] /g, "|[of] "));
     // status-eot: the lines on each Pokémon (its own |move| line left out: `moved` says it), HP changes and Substitutes.
-    const parsed = parseLines(lines, { ...cur.posBefore }, { ...cur.hpBefore });
+    const member = this.ctx.bench ? (side: "p1" | "p2", name: string) => this.b.sides[side === "p1" ? 0 : 1].pokemon.some((p: any) => p.m?.benchId === name) : undefined;
+    const parsed = parseLines(lines, { ...cur.posBefore }, { ...cur.hpBefore }, member);
     for (const p of parsed) {
       if (p.slot) {
-        if (p.slot === cur.slot && p.key.startsWith("usedmove:") && !p.from) continue;
+        if (p.slot === (cur.id ? `${cur.slot}|${cur.id}` : cur.slot) && p.key.startsWith("usedmove:") && !p.from) continue;
         let set = cur.effects.get(p.slot);
         if (!set) cur.effects.set(p.slot, set = new Set());
         set.add(p.key);
@@ -1779,8 +1817,8 @@ class Tally {
       }
       let s = this.steps[r.slot]!;
       if (r.copied) {
-        const key = `${r.copied}:${r.slot}:${r.moveId}:${r.source ?? "?"}`;
-        s = this.copies[key] ??= { slot: r.slot, copied: r.copied, ...(r.source ? { source: r.source } : {}), moveId: r.moveId, picked: 0, faintedAtPick: 0, moved: 0, cant: {}, orderAll: {}, orderMoved: {}, hits: {}, lines: {}, effects: {}, change: {}, sides: {} };
+        const key = `${r.copied}:${r.slot}${r.id ? `|${r.id}` : ""}:${r.moveId}:${r.source ?? "?"}`;
+        s = this.copies[key] ??= { slot: r.slot, ...(r.id ? { id: r.id } : {}), copied: r.copied, ...(r.source ? { source: r.source } : {}), moveId: r.moveId, picked: 0, faintedAtPick: 0, moved: 0, cant: {}, orderAll: {}, orderMoved: {}, hits: {}, lines: {}, effects: {}, change: {}, sides: {} };
       }
       if (!s) throw new Error(`${this.ctx.c.id}: a second action of ${r.slot} (${r.moveId}) that is no copy`);
       s.picked += w;
@@ -2233,9 +2271,9 @@ export function oracle(c: Case, options: { samples?: number; validate?: boolean 
     .map(([slot, e]) => [slot, { ...e, start: expected[slot as SlotId].start, maximum: expected[slot as SlotId].maximum }])) as Record<SlotId, Expected> : null;
   // status2 wave 2 (a case with a bench): the leavers and newcomers, after the moves and (when every path had a residual) the turn.
   const bench = hasBench(c) ? {
-    expectedReplaced: replacedExpected(all.replaced, lowest.replaced, highest.replaced, expected, warnings, "moves"),
+    expectedReplaced: replacedExpected(all.replaced, lowest.replaced, highest.replaced, expected, warnings, "moves", all.entered),
     expectedEntered: enteredExpected(all.entered, lowest.entered, highest.entered, warnings, "moves"),
-    afterTurnReplaced: whole ? replacedExpected(all.afterTurn!.replaced, lowest.afterTurn!.replaced, highest.afterTurn!.replaced, expected, warnings, "turn") : null,
+    afterTurnReplaced: whole ? replacedExpected(all.afterTurn!.replaced, lowest.afterTurn!.replaced, highest.afterTurn!.replaced, expected, warnings, "turn", all.afterTurn!.entered) : null,
     afterTurnEntered: whole ? enteredExpected(all.afterTurn!.entered, lowest.afterTurn!.entered, highest.afterTurn!.entered, warnings, "turn") : null,
   } : {};
   return {
@@ -2259,13 +2297,17 @@ function hpExpected(dist: [number, number][], lo: [number, number][] | undefined
   };
 }
 type ReplacedExpected = NonNullable<OracleResult["expectedReplaced"]>;
-function replacedExpected(all: WalkResult["replaced"], lo: WalkResult["replaced"], hi: WalkResult["replaced"], expected: Record<SlotId, Expected>, warnings: string[], phase: string): ReplacedExpected {
+function replacedExpected(all: WalkResult["replaced"], lo: WalkResult["replaced"], hi: WalkResult["replaced"], expected: Record<SlotId, Expected>, warnings: string[], phase: string,
+  entered?: WalkResult["entered"]): ReplacedExpected {
   const out: ReplacedExpected = {};
   for (const [slot, r] of Object.entries(all ?? {}) as [SlotId, ReplacedResult][]) {
+    // status2 wave 2 gap fix: a newcomer that left again has its own start (its HP before the turn) and maximum, as it entered.
+    const own = (id: string) => (id === `slot:${slot}` ? null : entered?.[slot]?.[id] ?? null);
     out[slot] = {
       left: r.left.map((x) => ({
         id: x.id, chance: x.chance,
-        ...hpExpected(x.hp, lo?.[slot]?.left.find((y) => y.id === x.id)?.hp, hi?.[slot]?.left.find((y) => y.id === x.id)?.hp, expected[slot].start, expected[slot].maximum, `${phase} ${slot} left ${x.id}`, warnings),
+        ...hpExpected(x.hp, lo?.[slot]?.left.find((y) => y.id === x.id)?.hp, hi?.[slot]?.left.find((y) => y.id === x.id)?.hp, own(x.id)?.start ?? expected[slot].start,
+          own(x.id)?.maximum ?? expected[slot].maximum, `${phase} ${slot} left ${x.id}`, warnings),
       })),
       entered: r.entered.map((x) => ({ ...x })),
     };

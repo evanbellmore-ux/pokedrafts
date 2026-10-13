@@ -1,0 +1,902 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 150,
+    "maximum": 150
+   },
+   "own-right": {
+    "hp": 160,
+    "maximum": 160
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-right",
+    "moveId": "fierydance",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "substitute",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "row": {
+       "moveId": "fierydance",
+       "effectiveName": "Fiery Dance",
+       "effectiveType": "Fire",
+       "effectivePower": 80,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 27,
+       "max": 33,
+       "minPercent": 11.48936170212766,
+       "maxPercent": 14.042553191489363,
+       "rolls": [
+        27,
+        27,
+        28,
+        28,
+        28,
+        28,
+        30,
+        30,
+        30,
+        30,
+        30,
+        31,
+        31,
+        31,
+        31,
+        33
+       ],
+       "ohkoChance": 0,
+       "description": "Fiery Dance: 27–33 HP (11.5–14.0% of maximum HP). Applied: Thick Fat.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 0,
+      "facts": [],
+      "substitute": {
+       "chance": 1,
+       "min": 27,
+       "max": 33,
+       "breaks": 0
+      }
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-left",
+    "moveId": "fierydance",
+    "order": [],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "substitute",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "row": {
+       "moveId": "fierydance",
+       "effectiveName": "Fiery Dance",
+       "effectiveType": "Fire",
+       "effectivePower": 80,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 21,
+       "max": 25,
+       "minPercent": 8.936170212765958,
+       "maxPercent": 10.638297872340425,
+       "rolls": [
+        21,
+        21,
+        21,
+        21,
+        22,
+        22,
+        22,
+        22,
+        22,
+        22,
+        24,
+        24,
+        24,
+        24,
+        24,
+        25
+       ],
+       "ohkoChance": 0,
+       "description": "Fiery Dance: 21–25 HP (8.9–10.6% of maximum HP). Applied: Thick Fat.",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Its Substitute breaks.",
+        "chance": 0.00390625
+       }
+      ],
+      "substitute": {
+       "chance": 1,
+       "min": 21,
+       "max": 25,
+       "breaks": 0.00390625
+      }
+     }
+    ],
+    "facts": [
+     {
+      "text": "Dancer: Oricorio copies Fiery Dance.",
+      "chance": 1
+     }
+    ],
+    "copied": "Dancer"
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 150,
+    "maximum": 150,
+    "low": 150,
+    "average": 150,
+    "high": 150,
+    "min": 150,
+    "max": 150,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 160,
+    "maximum": 160,
+    "low": 160,
+    "average": 160,
+    "high": 160,
+    "min": 160,
+    "max": 160,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Substitute: 10 HP.",
+      "chance": 0.03125
+     },
+     {
+      "text": "Substitute: 9 HP.",
+      "chance": 0.109375
+     },
+     {
+      "text": "Substitute: 7 HP.",
+      "chance": 0.1171875
+     },
+     {
+      "text": "Substitute: 6 HP.",
+      "chance": 0.265625
+     },
+     {
+      "text": "Substitute: 8 HP.",
+      "chance": 0.09375
+     },
+     {
+      "text": "Substitute: 5 HP.",
+      "chance": 0.109375
+     },
+     {
+      "text": "Substitute: 4 HP.",
+      "chance": 0.11328125
+     },
+     {
+      "text": "Substitute: 3 HP.",
+      "chance": 0.12109375
+     },
+     {
+      "text": "Substitute: 2 HP.",
+      "chance": 0.015625
+     },
+     {
+      "text": "Substitute: 1 HP.",
+      "chance": 0.01953125
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-right",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "fierydance",
+     "effectiveName": "Fiery Dance",
+     "effectiveType": "Fire",
+     "effectivePower": 80,
+     "effectiveCategory": "Special",
+     "kind": "unsupported",
+     "min": null,
+     "max": null,
+     "minPercent": null,
+     "maxPercent": null,
+     "rolls": null,
+     "ohkoChance": null,
+     "description": "Has a 50% chance to raise the user's Special Attack by 1 stage.",
+     "assumptions": [],
+     "reason": "Snorlax (1) is behind a Substitute.",
+     "hits": null
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 150,
+     "maximum": 150,
+     "low": 150,
+     "average": 150,
+     "high": 150,
+     "min": 150,
+     "max": 150,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 160,
+     "maximum": 160,
+     "low": 160,
+     "average": 160,
+     "high": 160,
+     "min": 160,
+     "max": 160,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Substitute: 10 HP.",
+       "chance": 0.03125
+      },
+      {
+       "text": "Substitute: 9 HP.",
+       "chance": 0.109375
+      },
+      {
+       "text": "Substitute: 7 HP.",
+       "chance": 0.1171875
+      },
+      {
+       "text": "Substitute: 6 HP.",
+       "chance": 0.265625
+      },
+      {
+       "text": "Substitute: 8 HP.",
+       "chance": 0.09375
+      },
+      {
+       "text": "Substitute: 5 HP.",
+       "chance": 0.109375
+      },
+      {
+       "text": "Substitute: 4 HP.",
+       "chance": 0.11328125
+      },
+      {
+       "text": "Substitute: 3 HP.",
+       "chance": 0.12109375
+      },
+      {
+       "text": "Substitute: 2 HP.",
+       "chance": 0.015625
+      },
+      {
+       "text": "Substitute: 1 HP.",
+       "chance": 0.01953125
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 13.722576000000117,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 150,
+    "maximum": 150
+   },
+   "own-right": {
+    "hp": 160,
+    "maximum": 160
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 0.99609375,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 150,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "oricorio",
+       "nature": "Serious",
+       "abilityId": "dancer",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 160,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "volcarona",
+       "nature": "Serious",
+       "abilityId": "flamebody",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "volatiles": [
+       "substitute"
+      ],
+      "substitute": [
+       {
+        "hp": 1,
+        "chance": 0.0196078431372549
+       },
+       {
+        "hp": 2,
+        "chance": 0.01568627450980392
+       },
+       {
+        "hp": 3,
+        "chance": 0.12156862745098039
+       },
+       {
+        "hp": 4,
+        "chance": 0.11372549019607843
+       },
+       {
+        "hp": 5,
+        "chance": 0.10980392156862745
+       },
+       {
+        "hp": 6,
+        "chance": 0.26666666666666666
+       },
+       {
+        "hp": 7,
+        "chance": 0.11764705882352941
+       },
+       {
+        "hp": 8,
+        "chance": 0.09411764705882353
+       },
+       {
+        "hp": 9,
+        "chance": 0.10980392156862745
+       },
+       {
+        "hp": 10,
+        "chance": 0.03137254901960784
+       }
+      ]
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 8
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   },
+   {
+    "chance": 0.00390625,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 150,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "oricorio",
+       "nature": "Serious",
+       "abilityId": "dancer",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 160,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "volcarona",
+       "nature": "Serious",
+       "abilityId": "flamebody",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "ultra_sun_ultra_moon",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 8
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

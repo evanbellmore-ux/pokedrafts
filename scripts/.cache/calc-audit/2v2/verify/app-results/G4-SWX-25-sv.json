@@ -1,0 +1,112 @@
+{
+ "result": {
+  "status": "not-estimated",
+  "reason": "Neutralizing Gas ending is not modelled in 2v2.",
+  "start": {
+   "own-left": {
+    "hp": 140,
+    "maximum": 140
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "opponent-right": {
+    "hp": 170,
+    "maximum": 170
+   }
+  },
+  "startRows": [
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "bodyslam",
+     "effectiveName": "Body Slam",
+     "effectiveType": "Normal",
+     "effectivePower": 85,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 35,
+     "max": 42,
+     "minPercent": 25,
+     "maxPercent": 30,
+     "rolls": [
+      35,
+      36,
+      36,
+      36,
+      37,
+      37,
+      38,
+      38,
+      39,
+      39,
+      39,
+      40,
+      40,
+      41,
+      41,
+      42
+     ],
+     "ohkoChance": 0,
+     "description": "Body Slam: 35–42 HP (25.0–30.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "Garchomp's Rough Skin is suppressed by Neutralizing Gas."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 4,
+      "fewest": 4,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 140,
+      "low": 105,
+      "high": 98,
+      "average": 101.625,
+      "min": 98,
+      "max": 105,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 35,
+        "heals": []
+       },
+       "high": {
+        "dealt": 42,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Neutralizing Gas suppresses the abilities of Snorlax, Garchomp and Incineroar."
+  ]
+ },
+ "ms": 5.993990999999369,
+ "preflight": [],
+ "outcomes": {
+  "status": "not-estimated",
+  "reason": "Neutralizing Gas ending is not modelled in 2v2."
+ }
+}

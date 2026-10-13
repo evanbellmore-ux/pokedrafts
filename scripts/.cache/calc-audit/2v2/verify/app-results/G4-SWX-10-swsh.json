@@ -1,0 +1,1017 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 90,
+    "maximum": 150
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "opponent-left",
+    "moveId": "rockslide",
+    "order": [],
+    "moves": 0,
+    "skipped": [
+     {
+      "text": "Switches out before it moves.",
+      "chance": 1
+     }
+    ],
+    "hits": [],
+    "facts": []
+   },
+   {
+    "slot": "own-left",
+    "moveId": "dragonclaw",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 43,
+      "max": 52,
+      "minPercent": 28.666666666666668,
+      "maxPercent": 34.66666666666667,
+      "koChance": 0,
+      "row": {
+       "moveId": "dragonclaw",
+       "effectiveName": "Dragon Claw",
+       "effectiveType": "Dragon",
+       "effectivePower": 80,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 43,
+       "max": 52,
+       "minPercent": 28.666666666666668,
+       "maxPercent": 34.66666666666667,
+       "rolls": [
+        43,
+        45,
+        45,
+        45,
+        46,
+        46,
+        46,
+        48,
+        48,
+        48,
+        49,
+        49,
+        49,
+        51,
+        51,
+        52
+       ],
+       "ohkoChance": 0,
+       "description": "Dragon Claw: 43–52 HP (28.7–34.7% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Emergency Exit: Golisopod switches out.",
+      "chance": 1
+     },
+     {
+      "text": "Golisopod switches out; Snorlax (opponent's, 2) comes in.",
+      "chance": 1
+     }
+    ]
+   },
+   {
+    "slot": "own-right",
+    "moveId": "bodyslam",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "id": "lax",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 75,
+      "max": 88,
+      "minPercent": 31.914893617021278,
+      "maxPercent": 37.4468085106383,
+      "koChance": 0,
+      "row": {
+       "moveId": "bodyslam",
+       "effectiveName": "Body Slam",
+       "effectiveType": "Normal",
+       "effectivePower": 85,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 75,
+       "max": 88,
+       "minPercent": 31.914893617021278,
+       "maxPercent": 37.4468085106383,
+       "rolls": [
+        75,
+        75,
+        76,
+        76,
+        78,
+        79,
+        79,
+        81,
+        81,
+        82,
+        84,
+        84,
+        85,
+        85,
+        87,
+        88
+       ],
+       "ohkoChance": 0,
+       "description": "Body Slam: 75–88 HP (31.9–37.4% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 183,
+    "maximum": 183,
+    "low": 183,
+    "average": 183,
+    "high": 183,
+    "min": 183,
+    "max": 183,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 90,
+    "maximum": 150,
+    "low": 47,
+    "average": 42.4375,
+    "high": 38,
+    "min": 38,
+    "max": 47,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "dragonclaw",
+     "effectiveName": "Dragon Claw",
+     "effectiveType": "Dragon",
+     "effectivePower": 80,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 43,
+     "max": 52,
+     "minPercent": 28.666666666666668,
+     "maxPercent": 34.66666666666667,
+     "rolls": [
+      43,
+      45,
+      45,
+      45,
+      46,
+      46,
+      46,
+      48,
+      48,
+      48,
+      49,
+      49,
+      49,
+      51,
+      51,
+      52
+     ],
+     "ohkoChance": 0,
+     "description": "Dragon Claw: 43–52 HP (28.7–34.7% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 2,
+      "fasterChance": 0.94921875,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 90,
+      "low": 47,
+      "high": 38,
+      "average": 42.4375,
+      "min": 38,
+      "max": 47,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 43,
+        "heals": []
+       },
+       "high": {
+        "dealt": 52,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "own-right",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "bodyslam",
+     "effectiveName": "Body Slam",
+     "effectiveType": "Normal",
+     "effectivePower": 85,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 40,
+     "max": 48,
+     "minPercent": 26.666666666666668,
+     "maxPercent": 32,
+     "rolls": [
+      40,
+      40,
+      40,
+      42,
+      42,
+      42,
+      43,
+      43,
+      43,
+      45,
+      45,
+      45,
+      46,
+      46,
+      46,
+      48
+     ],
+     "ohkoChance": 0,
+     "description": "Body Slam: 40–48 HP (26.7–32.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 2,
+      "fasterChance": 0.23828125,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 90,
+      "low": 50,
+      "high": 42,
+      "average": 46.5,
+      "min": 42,
+      "max": 50,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 40,
+        "heals": []
+       },
+       "high": {
+        "dealt": 48,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "rockslide",
+     "effectiveName": "Rock Slide",
+     "effectiveType": "Rock",
+     "effectivePower": 75,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 13,
+     "max": 16,
+     "minPercent": 7.103825136612022,
+     "maxPercent": 8.743169398907105,
+     "rolls": [
+      13,
+      13,
+      13,
+      14,
+      14,
+      14,
+      14,
+      14,
+      14,
+      15,
+      15,
+      15,
+      15,
+      15,
+      15,
+      16
+     ],
+     "ohkoChance": 0,
+     "description": "Rock Slide: 13–16 HP (7.1–8.7% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 15,
+      "fewest": 12,
+      "fasterChance": 0.999999999933623,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the target's partner stays in for every use.",
+       "Assumes the target's partner has no Pressure."
+      ]
+     },
+     "afterUse": {
+      "start": 183,
+      "low": 170,
+      "high": 167,
+      "average": 168.6875,
+      "min": 167,
+      "max": 170,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 13,
+        "heals": []
+       },
+       "high": {
+        "dealt": 16,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-right",
+    "row": {
+     "moveId": "rockslide",
+     "effectiveName": "Rock Slide",
+     "effectiveType": "Rock",
+     "effectivePower": 75,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 36,
+     "max": 43,
+     "minPercent": 15.319148936170212,
+     "maxPercent": 18.29787234042553,
+     "rolls": [
+      36,
+      36,
+      37,
+      37,
+      38,
+      38,
+      39,
+      39,
+      39,
+      40,
+      40,
+      41,
+      41,
+      42,
+      42,
+      43
+     ],
+     "ohkoChance": 0,
+     "description": "Rock Slide: 36–43 HP (15.3–18.3% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 7,
+      "fewest": 6,
+      "fasterChance": 0.5734195113182068,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the target's partner stays in for every use.",
+       "Assumes the target's partner has no Pressure."
+      ]
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 199,
+      "high": 192,
+      "average": 195.75,
+      "min": 192,
+      "max": 199,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 36,
+        "heals": []
+       },
+       "high": {
+        "dealt": 43,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Snorlax (opponent's, 2) comes in for Golisopod."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 183,
+     "maximum": 183,
+     "low": 183,
+     "average": 183,
+     "high": 183,
+     "min": 183,
+     "max": 183,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 90,
+     "maximum": 150,
+     "low": 47,
+     "average": 42.4375,
+     "high": 38,
+     "min": 38,
+     "max": 47,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": [],
+   "hpEntered": {
+    "opponent-left": {
+     "lax": {
+      "start": 235,
+      "maximum": 235,
+      "low": 160,
+      "average": 154.0625,
+      "high": 147,
+      "min": 147,
+      "max": 160,
+      "koChance": 0,
+      "heals": []
+     }
+    }
+   }
+  },
+  "replaced": {
+   "opponent-left": {
+    "left": [
+     {
+      "id": "slot:opponent-left",
+      "hp": {
+       "start": 90,
+       "maximum": 150,
+       "low": 47,
+       "average": 42.4375,
+       "high": 38,
+       "min": 38,
+       "max": 47,
+       "koChance": 0,
+       "heals": []
+      },
+      "chance": 1
+     }
+    ],
+    "entered": [
+     {
+      "id": "lax",
+      "chance": 1
+     }
+    ]
+   }
+  },
+  "hpEntered": {
+   "opponent-left": {
+    "lax": {
+     "start": 235,
+     "maximum": 235,
+     "low": 160,
+     "average": 154.0625,
+     "high": 147,
+     "min": 147,
+     "max": 160,
+     "koChance": 0,
+     "heals": []
+    }
+   }
+  }
+ },
+ "ms": 15.277831999999762,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 90,
+    "maximum": 150
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 183,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "garchomp",
+       "nature": "Serious",
+       "abilityId": "roughskin",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 8
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 147,
+        "chance": 0.0625
+       },
+       {
+        "hp": 148,
+        "chance": 0.0625
+       },
+       {
+        "hp": 150,
+        "chance": 0.125
+       },
+       {
+        "hp": 151,
+        "chance": 0.125
+       },
+       {
+        "hp": 153,
+        "chance": 0.0625
+       },
+       {
+        "hp": 154,
+        "chance": 0.125
+       },
+       {
+        "hp": 156,
+        "chance": 0.125
+       },
+       {
+        "hp": 157,
+        "chance": 0.0625
+       },
+       {
+        "hp": 159,
+        "chance": 0.125
+       },
+       {
+        "hp": 160,
+        "chance": 0.125
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 16
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "id": "lax"
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 24
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    },
+    "benched": {
+     "opponent": [
+      {
+       "id": "slot:opponent-left",
+       "slot": "opponent-left",
+       "hp": [
+        {
+         "hp": 38,
+         "chance": 0.0625
+        },
+        {
+         "hp": 39,
+         "chance": 0.125
+        },
+        {
+         "hp": 41,
+         "chance": 0.1875
+        },
+        {
+         "hp": 42,
+         "chance": 0.1875
+        },
+        {
+         "hp": 44,
+         "chance": 0.1875
+        },
+        {
+         "hp": 45,
+         "chance": 0.1875
+        },
+        {
+         "hp": 47,
+         "chance": 0.0625
+        }
+       ],
+       "build": {
+        "speciesId": "golisopod",
+        "nature": "Serious",
+        "abilityId": "emergencyexit",
+        "abilityActive": false,
+        "itemId": "",
+        "boosts": {
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "currentHP": null,
+        "status": "",
+        "game": "sword_shield",
+        "native": {
+         "level": 50,
+         "evs": {
+          "hp": 0,
+          "atk": 0,
+          "def": 0,
+          "spa": 0,
+          "spd": 0,
+          "spe": 0
+         },
+         "ivs": {
+          "hp": 31,
+          "atk": 31,
+          "def": 31,
+          "spa": 31,
+          "spd": 31,
+          "spe": 31
+         }
+        }
+       },
+       "protected": false,
+       "moved": false
+      }
+     ]
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

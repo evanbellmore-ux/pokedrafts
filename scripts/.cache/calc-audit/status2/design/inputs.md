@@ -480,7 +480,7 @@ Field conditions keeps its order: Weather and terrain, Critical hit, Shared fiel
 | `Telekinesis turns left` | `data-doubles-telekinesis` | usum | a Pokémon in the turn learns Telekinesis | None, 1, 2 | `carried.telekinesis` |
 | `Octolock by` | `data-doubles-octolock` | ch, swsh | a foe in the turn learns Octolock | None, each such foe | `carried.octolock` |
 | `Accuracy stage`, `Evasion stage` | `data-doubles-accuracy`, `-evasion` | all | its action or a move into it this turn is Stored Power, Power Trip, Punishment, Acupressure, Psych Up, Heart Swap, Topsy-Turvy, Spectral Thief or Haze (any Pokémon's, aimed at it or a spread one) | −6..+6, default 0 | `carried.stages` |
-| `Last move` | `data-doubles-last-move` | all | Disable, Encore, Instruct or Mirror Move in the turn can reach it; its own action is Conversion 2 | `Unknown` (default), `None since it came in`, its quick moves, its action's move | `history.lastMove` |
+| `Last move` | `data-doubles-last-move` | all | Disable, Encore, Instruct or Mirror Move in the turn can reach it; a Conversion 2 of the turn can reach it (review 2 R6-1: pinned conversion2 reads its target's lastMoveUsed; round 2 R6-r2-4: any Conversion 2 in the turn, as a fainted target's retarget or a Spotlight can bring it there) | `Unknown` (default), `None since it came in`, its quick moves, its action's move | `history.lastMove` |
 | `Item used earlier` | `data-doubles-last-item` | all | it holds no item, and its action is Recycle or its ability is Harvest | `Unknown` (default), `None`, the game's items (Berries only for a Harvest holder whose action is not Recycle; Berries first otherwise) | `history.lastItem` |
 | `Berry eaten last turn` | `data-doubles-cud-chew` | sv, ch | its ability is Cud Chew | holding a Berry: `None` (default), the Berries; no item: `Unknown` (default), `None`, the Berries | `carried.cudChew` |
 | `Protecting moves in a row` | `data-doubles-in-a-row` | all | its action is a protecting move (Protect family, Endure, Max Guard as a Dynamaxed status move) | 0–6 | `carried.stall = 3^n` (n ≥ 1) |
@@ -554,8 +554,10 @@ the `… ends this turn` checkboxes.
 
 `unmodelledBattleStates(runtime)` stays as is for 1v1. A new `unmodelledDoublesStates(runtime)` (same file, same entry
 rules) drops what 2v2 can now set or work out (Wide Guard and its kin, a partner's Battery and kin, the Ruin abilities and
-Neutralizing Gas, Foresight and Miracle Eye, Glaive Rush, a semi-invulnerable target, Minimize, a Substitute, grounding, the
-stat swaps, the Doubles order) and lists: `An ability suppressed by Gastro Acid or replaced by {…}` (its Gastro Acid half
+Neutralizing Gas, Foresight and Miracle Eye, Glaive Rush, a semi-invulnerable target, Minimize, a Substitute, Ingrain, Roost,
+Telekinesis, Power Trick, the stage swaps, the Doubles order) and lists (review 2 R6-4: also `Grounding or lifting from Smack
+Down, Thousand Arrows or Magnet Rise on an earlier turn` and `Stats shared or swapped by Power Split, Guard Split or Speed Swap
+on an earlier turn`, which no 2v2 input sets): `An ability suppressed by Gastro Acid or replaced by {…}` (its Gastro Acid half
 only), `G-Max Vine Lash, Wildfire, Cannonade or Volcalith on a side` (SwSh), `A Healing Wish or Lunar Dance waiting for the
 next Pokémon to come in`, `Torment or Throat Chop from an earlier turn`, `A move locked in by Outrage, Petal Dance, Thrash,
 Raging Fury or Uproar`. `BattleConditions` calls it for `variant="doubles"`.

@@ -1,0 +1,648 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 150,
+    "maximum": 150
+   },
+   "own-right": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "healbell",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [],
+    "facts": [
+     {
+      "text": "Heal Bell also cures the statuses of your side's Pokémon not in battle.",
+      "chance": 1
+     }
+    ]
+   },
+   {
+    "slot": "own-right",
+    "moveId": "uturn",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 50,
+      "max": 59,
+      "minPercent": 21.27659574468085,
+      "maxPercent": 25.106382978723403,
+      "koChance": 0,
+      "row": {
+       "moveId": "uturn",
+       "effectiveName": "U-turn",
+       "effectiveType": "Bug",
+       "effectivePower": 70,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 50,
+       "max": 59,
+       "minPercent": 21.27659574468085,
+       "maxPercent": 25.106382978723403,
+       "rolls": [
+        50,
+        50,
+        51,
+        51,
+        52,
+        53,
+        53,
+        54,
+        54,
+        55,
+        56,
+        56,
+        57,
+        57,
+        58,
+        59
+       ],
+       "ohkoChance": 0,
+       "description": "U-turn: 50–59 HP (21.3–25.1% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Rillaboom switches out; Snorlax (yours) comes in.",
+      "chance": 1
+     }
+    ]
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 150,
+    "maximum": 150,
+    "low": 150,
+    "average": 150,
+    "high": 150,
+    "min": 150,
+    "max": 150,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 175,
+    "maximum": 175,
+    "low": 175,
+    "average": 175,
+    "high": 175,
+    "min": 175,
+    "max": 175,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 185,
+    "average": 180.875,
+    "high": 176,
+    "min": 176,
+    "max": 185,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-right",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "uturn",
+     "effectiveName": "U-turn",
+     "effectiveType": "Bug",
+     "effectivePower": 70,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 50,
+     "max": 59,
+     "minPercent": 21.27659574468085,
+     "maxPercent": 25.106382978723403,
+     "rolls": [
+      50,
+      50,
+      51,
+      51,
+      52,
+      53,
+      53,
+      54,
+      54,
+      55,
+      56,
+      56,
+      57,
+      57,
+      58,
+      59
+     ],
+     "ohkoChance": 0,
+     "description": "U-turn: 50–59 HP (21.3–25.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 5,
+      "fewest": 4,
+      "fasterChance": 0.0000762939453125,
+      "limit": 20,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 185,
+      "high": 176,
+      "average": 180.875,
+      "min": 176,
+      "max": 185,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 50,
+        "heals": []
+       },
+       "high": {
+        "dealt": 59,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Snorlax (yours) comes in for Rillaboom."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 150,
+     "maximum": 150,
+     "low": 150,
+     "average": 150,
+     "high": 150,
+     "min": 150,
+     "max": 150,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 175,
+     "maximum": 175,
+     "low": 175,
+     "average": 175,
+     "high": 175,
+     "min": 175,
+     "max": 175,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 185,
+     "average": 180.875,
+     "high": 176,
+     "min": 176,
+     "max": 185,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": [],
+   "hpEntered": {
+    "own-right": {
+     "laxp": {
+      "start": 235,
+      "maximum": 235,
+      "low": 235,
+      "average": 235,
+      "high": 235,
+      "min": 235,
+      "max": 235,
+      "koChance": 0,
+      "heals": [],
+      "conditions": [
+       {
+        "text": "Status cured.",
+        "chance": 1
+       }
+      ]
+     }
+    }
+   }
+  },
+  "replaced": {
+   "own-right": {
+    "left": [
+     {
+      "id": "slot:own-right",
+      "hp": {
+       "start": 175,
+       "maximum": 175,
+       "low": 175,
+       "average": 175,
+       "high": 175,
+       "min": 175,
+       "max": 175,
+       "koChance": 0,
+       "heals": []
+      },
+      "chance": 1
+     }
+    ],
+    "entered": [
+     {
+      "id": "laxp",
+      "chance": 1
+     }
+    ]
+   }
+  },
+  "hpEntered": {
+   "own-right": {
+    "laxp": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Status cured.",
+       "chance": 1
+      }
+     ]
+    }
+   }
+  }
+ },
+ "ms": 13.421117000001686,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 150,
+    "maximum": 150
+   },
+   "own-right": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 150,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "chimecho",
+       "nature": "Serious",
+       "abilityId": "levitate",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 32
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 2
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "id": "laxp"
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 176,
+        "chance": 0.0625
+       },
+       {
+        "hp": 177,
+        "chance": 0.0625
+       },
+       {
+        "hp": 178,
+        "chance": 0.125
+       },
+       {
+        "hp": 179,
+        "chance": 0.125
+       },
+       {
+        "hp": 180,
+        "chance": 0.0625
+       },
+       {
+        "hp": 181,
+        "chance": 0.125
+       },
+       {
+        "hp": 182,
+        "chance": 0.125
+       },
+       {
+        "hp": 183,
+        "chance": 0.0625
+       },
+       {
+        "hp": 184,
+        "chance": 0.125
+       },
+       {
+        "hp": 185,
+        "chance": 0.125
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 4
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 3
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0,
+      "benchCured": true
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    },
+    "benched": {
+     "own": [
+      {
+       "id": "slot:own-right",
+       "slot": "own-right",
+       "hp": [
+        {
+         "hp": 175,
+         "chance": 1
+        }
+       ],
+       "build": {
+        "speciesId": "rillaboom",
+        "nature": "Brave",
+        "abilityId": "overgrow",
+        "abilityActive": false,
+        "itemId": "",
+        "boosts": {
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "currentHP": null,
+        "status": "",
+        "game": "champions",
+        "points": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        }
+       },
+       "protected": false,
+       "moved": true
+      }
+     ]
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

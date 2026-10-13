@@ -1,0 +1,796 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 212,
+    "maximum": 212
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "opponent-right": {
+    "hp": 1,
+    "maximum": 170
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "sleeptalk",
+    "effectiveName": "Sunsteel Strike",
+    "effectiveType": "Steel",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": []
+     },
+     {
+      "slot": "opponent-left",
+      "reached": 0.5,
+      "kind": "calculated",
+      "min": 81,
+      "max": 96,
+      "minPercent": 46.285714285714285,
+      "maxPercent": 54.85714285714286,
+      "koChance": 0,
+      "row": {
+       "moveId": "sunsteelstrike",
+       "effectiveName": "Sunsteel Strike",
+       "effectiveType": "Steel",
+       "effectivePower": 100,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 81,
+       "max": 96,
+       "minPercent": 46.285714285714285,
+       "maxPercent": 54.85714285714286,
+       "rolls": [
+        81,
+        82,
+        82,
+        84,
+        84,
+        85,
+        87,
+        87,
+        88,
+        90,
+        90,
+        91,
+        93,
+        93,
+        94,
+        96
+       ],
+       "ohkoChance": 0,
+       "description": "Sunsteel Strike: 81–96 HP (46.3–54.9% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     },
+     {
+      "slot": "opponent-right",
+      "reached": 0.5,
+      "kind": "calculated",
+      "min": 40,
+      "max": 48,
+      "minPercent": 23.52941176470588,
+      "maxPercent": 28.235294117647058,
+      "koChance": 0.5,
+      "row": {
+       "moveId": "sunsteelstrike",
+       "effectiveName": "Sunsteel Strike",
+       "effectiveType": "Steel",
+       "effectivePower": 100,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 40,
+       "max": 48,
+       "minPercent": 23.52941176470588,
+       "maxPercent": 28.235294117647058,
+       "rolls": [
+        40,
+        41,
+        41,
+        42,
+        42,
+        42,
+        43,
+        43,
+        44,
+        45,
+        45,
+        45,
+        46,
+        46,
+        47,
+        48
+       ],
+       "ohkoChance": 0,
+       "description": "Sunsteel Strike: 40–48 HP (23.5–28.2% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Asleep.",
+      "chance": 1
+     },
+     {
+      "text": "Sleep Talk calls Sunsteel Strike.",
+      "chance": 1
+     }
+    ]
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 212,
+    "maximum": 212,
+    "low": 212,
+    "average": 212,
+    "high": 212,
+    "min": 212,
+    "max": 212,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 155,
+    "maximum": 155,
+    "low": 155,
+    "average": 155,
+    "high": 155,
+    "min": 155,
+    "max": 155,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 175,
+    "maximum": 175,
+    "low": 175,
+    "average": 131.03125,
+    "high": 79,
+    "min": 79,
+    "max": 175,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Ability: Intimidate.",
+      "chance": 0.5
+     }
+    ]
+   },
+   "opponent-right": {
+    "start": 1,
+    "maximum": 170,
+    "low": 1,
+    "average": 0.5,
+    "high": 0,
+    "min": 0,
+    "max": 1,
+    "koChance": 0.5,
+    "heals": []
+   }
+  },
+  "startRows": [],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Solgaleo lost no turns to sleep before this one."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 212,
+     "maximum": 212,
+     "low": 212,
+     "average": 212,
+     "high": 212,
+     "min": 212,
+     "max": 212,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 155,
+     "maximum": 155,
+     "low": 155,
+     "average": 155,
+     "high": 155,
+     "min": 155,
+     "max": 155,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 175,
+     "maximum": 175,
+     "low": 175,
+     "average": 131.03125,
+     "high": 79,
+     "min": 79,
+     "max": 175,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Ability: Intimidate.",
+       "chance": 0.5
+      }
+     ]
+    },
+    "opponent-right": {
+     "start": 1,
+     "maximum": 170,
+     "low": 1,
+     "average": 0.5,
+     "high": 0,
+     "min": 0,
+     "max": 1,
+     "koChance": 0.5,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 12.405048000000534,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 212,
+    "maximum": 212
+   },
+   "own-right": {
+    "hp": 155,
+    "maximum": 155
+   },
+   "opponent-left": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "opponent-right": {
+    "hp": 1,
+    "maximum": 170
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 0.5,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 212,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "solgaleo",
+       "nature": "Serious",
+       "abilityId": "fullmetalbody",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "slp",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "sleepTurns": 2
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 155,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "metagross",
+       "nature": "Serious",
+       "abilityId": "clearbody",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 79,
+        "chance": 0.0625
+       },
+       {
+        "hp": 81,
+        "chance": 0.0625
+       },
+       {
+        "hp": 82,
+        "chance": 0.125
+       },
+       {
+        "hp": 84,
+        "chance": 0.0625
+       },
+       {
+        "hp": 85,
+        "chance": 0.125
+       },
+       {
+        "hp": 87,
+        "chance": 0.0625
+       },
+       {
+        "hp": 88,
+        "chance": 0.125
+       },
+       {
+        "hp": 90,
+        "chance": 0.0625
+       },
+       {
+        "hp": 91,
+        "chance": 0.125
+       },
+       {
+        "hp": 93,
+        "chance": 0.125
+       },
+       {
+        "hp": 94,
+        "chance": 0.0625
+       }
+      ],
+      "build": {
+       "speciesId": "passimian",
+       "nature": "Serious",
+       "abilityId": "receiver",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 1,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "incineroar",
+       "nature": "Serious",
+       "abilityId": "intimidate",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   },
+   {
+    "chance": 0.5,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 212,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "solgaleo",
+       "nature": "Serious",
+       "abilityId": "fullmetalbody",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "slp",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "sleepTurns": 2
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 155,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "metagross",
+       "nature": "Serious",
+       "abilityId": "clearbody",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 175,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "passimian",
+       "nature": "Serious",
+       "abilityId": "intimidate",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       },
+       "abilityChanged": true
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 0,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "incineroar",
+       "nature": "Serious",
+       "abilityId": "intimidate",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": false
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 1
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

@@ -1,0 +1,864 @@
+diff --git a/app/lib/battle/doubles-calling.ts b/app/lib/battle/doubles-calling.ts
+index de9f997..4ecabec 100644
+--- a/app/lib/battle/doubles-calling.ts
++++ b/app/lib/battle/doubles-calling.ts
+@@ -182,8 +182,12 @@ const RECORD_MOVES = new Set(["metalburst", "comeuppance"]);
+ export function callingGuard(kernel: TurnKernel, w: World, slot: DoublesSlotId) {
+   const moveId = kernel.input.pokemon[slot]!.action.moveId!;
+   if (moveId === "metronome") kernel.notEstimated(REASONS.notIn2v2(kernel.moveName("metronome")));
+-  // status2 R-E: Assist reads its party's moves from the side's bench (assist); without a bench the party is not known.
+-  if (moveId === "assist" && !kernel.baseInput.bench?.[slotSide(slot)]) kernel.notEstimated(REASONS.needsParty(kernel.moveName("assist"), kernel.names[slot]));
++  // status2 R-E: Assist reads its party's moves from the side's bench (assist); without a bench the party is not known. The
++  // party is every member of side.pokemon, a fainted one too, and the bench lists the living ones: the turn assumes none fainted.
++  if (moveId === "assist") {
++    if (!kernel.baseInput.bench?.[slotSide(slot)]) kernel.notEstimated(REASONS.needsParty(kernel.moveName("assist"), kernel.names[slot]));
++    kernel.turnFact(`Assumes no Pokémon of ${kernel.names[slot]}'s party fainted before this turn.`);
++  }
+   // Me First's 1.5x lasts the turn (its volatile, duration 1): a Dancer holder's later copy of a damaging dance reads it too.
+   if (moveId === "mefirst" && w.mons[slot]!.build.abilityId === "dancer" && DOUBLES_SLOTS.some((other) => {
+     const id = kernel.input.pokemon[other]?.action.moveId;
+diff --git a/app/lib/battle/doubles-eot.ts b/app/lib/battle/doubles-eot.ts
+index 2aa8c43..5c799fa 100644
+--- a/app/lib/battle/doubles-eot.ts
++++ b/app/lib/battle/doubles-eot.ts
+@@ -898,13 +898,16 @@ function landingHandler(p: Phase, w: World, position: DoublesSlotId, key: number
+     if (sub !== undefined) { const { substitute: _sub, ...vol } = mon.vol; void _sub; mon.vol = vol; }
+     if (hidden !== undefined) { const { hidden: _hidden, ...rest } = mon.eot; void _hidden; mon.eot = rest; }
+     const leaving = open.leaving;
++    // status2 R-E: with the user's side's bench the drag is a pending switch made after the residual (doubles-switch.ts afterTurn).
++    const draggedBefore = user.attacker !== null && switchHooks.dragSet(open, user.attacker);
+     return kernel.residualHit(open, hit).map(({ world: child }) => {
+       const back = child.mons[target]!;
+       if (sub !== undefined && !back.fainted) back.vol = { ...back.vol, substitute: sub };
+       if (hidden !== undefined && !back.fainted) back.eot = { ...back.eot, hidden };
+-      if (user.attacker !== null && child.leaving?.length !== leaving?.length) {
+-        if (leaving?.length) child.leaving = [...leaving]; else delete child.leaving;
+-        dragged.add(child);
++      if (user.attacker !== null) {
++        const left = child.leaving?.length !== leaving?.length;
++        if (left) { if (leaving?.length) child.leaving = [...leaving]; else delete child.leaving; }
++        if (left || (!draggedBefore && switchHooks.dragSet(child, user.attacker))) dragged.add(child);
+       }
+       return child;
+     });
+diff --git a/app/lib/battle/doubles-presence.ts b/app/lib/battle/doubles-presence.ts
+index 92bcfff..52f0181 100644
+--- a/app/lib/battle/doubles-presence.ts
++++ b/app/lib/battle/doubles-presence.ts
+@@ -883,12 +883,13 @@ export function context(kernel: TurnKernel, w: World, action: PendingAction, tar
+       const after = Math.max(0, left - 1 - pressure);
+       return { basePower: TRUMP[after] ?? 40 };
+     }
+-    // status2 R-E: at a switch-out's BeforeSwitchOut (doubles-switch.ts pursuit: World.switching names the leaver), 2× (PS/data/moves.ts
+-    // pursuit basePowerCallback: target.switchFlag) as a power modifier; a Technician user would read the doubled power: not followed.
++    // status2 R-E: at a switch-out's BeforeSwitchOut (doubles-switch.ts beforeSwitchOut: World.switching names the leaver), the
++    // base power doubled (PS/data/moves.ts pursuit basePowerCallback: target.switchFlag, move.basePower * 2): 80 before the
++    // onBasePower handlers, so Technician (60 or less) does not boost it; its accuracy true there (onModifyMove) changes nothing
++    // the turn reads (every move hits).
+     case "pursuit": {
+       if (!w.switching?.some((p) => p.slot === target)) return { switching: false };
+-      if (w.mons[slot]!.build.abilityId === "technician") kernel.notEstimated(REASONS.combo(kernel.moveName("pursuit"), kernel.abilityName("technician")));
+-      return { switching: false, powerMods: [8192] };
++      return { switching: false, basePower: 80 };
+     }
+     case "counter": case "mirrorcoat": case "metalburst": case "comeuppance": {
+       const record = w.mons[slot]!.taken?.[COUNTERS[id]];
+diff --git a/app/lib/battle/doubles-switch.ts b/app/lib/battle/doubles-switch.ts
+index 216efc7..4b951f3 100644
+--- a/app/lib/battle/doubles-switch.ts
++++ b/app/lib/battle/doubles-switch.ts
+@@ -1,6 +1,6 @@
+ import { Generations, toID } from "@smogon/calc";
+ import { GAS_PROOF_ABILITIES, GAS_STAND_IN, turnHP } from "./calculate";
+-import { MOLD_BREAKERS, REASONS, STRONG_WEATHERS } from "./doubles-actions";
++import { ANCHORING_ABILITIES, DRAG_MOVES, MOLD_BREAKERS, REASONS, STRONG_WEATHERS } from "./doubles-actions";
+ import {
+   DOUBLES_SLOTS, SHOWDOWN_POSITION, sideCanSwitch, slotSide, startId, type DoublesBenchedMon, type DoublesBenchPokemon, type DoublesHazards,
+   type DoublesSideId, type DoublesSlotId,
+@@ -78,6 +78,11 @@ export function flagStanding(w: World): boolean {
+   return ((w.switching ?? []) as Pending[]).some(flagTrue);
+ }
+ 
++/** R-E: `slot`'s Pokémon is set to be dragged out in `w` (its forceSwitchFlag: Red Card, Roar, Whirlwind, Dragon Tail, Circle Throw). */
++export function dragSet(w: World, slot: DoublesSlotId): boolean {
++  return ((w.switching ?? []) as Pending[]).some((p) => p.slot === slot && isDrag(p) && !p.inert);
++}
++
+ // ------------------------------------------------------------------------------------------------------------------
+ // The switch-out sites
+ // ------------------------------------------------------------------------------------------------------------------
+@@ -100,9 +105,41 @@ export function switchOut(kernel: TurnKernel, w: World, slot: DoublesSlotId, how
+   }
+   if (bench) { replaceSlot(kernel, w, slot, how, action, holder); return; }
+   if (kernel.laterAction(w)) kernel.notEstimated(REASONS.switchesOut(kernel.names[slot]));
++  // R-E: a drag Red Card sets on its attacker stops the attacker's Life Orb and Shell Bell, which the step applied.
++  if (how === "redcard" && redCardDrags(kernel, w, slot, holder)) selfItemsAfterRedCard(kernel, w, slot);
+   kernel.leaving(w, slot);
+ }
+ 
++/**
++ * R-E, a side without a bench: whether Red Card sets its attacker's forceSwitchFlag (PS/data/items.ts:5148-5160): a Pokémon left
++ * to come in (canSwitch), its holder not being dragged out by the hit's own Dragon Tail or Circle Throw (forceSwitch in the hit,
++ * before AfterMoveSecondary), and the attacker's DragOut not stopped (Suction Cups, Guard Dog, Ingrain, Dynamax, Commander).
++ */
++function redCardDrags(kernel: TurnKernel, w: World, attacker: DoublesSlotId, holder: DoublesSlotId | undefined): boolean {
++  const mon = w.mons[attacker];
++  if (!mon || mon.fainted || sideCanSwitch(kernel.baseInput, slotSide(attacker)) === false) return false;
++  const anchored = (slot: DoublesSlotId) => {
++    const build = w.mons[slot]!.build;
++    return (ANCHORING_ABILITIES.has(build.abilityId) && !(slot !== attacker && MOLD_BREAKERS.has(mon.build.abilityId))) || !!w.mons[slot]!.eot.ingrain || isMaxActive(build) || presenceHooks.cannotLeave(kernel, w, slot);
++  };
++  const moveId = kernel.acting?.slot === attacker ? kernel.acting.moveId : null;
++  if (holder && w.mons[holder] && moveId && DRAG_MOVES.has(moveId) && sideCanSwitch(kernel.baseInput, slotSide(holder)) !== false && !anchored(holder)) return false;
++  return !anchored(attacker);
++}
++
++/**
++ * R-E: Red Card's drag (the attacker's forceSwitchFlag, set in AfterMoveSecondary) comes before the attacker's own
++ * AfterMoveSecondarySelf items, which then do nothing (PS/data/items.ts lifeorb: !source.forceSwitchFlag; shellbell:
++ * !pokemon.forceSwitchFlag), while the step took the Life Orb loss and gave the Shell Bell heal with its hit: not followed.
++ */
++function selfItemsAfterRedCard(kernel: TurnKernel, w: World, attacker: DoublesSlotId) {
++  const build = w.mons[attacker]?.build;
++  if (!build || !kernel.itemWorks(w, build)) return;
++  if ((build.itemId === "lifeorb" && build.abilityId !== "magicguard") || build.itemId === "shellbell") {
++    kernel.notEstimated(REASONS.combo(kernel.itemName("redcard"), kernel.itemName(build.itemId)));
++  }
++}
++
+ /**
+  * R-E (F4 §5.4's replaceSlot, SPEC2 §4.8): `slot`'s Pokémon is set to leave with its side's bench given: recorded in
+  * World.switching (the leaver stays until the action ends: betweenActions makes the switch), with the items' rules of pinned
+@@ -246,10 +283,13 @@ export function afterTurn(kernel: TurnKernel, w: World): World[] | null {
+ /** Every pending switch of `w0` made, in pinned order; the worlds after it (none of them with World.switching). */
+ function resolve(kernel: TurnKernel, w0: World, cause: PendingAction | null, after: boolean): World[] {
+   const pending = (w0.switching ?? []) as Pending[];
++  // A Red Card drag set in the action stopped its attacker's Life Orb and Shell Bell (selfItemsAfterRedCard); after the
++  // residual the landing's own Life Orb reads the drag (doubles-eot.ts landing).
++  if (!after) for (const p of pending) if (p.how === "redcard" && !p.inert) selfItemsAfterRedCard(kernel, w0, p.slot);
+   const w = cloneWorld(w0);
+   delete w.switching;
+   // The items the move used up (Eject Button, Red Card: used as they act, even where Emergency Exit then cleared the switch).
+-  for (const p of pending) if (p.item) useItem(kernel, w, p.item === "redcard" ? p.holder! : p.slot, p.item);
++  for (const p of pending) if (p.item) consumeItem(kernel, w, p.item === "redcard" ? p.holder! : p.slot, p.item);
+   const live = pending.filter((p) => !(p.how === "redcard" && p.inert)).map((p) => ({ ...p }));
+   // Emergency Exit (in the move, after AfterMoveSecondary): where its HP is at most half and above 0, it clears every other
+   // switchFlag and sets its own (an Eject Pack then waits: AfterMove comes after).
+@@ -316,7 +356,7 @@ function tryEjectPack(kernel: TurnKernel, w: World, slot: DoublesSlotId, pending
+   if (mon.build.itemId !== "ejectpack" || !kernel.itemWorks(w, mon.build) || mon.fainted) { delete mon.ejectMarked; return pending; }
+   if (sideCanSwitch(kernel.baseInput, slotSide(slot)) === false || presenceHooks.cannotLeave(kernel, w, slot) || pending.some(flagTrue)) return pending;
+   delete mon.ejectMarked;
+-  useItem(kernel, w, slot, "ejectpack");
++  consumeItem(kernel, w, slot, "ejectpack");
+   // A Pokémon being dragged out leaves anyway (its switchFlag goes with clearVolatile).
+   if (pending.some((p) => p.slot === slot && isDrag(p) && !p.inert)) return pending;
+   if (cause) {
+@@ -509,6 +549,8 @@ function beforeSwitchOut(kernel: TurnKernel, w: World, slots: DoublesSlotId[], c
+         out = out.flatMap((x) => {
+           if (!kernel.alive(x, queued.slot) || !kernel.alive(x, leaver) || !x.remaining.includes(queued)) return [x];
+           x.remaining = x.remaining.filter((each) => each !== queued);
++          // The leaver's Destiny Bond ends before the Pursuit (pokemon.removeVolatile('destinybond')).
++          delete x.mons[leaver]!.destinyBond;
+           x.switching = chosen.map((p) => ({ ...p }));
+           kernel.occupy(x);
+           return kernel.runAction(x, { ...queued, target: kernel.positionOf(x, leaver) }).map((after) => {
+@@ -794,7 +836,7 @@ function copiedState(kernel: TurnKernel, w: World, slot: DoublesSlotId, copy: "c
+ }
+ 
+ /** An item used up (useItem: gone, Unburden, item history). */
+-function useItem(kernel: TurnKernel, w: World, slot: DoublesSlotId, item: string) {
++function consumeItem(kernel: TurnKernel, w: World, slot: DoublesSlotId, item: string) {
+   const mon = w.mons[slot];
+   if (!mon || mon.build.itemId !== item) return;
+   mon.build = { ...mon.build, itemId: "", ...(mon.build.abilityId === "unburden" ? { abilityActive: true } : {}) };
+@@ -1027,14 +1069,14 @@ function itemEntry(kernel: TurnKernel, w: World, slot: DoublesSlotId, item: stri
+   if (seed) {
+     if (w.field.terrain !== seed.terrain) return [w];
+     kernel.applyBoosts(w, slot, { [seed.stat]: 1 }, slot, { effect: "item" });
+-    useItem(kernel, w, slot, item);
++    consumeItem(kernel, w, slot, item);
+     if (kernel.acting) kernel.stepFact(kernel.acting, `${name}'s ${kernel.itemName(item)} is used up on ${seed.terrain} Terrain.`, w.mass);
+     return [w];
+   }
+   if (item === "roomservice") {
+     if (!w.field.trickRoom) return [w];
+     kernel.applyBoosts(w, slot, { spe: -1 }, slot, { effect: "item" });
+-    useItem(kernel, w, slot, item);
++    consumeItem(kernel, w, slot, item);
+     if (kernel.acting) kernel.stepFact(kernel.acting, `${name}'s ${kernel.itemName(item)} is used up under ${kernel.moveName("trickroom")}.`, w.mass);
+     return [w];
+   }
+@@ -1043,7 +1085,7 @@ function itemEntry(kernel: TurnKernel, w: World, slot: DoublesSlotId, item: stri
+     if ((ability !== "protosynthesis" && ability !== "quarkdrive") || mon.build.transformedFrom) return [w];
+     const up = ability === "protosynthesis" ? kernel.effectiveWeather(w) === "Sun" : w.field.terrain === "Electric";
+     if (up) return [w];
+-    useItem(kernel, w, slot, item);
++    consumeItem(kernel, w, slot, item);
+     if (!mon.build.settledBoostedStat) {
+       const stat = bestStat(kernel, w, slot);
+       mon.build = { ...w.mons[slot]!.build, settledBoostedStat: stat };
+diff --git a/app/lib/battle/doubles-turn.ts b/app/lib/battle/doubles-turn.ts
+index 9865530..1a6e88d 100644
+--- a/app/lib/battle/doubles-turn.ts
++++ b/app/lib/battle/doubles-turn.ts
+@@ -3050,7 +3050,8 @@ function applyStep(ctx: Ctx, w: World, action: PendingAction, target: DoublesSlo
+     if (writes && !outcome.conditions.attackerSide.charge) user!.charged = false;
+     // Flower Veil and Pastel Veil (K's doubles-reactions.ts veil, moved verbatim).
+     reactionHooks.veil(kernel, next, attacker, target, before.receiver);
+-    if (outcome.landed > 0) hitReactions(ctx, next, attacker, target, before.receiver.itemId, residual);
++    // A Sheer Force move with secondaries runs no AfterMoveSecondary event (sim/battle-actions.ts afterMoveSecondaryEvent): no Eject Button, no Red Card.
++    if (outcome.landed > 0) hitReactions(ctx, next, attacker, target, before.receiver.itemId, residual, before.user.abilityId === "sheerforce" && info.secondaries);
+     if (outcome.landed > 0) {
+       // Electromorphosis, and Wind Power against a wind move, charge the holder (data/abilities.ts onDamagingHit: addVolatile('charge')).
+       const ability = receiver.build.abilityId;
+@@ -3188,9 +3189,10 @@ const STATUS_WORDS: Record<string, string> = { brn: "burn", par: "paralysis", ps
+  * (onDamagingHit; K's doubles-reactions.ts cottonDown); and, with a later action, Eject Button switching its holder out and
+  * Red Card the attacker (onAfterMoveSecondary; R's doubles-switch.ts switchOut); Destiny Bond taking a foe that knocks its
+  * user out (data/moves.ts destinybond onFaint). `residual` (T2E §3.5): a hit at the residual sets off no Eject Button and no
+- * Destiny Bond; Red Card acts only on a source still in.
++ * Destiny Bond; Red Card acts only on a source still in. `sheerForce` (status2 R-E): the hit's move had its secondaries removed
++ * by its user's Sheer Force (move.hasSheerForce), so afterMoveSecondaryEvent does not run: neither item acts.
+  */
+-function hitReactions(ctx: Ctx, w: World, attacker: DoublesSlotId, target: DoublesSlotId, item: string, residual?: { attacker: DoublesSlotId | null }) {
++function hitReactions(ctx: Ctx, w: World, attacker: DoublesSlotId, target: DoublesSlotId, item: string, residual?: { attacker: DoublesSlotId | null }, sheerForce = false) {
+   const kernel = kernelOf(ctx);
+   const receiver = w.mons[target]!;
+   reactionHooks.cottonDown(kernel, w, attacker, target);
+@@ -3198,8 +3200,16 @@ function hitReactions(ctx: Ctx, w: World, attacker: DoublesSlotId, target: Doubl
+   if (!residual) statusHooks.onKnockOut(kernel, w, attacker, target);
+   if (receiver.fainted || attacker === target) return;
+   const usable = itemWorks(w, receiver.build);
+-  const eject = !residual && item === "ejectbutton" && usable;
+-  const red = item === "redcard" && usable && alive(w, attacker) && (!residual || residual.attacker === attacker);
++  const eject = !residual && !sheerForce && item === "ejectbutton" && usable;
++  const red = !sheerForce && item === "redcard" && usable && alive(w, attacker) && (!residual || residual.attacker === attacker);
++  // status2 R-E: Red Card reads its attacker's HP before the attacker's Life Orb (AfterMoveSecondary, then AfterMoveSecondarySelf,
++  // which its drag stops): an attacker knocked out in the step with a working Life Orb may have fainted to it alone (or to the
++  // hit's Rough Skin or Rocky Helmet first, which the world does not tell apart): not followed.
++  const attackerBuild = w.mons[attacker]?.build;
++  if (!sheerForce && !residual && item === "redcard" && usable && w.mons[attacker]?.fainted && attackerBuild?.itemId === "lifeorb" && attackerBuild.abilityId !== "magicguard"
++    && itemWorks(w, attackerBuild) && sideCanSwitch(ctx.input, slotSide(attacker)) !== false) {
++    notEstimated(REASONS.combo(itemName(ctx, "redcard"), itemName(ctx, "lifeorb")));
++  }
+   // A gas holder switched out takes its Neutralizing Gas with it, whether or not an action follows.
+   if (eject) gasEnds(ctx, w, target);
+   if (red) gasEnds(ctx, w, attacker);
+@@ -4649,7 +4659,7 @@ function sideFaintedChance(world: World, side: DoublesSideId): number {
+  * sleep counter and perish count, the Substitute's HP, the Ally Switch counter, Safeguard and the hazards that landed on
+  * each side, and whether each side's Pokémon stand swapped.
+  */
+-function outcomeOf(ctx: Ctx, world: World, gas: DoublesGas | null | undefined): DoublesOutcome {
++function outcomeOf(ctx: Ctx, world: World): DoublesOutcome {
+   const kernel = kernelOf(ctx);
+   // status2 R-E: the hook modules read this world's occupants (names, hp, the input view).
+   syncOccupants(ctx, world);
+@@ -4833,7 +4843,7 @@ export function calculateDoublesOutcomes(input: DoublesTurnInput): DoublesOutcom
+     const worlds = end.status === "ready" ? end.worlds : finished;
+     let total = 0;
+     for (const world of worlds) total += world.mass;
+-    const each = worlds.map((world) => outcomeOf(all, world, settle.gas));
++    const each = worlds.map((world) => outcomeOf(all, world));
+     syncOccupants(all, null);
+     const outcomes = mergeOutcomes(each).map((outcome) => ({ ...outcome, chance: total > 0 ? outcome.chance / total : 0 }));
+     return { status: "ready", start, outcomes, endOfTurn: end.status === "ready" ? "applied" : { notEstimated: end.reason } };
+diff --git a/tests/source/status2-hooks.test.ts b/tests/source/status2-hooks.test.ts
+index ed4b65b..e0f214f 100644
+--- a/tests/source/status2-hooks.test.ts
++++ b/tests/source/status2-hooks.test.ts
+@@ -154,6 +154,12 @@ const MOVED: [owner: string, fn: string, caller: string, callerFn: string, call:
+   ["doubles-switch.ts", "hazardFails", "doubles-status.ts", "sideOrField", "switchHooks.hazardFails("],
+   ["doubles-switch.ts", "hazardFails", "doubles-max.ts", "gmaxEffect", "switchNs.hazardFails("],
+   ["doubles-switch.ts", "hazardFails", "doubles-eot.ts", "afterHit", "switchHooks.hazardFails("],
++  // Wave 2, R-E (W2-R-E.md): the Emergency Exit split before an action, the switches after the residual, the end of turn's
++  // Eject Pack waiting for a standing switchFlag, a landing's Red Card drag (its user's Life Orb).
++  ["doubles-switch.ts", "exitWorlds", "doubles-turn.ts", "walk", "switchHooks.exitWorlds("],
++  ["doubles-switch.ts", "afterTurn", "doubles-eot.ts", "run", "switchHooks.afterTurn("],
++  ["doubles-switch.ts", "flagStanding", "doubles-eot.ts", "ejectPack", "switchHooks.flagStanding("],
++  ["doubles-switch.ts", "dragSet", "doubles-eot.ts", "landingHandler", "switchHooks.dragSet("],
+ ];
+ 
+ // ---- The hook calls Step 0a inserts (SPEC2 §3.5's table, ADDENDUM2 §3.5's lists), each at its site ----
+@@ -199,7 +205,10 @@ const CALLS: [file: string, fn: string, calls: string[]][] = [
+   // Step 2: the bench's, the replacements' and the hazards' issues after the turn-level ones; R's outcome fields.
+   ["doubles-turn.ts", "validate", ["turnIssues(", "benchIssues("]],
+   ["doubles-turn.ts", "outcomeOf", ["status2Mon(", "entry.id = mon.id", "switchHooks.benchedOutcome("]],
+-  ["doubles-switch.ts", "switchOut", ["presenceHooks.cannotLeave(", "kernel.input.bench?.[slotSide(slot)]", "replaceSlot(", "REASONS.switchesOut(", "kernel.leaving("]],
++  ["doubles-switch.ts", "switchOut", ["presenceHooks.cannotLeave(", "kernel.input.bench?.[slotSide(slot)]", "replaceSlot(", "REASONS.switchesOut(", "redCardDrags(", "kernel.leaving("]],
++  // Wave 2, R-E: the switches as an action ends (Red Card's stop of its attacker's Life Orb first), the walk's split and switches.
++  ["doubles-switch.ts", "resolve", ["selfItemsAfterRedCard(", "exits(kernel", "ejectPacks(kernel", "tail(kernel"]],
++  ["doubles-switch.ts", "requestRound", ["beforeSwitchOut(", "switchRound("]],
+   // Integration 1a (D): every Encore rewrite runs as its own action (executeUsed: BeforeMove on).
+   ["doubles-turn.ts", "execute", ["guardHooks.encoreRewrites(", "guardHooks.encoreRewrite(", "executeUsed("]],
+   ["doubles-turn.ts", "executeUsed", ["statusHooks.beforeMove(", "runMove(ctx"]],
+diff --git a/tests/unit/status2-r-contract.test.ts b/tests/unit/status2-r-contract.test.ts
+index b61a228..0ded3fc 100644
+--- a/tests/unit/status2-r-contract.test.ts
++++ b/tests/unit/status2-r-contract.test.ts
+@@ -14,10 +14,11 @@ import type { BattleBuild } from "@/app/lib/battle/types";
+ 
+ /**
+  * status2 Step 2 (scripts/.cache/calc-audit/status2/design SPEC2.md §4.8, guards.md §5.4, inputs.md §3.1 and §5.7,
+- * ADDENDUM2.md §8.7 step 1; build/STEP2.md): R's contract with nothing that models it yet. A bench takes canSwitch's place
+- * (sideCanSwitch), the bench Pokémon are named after the four slots, the bench, the replacements and the hazards have their
+- * input issues, a bench given before R-E lands changes nothing else (replaceSlot keeps today's rule), and the World's new
+- * fields stay out of today's worlds.
++ * ADDENDUM2.md §8.7 step 1; build/STEP2.md): R's contract. A bench takes canSwitch's place (sideCanSwitch), the bench Pokémon
++ * are named after the four slots, the bench, the replacements and the hazards have their input issues, and the World's new
++ * fields stay out of today's worlds. Wave 2 (R-E, build/W2-R-E.md): a switch-out with its side's bench given is modelled
++ * (tests/unit/doubles-switch.test.ts has the family); the numbers here are pinned Showdown c23d2e94's
++ * (status2/build/w2-re/cases-re.ts RE-CONTRACT-champions agrees with the oracle).
+  */
+ const SLOTS: DoublesSlotId[] = ["own-left", "own-right", "opponent-left", "opponent-right"];
+ type P = { id: string; ability?: string; move?: string | null; target?: DoublesSlotId | null; extra?: Partial<DoublesPokemonInput> };
+@@ -67,11 +68,23 @@ describe("a bench takes canSwitch's place (sideCanSwitch)", () => {
+     expect(JSON.stringify(calculateDoublesOutcomes(turn(slots, { bench: { own: [benched("b1", "garchomp")] } }))))
+       .toBe(JSON.stringify(calculateDoublesOutcomes(turn(slots, { canSwitch: { own: true } }))));
+   });
+-  it("keeps today's switch-out until R-E models the replacement (replaceSlot's stub)", () => {
+-    const slots = { "own-left": { id: "corviknight", ability: "pressure", move: "uturn", target: "opponent-left" as DoublesSlotId }, "own-right": lax(), "opponent-left": lax(), "opponent-right": lax({ move: "bodyslam", target: "own-right" }) };
++  it("models the switch with the side's bench: the chosen replacement comes in and meets the later Body Slam (R-E)", () => {
++    // Snorlax at 1, 2 and 3 Speed points (no tie); Garchomp's Rough Skin (its first ability) takes 1/8 from the Body Slam's user.
++    const at = (spe: number, extra: Partial<P> = {}): P => lax({ ...extra, extra: { build: { ...buildOf(championsRuntime, "snorlax", "thickfat"), points: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe } } as BattleBuild } });
++    const slots = { "own-left": { id: "corviknight", ability: "pressure", move: "uturn", target: "opponent-left" as DoublesSlotId }, "own-right": at(1), "opponent-left": at(2), "opponent-right": at(3, { move: "bodyslam", target: "own-left" }) };
+     const result = calculateDoublesTurn(turn(slots, { bench: { own: [benched("b1", "garchomp")] }, replacement: { "own-left": "b1" } }));
+-    expect(result).toMatchObject({ status: "not-estimated", reason: "Corviknight switches out: the replacement is not known." });
+-    expect(JSON.stringify(result)).toBe(JSON.stringify(calculateDoublesTurn(turn(slots, { canSwitch: { own: true } }))));
++    if (result.status !== "ready") throw new Error(`expected ready, got ${result.status}`);
++    expect(result.steps.map((step) => [step.slot, step.moveId, step.facts.map((fact) => fact.text)])).toEqual([
++      ["own-left", "uturn", ["Corviknight switches out; Garchomp comes in."]], ["opponent-right", "bodyslam", []],
++    ]);
++    const hit = result.steps[1].hits.find((each) => each.slot === "own-left");
++    expect([hit?.id, hit?.min, hit?.max]).toEqual(["b1", 55, 66]);
++    expect(result.replaced?.["own-left"]?.entered).toEqual([{ id: "b1", chance: 1 }]);
++    expect([result.hpEntered?.["own-left"]?.b1.min, result.hpEntered?.["own-left"]?.b1.max]).toEqual([117, 128]);
++    expect([result.hp["own-left"]!.min, result.hp["opponent-right"]!.min, result.hp["opponent-left"]!.min, result.hp["opponent-left"]!.max]).toEqual([173, 206, 195, 201]);
++    // A chosen replacement: no turn fact about it. Without a bench the replacement is not known (REASONS.switchesOut, kept).
++    expect(result.facts.some((fact) => fact.includes("comes in for"))).toBe(false);
++    expect(calculateDoublesTurn(turn(slots, { canSwitch: { own: true } }))).toMatchObject({ status: "not-estimated", reason: "Corviknight switches out: the replacement is not known." });
+   });
+ });
+ 
+@@ -166,11 +179,18 @@ describe("the World's R fields (doubles-world.ts; absent in today's worlds)", ()
+     expect(discreteKey(copy)).toBe(discreteKey(set));
+     expect(discreteKey(set)).not.toBe(discreteKey(w));
+   });
+-  it("the stubs: betweenActions keeps every world, every hazard lands, benchedOutcome reports a leaver as E2 lists it", () => {
++  it("betweenActions keeps a world with no switch set, a hazard lands where none is up, benchedOutcome reports a leaver as E2 lists it", () => {
+     const w = world();
+     const kernel = {} as TurnKernel;
+     expect(betweenActions(kernel, w)).toBeNull();
+     expect(hazardFails(kernel, w, "opponent", "stealthrock")).toBeNull();
++    // R-E: the side's hazards from before the turn (DoublesTurnInput.hazards) and this turn's: Stealth Rock up, three Spikes layers.
++    const named = { baseInput: { hazards: { opponent: { stealthRock: true, spikes: 2 } } }, moveName: (id: string) => ({ stealthrock: "Stealth Rock", spikes: "Spikes" })[id] ?? id } as unknown as TurnKernel;
++    expect(hazardFails(named, w, "opponent", "stealthrock")).toBe("Stealth Rock fails: it is already up on the opponent's side.");
++    expect(hazardFails(named, w, "opponent", "spikes")).toBeNull();
++    const third = { ...w, sides: { ...w.sides, opponent: { ...w.sides.opponent, hazards: ["spikes"] } } };
++    expect(hazardFails(named, third, "opponent", "spikes")).toBe("Spikes fails: three layers are already up on the opponent's side.");
++    expect(hazardFails(named, w, "own", "stealthrock")).toBeNull();
+     const build = createBuild("garchomp", championsRuntime);
+     const leaver = { id: "slot:own-left", slot: "own-left" as DoublesSlotId, mon: { ...mon(build), moved: true }, hp: [[50, 0.25], [80, 0.75]] as const };
+     expect(benchedOutcome(kernel, w, leaver)).toEqual({ id: "slot:own-left", slot: "own-left", hp: [{ hp: 50, chance: 0.25 }, { hp: 80, chance: 0.75 }], build, protected: false, moved: true });
+diff --git a/tests/unit/doubles-switch.test.ts b/tests/unit/doubles-switch.test.ts
+new file mode 100644
+index 0000000..175269c
+--- /dev/null
++++ b/tests/unit/doubles-switch.test.ts
+@@ -0,0 +1,498 @@
++import { describe, expect, it } from "vitest";
++import { REASONS } from "@/app/lib/battle/doubles-actions";
++import { doublesTargetRule } from "@/app/lib/battle/doubles-targets";
++import { calculateDoublesOutcomes, calculateDoublesTurn } from "@/app/lib/battle/doubles-turn";
++import type {
++  DoublesBenchPokemon, DoublesCarried, DoublesHazards, DoublesOutcome, DoublesPokemonInput, DoublesSideId, DoublesSlotId, DoublesStep, DoublesTurnInput, DoublesTurnResult,
++} from "@/app/lib/battle/doubles-types";
++import { loadBattleRuntime } from "@/app/lib/battle/load-runtime";
++import { createBuild, createConditions, createSide, defaultAbilityActive } from "@/app/lib/battle/model";
++import type { BattleRuntime } from "@/app/lib/battle/runtime";
++import type { BattleBuild, BattleConditions, BattleGame, BattleStatus } from "@/app/lib/battle/types";
++
++/**
++ * status2 wave 2, Track R-E (SPEC2 §4.8, guards.md §5.4, ADDENDUM2 §8.7): switch-outs with a replacement, app/lib/battle/
++ * doubles-switch.ts and its kernel sites. Every number is pinned Showdown c23d2e94's: each test is a case of the verify
++ * harness (scripts/.cache/calc-audit/2v2/verify/cases-r.ts G4-SWX-, IN-BNC-, IN-HZD-, T2E-BL-, T2P-, CQ-PUR-R-; R-E's own
++ * status2/build/w2-re/cases-re.ts RE-) whose app result agrees with the oracle (v3/run.ts --wave2; w2-re/run-cases.ts), with
++ * its builds made as app-turn.ts caseInput makes them: level 50, 31 IVs, Serious, 0 EVs unless set (Champions: Stat Points),
++ * one Pokémon left on a side without a bench (canSwitch). The tests marked `it.fails` need the integrator's doubles-faces.ts
++ * lines (status2/build/W2-R-E.md, needs): they agree with the oracle on a tree with those lines.
++ */
++type Game = "sv" | "swsh" | "usum" | "champions";
++type Stat = "hp" | "atk" | "def" | "spa" | "spd" | "spe";
++type Mon = {
++  species: string; ability: string; item?: string; nature?: string; evs?: Partial<Record<Stat, number>>; ivs?: Partial<Record<Stat, number>>; hp?: number;
++  status?: BattleStatus; boosts?: Partial<Record<Exclude<Stat, "hp">, number>>; carried?: DoublesCarried; moves?: string[];
++};
++type Slot = Mon & { move: string | null; target?: DoublesSlotId };
++type Ready = Extract<DoublesTurnResult, { status: "ready" }>;
++const OL: DoublesSlotId = "own-left", OR: DoublesSlotId = "own-right", PL: DoublesSlotId = "opponent-left", PR: DoublesSlotId = "opponent-right";
++const SLOTS: DoublesSlotId[] = [OL, OR, PL, PR];
++const ZERO = { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 };
++const IV31 = { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 };
++const RUNTIME: Record<Game, BattleGame> = { sv: "scarlet_violet", swsh: "sword_shield", usum: "ultra_sun_ultra_moon", champions: "champions" };
++const runtimes: Partial<Record<Game, BattleRuntime>> = {};
++const runtimeOf = async (game: Game) => (runtimes[game] ??= await loadBattleRuntime(RUNTIME[game]));
++const toId = (text: string) => text.toLowerCase().replace(/[^a-z0-9]+/g, "");
++
++const mon = (species: string, ability: string, extra: Partial<Mon> = {}): Mon => ({ species, ability, ...extra });
++const act = (m: Mon, move: string | null, target?: DoublesSlotId): Slot => ({ ...m, move, ...(target ? { target } : {}) });
++const idle = (m: Mon): Slot => act(m, null);
++/** A Thick Fat Snorlax with n × 8 Speed EVs (Champions: n Stat Points): the cases' L(game, n). */
++const L = (game: Game, n: number, extra: Partial<Mon> = {}) => mon("Snorlax", "Thick Fat", { evs: { spe: game === "champions" ? n : n * 8 }, ...extra });
++const fast = (game: Game, m: Mon): Mon => ({ ...m, evs: { ...m.evs, spe: game === "champions" ? 32 : 252 } });
++const slowest = (game: Game): Partial<Mon> => ({ nature: "Brave", ...(game === "champions" ? {} : { ivs: { spe: 0 } }) });
++const chomp = (extra: Partial<Mon> = {}) => mon("Garchomp", "Rough Skin", extra);
++/** The cases' fast U-turn user: Ambipom (SV, USUM), Liepard (SwSh), Rillaboom (Champions). */
++const uturner = (game: Game, extra: Partial<Mon> = {}) => fast(game, game === "swsh" ? mon("Liepard", "Limber", extra) : game === "champions" ? mon("Rillaboom", "Overgrow", extra) : mon("Ambipom", "Technician", extra));
++
++function buildOf(runtime: BattleRuntime, m: Mon): BattleBuild {
++  const base = createBuild(toId(m.species), runtime);
++  const abilityId = toId(m.ability);
++  const shared = {
++    nature: m.nature ?? "Serious", abilityId, abilityActive: defaultAbilityActive(abilityId), itemId: toId(m.item ?? ""),
++    boosts: { atk: 0, def: 0, spa: 0, spd: 0, spe: 0, ...m.boosts }, currentHP: m.hp ?? null, status: m.status ?? "",
++  };
++  return (base.game === "champions" ? { ...base, ...shared, points: { ...ZERO, ...m.evs } }
++    : { ...base, ...shared, native: { level: 50, evs: { ...ZERO, ...m.evs }, ivs: { ...IV31, ...m.ivs } } }) as BattleBuild;
++}
++type More = {
++  bench?: Partial<Record<DoublesSideId, [string, Mon][]>>; replacement?: Partial<Record<DoublesSlotId, string>>;
++  hazards?: Partial<Record<DoublesSideId, DoublesHazards>>; field?: Partial<BattleConditions>;
++};
++/** The four Pokémon in slot order own-left, own-right, opponent-left, opponent-right, as app-turn.ts caseInput builds a case. */
++async function turn(game: Game, slots: [Slot, Slot, Slot, Slot], more: More = {}): Promise<DoublesTurnInput> {
++  const runtime = await runtimeOf(game);
++  const pokemon = Object.fromEntries(SLOTS.map((slot, i) => {
++    const m = slots[i];
++    const moveId = m.move === null ? null : toId(m.move);
++    const entry: DoublesPokemonInput = {
++      build: buildOf(runtime, m), contexts: {}, charged: false, action: { moveId, target: m.target ?? null },
++      ...(m.carried ? { carried: m.carried } : {}), ...(m.moves ? { moves: [...new Set([...(moveId ? [moveId] : []), ...m.moves.map(toId)])] } : {}),
++    };
++    return [slot, entry];
++  })) as Record<DoublesSlotId, DoublesPokemonInput>;
++  const bench: Partial<Record<DoublesSideId, DoublesBenchPokemon[]>> = {};
++  for (const side of ["own", "opponent"] as const) {
++    const members = more.bench?.[side];
++    if (members) bench[side] = members.map(([id, m]) => ({ id, build: buildOf(runtime, m), ...(m.moves ? { moves: m.moves.map(toId) } : {}) }));
++  }
++  const input: DoublesTurnInput = {
++    runtime, field: { ...createConditions(), gameType: "Doubles", attackerSide: createSide(), defenderSide: createSide(), ...more.field }, pokemon,
++    canSwitch: { own: true, opponent: true },
++    ...(Object.keys(bench).length ? { bench } : {}), ...(more.replacement ? { replacement: more.replacement } : {}), ...(more.hazards ? { hazards: more.hazards } : {}),
++  };
++  for (const slot of SLOTS) {
++    const entry = pokemon[slot];
++    if (entry.action.moveId && entry.action.target && doublesTargetRule(input, slot, entry.action.moveId).kind !== "choose") entry.action = { ...entry.action, target: null };
++  }
++  return input;
++}
++function ready(input: DoublesTurnInput): Ready {
++  const result = calculateDoublesTurn(input);
++  if (result.status !== "ready") throw new Error(`expected ready, got ${result.status}: ${result.status === "not-estimated" ? result.reason : JSON.stringify(result.issues)}`);
++  return result;
++}
++function endOf(result: Ready) {
++  if (result.endOfTurn.status !== "ready") throw new Error(`end of turn not estimated: ${result.endOfTurn.reason}`);
++  return result.endOfTurn;
++}
++function outcomesOf(input: DoublesTurnInput): DoublesOutcome[] {
++  const result = calculateDoublesOutcomes(input);
++  if (result.status !== "ready") throw new Error(`outcomes ${result.status}`);
++  expect(result.endOfTurn).toBe("applied");
++  return result.outcomes;
++}
++const stepOf = (result: Ready, slot: DoublesSlotId, moveId: string): DoublesStep => {
++  const step = result.steps.find((each) => each.slot === slot && each.moveId === moveId);
++  if (!step) throw new Error(`no ${moveId} step of ${slot}`);
++  return step;
++};
++const hitOf = (step: DoublesStep, slot: DoublesSlotId, id?: string) => {
++  const hit = step.hits.find((each) => each.slot === slot && each.id === id);
++  if (!hit) throw new Error(`no hit on ${slot}${id ? ` (${id})` : ""}`);
++  return hit;
++};
++const texts = (facts: { text: string; chance: number }[]) => facts.map((fact) => `${fact.text} @${Math.round(fact.chance * 1e4) / 1e4}`);
++const range = (hp: { min: number | null; max: number | null }) => [hp.min, hp.max];
++const reason = (input: DoublesTurnInput) => {
++  const result = calculateDoublesTurn(input);
++  return result.status === "not-estimated" ? result.reason : result.status;
++};
++
++describe("the switch and its newcomer (replaceSlot, betweenActions; guards.md §5.4)", () => {
++  it("U-turn brings in the first bench Pokémon by default; its Intimidate starts; the later Dragon Claw meets it (G4-SWX-01, B2)", async () => {
++    const input = await turn("sv", [act(fast("sv", mon("Rillaboom", "Overgrow")), "U-turn", PL), idle(L("sv", 1)), act(chomp(), "Dragon Claw", OL), idle(L("sv", 3))],
++      { bench: { own: [["inci", mon("Incineroar", "Intimidate")]] } });
++    const result = ready(input);
++    expect(result.facts).toContain("Assumes Incineroar comes in for Rillaboom.");
++    expect(texts(stepOf(result, OL, "uturn").facts)).toEqual(["Rillaboom switches out; Incineroar comes in. @1", "Garchomp: −1 Attack. @1", "Snorlax (opponent's): −1 Attack. @1"]);
++    expect(range(hitOf(stepOf(result, PL, "dragonclaw"), OL, "inci"))).toEqual([42, 51]);
++    expect(result.replaced?.[OL]?.left.map((left) => [left.id, left.chance, left.hp.min, left.hp.max])).toEqual([["slot:own-left", 1, 154, 154]]);
++    expect(result.replaced?.[OL]?.entered).toEqual([{ id: "inci", chance: 1 }]);
++    const entered = result.hpEntered?.[OL]?.inci;
++    expect(entered && [entered.start, entered.maximum, entered.min, entered.max]).toEqual([170, 170, 119, 128]);
++    // The slot's own record is its starting Pokémon's, as it left.
++    expect(range(result.hp[OL]!)).toEqual([154, 154]);
++    const [outcome] = outcomesOf(input);
++    expect(outcome.mons[OL]?.id).toBe("inci");
++    expect(outcome.benched?.own?.map((each) => [each.id, each.slot, each.hp])).toEqual([["slot:own-left", OL, [{ hp: 154, chance: 1 }]]]);
++  });
++  it("a chosen replacement comes in with no turn fact (G4-SWX-02, IN-BNC-02)", async () => {
++    const input = await turn("champions", [act(fast("champions", mon("Incineroar", "Blaze")), "Parting Shot", PL), idle(L("champions", 1)),
++      act(chomp(slowest("champions")), "Dragon Claw", OL), idle(L("champions", 3))],
++    { bench: { own: [["lax", L("champions", 2)], ["corv", mon("Corviknight", "Pressure")]] }, replacement: { [OL]: "corv" } });
++    const result = ready(input);
++    expect(result.facts.filter((fact) => fact.startsWith("Assumes") && fact.includes("comes in for"))).toEqual([]);
++    expect(result.replaced?.[OL]?.entered).toEqual([{ id: "corv", chance: 1 }]);
++    expect(range(hitOf(stepOf(result, PL, "dragonclaw"), OL, "corv"))).toEqual([20, 24]);
++  });
++  it("Roar drags in one of two bench Pokémon at 1/2 each; each one's Leftovers at the end of turn (G4-SWX-04, B5)", async () => {
++    const input = await turn("swsh", [act(mon("Arcanine", "Justified"), "Roar", PL), idle(L("swsh", 1)), act(L("swsh", 4), "Body Slam", OR), idle(L("swsh", 3))], {
++      bench: { opponent: [["lax", { ...L("swsh", 2), item: "Leftovers", hp: 150 }], ["bliss", mon("Blissey", "Natural Cure", { item: "Leftovers", hp: 200 })]] },
++    });
++    const result = ready(input);
++    expect(result.replaced?.[PL]?.entered).toEqual([{ id: "lax", chance: 0.5 }, { id: "bliss", chance: 0.5 }]);
++    expect(texts(stepOf(result, OL, "roar").facts)).toContain("Roar: Snorlax (opponent's, 1) is dragged out; Blissey comes in. @0.5");
++    const end = endOf(result);
++    expect(end.residuals.filter((each) => each.slot === PL).map((each) => [each.id, each.effect, each.min, each.chance])).toEqual([["bliss", "Leftovers", 20, 0.5], ["lax", "Leftovers", 14, 0.5]]);
++    expect(outcomesOf(input).map((outcome) => [outcome.chance, outcome.mons[PL]?.id, outcome.mons[PL]?.hp])).toEqual([[0.5, "lax", [{ hp: 164, chance: 1 }]], [0.5, "bliss", [{ hp: 220, chance: 1 }]]]);
++  });
++  it("Icy Wind drops two Eject Pack holders: the second leaves at the first newcomer's switch-in (G4-SWX-05, B1)", async () => {
++    const input = await turn("sv", [act(fast("sv", mon("Glalie", "Inner Focus")), "Icy Wind"), act(mon("Venusaur", "Overgrow"), "Tackle", PL),
++      idle({ ...L("sv", 4), item: "Eject Pack" }), idle(mon("Torkoal", "Shell Armor", { item: "Eject Pack" }))],
++    { bench: { opponent: [["lax", L("sv", 2)], ["bliss", mon("Blissey", "Natural Cure")]] } });
++    const result = ready(input);
++    expect(texts(stepOf(result, OL, "icywind").facts)).toEqual([
++      "Snorlax's Eject Pack is used up. @1", "Snorlax switches out; Snorlax (2) comes in. @1", "Torkoal's Eject Pack is used up. @1", "Torkoal switches out; Blissey comes in. @1",
++    ]);
++    expect(result.facts).toEqual(expect.arrayContaining(["Assumes Snorlax (2) comes in for Snorlax.", "Assumes Blissey comes in for Torkoal."]));
++    expect(range(hitOf(stepOf(result, OR, "tackle"), PL, "lax"))).toEqual([19, 23]);
++  });
++  it("a Drought newcomer re-sorts the later moves from generation 8, not in Ultra Sun/Ultra Moon (G4-SWX-06, B7)", async () => {
++    const order = async (game: Game) => {
++      const result = ready(await turn(game, [act(fast(game, mon("Ambipom", "Technician")), "U-turn", PR), act(mon("Venusaur", "Chlorophyll"), "Tackle", PL),
++        act(chomp(), "Dragon Claw", OR), idle(L(game, 3))], { bench: { own: [["tork", mon("Torkoal", "Drought")]] } }));
++      expect(texts(stepOf(result, OL, "uturn").facts)).toContain("Torkoal: the weather becomes Sun. @1");
++      return result.steps.map((step) => step.moveId);
++    };
++    expect(await order("sv")).toEqual(["uturn", "tackle", "dragonclaw"]);
++    expect(await order("usum")).toEqual(["uturn", "dragonclaw", "tackle"]);
++  });
++  it("Regenerator heals the leaver by a third as it leaves (G4-SWX-07, B6)", async () => {
++    const result = ready(await turn("sv", [act(mon("Slowking-Galar", "Regenerator", { hp: 120 }), "Chilly Reception"), idle(L("sv", 1)), act(chomp(), "Dragon Claw", OL), idle(L("sv", 3))],
++      { bench: { own: [["corv", mon("Corviknight", "Pressure")]] } }));
++    expect(result.hp[OL]!.heals).toEqual(["Regenerator: +56 HP."]);
++    expect(range(result.replaced![OL]!.left[0].hp)).toEqual([95, 109]);
++  });
++  it("Eject Button sends its holder out before its own move; the later Body Slam meets the newcomer (G4-SWX-08)", async () => {
++    const result = ready(await turn("sv", [act(fast("sv", chomp()), "Dragon Claw", PL), act(L("sv", 1), "Body Slam", PL), act({ ...L("sv", 4), item: "Eject Button" }, "Body Slam", OL), idle(L("sv", 3))],
++      { bench: { opponent: [["corv", mon("Corviknight", "Pressure")], ["bliss", mon("Blissey", "Natural Cure")]] } }));
++    const cancelled = stepOf(result, PL, "bodyslam");
++    expect([cancelled.moves, texts(cancelled.skipped)]).toEqual([0, ["Switches out before it moves. @1"]]);
++    expect(range(hitOf(stepOf(result, OR, "bodyslam"), PL, "corv"))).toEqual([25, 30]);
++  });
++  it("Baton Pass passes +2 Attack to the newcomer (G4-SWX-09, B4a)", async () => {
++    const input = await turn("sv", [act(fast("sv", mon("Ambipom", "Technician", { boosts: { atk: 2 }, carried: { stages: { evasion: 1 } } })), "Baton Pass"), idle(L("sv", 1)),
++      act(chomp(), "Dragon Claw", OL), idle(L("sv", 3))], { bench: { own: [["lax", L("sv", 2)]] } });
++    const result = ready(input);
++    expect(range(hitOf(stepOf(result, PL, "dragonclaw"), OL, "lax"))).toEqual([81, 96]);
++    const [outcome] = outcomesOf(input);
++    expect([outcome.mons[OL]?.id, outcome.mons[OL]?.build.boosts.atk]).toEqual(["lax", 2]);
++    expect(outcome.benched?.own?.[0].build.boosts.atk).toBe(0);
++  });
++  it("Emergency Exit mid-turn: the holder leaves before its own move (G4-SWX-10, B10)", async () => {
++    const result = ready(await turn("champions", [act(fast("champions", chomp()), "Dragon Claw", PL), act(L("champions", 1), "Body Slam", PL),
++      act(mon("Golisopod", "Emergency Exit", { hp: 90 }), "Rock Slide"), idle(L("champions", 3))],
++    { bench: { opponent: [["lax", L("champions", 2)], ["bliss", mon("Clefable", "Cute Charm")]] } }));
++    expect(texts(stepOf(result, PL, "rockslide").skipped)).toEqual(["Switches out before it moves. @1"]);
++    expect(texts(stepOf(result, OL, "dragonclaw").facts)).toEqual(["Emergency Exit: Golisopod switches out. @1", "Golisopod switches out; Snorlax (opponent's, 2) comes in. @1"]);
++    expect(range(hitOf(stepOf(result, OR, "bodyslam"), PL, "lax"))).toEqual([75, 88]);
++  });
++  it("Red Card drags the attacker's bench in at random (G4-SWX-11, B9)", async () => {
++    const result = ready(await turn("sv", [act(fast("sv", chomp()), "Dragon Claw", PL), idle(L("sv", 1)), idle({ ...L("sv", 4), item: "Red Card" }), act(L("sv", 3), "Body Slam", OL)],
++      { bench: { own: [["lax", { ...L("sv", 2), hp: 180 }], ["bliss", mon("Blissey", "Natural Cure")]] } }));
++    expect(texts(stepOf(result, OL, "dragonclaw").facts)).toEqual(["Red Card: Garchomp is dragged out; Snorlax (yours, 2) comes in. @0.5", "Red Card: Garchomp is dragged out; Blissey comes in. @0.5"]);
++    const slam = stepOf(result, PR, "bodyslam");
++    expect([hitOf(slam, OL, "lax").reached, ...range(hitOf(slam, OL, "lax"))]).toEqual([0.5, 75, 88]);
++    expect([hitOf(slam, OL, "bliss").reached, ...range(hitOf(slam, OL, "bliss"))]).toEqual([0.5, 208, 246]);
++  });
++  it("both Pokémon of a side U-turn: the second takes the next bench Pokémon; Natural Cure cures the leaver (G4-SWX-18)", async () => {
++    const input = await turn("sv", [act(fast("sv", mon("Comfey", "Natural Cure", { status: "par" })), "U-turn", PL), act(mon("Ambipom", "Technician"), "U-turn", PR), idle(L("sv", 4)), idle(L("sv", 3))],
++      { bench: { own: [["lax", L("sv", 2)], ["bliss", mon("Blissey", "Natural Cure")]] } });
++    const result = ready(input);
++    expect(result.replaced?.[OR]?.entered).toEqual([{ id: "lax", chance: 1 }]);
++    expect(result.replaced?.[OL]?.entered).toEqual([{ id: "bliss", chance: 0.75 }]);
++    const both = outcomesOf(input).find((outcome) => outcome.mons[OL]?.id === "bliss")!;
++    expect([both.chance, both.benched?.own?.find((each) => each.id === "slot:own-left")?.build.status]).toEqual([0.75, ""]);
++  });
++  it("Shed Tail passes its Substitute; the later Body Slam breaks it (G4-SWX-19)", async () => {
++    const result = ready(await turn("sv", [act(fast("sv", mon("Cyclizar", "Regenerator")), "Shed Tail"), idle(L("sv", 1)), act(L("sv", 4), "Body Slam", OL), idle(L("sv", 3))],
++      { bench: { own: [["lax", L("sv", 2)]] } }));
++    const hit = hitOf(stepOf(result, PL, "bodyslam"), OL, "lax");
++    expect([hit.kind, texts(hit.facts)]).toEqual(["substitute", ["Its Substitute breaks. @1"]]);
++    expect(range(result.hpEntered![OL]!.lax)).toEqual([235, 235]);
++  });
++  it("Teleport switches at −6 in Sword/Shield and fails in Ultra Sun/Ultra Moon (G4-SWX-21)", async () => {
++    const run = async (game: Game) => ready(await turn(game, [act(mon("Arcanine", "Justified"), "Teleport"), idle(L(game, 1)), act(L(game, 4), "Body Slam", OL), idle(L(game, 3))],
++      { bench: { own: [["lax", { ...L(game, 2), item: "Leftovers", hp: 150 }]] } }));
++    const swsh = await run("swsh");
++    expect(swsh.replaced?.[OL]?.entered).toEqual([{ id: "lax", chance: 1 }]);
++    expect(endOf(swsh).residuals.map((each) => [each.slot, each.id, each.effect, each.min])).toEqual([[OL, "lax", "Leftovers", 14]]);
++    const usum = await run("usum");
++    expect([usum.replaced, texts(stepOf(usum, OL, "teleport").facts)]).toEqual([undefined, ["Teleport fails. @1"]]);
++  });
++  it("Volt Switch into a Ground type does not switch; Dragon Tail drags at random (G4-SWX-22)", async () => {
++    const result = ready(await turn("sv", [act(fast("sv", mon("Jolteon", "Volt Absorb")), "Volt Switch", PL), idle(L("sv", 1)), act(chomp(), "Dragon Tail", OR), idle(L("sv", 3))], {
++      bench: { own: [["lax", { ...L("sv", 2), hp: 150 }], ["bliss", mon("Blissey", "Natural Cure", { hp: 120 })]], opponent: [["olax", L("sv", 5)]] },
++    }));
++    expect(result.replaced?.[OL]).toBeUndefined();
++    expect(result.replaced?.[OR]?.entered).toEqual([{ id: "lax", chance: 0.5 }, { id: "bliss", chance: 0.5 }]);
++  });
++  it("U-turn into an Eject Button holder: the holder leaves, the U-turn user stays (G4-SWX-23, B8)", async () => {
++    const result = ready(await turn("sv", [act(uturner("sv"), "U-turn", PL), idle(L("sv", 1)), act({ ...L("sv", 4), item: "Eject Button" }, "Body Slam", OR), act(L("sv", 3), "Body Slam", PL)],
++      { bench: { own: [["own", L("sv", 5)]], opponent: [["lax", L("sv", 2)]] } }));
++    expect(result.replaced?.[OL]).toBeUndefined();
++    expect(result.replaced?.[PL]?.entered).toEqual([{ id: "lax", chance: 1 }]);
++    expect(range(hitOf(stepOf(result, PR, "bodyslam"), PL, "lax"))).toEqual([75, 88]);
++  });
++  it("Parting Shot's drops set off no Eject Pack; its user switches (G4-SWX-24, B12)", async () => {
++    const result = ready(await turn("sv", [act(fast("sv", mon("Incineroar", "Blaze")), "Parting Shot", PL), idle(L("sv", 1)), act({ ...L("sv", 4), item: "Eject Pack" }, "Body Slam", OL), idle(L("sv", 3))],
++      { bench: { own: [["corv", mon("Corviknight", "Pressure")]], opponent: [["lax", L("sv", 2)]] } }));
++    expect(result.replaced?.[PL]).toBeUndefined();
++    expect(range(hitOf(stepOf(result, PL, "bodyslam"), OL, "corv"))).toEqual([16, 20]);
++  });
++  it("a U-turn user that faints to Rough Skin does not switch (G4-SWX-26)", async () => {
++    const result = ready(await turn("sv", [act(uturner("sv", { hp: 10 }), "U-turn", PL), idle(L("sv", 1)), act(chomp(), "Body Slam", OL), idle(L("sv", 3))], { bench: { own: [["lax", L("sv", 2)]] } }));
++    expect([result.replaced, result.hpEntered, result.hp[OL]!.koChance]).toEqual([undefined, undefined, 1]);
++  });
++  it("Wimp Out mid-turn (G4-SWX-29)", async () => {
++    const result = ready(await turn("swsh", [act(fast("swsh", chomp()), "Body Slam", PL), act(L("swsh", 1), "Body Slam", PL), idle(mon("Wimpod", "Wimp Out")), idle(L("swsh", 3))],
++      { bench: { opponent: [["lax", L("swsh", 2)]] } }));
++    expect(texts(stepOf(result, OL, "bodyslam").facts)).toEqual(["Wimp Out: Wimpod switches out. @1", "Wimpod switches out; Snorlax (opponent's, 2) comes in. @1"]);
++    expect(range(result.replaced![PL]!.left[0].hp)).toEqual([5, 20]);
++  });
++  it("an Intimidate newcomer sets off a foe's Eject Pack: a second request, from the other side (G4-SWX-30)", async () => {
++    const result = ready(await turn("sv", [act(uturner("sv"), "U-turn", PR), act(mon("Venusaur", "Overgrow"), "Tackle", PL), idle({ ...L("sv", 4), item: "Eject Pack" }), idle(L("sv", 3))],
++      { bench: { own: [["inci", mon("Incineroar", "Intimidate", { evs: { spe: 8 } })]], opponent: [["lax", L("sv", 2)]] } }));
++    expect(texts(stepOf(result, OL, "uturn").facts)).toEqual([
++      "Ambipom switches out; Incineroar comes in. @1", "Snorlax (1)'s Eject Pack is used up. @1", "Snorlax (1): −1 Attack. @1", "Snorlax (2): −1 Attack. @1",
++      "Snorlax (1) switches out; Snorlax (3) comes in. @1",
++    ]);
++    expect(range(hitOf(stepOf(result, OR, "tackle"), PL, "lax"))).toEqual([19, 23]);
++  });
++});
++
++describe("the entry pipeline (hazards, Starts, items: runSwitch)", () => {
++  it("Stealth Rock takes half of a Charizard (G4-SWX-03, B3)", async () => {
++    const result = ready(await turn("sv", [act(uturner("sv"), "U-turn", PL), idle(L("sv", 1)), act(L("sv", 4), "Body Slam", OL), idle(L("sv", 3))],
++      { bench: { own: [["zard", mon("Charizard", "Blaze")]] }, hazards: { own: { stealthRock: true } } }));
++    const zard = result.hpEntered![OL]!.zard;
++    expect([zard.min, zard.max, zard.losses]).toEqual([1, 13, [{ text: "Charizard loses 76 HP (Stealth Rock).", chance: 1 }]]);
++  });
++  it("Stealth Rock and two layers of Spikes; G-Max Steelsurge and Spikes in Sword/Shield (IN-HZD-01)", async () => {
++    const sv = ready(await turn("sv", [act(uturner("sv"), "U-turn", PL), idle(L("sv", 1)), act(L("sv", 4), "Body Slam", OL), idle(L("sv", 3))],
++      { bench: { own: [["arca", mon("Arcanine", "Justified")]] }, hazards: { own: { stealthRock: true, spikes: 2 } } }));
++    expect(sv.hpEntered![OL]!.arca.losses).toEqual([{ text: "Arcanine loses 41 HP (Stealth Rock).", chance: 1 }, { text: "Arcanine loses 27 HP (Spikes).", chance: 1 }]);
++    const swsh = ready(await turn("swsh", [act(uturner("swsh"), "U-turn", PL), idle(L("swsh", 1)), act(L("swsh", 4), "Body Slam", OL), idle(L("swsh", 3))],
++      { bench: { own: [["lax", L("swsh", 2)]] }, hazards: { own: { steelsurge: true, spikes: 1 } } }));
++    expect(swsh.hpEntered![OL]!.lax.losses).toEqual([{ text: "Snorlax (yours, 2) loses 29 HP (Spikes).", chance: 1 }, { text: "Snorlax (yours, 2) loses 29 HP (G-Max Steelsurge).", chance: 1 }]);
++  });
++  it("Toxic Spikes: bad poison at two layers (SV), poison at one (USUM), and the end of turn's poison (IN-HZD-02)", async () => {
++    const run = async (game: Game, layers: 1 | 2) => ready(await turn(game, [act(uturner(game), "U-turn", PL), idle(L(game, 1)), idle(L(game, 4)), idle(L(game, 3))],
++      { bench: { own: [["lax", L(game, 2)]] }, hazards: { own: { toxicSpikes: layers } } }));
++    const sv = await run("sv", 2);
++    expect(texts(stepOf(sv, OL, "uturn").facts)).toContain("Toxic Spikes: Snorlax (yours, 2) is badly poisoned. @1");
++    expect(endOf(sv).residuals.map((each) => [each.id, each.effect, each.min])).toEqual([["lax", "Bad poison", -14]]);
++    const usum = await run("usum", 1);
++    expect(endOf(usum).residuals.map((each) => [each.id, each.effect, each.min])).toEqual([["lax", "Poison", -29]]);
++  });
++  it("a grounded Poison-type newcomer takes the Toxic Spikes away (IN-HZD-03)", async () => {
++    const input = await turn("sv", [act(uturner("sv"), "U-turn", PL), idle(L("sv", 1)), act(L("sv", 4), "Body Slam", OL), idle(L("sv", 3))],
++      { bench: { own: [["pex", mon("Toxapex", "Limber")]] }, hazards: { own: { toxicSpikes: 1 } } });
++    const result = ready(input);
++    expect(texts(stepOf(result, OL, "uturn").facts)).toContain("Toxapex takes away the Toxic Spikes. @1");
++    expect(result.hpEntered![OL]!.pex.conditions).toBeUndefined();
++  });
++  it("Sticky Web on a Defiant newcomer: −1 Speed, +2 Attack (IN-HZD-04)", async () => {
++    const result = ready(await turn("sv", [act(uturner("sv"), "U-turn", PL), idle(L("sv", 1)), act(L("sv", 4), "Body Slam", OL), idle(L("sv", 3))],
++      { bench: { own: [["gambit", mon("Kingambit", "Defiant")]] }, hazards: { own: { stickyWeb: true } } }));
++    expect(texts(stepOf(result, OL, "uturn").facts)).toEqual(expect.arrayContaining(["Sticky Web: Kingambit is caught. @1", "Kingambit: +2 Attack, −1 Speed. @1"]));
++  });
++  it("Heavy-Duty Boots keep the hazards off (IN-HZD-05)", async () => {
++    const result = ready(await turn("sv", [act(uturner("sv"), "U-turn", PL), idle(L("sv", 1)), act(L("sv", 4), "Body Slam", OL), idle(L("sv", 3))],
++      { bench: { own: [["zard", mon("Charizard", "Blaze", { item: "Heavy-Duty Boots" })]] }, hazards: { own: { stealthRock: true, spikes: 1 } } }));
++    expect([result.hpEntered![OL]!.zard.losses, ...range(result.hpEntered![OL]!.zard)]).toEqual([undefined, 77, 89]);
++  });
++  it("a newcomer under a foe's Neutralizing Gas has no Intimidate (G4-SWX-14)", async () => {
++    const result = ready(await turn("sv", [act(uturner("sv"), "U-turn", PR), idle(L("sv", 1)), act(mon("Weezing-Galar", "Neutralizing Gas"), "Body Slam", OL), idle(L("sv", 3))],
++      { bench: { own: [["inci", mon("Incineroar", "Intimidate", { evs: { spe: 8 } })]] } }));
++    expect(texts(stepOf(result, OL, "uturn").facts)).toEqual(["Ambipom switches out; Incineroar comes in. @1"]);
++    expect(range(hitOf(stepOf(result, PL, "bodyslam"), OL, "inci"))).toEqual([33, 39]);
++  });
++  it("an Imposter newcomer transforms into the foe across (G4-SWX-16)", async () => {
++    const result = ready(await turn("sv", [act(uturner("sv"), "U-turn", PR), idle(L("sv", 1)), act(chomp({ ...slowest("sv"), item: "Choice Scarf" }), "Dragon Claw", OL), idle(L("sv", 3))],
++      { bench: { own: [["ditto", mon("Ditto", "Imposter")]] } }));
++    expect(texts(stepOf(result, OL, "uturn").facts)).toContain("Ditto transforms into Garchomp. @1");
++    const hit = hitOf(stepOf(result, PL, "dragonclaw"), OL, "ditto");
++    expect([hit.min, hit.max]).toEqual([132, 156]);
++    expect(hit.koChance).toBeCloseTo(1, 12);
++  });
++  it("a Drizzle newcomer weakens the later Flamethrower and takes a spread Rock Slide (G4-SWX-17, B11)", async () => {
++    const result = ready(await turn("sv", [act(uturner("sv"), "U-turn", PR), idle(L("sv", 1)), act(chomp(slowest("sv")), "Rock Slide"), act(L("sv", 3), "Flamethrower", OR)],
++      { bench: { own: [["peli", mon("Pelipper", "Drizzle")]] } }));
++    expect(range(hitOf(stepOf(result, PL, "rockslide"), OL, "peli"))).toEqual([58, 70]);
++    expect(range(hitOf(stepOf(result, PR, "flamethrower"), OR))).toEqual([5, 7]);
++  });
++  it("keeps the narrow reasons: a gas newcomer, Commander's pair, a gas holder leaving (G4-SWX-15, -20, -25)", async () => {
++    expect(reason(await turn("sv", [act(uturner("sv"), "U-turn", PR), idle(L("sv", 1)), act(L("sv", 4), "Body Slam", OL), idle(L("sv", 3))],
++      { bench: { own: [["weez", mon("Weezing-Galar", "Neutralizing Gas")]] } }))).toBe(REASONS.entersWithGas("Weezing-Galar"));
++    expect(reason(await turn("sv", [act(uturner("sv"), "U-turn", PR), idle(mon("Dondozo", "Unaware")), act(L("sv", 4), "Body Slam", OL), idle(L("sv", 3))],
++      { bench: { own: [["tats", mon("Tatsugiri", "Commander")]] } }))).toBe(REASONS.notIn2v2("Commander"));
++    expect(reason(await turn("sv", [idle(mon("Weezing-Galar", "Neutralizing Gas", { item: "Eject Button" })), idle(L("sv", 1)), act(fast("sv", chomp()), "Body Slam", OL),
++      idle(mon("Incineroar", "Intimidate", { evs: { spe: 8 } }))], { bench: { own: [["lax", L("sv", 2)]] } }))).toBe(REASONS.gasEnds);
++  });
++});
++
++describe("the switches after the residual and the end of turn with the newcomer", () => {
++  it("Emergency Exit after the burn: the newcomer comes in after the turn and meets Stealth Rock (G4-SWX-12)", async () => {
++    const input = await turn("champions", [act(L("champions", 4), "Body Slam", PR), idle(L("champions", 1)), idle(mon("Golisopod", "Emergency Exit", { hp: 80, status: "brn" })), idle(L("champions", 3))],
++      { bench: { opponent: [["lax", { ...L("champions", 2), hp: 200 }]] }, hazards: { opponent: { stealthRock: true } } });
++    const result = ready(input);
++    expect([result.replaced, result.facts]).toEqual([undefined, expect.arrayContaining(["Assumes Snorlax (opponent's, 2) comes in for Golisopod."])]);
++    const end = endOf(result);
++    expect(end.replaced?.[PL]?.entered).toEqual([{ id: "lax", chance: 1 }]);
++    expect([end.hpEntered![PL]!.lax.min, end.hpEntered![PL]!.lax.losses]).toEqual([171, [{ text: "Snorlax (opponent's, 2) loses 29 HP (Stealth Rock).", chance: 1 }]]);
++    const [outcome] = outcomesOf(input);
++    expect([outcome.mons[PL]?.id, outcome.benched?.opponent?.map((each) => [each.id, each.hp, each.build.status])]).toEqual(["lax", [["slot:opponent-left", [{ hp: 71, chance: 1 }], "brn"]]]);
++  });
++  it("Eject Pack after Syrup Bomb's drop at the residual (G4-SWX-13)", async () => {
++    const result = ready(await turn("sv", [idle(L("sv", 4)), idle(L("sv", 1)), idle({ ...L("sv", 2), item: "Eject Pack", carried: { syrupBomb: OL } }), idle(L("sv", 3))],
++      { bench: { opponent: [["lax", { ...L("sv", 5), hp: 150 }]] } }));
++    const end = endOf(result);
++    expect(end.replaced?.[PL]?.entered).toEqual([{ id: "lax", chance: 1 }]);
++    expect(end.residuals.find((each) => each.effect === "Eject Pack")?.facts.map((fact) => fact.text)).toEqual(["Switches out after the turn."]);
++  });
++  it("a Future Sight and a Wish land on the newcomer at the position (T2E-BL-01, -02)", async () => {
++    const sight = ready(await turn("sv", [idle(mon("Hatterene", "Magic Bounce")), idle(L("sv", 4)), idle(L("sv", 12)), act(uturner("sv", { carried: { futureMove: { move: "futuresight", source: OL } } }), "U-turn", OR)],
++      { bench: { opponent: [["lax", L("sv", 2)]] } }));
++    expect(endOf(sight).residuals.filter((each) => (each.min ?? 0) < 0).map((each) => [each.slot, each.id, each.min, each.max])).toEqual([[PR, "lax", -97, -82]]);
++    const wish = ready(await turn("sv", [idle(L("sv", 4)), idle(L("sv", 1)), act(uturner("sv", { carried: { wish: 100 } }), "U-turn", OR), idle(L("sv", 3))],
++      { bench: { opponent: [["lax", { ...L("sv", 2), hp: 100 }]] } }));
++    expect(endOf(wish).residuals.map((each) => [each.slot, each.id, each.effect, each.min])).toEqual([[PL, "lax", "Wish", 100]]);
++  });
++  it("a landing whose user left lands from the bench: no item, no ability (T2E-BL-03)", async () => {
++    const result = ready(await turn("sv", [act(mon("Slowking-Galar", "Regenerator", { item: "Twisted Spoon", nature: "Modest", evs: { spa: 252 } }), "Chilly Reception"),
++      idle(L("sv", 4)), idle(L("sv", 12)), idle({ ...L("sv", 8), carried: { futureMove: { move: "futuresight", source: OL } } })], { bench: { own: [["lax", L("sv", 2)]] } }));
++    const landing = endOf(result).residuals.filter((each) => each.slot === PR);
++    expect(landing.map((each) => [each.min, each.max, each.facts.map((fact) => fact.text)])).toEqual([
++      [null, null, ["Slowking-Galar is not in battle: its ability, item and stat changes do not count."]], [-111, -93, []],
++    ]);
++  });
++  it("a landing on a Red Card holder drags its Life Orb user out after the turn, with no Life Orb loss (R-E: RE-FS-RC-LO)", async () => {
++    const result = ready(await turn("sv", [idle(mon("Hatterene", "Magic Bounce", { item: "Life Orb" })), idle(L("sv", 4)),
++      idle({ ...L("sv", 12), item: "Red Card", carried: { futureMove: { move: "futuresight", source: OL } } }), idle(L("sv", 3))], { bench: { own: [["lax", L("sv", 2)]] } }));
++    const end = endOf(result);
++    expect(range(end.hp[OL]!)).toEqual([132, 132]);
++    expect(end.residuals.some((each) => each.effect === "Life Orb")).toBe(false);
++    expect(end.residuals.find((each) => each.effect === "Red Card")?.facts.map((fact) => fact.text)).toEqual(["Dragged out after the turn."]);
++  });
++});
++
++describe("the bench's readers: Assist, Beat Up, Pursuit (doubles-calling.ts, doubles-presence.ts)", () => {
++  const assist = async (allyMoves: boolean, bench: [string, Mon][] | null) => turn("usum", [act(mon("Liepard", "Limber"), "Assist"),
++    act(L("usum", 1, allyMoves ? { moves: [] } : {}), "Body Slam", PL), idle(L("usum", 4)), idle(L("usum", 3))], bench ? { bench: { own: bench } } : {});
++  it("Assist calls one of the party's move slots at random: the ally's and the bench's (T2P-AST-01)", async () => {
++    const result = ready(await assist(true, [["arca", mon("Arcanine", "Justified", { moves: ["Flamethrower"] })], ["lax", L("usum", 2, { moves: ["Ice Beam"] })]]));
++    expect(texts(stepOf(result, OL, "assist").facts)).toEqual(["Assist calls Body Slam. @0.3333", "Assist calls Flamethrower. @0.3333", "Assist calls Ice Beam. @0.3333"]);
++    expect(result.facts).toContain("Assumes no Pokémon of Liepard's party fainted before this turn.");
++    expect([result.hp[PL]!.min, result.hp[PL]!.max, Math.round(result.hp[PL]!.average * 1000) / 1000]).toEqual([98, 160, 141.167]);
++  });
++  it("Assist leaves out the noassist moves (Protect, Roar) (T2P-AST-02)", async () => {
++    const result = ready(await assist(true, [["arca", mon("Arcanine", "Justified", { moves: ["Protect", "Roar", "Will-O-Wisp"] })], ["lax", L("usum", 2, { moves: ["Thunderbolt", "Protect"] })]]));
++    expect(texts(stepOf(result, OL, "assist").facts)).toEqual(["Assist calls Body Slam. @0.3333", "Assist calls Will-O-Wisp. @0.3333", "Assist calls Thunderbolt. @0.3333"]);
++  });
++  it("Assist without the party's moves keeps its reason: no bench, or a party member's moves not given", async () => {
++    const needs = REASONS.needsParty("Assist", "Liepard");
++    expect(reason(await assist(true, null))).toBe(needs);
++    expect(reason(await assist(false, [["arca", mon("Arcanine", "Justified", { moves: ["Flamethrower"] })]]))).toBe(needs);
++    expect(reason(await assist(true, [["arca", mon("Arcanine", "Justified")]]))).toBe(needs);
++  });
++  it("Beat Up counts the bench: a paralysed member does not hit (T2P-BTR-01)", async () => {
++    const result = ready(await turn("sv", [act(mon("Houndoom", "Flash Fire"), "Beat Up", PL), idle(L("sv", 1)), idle(L("sv", 4)), idle(L("sv", 3))],
++      { bench: { own: [["arca", mon("Arcanine", "Justified")], ["lax", L("sv", 2, { status: "par" })]] } }));
++    expect(range(hitOf(stepOf(result, OL, "beatup"), PL))).toEqual([36, 45]);
++  });
++  it("Pursuit runs at the switching target's BeforeSwitchOut at 80 power, even aimed at the other foe (CQ-PUR-R-01, -02)", async () => {
++    for (const target of [OL, OR]) {
++      const result = ready(await turn("usum", [act(uturner("usum"), "U-turn", PL), idle(L("usum", 1)), act(mon("Houndoom", "Flash Fire"), "Pursuit", target), idle(L("usum", 3))],
++        { bench: { own: [["lax", L("usum", 2)]] } }));
++      expect(range(hitOf(stepOf(result, PL, "pursuit"), OL))).toEqual([58, 70]);
++      expect(range(result.replaced![OL]!.left[0].hp)).toEqual([80, 92]);
++    }
++  });
++  it("a Technician user's Pursuit at a switching target is 80 power, which Technician does not boost (RE-PUR-TECH)", async () => {
++    const result = ready(await turn("usum", [act(fast("usum", mon("Ambipom", "Pickup")), "U-turn", PR), idle(L("usum", 1)), act(mon("Scizor", "Technician"), "Pursuit", OL), idle(L("usum", 3))],
++      { bench: { own: [["lax", L("usum", 2)]] } }));
++    expect(range(hitOf(stepOf(result, PL, "pursuit"), OL))).toEqual([53, 63]);
++  });
++  it("the leaver's Destiny Bond ends at its BeforeSwitchOut, before the Pursuit that knocks it out (RE-PUR-DB)", async () => {
++    const result = ready(await turn("usum", [act(fast("usum", mon("Gengar", "Cursed Body", { item: "Eject Button" })), "Destiny Bond"), idle(L("usum", 1)),
++      act(mon("Tyranitar", "Unnerve"), "Pursuit", OR), act({ ...L("usum", 3), evs: { spe: 252 } }, "Crunch", OL)], { bench: { own: [["lax", L("usum", 2)]] } }));
++    expect([result.hp[OL]!.koChance, ...range(result.hp[PL]!), result.hp[PL]!.koChance]).toEqual([1, 175, 175, 0]);
++  });
++});
++
++describe("the after-move items with a bench (afterMoveSecondaryEvent)", () => {
++  it("a Sheer Force move with an added effect sets off no Red Card and no Eject Button (RE-SF-RC, RE-SF-EB)", async () => {
++    for (const item of ["Red Card", "Eject Button"]) {
++      for (const game of ["sv", "champions"] as const) {
++        const result = ready(await turn(game, [act(fast(game, mon("Feraligatr", "Sheer Force")), "Ice Beam", PL), idle(L(game, 1)), act({ ...L(game, 4), item }, "Body Slam", OL), idle(L(game, 3))],
++          { bench: { own: [["lax", L(game, 2)]], opponent: [["lax2", L(game, 2)]] } }));
++        expect(result.replaced).toBeUndefined();
++        expect(stepOf(result, PL, "bodyslam").moves).toBe(1);
++      }
++    }
++  });
++  it("Red Card against a Life Orb attacker: its drag stops the Life Orb, which the step took (RE-RC-LO)", async () => {
++    const card = (game: Game, attacker: Partial<Mon>, more: More) => turn(game, [act(fast(game, chomp({ item: "Life Orb", ...attacker })), "Dragon Claw", PL), idle(L(game, 1)),
++      idle({ ...L(game, 4), item: "Red Card" }), idle(L(game, 3))], more);
++    const combo = REASONS.combo("Red Card", "Life Orb");
++    expect(reason(await card("sv", {}, { bench: { own: [["lax", L("sv", 2)]] } }))).toBe(combo);
++    // One the step's Life Orb knocked out: the card dragged it first.
++    expect(reason(await card("sv", { hp: 10 }, { bench: { own: [["lax", L("sv", 2)]] } }))).toBe(combo);
++    // No bench and no later action (Trick Room): the moves are estimated, so the same reason; with a later action, today's.
++    expect(reason(await card("sv", {}, { field: { trickRoom: true } }))).toBe(combo);
++    expect(reason(await card("sv", {}, {}))).toBe(REASONS.switchesOut("Garchomp"));
++  });
++  it("a Life Orb Dragon Tail into a Red Card holder drags the holder first: no Red Card, the Life Orb loss stands (RE-RC-DT)", async () => {
++    const result = ready(await turn("sv", [act(fast("sv", chomp({ item: "Life Orb" })), "Dragon Tail", PL), idle(L("sv", 1)), idle({ ...L("sv", 4), item: "Red Card" }), idle(L("sv", 3))],
++      { bench: { own: [["lax", L("sv", 2)]], opponent: [["lax2", L("sv", 5)]] } }));
++    expect([...range(result.hp[OL]!), result.replaced?.[OL], result.replaced?.[PL]?.entered]).toEqual([165, 165, undefined, [{ id: "lax2", chance: 1 }]]);
++  });
++  // The face's hit (doubles-faces.ts afterMoveItems): its Eject Button waits for no U-turn, and with a bench R's switchOut
++  // uses the item up (the integrator's lines; W2-R-E.md).
++  it.fails("a U-turn into Disguise with an Eject Button: the holder leaves, the U-turn user stays (RE-FACE-EB-UT)", async () => {
++    const result = ready(await turn("sv", [act(fast("sv", mon("Ambipom", "Pickup")), "U-turn", PR), idle(L("sv", 1)), act(L("sv", 3), "Body Slam", OL),
++      idle(mon("Mimikyu", "Disguise", { item: "Eject Button" }))], { bench: { own: [["lax", L("sv", 2)]], opponent: [["lax2", L("sv", 5)]] } }));
++    expect([result.replaced?.[OL], result.replaced?.[PR]?.entered]).toEqual([undefined, [{ id: "lax2", chance: 1 }]]);
++    expect(range(result.hp[OL]!)).toEqual([63, 77]);
++  });
++  it.fails("Disguise with a Red Card drags its attacker out (RE-FACE-RC)", async () => {
++    const result = ready(await turn("sv", [act(fast("sv", chomp()), "Iron Head", PR), idle(L("sv", 1)), act(L("sv", 3), "Body Slam", OL),
++      idle(mon("Mimikyu", "Disguise", { item: "Red Card" }))], { bench: { own: [["lax", L("sv", 2)]], opponent: [["lax2", L("sv", 5)]] } }));
++    expect(result.replaced?.[OL]?.entered).toEqual([{ id: "lax", chance: 1 }]);
++  });
++});
++
++describe("no bench, an empty bench", () => {
++  const uturn = (more: More) => turn("sv", [act(fast("sv", mon("Rillaboom", "Overgrow")), "U-turn", PL), idle(L("sv", 1)), act(chomp(), "Dragon Claw", OL), idle(L("sv", 3))], more);
++  it("without a bench the replacement is not known (REASONS.switchesOut, kept)", async () => {
++    expect(reason(await uturn({}))).toBe(REASONS.switchesOut("Rillaboom"));
++  });
++  it("an empty bench is no Pokémon left: U-turn does not switch", async () => {
++    const result = ready(await uturn({ bench: { own: [] } }));
++    expect([result.replaced, texts(stepOf(result, OL, "uturn").facts)]).toEqual([undefined, []]);
++  });
++});

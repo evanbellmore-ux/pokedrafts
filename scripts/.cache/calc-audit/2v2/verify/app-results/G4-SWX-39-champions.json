@@ -1,0 +1,1082 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "uturn",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 45,
+      "max": 54,
+      "minPercent": 19.148936170212767,
+      "maxPercent": 22.97872340425532,
+      "koChance": 0,
+      "row": {
+       "moveId": "uturn",
+       "effectiveName": "U-turn",
+       "effectiveType": "Bug",
+       "effectivePower": 70,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 45,
+       "max": 54,
+       "minPercent": 19.148936170212767,
+       "maxPercent": 22.97872340425532,
+       "rolls": [
+        45,
+        46,
+        46,
+        47,
+        48,
+        48,
+        49,
+        49,
+        50,
+        50,
+        51,
+        51,
+        52,
+        52,
+        53,
+        54
+       ],
+       "ohkoChance": 0,
+       "description": "U-turn: 45–54 HP (19.1–23.0% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": [
+     {
+      "text": "Rillaboom switches out; Snorlax (yours, 2) comes in.",
+      "chance": 1
+     }
+    ]
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "earthquake",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 75,
+      "max": 88,
+      "minPercent": 31.914893617021278,
+      "maxPercent": 37.4468085106383,
+      "koChance": 0,
+      "row": {
+       "moveId": "earthquake",
+       "effectiveName": "Earthquake",
+       "effectiveType": "Ground",
+       "effectivePower": 100,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 75,
+       "max": 88,
+       "minPercent": 31.914893617021278,
+       "maxPercent": 37.4468085106383,
+       "rolls": [
+        75,
+        75,
+        76,
+        76,
+        78,
+        79,
+        79,
+        81,
+        81,
+        82,
+        84,
+        84,
+        85,
+        85,
+        87,
+        88
+       ],
+       "ohkoChance": 0,
+       "description": "Earthquake: 75–88 HP (31.9–37.4% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     },
+     {
+      "slot": "own-left",
+      "id": "balloon",
+      "reached": 1,
+      "kind": "no-damage",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Earthquake has no effect on Snorlax (yours, 2).",
+        "chance": 1
+       }
+      ]
+     },
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 75,
+      "max": 88,
+      "minPercent": 31.914893617021278,
+      "maxPercent": 37.4468085106383,
+      "koChance": 0,
+      "row": {
+       "moveId": "earthquake",
+       "effectiveName": "Earthquake",
+       "effectiveType": "Ground",
+       "effectivePower": 100,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 75,
+       "max": 88,
+       "minPercent": 31.914893617021278,
+       "maxPercent": 37.4468085106383,
+       "rolls": [
+        75,
+        75,
+        76,
+        76,
+        78,
+        79,
+        79,
+        81,
+        81,
+        82,
+        84,
+        84,
+        85,
+        85,
+        87,
+        88
+       ],
+       "ohkoChance": 0,
+       "description": "Earthquake: 75–88 HP (31.9–37.4% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 175,
+    "maximum": 175,
+    "low": 175,
+    "average": 175,
+    "high": 175,
+    "min": 175,
+    "max": 175,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 160,
+    "average": 154.0625,
+    "high": 147,
+    "min": 147,
+    "max": 160,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 183,
+    "maximum": 183,
+    "low": 183,
+    "average": 183,
+    "high": 183,
+    "min": 183,
+    "max": 183,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 115,
+    "average": 104.625,
+    "high": 93,
+    "min": 93,
+    "max": 115,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "uturn",
+     "effectiveName": "U-turn",
+     "effectiveType": "Bug",
+     "effectivePower": 70,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 45,
+     "max": 54,
+     "minPercent": 19.148936170212767,
+     "maxPercent": 22.97872340425532,
+     "rolls": [
+      45,
+      46,
+      46,
+      47,
+      48,
+      48,
+      49,
+      49,
+      50,
+      50,
+      51,
+      51,
+      52,
+      52,
+      53,
+      54
+     ],
+     "ohkoChance": 0,
+     "description": "U-turn: 45–54 HP (19.1–23.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 6,
+      "fewest": 5,
+      "fasterChance": 0.9874277114868164,
+      "limit": 20,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 190,
+      "high": 181,
+      "average": 185.5625,
+      "min": 181,
+      "max": 190,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 45,
+        "heals": []
+       },
+       "high": {
+        "dealt": 54,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "earthquake",
+     "effectiveName": "Earthquake",
+     "effectiveType": "Ground",
+     "effectivePower": 100,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 29,
+     "max": 34,
+     "minPercent": 16.57142857142857,
+     "maxPercent": 19.428571428571427,
+     "rolls": [
+      29,
+      29,
+      30,
+      30,
+      30,
+      30,
+      30,
+      31,
+      31,
+      32,
+      32,
+      33,
+      33,
+      33,
+      33,
+      34
+     ],
+     "ohkoChance": 0,
+     "description": "Earthquake: 29–34 HP (16.6–19.4% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 7,
+      "fewest": 6,
+      "fasterChance": 0.9999961853027344,
+      "limit": 12,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the target's partner stays in for every use.",
+       "Assumes the target's partner has no Pressure."
+      ]
+     },
+     "afterUse": {
+      "start": 175,
+      "low": 146,
+      "high": 141,
+      "average": 143.75,
+      "min": 141,
+      "max": 146,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 29,
+        "heals": []
+       },
+       "high": {
+        "dealt": 34,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-right",
+    "row": {
+     "moveId": "earthquake",
+     "effectiveName": "Earthquake",
+     "effectiveType": "Ground",
+     "effectivePower": 100,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 75,
+     "max": 88,
+     "minPercent": 31.914893617021278,
+     "maxPercent": 37.4468085106383,
+     "rolls": [
+      75,
+      75,
+      76,
+      76,
+      78,
+      79,
+      79,
+      81,
+      81,
+      82,
+      84,
+      84,
+      85,
+      85,
+      87,
+      88
+     ],
+     "ohkoChance": 0,
+     "description": "Earthquake: 75–88 HP (31.9–37.4% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 4,
+      "fewest": 3,
+      "fasterChance": 0.875732421875,
+      "limit": 12,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the target's partner stays in for every use.",
+       "Assumes the target's partner has no Pressure."
+      ]
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 160,
+      "high": 147,
+      "average": 154.0625,
+      "min": 147,
+      "max": 160,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 75,
+        "heals": []
+       },
+       "high": {
+        "dealt": 88,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "earthquake",
+     "effectiveName": "Earthquake",
+     "effectiveType": "Ground",
+     "effectivePower": 100,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 75,
+     "max": 88,
+     "minPercent": 31.914893617021278,
+     "maxPercent": 37.4468085106383,
+     "rolls": [
+      75,
+      75,
+      76,
+      76,
+      78,
+      79,
+      79,
+      81,
+      81,
+      82,
+      84,
+      84,
+      85,
+      85,
+      87,
+      88
+     ],
+     "ohkoChance": 0,
+     "description": "Earthquake: 75–88 HP (31.9–37.4% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 4,
+      "fewest": 3,
+      "fasterChance": 0.875732421875,
+      "limit": 12,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the target's partner stays in for every use.",
+       "Assumes the target's partner has no Pressure."
+      ]
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 160,
+      "high": 147,
+      "average": 154.0625,
+      "min": 147,
+      "max": 160,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 75,
+        "heals": []
+       },
+       "high": {
+        "dealt": 88,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen.",
+   "Assumes Snorlax (yours, 2) comes in for Rillaboom."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 175,
+     "maximum": 175,
+     "low": 175,
+     "average": 175,
+     "high": 175,
+     "min": 175,
+     "max": 175,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 160,
+     "average": 154.0625,
+     "high": 147,
+     "min": 147,
+     "max": 160,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 183,
+     "maximum": 183,
+     "low": 183,
+     "average": 183,
+     "high": 183,
+     "min": 183,
+     "max": 183,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 115,
+     "average": 104.625,
+     "high": 93,
+     "min": 93,
+     "max": 115,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": [],
+   "hpEntered": {
+    "own-left": {
+     "balloon": {
+      "start": 235,
+      "maximum": 235,
+      "low": 235,
+      "average": 235,
+      "high": 235,
+      "min": 235,
+      "max": 235,
+      "koChance": 0,
+      "heals": []
+     }
+    }
+   }
+  },
+  "replaced": {
+   "own-left": {
+    "left": [
+     {
+      "id": "slot:own-left",
+      "hp": {
+       "start": 175,
+       "maximum": 175,
+       "low": 175,
+       "average": 175,
+       "high": 175,
+       "min": 175,
+       "max": 175,
+       "koChance": 0,
+       "heals": []
+      },
+      "chance": 1
+     }
+    ],
+    "entered": [
+     {
+      "id": "balloon",
+      "chance": 1
+     }
+    ]
+   }
+  },
+  "hpEntered": {
+   "own-left": {
+    "balloon": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   }
+  }
+ },
+ "ms": 15.039301000000705,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 175,
+    "maximum": 175
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "airballoon",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 2
+       }
+      },
+      "protected": false,
+      "moved": true,
+      "id": "balloon"
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 147,
+        "chance": 0.0625
+       },
+       {
+        "hp": 148,
+        "chance": 0.0625
+       },
+       {
+        "hp": 150,
+        "chance": 0.125
+       },
+       {
+        "hp": 151,
+        "chance": 0.125
+       },
+       {
+        "hp": 153,
+        "chance": 0.0625
+       },
+       {
+        "hp": 154,
+        "chance": 0.125
+       },
+       {
+        "hp": 156,
+        "chance": 0.125
+       },
+       {
+        "hp": 157,
+        "chance": 0.0625
+       },
+       {
+        "hp": 159,
+        "chance": 0.125
+       },
+       {
+        "hp": 160,
+        "chance": 0.125
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 1
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 183,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "garchomp",
+       "nature": "Serious",
+       "abilityId": "roughskin",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 93,
+        "chance": 0.00390625
+       },
+       {
+        "hp": 94,
+        "chance": 0.0078125
+       },
+       {
+        "hp": 95,
+        "chance": 0.01171875
+       },
+       {
+        "hp": 96,
+        "chance": 0.0234375
+       },
+       {
+        "hp": 97,
+        "chance": 0.03125
+       },
+       {
+        "hp": 98,
+        "chance": 0.0390625
+       },
+       {
+        "hp": 99,
+        "chance": 0.05078125
+       },
+       {
+        "hp": 100,
+        "chance": 0.0546875
+       },
+       {
+        "hp": 101,
+        "chance": 0.05859375
+       },
+       {
+        "hp": 102,
+        "chance": 0.07421875
+       },
+       {
+        "hp": 103,
+        "chance": 0.0625
+       },
+       {
+        "hp": 104,
+        "chance": 0.06640625
+       },
+       {
+        "hp": 105,
+        "chance": 0.078125
+       },
+       {
+        "hp": 106,
+        "chance": 0.06640625
+       },
+       {
+        "hp": 107,
+        "chance": 0.0625
+       },
+       {
+        "hp": 108,
+        "chance": 0.07421875
+       },
+       {
+        "hp": 109,
+        "chance": 0.0546875
+       },
+       {
+        "hp": 110,
+        "chance": 0.05078125
+       },
+       {
+        "hp": 111,
+        "chance": 0.046875
+       },
+       {
+        "hp": 112,
+        "chance": 0.02734375
+       },
+       {
+        "hp": 113,
+        "chance": 0.0234375
+       },
+       {
+        "hp": 114,
+        "chance": 0.0234375
+       },
+       {
+        "hp": 115,
+        "chance": 0.0078125
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "champions",
+       "points": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 3
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    },
+    "benched": {
+     "own": [
+      {
+       "id": "slot:own-left",
+       "slot": "own-left",
+       "hp": [
+        {
+         "hp": 175,
+         "chance": 1
+        }
+       ],
+       "build": {
+        "speciesId": "rillaboom",
+        "nature": "Serious",
+        "abilityId": "overgrow",
+        "abilityActive": false,
+        "itemId": "",
+        "boosts": {
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "currentHP": null,
+        "status": "",
+        "game": "champions",
+        "points": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 32
+        }
+       },
+       "protected": false,
+       "moved": true
+      }
+     ]
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

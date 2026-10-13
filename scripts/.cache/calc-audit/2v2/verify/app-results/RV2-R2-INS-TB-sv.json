@@ -1,0 +1,571 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 165,
+    "maximum": 165
+   },
+   "own-right": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 173,
+    "maximum": 173
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-right",
+    "moveId": "terablast",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 24,
+      "max": 29,
+      "minPercent": 10.212765957446807,
+      "maxPercent": 12.340425531914894,
+      "koChance": 0,
+      "row": {
+       "moveId": "terablast",
+       "effectiveName": "Tera Blast",
+       "effectiveType": "Normal",
+       "effectivePower": 80,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 24,
+       "max": 29,
+       "minPercent": 10.212765957446807,
+       "maxPercent": 12.340425531914894,
+       "rolls": [
+        24,
+        24,
+        25,
+        25,
+        25,
+        26,
+        26,
+        26,
+        26,
+        27,
+        27,
+        27,
+        28,
+        28,
+        28,
+        29
+       ],
+       "ohkoChance": 0,
+       "description": "Tera Blast: 24–29 HP (10.2–12.3% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-left",
+    "moveId": "instruct",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Instruct fails: Garchomp's Tera Blast has no PP left.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 165,
+    "maximum": 165,
+    "low": 165,
+    "average": 165,
+    "high": 165,
+    "min": 165,
+    "max": 165,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 183,
+    "maximum": 183,
+    "low": 183,
+    "average": 183,
+    "high": 183,
+    "min": 183,
+    "max": 183,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 211,
+    "average": 208.6875,
+    "high": 206,
+    "min": 206,
+    "max": 211,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 173,
+    "maximum": 173,
+    "low": 173,
+    "average": 173,
+    "high": 173,
+    "min": 173,
+    "max": 173,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-right",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "terablast",
+     "effectiveName": "Tera Blast",
+     "effectiveType": "Normal",
+     "effectivePower": 80,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 24,
+     "max": 29,
+     "minPercent": 10.212765957446807,
+     "maxPercent": 12.340425531914894,
+     "rolls": [
+      24,
+      24,
+      25,
+      25,
+      25,
+      26,
+      26,
+      26,
+      26,
+      27,
+      27,
+      27,
+      28,
+      28,
+      28,
+      29
+     ],
+     "ohkoChance": 0,
+     "description": "Tera Blast: 24–29 HP (10.2–12.3% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 10,
+      "fewest": 9,
+      "fasterChance": 0.7002641689323355,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 211,
+      "high": 206,
+      "average": 208.6875,
+      "min": 206,
+      "max": 211,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 24,
+        "heals": []
+       },
+       "high": {
+        "dealt": 29,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 165,
+     "maximum": 165,
+     "low": 165,
+     "average": 165,
+     "high": 165,
+     "min": 165,
+     "max": 165,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 183,
+     "maximum": 183,
+     "low": 183,
+     "average": 183,
+     "high": 183,
+     "min": 183,
+     "max": 183,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 211,
+     "average": 208.6875,
+     "high": 206,
+     "min": 206,
+     "max": 211,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 173,
+     "maximum": 173,
+     "low": 173,
+     "average": 173,
+     "high": 173,
+     "min": 173,
+     "max": 173,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 7.415145999999368,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 165,
+    "maximum": 165
+   },
+   "own-right": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 173,
+    "maximum": 173
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 165,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "oranguru",
+       "nature": "Serious",
+       "abilityId": "innerfocus",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 183,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "garchomp",
+       "nature": "Serious",
+       "abilityId": "roughskin",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 206,
+        "chance": 0.0625
+       },
+       {
+        "hp": 207,
+        "chance": 0.1875
+       },
+       {
+        "hp": 208,
+        "chance": 0.1875
+       },
+       {
+        "hp": 209,
+        "chance": 0.25
+       },
+       {
+        "hp": 210,
+        "chance": 0.1875
+       },
+       {
+        "hp": 211,
+        "chance": 0.125
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 16
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 173,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "corviknight",
+       "nature": "Serious",
+       "abilityId": "pressure",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

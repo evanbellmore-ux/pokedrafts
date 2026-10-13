@@ -1,0 +1,624 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 100,
+    "maximum": 173
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 90,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "dualwingbeat",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 56,
+      "max": 98,
+      "minPercent": 23.829787234042556,
+      "maxPercent": 41.702127659574465,
+      "koChance": 0,
+      "row": {
+       "moveId": "dualwingbeat",
+       "effectiveName": "Dual Wingbeat",
+       "effectiveType": "Flying",
+       "effectivePower": 40,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 84,
+       "max": 98,
+       "minPercent": 35.74468085106383,
+       "maxPercent": 41.702127659574465,
+       "rolls": [
+        [
+         42,
+         42,
+         42,
+         43,
+         43,
+         43,
+         45,
+         45,
+         45,
+         46,
+         46,
+         46,
+         48,
+         48,
+         48,
+         49
+        ],
+        [
+         42,
+         42,
+         42,
+         43,
+         43,
+         43,
+         45,
+         45,
+         45,
+         46,
+         46,
+         46,
+         48,
+         48,
+         48,
+         49
+        ]
+       ],
+       "ohkoChance": null,
+       "description": "Dual Wingbeat: 84–98 HP (35.7–41.7% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "No one-use KO chance for multiple hits."
+       ],
+       "reason": null,
+       "hits": 2,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 2,
+        "reason": null
+       }
+      },
+      "cases": 2,
+      "facts": [
+       {
+        "text": "Snorlax (opponent's, 2) eats its Ganlon Berry after hit 1: +1 Defense.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 100,
+    "maximum": 173,
+    "low": 108,
+    "average": 109.05859375,
+    "high": 110,
+    "min": 108,
+    "max": 110,
+    "koChance": 0,
+    "heals": [
+     "Shell Bell: +8–10 HP."
+    ]
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 90,
+    "maximum": 235,
+    "low": 20,
+    "average": 13.9375,
+    "high": 7,
+    "min": 7,
+    "max": 20,
+    "koChance": 0,
+    "heals": [],
+    "conditions": [
+     {
+      "text": "Holds no item.",
+      "chance": 1
+     }
+    ]
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "dualwingbeat",
+     "effectiveName": "Dual Wingbeat",
+     "effectiveType": "Flying",
+     "effectivePower": 40,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 84,
+     "max": 98,
+     "minPercent": 35.74468085106383,
+     "maxPercent": 41.702127659574465,
+     "rolls": [
+      [
+       42,
+       42,
+       42,
+       43,
+       43,
+       43,
+       45,
+       45,
+       45,
+       46,
+       46,
+       46,
+       48,
+       48,
+       48,
+       49
+      ],
+      [
+       42,
+       42,
+       42,
+       43,
+       43,
+       43,
+       45,
+       45,
+       45,
+       46,
+       46,
+       46,
+       48,
+       48,
+       48,
+       49
+      ]
+     ],
+     "ohkoChance": null,
+     "description": "Dual Wingbeat: 84–98 HP (35.7–41.7% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP.",
+      "No one-use KO chance for multiple hits."
+     ],
+     "reason": null,
+     "hits": 2,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 2,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 2,
+      "fewest": 1,
+      "fasterChance": 0.578125,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [
+       "The target's Ganlon Berry raises its Defense at a quarter of its HP."
+      ],
+      "notes": []
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 100,
+     "maximum": 173,
+     "low": 108,
+     "average": 109.05859375,
+     "high": 110,
+     "min": 108,
+     "max": 110,
+     "koChance": 0,
+     "heals": [
+      "Shell Bell: +8–10 HP."
+     ]
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 90,
+     "maximum": 235,
+     "low": 20,
+     "average": 13.9375,
+     "high": 7,
+     "min": 7,
+     "max": 20,
+     "koChance": 0,
+     "heals": [],
+     "conditions": [
+      {
+       "text": "Holds no item.",
+       "chance": 1
+      }
+     ]
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 13.0963359999987,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 100,
+    "maximum": 173
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 90,
+    "maximum": 235
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 108,
+        "chance": 0.046875
+       },
+       {
+        "hp": 109,
+        "chance": 0.84765625
+       },
+       {
+        "hp": 110,
+        "chance": 0.10546875000000001
+       }
+      ],
+      "build": {
+       "speciesId": "corviknight",
+       "nature": "Adamant",
+       "abilityId": "pressure",
+       "abilityActive": false,
+       "itemId": "shellbell",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 252,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 8
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 16
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 7,
+        "chance": 0.00390625
+       },
+       {
+        "hp": 8,
+        "chance": 0.027343750000000003
+       },
+       {
+        "hp": 9,
+        "chance": 0.046875
+       },
+       {
+        "hp": 10,
+        "chance": 0.027343750000000003
+       },
+       {
+        "hp": 11,
+        "chance": 0.125
+       },
+       {
+        "hp": 12,
+        "chance": 0.10546875
+       },
+       {
+        "hp": 13,
+        "chance": 0.06640624999999999
+       },
+       {
+        "hp": 14,
+        "chance": 0.1875
+       },
+       {
+        "hp": 15,
+        "chance": 0.10546875
+       },
+       {
+        "hp": 16,
+        "chance": 0.0703125
+       },
+       {
+        "hp": 17,
+        "chance": 0.12890625
+       },
+       {
+        "hp": 18,
+        "chance": 0.05859374999999999
+       },
+       {
+        "hp": 19,
+        "chance": 0.0234375
+       },
+       {
+        "hp": 20,
+        "chance": 0.0234375
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 1,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "sword_shield",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 24
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

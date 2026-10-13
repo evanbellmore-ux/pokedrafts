@@ -1,0 +1,823 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 165,
+    "maximum": 165
+   },
+   "own-right": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 173,
+    "maximum": 173
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-right",
+    "moveId": "earthquake",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 64,
+      "max": 76,
+      "minPercent": 38.78787878787879,
+      "maxPercent": 46.06060606060606,
+      "koChance": 0,
+      "row": {
+       "moveId": "earthquake",
+       "effectiveName": "Earthquake",
+       "effectiveType": "Ground",
+       "effectivePower": 100,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 64,
+       "max": 76,
+       "minPercent": 38.78787878787879,
+       "maxPercent": 46.06060606060606,
+       "rolls": [
+        64,
+        64,
+        66,
+        66,
+        67,
+        67,
+        69,
+        69,
+        70,
+        70,
+        72,
+        72,
+        73,
+        73,
+        75,
+        76
+       ],
+       "ohkoChance": 0,
+       "description": "Earthquake: 64–76 HP (38.8–46.1% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     },
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "no-damage",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Earthquake has no effect on Corviknight.",
+        "chance": 1
+       }
+      ]
+     },
+     {
+      "slot": "opponent-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 75,
+      "max": 88,
+      "minPercent": 31.914893617021278,
+      "maxPercent": 37.4468085106383,
+      "koChance": 0,
+      "row": {
+       "moveId": "earthquake",
+       "effectiveName": "Earthquake",
+       "effectiveType": "Ground",
+       "effectivePower": 100,
+       "effectiveCategory": "Physical",
+       "kind": "calculated",
+       "min": 75,
+       "max": 88,
+       "minPercent": 31.914893617021278,
+       "maxPercent": 37.4468085106383,
+       "rolls": [
+        75,
+        75,
+        76,
+        76,
+        78,
+        79,
+        79,
+        81,
+        81,
+        82,
+        84,
+        84,
+        85,
+        85,
+        87,
+        88
+       ],
+       "ohkoChance": 0,
+       "description": "Earthquake: 75–88 HP (31.9–37.4% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "own-left",
+    "moveId": "instruct",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Instruct fails: Garchomp's Earthquake has no PP left.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 165,
+    "maximum": 165,
+    "low": 101,
+    "average": 95.4375,
+    "high": 89,
+    "min": 89,
+    "max": 101,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 183,
+    "maximum": 183,
+    "low": 183,
+    "average": 183,
+    "high": 183,
+    "min": 183,
+    "max": 183,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 160,
+    "average": 154.0625,
+    "high": 147,
+    "min": 147,
+    "max": 160,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 173,
+    "maximum": 173,
+    "low": 173,
+    "average": 173,
+    "high": 173,
+    "min": 173,
+    "max": 173,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-right",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "earthquake",
+     "effectiveName": "Earthquake",
+     "effectiveType": "Ground",
+     "effectivePower": 100,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 75,
+     "max": 88,
+     "minPercent": 31.914893617021278,
+     "maxPercent": 37.4468085106383,
+     "rolls": [
+      75,
+      75,
+      76,
+      76,
+      78,
+      79,
+      79,
+      81,
+      81,
+      82,
+      84,
+      84,
+      85,
+      85,
+      87,
+      88
+     ],
+     "ohkoChance": 0,
+     "description": "Earthquake: 75–88 HP (31.9–37.4% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 4,
+      "fewest": 3,
+      "fasterChance": 0.875732421875,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the target's partner stays in for every use.",
+       "Assumes the target's partner has no Pressure."
+      ]
+     },
+     "afterUse": {
+      "start": 235,
+      "low": 160,
+      "high": 147,
+      "average": 154.0625,
+      "min": 147,
+      "max": 160,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 75,
+        "heals": []
+       },
+       "high": {
+        "dealt": 88,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "own-right",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "earthquake",
+     "effectiveName": "Earthquake",
+     "effectiveType": "Ground",
+     "effectivePower": 100,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 0,
+     "max": 0,
+     "minPercent": 0,
+     "maxPercent": 0,
+     "rolls": 0,
+     "ohkoChance": 0,
+     "description": "Earthquake: 0–0 HP (0.0–0.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "no-damage"
+     },
+     "afterUse": {
+      "start": 173,
+      "low": 173,
+      "high": 173,
+      "average": 173,
+      "min": 173,
+      "max": 173,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 0,
+        "heals": []
+       },
+       "high": {
+        "dealt": 0,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "own-right",
+    "target": "own-left",
+    "row": {
+     "moveId": "earthquake",
+     "effectiveName": "Earthquake",
+     "effectiveType": "Ground",
+     "effectivePower": 100,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 64,
+     "max": 76,
+     "minPercent": 38.78787878787879,
+     "maxPercent": 46.06060606060606,
+     "rolls": [
+      64,
+      64,
+      66,
+      66,
+      67,
+      67,
+      69,
+      69,
+      70,
+      70,
+      72,
+      72,
+      73,
+      73,
+      75,
+      76
+     ],
+     "ohkoChance": 0,
+     "description": "Earthquake: 64–76 HP (38.8–46.1% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 3,
+      "fewest": 3,
+      "limit": 16,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the target's partner stays in for every use.",
+       "Assumes the target's partner has no Pressure."
+      ]
+     },
+     "afterUse": {
+      "start": 165,
+      "low": 101,
+      "high": 89,
+      "average": 95.4375,
+      "min": 89,
+      "max": 101,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 64,
+        "heals": []
+       },
+       "high": {
+        "dealt": 76,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 165,
+     "maximum": 165,
+     "low": 101,
+     "average": 95.4375,
+     "high": 89,
+     "min": 89,
+     "max": 101,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 183,
+     "maximum": 183,
+     "low": 183,
+     "average": 183,
+     "high": 183,
+     "min": 183,
+     "max": 183,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 160,
+     "average": 154.0625,
+     "high": 147,
+     "min": 147,
+     "max": 160,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 173,
+     "maximum": 173,
+     "low": 173,
+     "average": 173,
+     "high": 173,
+     "min": 173,
+     "max": 173,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 10.158305000000837,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 165,
+    "maximum": 165
+   },
+   "own-right": {
+    "hp": 183,
+    "maximum": 183
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 173,
+    "maximum": 173
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 89,
+        "chance": 0.0625
+       },
+       {
+        "hp": 90,
+        "chance": 0.0625
+       },
+       {
+        "hp": 92,
+        "chance": 0.125
+       },
+       {
+        "hp": 93,
+        "chance": 0.125
+       },
+       {
+        "hp": 95,
+        "chance": 0.125
+       },
+       {
+        "hp": 96,
+        "chance": 0.125
+       },
+       {
+        "hp": 98,
+        "chance": 0.125
+       },
+       {
+        "hp": 99,
+        "chance": 0.125
+       },
+       {
+        "hp": 101,
+        "chance": 0.125
+       }
+      ],
+      "build": {
+       "speciesId": "oranguru",
+       "nature": "Serious",
+       "abilityId": "innerfocus",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 183,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "garchomp",
+       "nature": "Serious",
+       "abilityId": "roughskin",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 147,
+        "chance": 0.0625
+       },
+       {
+        "hp": 148,
+        "chance": 0.0625
+       },
+       {
+        "hp": 150,
+        "chance": 0.125
+       },
+       {
+        "hp": 151,
+        "chance": 0.125
+       },
+       {
+        "hp": 153,
+        "chance": 0.0625
+       },
+       {
+        "hp": 154,
+        "chance": 0.125
+       },
+       {
+        "hp": 156,
+        "chance": 0.125
+       },
+       {
+        "hp": 157,
+        "chance": 0.0625
+       },
+       {
+        "hp": 159,
+        "chance": 0.125
+       },
+       {
+        "hp": 160,
+        "chance": 0.125
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 16
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 173,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "corviknight",
+       "nature": "Serious",
+       "abilityId": "pressure",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

@@ -1,0 +1,852 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 40,
+    "maximum": 147
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 130,
+    "maximum": 130
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "watershuriken",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "opponent-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 26,
+      "max": 48,
+      "minPercent": 20,
+      "maxPercent": 36.92307692307693,
+      "koChance": 0,
+      "row": {
+       "moveId": "watershuriken",
+       "effectiveName": "Water Shuriken",
+       "effectiveType": "Water",
+       "effectivePower": 15,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 18,
+       "max": 60,
+       "minPercent": 13.846153846153847,
+       "maxPercent": 46.15384615384615,
+       "rolls": [
+        [
+         9,
+         9,
+         9,
+         10,
+         10,
+         10,
+         10,
+         10,
+         10,
+         10,
+         10,
+         10,
+         10,
+         10,
+         10,
+         12
+        ],
+        [
+         9,
+         9,
+         9,
+         10,
+         10,
+         10,
+         10,
+         10,
+         10,
+         10,
+         10,
+         10,
+         10,
+         10,
+         10,
+         12
+        ],
+        [
+         9,
+         9,
+         9,
+         10,
+         10,
+         10,
+         10,
+         10,
+         10,
+         10,
+         10,
+         10,
+         10,
+         10,
+         10,
+         12
+        ],
+        [
+         9,
+         9,
+         9,
+         10,
+         10,
+         10,
+         10,
+         10,
+         10,
+         10,
+         10,
+         10,
+         10,
+         10,
+         10,
+         12
+        ],
+        [
+         9,
+         9,
+         9,
+         10,
+         10,
+         10,
+         10,
+         10,
+         10,
+         10,
+         10,
+         10,
+         10,
+         10,
+         10,
+         12
+        ]
+       ],
+       "ohkoChance": null,
+       "description": "Water Shuriken: 18–60 HP (13.8–46.2% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP.",
+        "Water Shuriken: 2–5 hits (2 and 3: 35% each, 4 and 5: 15% each).",
+        "No one-use KO chance for multiple hits."
+       ],
+       "reason": null,
+       "hits": 5,
+       "hitRule": {
+        "kind": "choose",
+        "min": 2,
+        "max": 5,
+        "defaultHits": null,
+        "perHitAccuracy": false,
+        "loadedDice": false,
+        "chances": [
+         {
+          "hits": 2,
+          "chance": 0.35
+         },
+         {
+          "hits": 3,
+          "chance": 0.35
+         },
+         {
+          "hits": 4,
+          "chance": 0.15
+         },
+         {
+          "hits": 5,
+          "chance": 0.15
+         }
+        ]
+       },
+       "hitChances": [
+        {
+         "hits": 2,
+         "chance": 0.35
+        },
+        {
+         "hits": 3,
+         "chance": 0.35
+        },
+        {
+         "hits": 4,
+         "chance": 0.15
+        },
+        {
+         "hits": 5,
+         "chance": 0.15
+        }
+       ]
+      },
+      "cases": 2,
+      "facts": [
+       {
+        "text": "Its Substitute breaks.",
+        "chance": 1
+       },
+       {
+        "text": "Disguise: Mimikyu takes no damage.",
+        "chance": 0.65
+       }
+      ],
+      "substitute": {
+       "chance": 1,
+       "min": 20,
+       "max": 20,
+       "breaks": 1
+      }
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 40,
+    "maximum": 147,
+    "low": 40,
+    "average": 40,
+    "high": 40,
+    "min": 40,
+    "max": 40,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 130,
+    "maximum": 130,
+    "low": 130,
+    "average": 113.15937500000001,
+    "high": 82,
+    "min": 82,
+    "max": 130,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-right",
+    "row": {
+     "moveId": "watershuriken",
+     "effectiveName": "Water Shuriken",
+     "effectiveType": "Water",
+     "effectivePower": 15,
+     "effectiveCategory": "Special",
+     "kind": "unsupported",
+     "min": null,
+     "max": null,
+     "minPercent": null,
+     "maxPercent": null,
+     "rolls": null,
+     "ohkoChance": null,
+     "description": "Hits two to five times. Has a 35% chance to hit two or three times and a 15% chance to hit four or five times. If one of the hits breaks the target's substitute, it will take damage for the remaining hits. If the user has the Skill Link Ability, this move will always hit five times. If the user is an Ash-Greninja with the Battle Bond Ability, this move has a power of 20 and always hits three times. If the user is holding Loaded Dice, this move will hit 4-5 times.",
+     "assumptions": [],
+     "reason": "Mimikyu is behind a Substitute.",
+     "hits": null
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 40,
+     "maximum": 147,
+     "low": 40,
+     "average": 40,
+     "high": 40,
+     "min": 40,
+     "max": 40,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 130,
+     "maximum": 130,
+     "low": 130,
+     "average": 113.15937500000001,
+     "high": 82,
+     "min": 82,
+     "max": 130,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 17.207824000000983,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 40,
+    "maximum": 147
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-right": {
+    "hp": 130,
+    "maximum": 130
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 0.35,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 40,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "greninja",
+       "nature": "Serious",
+       "abilityId": "torrent",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 8
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 16
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 130,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "mimikyu",
+       "nature": "Serious",
+       "abilityId": "disguise",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   },
+   {
+    "chance": 0.65,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 40,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "greninja",
+       "nature": "Serious",
+       "abilityId": "torrent",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 8
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 16
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 82,
+        "chance": 0.0009014423076923076
+       },
+       {
+        "hp": 83,
+        "chance": 0.016225961538461536
+       },
+       {
+        "hp": 84,
+        "chance": 0.07301682692307693
+       },
+       {
+        "hp": 85,
+        "chance": 0.01081730769230769
+       },
+       {
+        "hp": 86,
+        "chance": 0.09735576923076922
+       },
+       {
+        "hp": 88,
+        "chance": 0.03245192307692307
+       },
+       {
+        "hp": 98,
+        "chance": 0.014423076923076922
+       },
+       {
+        "hp": 99,
+        "chance": 0.1298076923076923
+       },
+       {
+        "hp": 101,
+        "chance": 0.08653846153846152
+       },
+       {
+        "hp": 114,
+        "chance": 0.5384615384615384
+       }
+      ],
+      "build": {
+       "speciesId": "mimikyubusted",
+       "nature": "Serious",
+       "abilityId": "disguise",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

@@ -74,6 +74,27 @@ export function listChanged2(): Listed[] {
   return out;
 }
 type Listed = { id: string; why: string; owner: string; wave: Wave; reexpect: boolean; oracle: boolean };
+/**
+ * Review 2 (round 1, pass D; REVIEW2-FIX-1.md): the stored cases a fix's new output reaches, numbers unchanged (diff mode
+ * compares them again). R6-3: the turn fact "Assumes no protecting move was used last turn." for a Sleep Talk user with a
+ * protecting move or Endure among its moves, or an Instruct target whose last move is one, with no stall given
+ * (doubles-turn.ts calledStall; compare.ts's fact rule).
+ */
+function listChangedReview2(): Listed[] {
+  const out: Listed[] = [];
+  const stalls = new Set(["protect", "detect", "kingsshield", "spikyshield", "banefulbunker", "obstruct", "silktrap", "burningbulwark", "endure"]);
+  for (const c of STORED_2) {
+    const called = SLOTS.filter((slot) => {
+      const m = c.slots[slot];
+      if (m.absent || m.carried?.stall) return false;
+      if (toID(m.action.move ?? "") === "sleeptalk" && (m.moves ?? []).some((each) => stalls.has(toID(each)))) return true;
+      return stalls.has(toID(m.lastMove ?? "")) && SLOTS.some((other) => other !== slot && !c.slots[other].absent && toID(c.slots[other].action.move ?? "") === "instruct"
+        && (c.slots[other].action.target === slot || c.slots[other].action.target === undefined));
+    });
+    if (called.length) out.push({ id: c.id, why: `review 2 R6-3: "Assumes no protecting move was used last turn." for ${called.join(", ")} (a called or instructed protecting move)`, owner: "review2 fixer", wave: "2", reexpect: false, oracle: false });
+  }
+  return out;
+}
 
 // 5 (the app's new output): the moves and states that reach it, as the tracks' code reads them.
 /** doubles-abilities.ts MINIMIZE_MOVES (pinned flags.minimize): A1's "Assumes {Name} has not used Minimize." */
@@ -214,7 +235,7 @@ function listChanged1b(): Listed[] {
 
 /** Everything the build changes among the stored cases (1–3 of the header; 4 with c19; wave 1b's rows with wave1b). */
 export function listChanged(opts: { c19?: boolean; wave1b?: boolean; wave2?: boolean } = {}): Listed[] {
-  const out: Listed[] = [...(opts.wave1b ? listChanged1b() : []), ...(opts.wave2 ? listChanged2() : [])];
+  const out: Listed[] = [...(opts.wave1b ? listChanged1b() : []), ...(opts.wave2 ? [...listChanged2(), ...listChangedReview2()] : [])];
   for (const c of STORED) {
     for (const [kind, text] of [["notEstimated", c.notEstimated], ["endNotEstimated", c.endNotEstimated]] as const) {
       if (!text) continue;

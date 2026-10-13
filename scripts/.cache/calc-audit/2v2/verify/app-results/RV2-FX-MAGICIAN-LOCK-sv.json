@@ -1,0 +1,120 @@
+{
+ "result": {
+  "status": "not-estimated",
+  "reason": "Magician with Moltres-Galar's Sitrus Berry is not modelled in 2v2.",
+  "start": {
+   "own-left": {
+    "hp": 150,
+    "maximum": 150
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 120,
+    "maximum": 165
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "flamethrower",
+     "effectiveName": "Flamethrower",
+     "effectiveType": "Fire",
+     "effectivePower": 90,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 48,
+     "max": 57,
+     "minPercent": 29.09090909090909,
+     "maxPercent": 34.54545454545455,
+     "rolls": [
+      48,
+      48,
+      49,
+      49,
+      49,
+      51,
+      51,
+      51,
+      52,
+      52,
+      54,
+      54,
+      54,
+      55,
+      55,
+      57
+     ],
+     "ohkoChance": 0,
+     "description": "Flamethrower: 48–57 HP (29.1–34.5% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 4,
+      "fewest": 3,
+      "fasterChance": 0.140625,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [
+       "The attacker's Magician takes the target's item.",
+       "The target's Sitrus Berry heals it once, at half its HP or less."
+      ],
+      "notes": []
+     },
+     "afterUse": {
+      "start": 120,
+      "low": 113,
+      "high": 104,
+      "average": 109.1875,
+      "min": 104,
+      "max": 113,
+      "koChance": 0,
+      "heals": [
+       "Sitrus Berry: +41 HP."
+      ],
+      "paths": {
+       "low": {
+        "dealt": 48,
+        "heals": [
+         "Sitrus Berry: +41 HP."
+        ]
+       },
+       "high": {
+        "dealt": 57,
+        "heals": [
+         "Sitrus Berry: +41 HP."
+        ]
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ]
+ },
+ "ms": 2.941687999998976,
+ "preflight": [],
+ "outcomes": {
+  "status": "not-estimated",
+  "reason": "Magician with Moltres-Galar's Sitrus Berry is not modelled in 2v2."
+ }
+}

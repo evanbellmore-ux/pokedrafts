@@ -5,6 +5,10 @@
 // compare.ts's bench comparisons (replaced, hpEntered, the newcomers' hits and E2, the default replacement's facts), and
 // changed-cases.ts's wave 2 rows.
 //   npx vitest run --config scripts/.cache/calc-audit/2v2/verify/v3/vitest.v3.config.mts
+import { execFileSync } from "node:child_process";
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
 import { describe, expect, it } from "vitest";
 import type { Case, CaseBenchMon, OracleResult } from "../case-types";
 import { OL, OR, PL, PR, act, idle, lax, mon, slots } from "../case-kit";
@@ -129,6 +133,15 @@ describe("the walk: switch requests answered from the bench", () => {
     expect(w.steps[PL]!.hits[OL]?.reached).toBe(1);
     expect(w.steps[OL]!.hits[OL]).toBeUndefined();
   });
+  it("a newcomer dragged in inside the move (Whirlwind onto Stealth Rock) owns its later lines: no change on the slot's Pokémon", () => {
+    const w = walk(byId("G4-SWX-31-sv"), "all");
+    expect(w.steps[OL]!.moveChange).toBeUndefined();
+    expect(w.steps[OL]!.effectsEntered?.[PR]).toEqual({ lax: { "damage:stealthrock:-29": 0.5 }, zard: { "damage:stealthrock:-76": 0.5 } });
+    // Circle Throw's Intimidate newcomer: its ability line is the newcomer's, not the dragged-out target's.
+    const ct = walk(byId("G4-SWX-32-sv"), "all").steps[OL]!;
+    expect(ct.effects?.[PL]?.["ability:intimidate"]).toBeUndefined();
+    expect(ct.effectsEntered?.[PL]?.inci?.["ability:intimidate"]).toBe(0.5);
+  });
   it("a request from a side without a bench in the case is not answered (as before: a mid-turn switch is not supported)", () => {
     const c = uturn({ bench: { opponent: { members: [member("o")] } } });
     expect(() => walk(c, "all")).toThrow(/a mid-turn switch is not supported/);
@@ -156,16 +169,24 @@ describe("app-turn.ts: the bench, the replacement and the hazards of the input",
     expect(input.bench?.own?.map((x) => x.id)).toEqual(["a", "b"]);
     expect(input.bench?.opponent).toBeUndefined();
     expect(input.replacement).toEqual({ [OL]: "b" });
-    expect(input.hazards).toEqual({ own: { spikes: 2, stealthRock: true } });
+    expect(input.hazards).toEqual({ own: { spikes: 2, stealthRock: true, order: ["spikes", "stealthrock"] } });
     expect(caseBenchInput(base({}), runtime)).toEqual({});
   });
   it("hazards map to DoublesHazards (one layer by default; Steelsurge); a landing from a bench member is its build", async () => {
-    expect(caseHazards({ hazards: ["toxicspikes", "stickyweb", "gmaxsteelsurge"] })).toEqual({ toxicSpikes: 1, stickyWeb: true, steelsurge: true });
+    // Review 2 (R7-2): with two or more, the order they went up (sim-dfs adds them in the case's order).
+    expect(caseHazards({ hazards: ["toxicspikes", "stickyweb", "gmaxsteelsurge"] })).toEqual({ toxicSpikes: 1, stickyWeb: true, steelsurge: true, order: ["toxicspikes", "stickyweb", "gmaxsteelsurge"] });
+    expect(caseHazards({ hazards: ["stealthrock"] })).toEqual({ stealthRock: true });
     expect(caseHazards({})).toBeNull();
     const runtime = await runtimeFor({ game: "sv" } as Case);
     const input = caseInput(byId("IN-FSL-02-sv"), runtime);
     const fm = input.pokemon[PR]!.carried!.futureMove as { move: string; build: { speciesId: string; itemId: string } };
     expect([fm.move, fm.build.speciesId, fm.build.itemId]).toEqual(["futuresight", "hatterene", "twistedspoon"]);
+  });
+  it("a slot with exactMoves and no moves passes its action move as its moves (Assist reads the ally's slots: T2P-AST)", async () => {
+    const runtime = await runtimeFor({ game: "usum" } as Case);
+    const input = caseInput(byId("T2P-AST-01-usum"), runtime);
+    expect(input.pokemon[OR]!.moves).toEqual(["bodyslam"]);
+    expect(input.pokemon[OL]!.moves).toBeUndefined();
   });
   it("preflight checks the bench members' builds and moves too", async () => {
     const runtime = await runtimeFor({ game: "sv" } as Case);
@@ -216,6 +237,24 @@ describe("compare.ts: the bench comparisons", () => {
 });
 
 describe("the wave 2 bookkeeping", () => {
+  it("gen-tests.ts --keep-rows keeps a row whose case does not load, byte for byte and in place; other rows are generated again", () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "rv-keep-rows-"));
+    const gen = path.resolve("scripts/.cache/calc-audit/2v2/verify/gen-tests.ts");
+    const report = [{ id: "G4-SWX-01-sv", status: "ready", mismatches: [] }, { id: "G4-SWX-27-sv", status: "ready", mismatches: [] }];
+    fs.writeFileSync(path.join(dir, "compare.json"), JSON.stringify(report));
+    // The first file: the two cases that agree. The second keeps a stub's row (ZZ-STUB) between them.
+    execFileSync("npx", ["--no-install", "tsx", gen, `--compare=${dir}/compare.json`, `--out=${dir}/a.test.ts`], { stdio: "pipe" });
+    const rowsOf = (file: string) => fs.readFileSync(file, "utf8").split("\n").filter((l) => l.startsWith('  {id:"'));
+    const [first, second] = rowsOf(path.join(dir, "a.test.ts"));
+    expect([first, second].map((l) => /^ {2}\{id:"([^"]+)"/.exec(l)![1])).toEqual(["G4-SWX-01-sv", "G4-SWX-27-sv"]);
+    const stub = '  {id:"ZZ-STUB",game:"sv",title:"a row whose case file is a stub"},';
+    fs.writeFileSync(path.join(dir, "before.test.ts"), [first, stub, second].join("\n"));
+    fs.writeFileSync(path.join(dir, "compare.json"), JSON.stringify([report[0]]));
+    const log = execFileSync("npx", ["--no-install", "tsx", gen, `--compare=${dir}/compare.json`, `--keep-rows=${dir}/before.test.ts`, `--out=${dir}/b.test.ts`], { encoding: "utf8" });
+    expect(rowsOf(path.join(dir, "b.test.ts"))).toEqual([first, stub, second]);
+    expect(log).toContain("keep-rows: 3 rows before, 1 kept as they were (their case does not load), 0 new");
+    fs.rmSync(dir, { recursive: true, force: true });
+  });
   it("a stored case keeps the switch-out reason (no bench); changed-cases lists the stored cases whose hazards now reach the app", () => {
     expect(removalOf("Snorlax switches out: the replacement is not known.")).toMatchObject({ wave: "kept" });
     expect(listChanged2().map((l) => l.id).sort()).toEqual(["FS07b-champions", "FS08c-champions", "S1-RSP-champions", "S1-RSP-sv"]);

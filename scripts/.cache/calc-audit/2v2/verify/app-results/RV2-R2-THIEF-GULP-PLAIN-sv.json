@@ -1,0 +1,118 @@
+{
+ "result": {
+  "status": "not-estimated",
+  "reason": "Thief with Cramorant-Gulping's Gulp Missile is not modelled in 2v2.",
+  "start": {
+   "own-left": {
+    "hp": 30,
+    "maximum": 155
+   },
+   "own-right": {
+    "hp": 235,
+    "maximum": 235
+   },
+   "opponent-left": {
+    "hp": 90,
+    "maximum": 145
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "startRows": [
+   {
+    "slot": "own-left",
+    "target": "opponent-left",
+    "row": {
+     "moveId": "thief",
+     "effectiveName": "Thief",
+     "effectiveType": "Dark",
+     "effectivePower": 60,
+     "effectiveCategory": "Physical",
+     "kind": "calculated",
+     "min": 45,
+     "max": 54,
+     "minPercent": 31.03448275862069,
+     "maxPercent": 37.24137931034483,
+     "rolls": [
+      45,
+      46,
+      46,
+      47,
+      48,
+      48,
+      49,
+      49,
+      50,
+      50,
+      51,
+      51,
+      52,
+      52,
+      53,
+      54
+     ],
+     "ohkoChance": 0,
+     "description": "Thief: 45–54 HP (31.0–37.2% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": null,
+      "fewest": null,
+      "faintsFirst": true,
+      "limit": 40,
+      "limitReason": "pp",
+      "carried": [
+       "The target's Gulp Missile hits back once.",
+       "Thief takes the target's item."
+      ],
+      "notes": [],
+      "attackerFaints": {
+       "lowest": 1,
+       "highest": 1
+      }
+     },
+     "afterUse": {
+      "start": 90,
+      "low": 45,
+      "high": 36,
+      "average": 40.5625,
+      "min": 36,
+      "max": 45,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 45,
+        "heals": []
+       },
+       "high": {
+        "dealt": 54,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ]
+ },
+ "ms": 4.1967920000024606,
+ "preflight": [],
+ "outcomes": {
+  "status": "not-estimated",
+  "reason": "Thief with Cramorant-Gulping's Gulp Missile is not modelled in 2v2."
+ }
+}

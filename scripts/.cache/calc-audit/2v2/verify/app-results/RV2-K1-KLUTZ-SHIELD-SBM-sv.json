@@ -1,0 +1,727 @@
+{
+ "result": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 130,
+    "maximum": 130
+   },
+   "own-right": {
+    "hp": 164,
+    "maximum": 164
+   },
+   "opponent-left": {
+    "hp": 165,
+    "maximum": 165
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "steps": [
+   {
+    "slot": "own-left",
+    "moveId": "simplebeam",
+    "order": [
+     {
+      "position": 1,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "effect",
+      "min": null,
+      "max": null,
+      "minPercent": null,
+      "maxPercent": null,
+      "koChance": 0,
+      "cases": 0,
+      "facts": [
+       {
+        "text": "Ability Shield: Golurk keeps Klutz.",
+        "chance": 1
+       }
+      ]
+     }
+    ],
+    "facts": []
+   },
+   {
+    "slot": "opponent-left",
+    "moveId": "snarl",
+    "order": [
+     {
+      "position": 2,
+      "chance": 1
+     }
+    ],
+    "moves": 1,
+    "skipped": [],
+    "hits": [
+     {
+      "slot": "own-left",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 28,
+      "max": 34,
+      "minPercent": 21.53846153846154,
+      "maxPercent": 26.153846153846157,
+      "koChance": 0,
+      "row": {
+       "moveId": "snarl",
+       "effectiveName": "Snarl",
+       "effectiveType": "Dark",
+       "effectivePower": 55,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 28,
+       "max": 34,
+       "minPercent": 21.53846153846154,
+       "maxPercent": 26.153846153846157,
+       "rolls": [
+        28,
+        29,
+        29,
+        29,
+        30,
+        30,
+        30,
+        31,
+        31,
+        31,
+        32,
+        32,
+        32,
+        33,
+        33,
+        34
+       ],
+       "ohkoChance": 0,
+       "description": "Snarl: 28–34 HP (21.5–26.2% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     },
+     {
+      "slot": "own-right",
+      "reached": 1,
+      "kind": "calculated",
+      "min": 38,
+      "max": 46,
+      "minPercent": 23.170731707317074,
+      "maxPercent": 28.04878048780488,
+      "koChance": 0,
+      "row": {
+       "moveId": "snarl",
+       "effectiveName": "Snarl",
+       "effectiveType": "Dark",
+       "effectivePower": 55,
+       "effectiveCategory": "Special",
+       "kind": "calculated",
+       "min": 38,
+       "max": 46,
+       "minPercent": 23.170731707317074,
+       "maxPercent": 28.04878048780488,
+       "rolls": [
+        38,
+        38,
+        40,
+        40,
+        40,
+        40,
+        40,
+        42,
+        42,
+        42,
+        42,
+        44,
+        44,
+        44,
+        44,
+        46
+       ],
+       "ohkoChance": 0,
+       "description": "Snarl: 38–46 HP (23.2–28.0% of maximum HP).",
+       "assumptions": [
+        "One use, if it connects; damage is not capped at the target's HP."
+       ],
+       "reason": null,
+       "hits": 1,
+       "hitRule": {
+        "kind": "fixed",
+        "hits": 1,
+        "reason": null
+       }
+      },
+      "cases": 1,
+      "facts": []
+     }
+    ],
+    "facts": []
+   }
+  ],
+  "hp": {
+   "own-left": {
+    "start": 130,
+    "maximum": 130,
+    "low": 102,
+    "average": 99.125,
+    "high": 96,
+    "min": 96,
+    "max": 102,
+    "koChance": 0,
+    "heals": []
+   },
+   "own-right": {
+    "start": 164,
+    "maximum": 164,
+    "low": 126,
+    "average": 122.375,
+    "high": 118,
+    "min": 118,
+    "max": 126,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-left": {
+    "start": 165,
+    "maximum": 165,
+    "low": 165,
+    "average": 165,
+    "high": 165,
+    "min": 165,
+    "max": 165,
+    "koChance": 0,
+    "heals": []
+   },
+   "opponent-right": {
+    "start": 235,
+    "maximum": 235,
+    "low": 235,
+    "average": 235,
+    "high": 235,
+    "min": 235,
+    "max": 235,
+    "koChance": 0,
+    "heals": []
+   }
+  },
+  "startRows": [
+   {
+    "slot": "opponent-left",
+    "target": "own-left",
+    "row": {
+     "moveId": "snarl",
+     "effectiveName": "Snarl",
+     "effectiveType": "Dark",
+     "effectivePower": 55,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 28,
+     "max": 34,
+     "minPercent": 21.53846153846154,
+     "maxPercent": 26.153846153846157,
+     "rolls": [
+      28,
+      29,
+      29,
+      29,
+      30,
+      30,
+      30,
+      31,
+      31,
+      31,
+      32,
+      32,
+      32,
+      33,
+      33,
+      34
+     ],
+     "ohkoChance": 0,
+     "description": "Snarl: 28–34 HP (21.5–26.2% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 5,
+      "fewest": 4,
+      "fasterChance": 0.0357208251953125,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the target's partner stays in for every use.",
+       "Assumes the target's partner has no Pressure."
+      ]
+     },
+     "afterUse": {
+      "start": 130,
+      "low": 102,
+      "high": 96,
+      "average": 99.125,
+      "min": 96,
+      "max": 102,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 28,
+        "heals": []
+       },
+       "high": {
+        "dealt": 34,
+        "heals": []
+       }
+      }
+     }
+    }
+   },
+   {
+    "slot": "opponent-left",
+    "target": "own-right",
+    "row": {
+     "moveId": "snarl",
+     "effectiveName": "Snarl",
+     "effectiveType": "Dark",
+     "effectivePower": 55,
+     "effectiveCategory": "Special",
+     "kind": "calculated",
+     "min": 38,
+     "max": 46,
+     "minPercent": 23.170731707317074,
+     "maxPercent": 28.04878048780488,
+     "rolls": [
+      38,
+      38,
+      40,
+      40,
+      40,
+      40,
+      40,
+      42,
+      42,
+      42,
+      42,
+      44,
+      44,
+      44,
+      44,
+      46
+     ],
+     "ohkoChance": 0,
+     "description": "Snarl: 38–46 HP (23.2–28.0% of maximum HP).",
+     "assumptions": [
+      "One use, if it connects; damage is not capped at the target's HP."
+     ],
+     "reason": null,
+     "hits": 1,
+     "hitRule": {
+      "kind": "fixed",
+      "hits": 1,
+      "reason": null
+     },
+     "usesToKO": {
+      "kind": "uses",
+      "guaranteed": 5,
+      "fewest": 4,
+      "fasterChance": 0.7753753662109375,
+      "limit": 24,
+      "limitReason": "pp",
+      "carried": [],
+      "notes": [
+       "Assumes the target's partner stays in for every use.",
+       "Assumes the target's partner has no Pressure."
+      ]
+     },
+     "afterUse": {
+      "start": 164,
+      "low": 126,
+      "high": 118,
+      "average": 122.375,
+      "min": 118,
+      "max": 126,
+      "koChance": 0,
+      "heals": [],
+      "paths": {
+       "low": {
+        "dealt": 38,
+        "heals": []
+       },
+       "high": {
+        "dealt": 46,
+        "heals": []
+       }
+      }
+     }
+    }
+   }
+  ],
+  "facts": [
+   "Every move hits; no critical hits; added effects below 100% do not happen."
+  ],
+  "endOfTurn": {
+   "status": "ready",
+   "hp": {
+    "own-left": {
+     "start": 130,
+     "maximum": 130,
+     "low": 102,
+     "average": 99.125,
+     "high": 96,
+     "min": 96,
+     "max": 102,
+     "koChance": 0,
+     "heals": []
+    },
+    "own-right": {
+     "start": 164,
+     "maximum": 164,
+     "low": 126,
+     "average": 122.375,
+     "high": 118,
+     "min": 118,
+     "max": 126,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-left": {
+     "start": 165,
+     "maximum": 165,
+     "low": 165,
+     "average": 165,
+     "high": 165,
+     "min": 165,
+     "max": 165,
+     "koChance": 0,
+     "heals": []
+    },
+    "opponent-right": {
+     "start": 235,
+     "maximum": 235,
+     "low": 235,
+     "average": 235,
+     "high": 235,
+     "min": 235,
+     "max": 235,
+     "koChance": 0,
+     "heals": []
+    }
+   },
+   "residuals": [],
+   "facts": []
+  }
+ },
+ "ms": 11.586127999999007,
+ "preflight": [],
+ "outcomes": {
+  "status": "ready",
+  "start": {
+   "own-left": {
+    "hp": 130,
+    "maximum": 130
+   },
+   "own-right": {
+    "hp": 164,
+    "maximum": 164
+   },
+   "opponent-left": {
+    "hp": 165,
+    "maximum": 165
+   },
+   "opponent-right": {
+    "hp": 235,
+    "maximum": 235
+   }
+  },
+  "outcomes": [
+   {
+    "chance": 1,
+    "mons": {
+     "own-left": {
+      "hp": [
+       {
+        "hp": 96,
+        "chance": 0.0625
+       },
+       {
+        "hp": 97,
+        "chance": 0.125
+       },
+       {
+        "hp": 98,
+        "chance": 0.1875
+       },
+       {
+        "hp": 99,
+        "chance": 0.1875
+       },
+       {
+        "hp": 100,
+        "chance": 0.1875
+       },
+       {
+        "hp": 101,
+        "chance": 0.1875
+       },
+       {
+        "hp": 102,
+        "chance": 0.0625
+       }
+      ],
+      "build": {
+       "speciesId": "smeargle",
+       "nature": "Serious",
+       "abilityId": "owntempo",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": -1,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 252
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "own-right": {
+      "hp": [
+       {
+        "hp": 118,
+        "chance": 0.0625
+       },
+       {
+        "hp": 120,
+        "chance": 0.25
+       },
+       {
+        "hp": 122,
+        "chance": 0.25
+       },
+       {
+        "hp": 124,
+        "chance": 0.3125
+       },
+       {
+        "hp": 126,
+        "chance": 0.125
+       }
+      ],
+      "build": {
+       "speciesId": "golurk",
+       "nature": "Serious",
+       "abilityId": "klutz",
+       "abilityActive": false,
+       "itemId": "abilityshield",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": -1,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-left": {
+      "hp": [
+       {
+        "hp": 165,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "arcanine",
+       "nature": "Brave",
+       "abilityId": "intimidate",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 0
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     },
+     "opponent-right": {
+      "hp": [
+       {
+        "hp": 235,
+        "chance": 1
+       }
+      ],
+      "build": {
+       "speciesId": "snorlax",
+       "nature": "Serious",
+       "abilityId": "thickfat",
+       "abilityActive": false,
+       "itemId": "",
+       "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+       },
+       "currentHP": null,
+       "status": "",
+       "game": "scarlet_violet",
+       "native": {
+        "level": 50,
+        "evs": {
+         "hp": 0,
+         "atk": 0,
+         "def": 0,
+         "spa": 0,
+         "spd": 0,
+         "spe": 0
+        },
+        "ivs": {
+         "hp": 31,
+         "atk": 31,
+         "def": 31,
+         "spa": 31,
+         "spd": 31,
+         "spe": 31
+        }
+       }
+      },
+      "protected": false,
+      "moved": true
+     }
+    },
+    "sides": {
+     "own": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     },
+     "opponent": {
+      "reflect": false,
+      "lightScreen": false,
+      "auroraVeil": false,
+      "tailwind": false,
+      "faintedThisTurn": 0
+     }
+    },
+    "field": {
+     "weather": "",
+     "terrain": "",
+     "gravity": false,
+     "trickRoom": false,
+     "wonderRoom": false,
+     "magicRoom": false
+    },
+    "allFainted": {
+     "own": 0,
+     "opponent": 0
+    },
+    "positions": {
+     "own": "kept",
+     "opponent": "kept"
+    }
+   }
+  ],
+  "endOfTurn": "applied"
+ }
+}

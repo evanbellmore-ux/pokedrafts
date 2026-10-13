@@ -1,0 +1,138 @@
+census-bench: seed 7, bench seed 1000010, 293889 ms
+
+== Champions plain: 8000 turns, ready 7391, not estimated 609 (7.61 %), end not estimated 235, issues 0, throws 0; turns with a switch 0; ms p50 8.03 p95 16.54 max 220.53
+   census-sim.final.json: ready 7391, not estimated 609, end not estimated 235, issues 0 → equal
+   turn reasons by family:
+       349  {Name} switches out: the replacement is not known.
+       206  Encore needs {Name}'s move from the last turn.
+        24  Disable needs {Name}'s move from the last turn.
+        12  Imprison needs {Name}'s moves.
+         9  Trace copies a random foe's ability.
+         8  Beat Up: party needed.
+         1  Friend Guard with 2 other damage modifiers: not calculated (their order can change the damage by 1 HP).
+   end reasons by family:
+       235  {Name} switches out: the replacement is not known.
+   reasons naming a position: none
+
+== Champions bench: 8000 turns, ready 7740, not estimated 260 (3.25 %), end not estimated 0, issues 0, throws 0; turns with a switch 581; ms p50 8.26 p95 17.33 max 243.63
+   turn reasons by family:
+       207  Encore needs {Name}'s move from the last turn.
+        24  Disable needs {Name}'s move from the last turn.
+        12  Imprison needs {Name}'s moves.
+         9  Trace copies a random foe's ability.
+         3  Simple Beam giving Simple is not modelled in 2v2.
+         3  Beat Up with {Name}'s hit first is not modelled in 2v2.
+         1  Beat Up into Colbur Berry: not calculated.
+         1  Friend Guard with 2 other damage modifiers: not calculated (their order can change the damage by 1 HP).
+   end reasons by family:
+   reasons naming a position: none
+
+== Champions hazards: 8000 turns, ready 7740, not estimated 260 (3.25 %), end not estimated 0, issues 0, throws 0; turns with a switch 581; ms p50 8.2 p95 17.31 max 229.41
+   turn reasons by family:
+       207  Encore needs {Name}'s move from the last turn.
+        24  Disable needs {Name}'s move from the last turn.
+        12  Imprison needs {Name}'s moves.
+         9  Trace copies a random foe's ability.
+         3  Simple Beam giving Simple is not modelled in 2v2.
+         3  Beat Up with {Name}'s hit first is not modelled in 2v2.
+         1  Beat Up into Colbur Berry: not calculated.
+         1  Friend Guard with 2 other damage modifiers: not calculated (their order can change the damage by 1 HP).
+   end reasons by family:
+   reasons naming a position: none
+
+== Champions: plain → bench transitions (592 turns)
+     345  not-estimated: {Name} switches out: the replacement is not known.  =>  ready
+     235  end: {Name} switches out: the replacement is not known.  =>  ready
+       4  not-estimated: Beat Up: party needed.  =>  ready
+       3  not-estimated: {Name} switches out: the replacement is not known.  =>  not-estimated: Simple Beam giving Simple is not modelled in 2v2.
+            e.g. swampertmega[swiftswim/swampertite] icepunch>own-right | audino[regenerator/mentalherb] simplebeam>opponent-left | scizormega[technician/scizorite] bugbite>own-right | incineroar[intimidate/whiteherb] partingshot>own-left || own: archaludon[stamina/dragonfang], staraptormega[contrary/staraptite]; opponent: grimmsnarl[prankster/lightclay], greninjamega[protean/greninjite]
+            e.g. banettemega[prankster/banettite] sunnyday | basculegion[adaptability/choicescarf] flipturn>opponent-right | audino[healer/mentalherb] simplebeam>opponent-right | sinistcha[hospitality/kasibberry] ragepowder || own: farigiraf[armortail/sitrusberry], kingambit[defiant/blackglasses]; opponent: metagrossmega[toughclaws/metagrossite], rotomwash[levitate/leftovers]
+       3  not-estimated: Beat Up: party needed.  =>  not-estimated: Beat Up with {Name}'s hit first is not modelled in 2v2.
+            e.g. basculegion[adaptability/choicescarf] lastrespects>own-right | farigiraf[armortail/sitrusberry] raindance | maushold[technician/widelens] beatup>own-right | scovillainmega[spicyspray/scovillainite] protect || own: incineroar[intimidate/sitrusberry], kingambit[defiant/chopleberry]; opponent: tyranitarmega[sandstream/tyranitarite], basculegion[adaptability/lifeorb]
+            e.g. kingambit[defiant/focussash] suckerpunch>own-right | maushold[friendguard/lumberry] beatup>own-left | pelipper[drizzle/choicescarf] tailwind | incineroar[intimidate/chopleberry] fakeout>own-left || own: torkoal[drought/charcoal], garchomp[roughskin/choicescarf]; opponent: scizor[technician/lifeorb], farigiraf[armortail/sitrusberry]
+       1  not-estimated: Beat Up: party needed.  =>  not-estimated: Beat Up into Colbur Berry: not calculated.
+            e.g. maushold[friendguard/sitrusberry] beatup>own-right | reuniclus[regenerator/colburberry] psychic>own-left | farigiraf[armortail/sitrusberry] psychicfangs>opponent-right | basculegion[adaptability/choicescarf] aquajet>opponent-left || own: farigiraf[armortail/colburberry], incineroar[intimidate/sitrusberry]; opponent: kingambit[defiant/lifeorb], floettemega[fairyaura/floettite]
+       1  not-estimated: {Name} switches out: the replacement is not known.  =>  not-estimated: Encore needs {Name}'s move from the last turn.
+            e.g. sableye[prankster/lightclay] encore>opponent-right | grimmsnarl[prankster/lightclay] partingshot>opponent-left | staraptormega[contrary/staraptite] closecombat>own-right | decidueyehisui[scrappy/choicescarf] closecombat>own-left || own: dragonite[innerfocus/lifeorb], politoed[drizzle/choicescarf]; opponent: maushold[technician/chopleberry], gholdengo[goodasgold/lifeorb]
+
+== SV plain: 2000 turns, ready 1746, not estimated 156 (7.80 %), end not estimated 45, issues 98, throws 0; turns with a switch 0; ms p50 11.05 p95 19 max 54.69
+   census-sim.final.json: ready 1746, not estimated 156, end not estimated 45, issues 98 → equal
+   turn reasons by family:
+       156  {Name} switches out: the replacement is not known.
+   end reasons by family:
+        31  {Name} switches out: the replacement is not known.
+        14  Harvest needs {Name}'s item from an earlier turn.
+   issues by text:
+        21  {"pokemon":{"own-right":[{"field":"mechanic","message":"{Name} exists only while Terastallized."}]},"field":[],"actions":[]}
+        18  {"pokemon":{"opponent-left":[{"field":"mechanic","message":"{Name} exists only while Terastallized."}]},"field":[],"actions":[]}
+        15  {"pokemon":{"opponent-right":[{"field":"mechanic","message":"{Name} exists only while Terastallized."}]},"field":[],"actions":[]}
+        13  {"pokemon":{"own-left":[{"field":"mechanic","message":"{Name} exists only while Terastallized."}]},"field":[],"actions":[]}
+         7  {"pokemon":{"opponent-left":[{"field":"preparedMoves","message":"{Name} requires Secret Sword in its prepared moves."}]},"field":[],"actions":[]}
+         5  {"pokemon":{"own-right":[{"field":"preparedMoves","message":"{Name} requires Relic Song in its prepared moves."}]},"field":[],"actions":[]}
+         4  {"pokemon":{"own-right":[{"field":"preparedMoves","message":"{Name} requires Secret Sword in its prepared moves."}]},"field":[],"actions":[]}
+         3  {"pokemon":{"own-left":[{"field":"preparedMoves","message":"{Name} requires Relic Song in its prepared moves."}]},"field":[],"actions":[]}
+         3  {"pokemon":{"opponent-left":[{"field":"preparedMoves","message":"{Name} requires Relic Song in its prepared moves."}]},"field":[],"actions":[]}
+         2  {"pokemon":{"own-left":[{"field":"preparedMoves","message":"{Name} requires Secret Sword in its prepared moves."}]},"field":[],"actions":[]}
+         2  {"pokemon":{"opponent-right":[{"field":"preparedMoves","message":"{Name} requires Relic Song in its prepared moves."}]},"field":[],"actions":[]}
+         2  {"pokemon":{"opponent-right":[{"field":"preparedMoves","message":"{Name} requires Secret Sword in its prepared moves."}]},"field":[],"actions":[]}
+         1  {"pokemon":{"own-left":[{"field":"preparedMoves","message":"{Name} requires Relic Song in its prepared moves."}],"own-right":[{"field":"mechanic","message":"{Na
+         1  {"pokemon":{"own-right":[{"field":"preparedMoves","message":"{Name} requires Secret Sword in its prepared moves."}],"opponent-left":[{"field":"mechanic","messag
+         1  {"pokemon":{"opponent-left":[{"field":"preparedMoves","message":"{Name} requires Secret Sword in its prepared moves."}],"opponent-right":[{"field":"preparedMove
+   reasons naming a position: none
+
+== SV bench: 2000 turns, ready 1901, not estimated 1 (0.05 %), end not estimated 17, issues 98, throws 0; turns with a switch 186; ms p50 11.41 p95 19.47 max 61.44
+   turn reasons by family:
+         1  Shields Down starting on {Name} is not modelled in 2v2.
+   end reasons by family:
+        17  Harvest needs {Name}'s item from an earlier turn.
+   issues by text:
+        21  {"pokemon":{"own-right":[{"field":"mechanic","message":"{Name} exists only while Terastallized."}]},"field":[],"actions":[]}
+        18  {"pokemon":{"opponent-left":[{"field":"mechanic","message":"{Name} exists only while Terastallized."}]},"field":[],"actions":[]}
+        15  {"pokemon":{"opponent-right":[{"field":"mechanic","message":"{Name} exists only while Terastallized."}]},"field":[],"actions":[]}
+        13  {"pokemon":{"own-left":[{"field":"mechanic","message":"{Name} exists only while Terastallized."}]},"field":[],"actions":[]}
+         7  {"pokemon":{"opponent-left":[{"field":"preparedMoves","message":"{Name} requires Secret Sword in its prepared moves."}]},"field":[],"actions":[]}
+         5  {"pokemon":{"own-right":[{"field":"preparedMoves","message":"{Name} requires Relic Song in its prepared moves."}]},"field":[],"actions":[]}
+         4  {"pokemon":{"own-right":[{"field":"preparedMoves","message":"{Name} requires Secret Sword in its prepared moves."}]},"field":[],"actions":[]}
+         3  {"pokemon":{"own-left":[{"field":"preparedMoves","message":"{Name} requires Relic Song in its prepared moves."}]},"field":[],"actions":[]}
+         3  {"pokemon":{"opponent-left":[{"field":"preparedMoves","message":"{Name} requires Relic Song in its prepared moves."}]},"field":[],"actions":[]}
+         2  {"pokemon":{"own-left":[{"field":"preparedMoves","message":"{Name} requires Secret Sword in its prepared moves."}]},"field":[],"actions":[]}
+         2  {"pokemon":{"opponent-right":[{"field":"preparedMoves","message":"{Name} requires Relic Song in its prepared moves."}]},"field":[],"actions":[]}
+         2  {"pokemon":{"opponent-right":[{"field":"preparedMoves","message":"{Name} requires Secret Sword in its prepared moves."}]},"field":[],"actions":[]}
+         1  {"pokemon":{"own-left":[{"field":"preparedMoves","message":"{Name} requires Relic Song in its prepared moves."}],"own-right":[{"field":"mechanic","message":"{Na
+         1  {"pokemon":{"own-right":[{"field":"preparedMoves","message":"{Name} requires Secret Sword in its prepared moves."}],"opponent-left":[{"field":"mechanic","messag
+         1  {"pokemon":{"opponent-left":[{"field":"preparedMoves","message":"{Name} requires Secret Sword in its prepared moves."}],"opponent-right":[{"field":"preparedMove
+   reasons naming a position: none
+
+== SV hazards: 2000 turns, ready 1901, not estimated 1 (0.05 %), end not estimated 17, issues 98, throws 0; turns with a switch 186; ms p50 11.58 p95 19.22 max 61.49
+   turn reasons by family:
+         1  Shields Down starting on {Name} is not modelled in 2v2.
+   end reasons by family:
+        17  Harvest needs {Name}'s item from an earlier turn.
+   issues by text:
+        21  {"pokemon":{"own-right":[{"field":"mechanic","message":"{Name} exists only while Terastallized."}]},"field":[],"actions":[]}
+        18  {"pokemon":{"opponent-left":[{"field":"mechanic","message":"{Name} exists only while Terastallized."}]},"field":[],"actions":[]}
+        15  {"pokemon":{"opponent-right":[{"field":"mechanic","message":"{Name} exists only while Terastallized."}]},"field":[],"actions":[]}
+        13  {"pokemon":{"own-left":[{"field":"mechanic","message":"{Name} exists only while Terastallized."}]},"field":[],"actions":[]}
+         7  {"pokemon":{"opponent-left":[{"field":"preparedMoves","message":"{Name} requires Secret Sword in its prepared moves."}]},"field":[],"actions":[]}
+         5  {"pokemon":{"own-right":[{"field":"preparedMoves","message":"{Name} requires Relic Song in its prepared moves."}]},"field":[],"actions":[]}
+         4  {"pokemon":{"own-right":[{"field":"preparedMoves","message":"{Name} requires Secret Sword in its prepared moves."}]},"field":[],"actions":[]}
+         3  {"pokemon":{"own-left":[{"field":"preparedMoves","message":"{Name} requires Relic Song in its prepared moves."}]},"field":[],"actions":[]}
+         3  {"pokemon":{"opponent-left":[{"field":"preparedMoves","message":"{Name} requires Relic Song in its prepared moves."}]},"field":[],"actions":[]}
+         2  {"pokemon":{"own-left":[{"field":"preparedMoves","message":"{Name} requires Secret Sword in its prepared moves."}]},"field":[],"actions":[]}
+         2  {"pokemon":{"opponent-right":[{"field":"preparedMoves","message":"{Name} requires Relic Song in its prepared moves."}]},"field":[],"actions":[]}
+         2  {"pokemon":{"opponent-right":[{"field":"preparedMoves","message":"{Name} requires Secret Sword in its prepared moves."}]},"field":[],"actions":[]}
+         1  {"pokemon":{"own-left":[{"field":"preparedMoves","message":"{Name} requires Relic Song in its prepared moves."}],"own-right":[{"field":"mechanic","message":"{Na
+         1  {"pokemon":{"own-right":[{"field":"preparedMoves","message":"{Name} requires Secret Sword in its prepared moves."}],"opponent-left":[{"field":"mechanic","messag
+         1  {"pokemon":{"opponent-left":[{"field":"preparedMoves","message":"{Name} requires Secret Sword in its prepared moves."}],"opponent-right":[{"field":"preparedMove
+   reasons naming a position: none
+
+== SV: plain → bench transitions (187 turns)
+     153  not-estimated: {Name} switches out: the replacement is not known.  =>  ready
+      30  end: {Name} switches out: the replacement is not known.  =>  ready
+       2  not-estimated: {Name} switches out: the replacement is not known.  =>  end: Harvest needs {Name}'s item from an earlier turn.
+            e.g. pikachupartner[lightningrod/-] grassknot>own-right | qwilfish[intimidate/-] flipturn>own-left | arboliva[harvest/-] energyball>opponent-right | tinkaton[moldbreaker/-] gigatonhammer>own-right || own: arcanine[flashfire/-], palkiaorigin[pressure/lustrousglobe]; opponent: dachsbun[aromaveil/-], gogoat[grasspelt/-]
+            e.g. poliwrath[damp/-] knockoff>opponent-left | lucario[innerfocus/-] closecombat>own-left | toxtricity[plus/-] voltswitch>opponent-right | magearna[soulheart/-] aurasphere>own-right || own: gallade[justified/-], rhyperior[lightningrod/-]; opponent: arboliva[harvest/-], drifblim[aftermath/-]
+       1  end: {Name} switches out: the replacement is not known.  =>  end: Harvest needs {Name}'s item from an earlier turn.
+            e.g. delphox[blaze/-] psychic>opponent-left | taurospaldeacombat[angerpoint/-] stoneedge>opponent-right | inteleon[sniper/-] scald>own-left | landorustherian[intimidate/-] uturn>own-left || own: indeedeef[owntempo/-], ludicolo[owntempo/-]; opponent: arboliva[harvest/-], ninetalesalola[snowcloak/-]
+       1  not-estimated: {Name} switches out: the replacement is not known.  =>  not-estimated: Shields Down starting on {Name} is not modelled in 2v2.
+            e.g. archaludon[stalwart/-] flashcannon>opponent-left | hawlucha[limber/-] bravebird>opponent-left | cetitan[sheerforce/-] iceshard>own-right | mienshao[innerfocus/-] uturn>own-right || own: mienshao[innerfocus/-], skuntank[aftermath/-]; opponent: miniormeteor[shieldsdown/-], cinccino[cutecharm/-]

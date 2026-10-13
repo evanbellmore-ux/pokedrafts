@@ -2,11 +2,14 @@
 // track each case needs (it gates at integration 2) for reports and changed-cases.ts.
 import type { Case } from "./case-types";
 import { R_CASES } from "./cases-r";
+import { REVIEW2_CASES } from "./cases-review2";
 
-export const WAVE2_CASES: Case[] = [...R_CASES];
+// The review fixer's regression cases (ADDENDUM2 §8.8; cases-review2.ts, ids RV2-) join the wave 2 list.
+export const WAVE2_CASES: Case[] = [...R_CASES, ...REVIEW2_CASES];
 
 /** The owning track of a wave 2 case (ADDENDUM2 §8.7), by id prefix; the first match wins. */
 export const OWNER_2: [RegExp, string][] = [
   [/^IN-HZD-|^IN-BNC-|^G4-SWX-|^IN-FSL-02|^T2E-BL-|^T2P-AST-|^T2P-BTR-|^CQ-PUR-R-/, "R-E"],
+  [/^RV2-/, "review2 fixer"],
 ];
 export const ownerOf2 = (id: string) => OWNER_2.find(([re]) => re.test(id))?.[1] ?? "?";
