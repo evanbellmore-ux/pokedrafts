@@ -24,9 +24,9 @@ provisioning, cutover, and real hosted verification below are complete.
 ## Verification boundaries
 
 The standalone native suite passed 1,154 tests. Final application checks passed
-9,010 tests across 277 files, with one existing skip; lint, global typecheck, and
+9,011 tests across 277 files, with one existing skip; lint, global typecheck, and
 explicit owned-API lint passed. The client contract scan passed all 392 files.
-The local embedded-Postgres suite passed 273 tests across 24 files, including
+The local embedded-Postgres suite passed 277 tests across 24 files, including
 restricted privileges, concurrency, revision CAS,
 expired ownership, retained debt, immutable history, fixed TTLs, and committed
 writes with lost acknowledgement. The v4 current-first/immediate-previous-patch adapter is included in these checks;
@@ -71,44 +71,96 @@ and displayed the corresponding previous-patch label. Explicit player fights
 remained pinned; reference switching/restoration, signed healing, both URL aliases,
 desktop/phone widths and no-horizontal-overflow checks passed. Metadata and both
 comparison responses were HTTP 200, with zero page errors and zero native-page
-requests. The native-off endpoint remained 503/private-no-store. These are genuine
-provider-backed local browser results, not public deployment or real native hosted
-verification.
+requests. The native-off endpoint remained 503/private-no-store.
+
+The exact PR #30 Production deployment,
+`58f19b5279c8612c9c6ebf0194930bfebcfc3106`
+(`dpl_AZk8Q8aK3CiY1iECYogpXYRLACRF`), was subsequently verified READY. Real Chrome
+against the public site also passed those Arcane Overall/Boss and Discipline
+Healing comparisons, actual previous-patch labels, pinned player fights,
+reference switching/restoration, signed healing, desktop/phone layout, both URL
+aliases, and zero page errors/native page requests. Actual Production lambda
+metadata confirms `nodejs24.x`, native 180 seconds and the unchanged comparison
+60 seconds. The strict remote audit passed 32 inventories with 184 native-route
+files. These are genuine public throughput checks, **not** native acquisition
+or public Execution readiness.
 
 Read-only final byte verification matched all 82 historical files against the
 existing post-pilot baseline and all 27 consumed-pilot files against their existing
-final manifest. No baseline was regenerated or job resumed/reset. Native public
-acquisition stayed off. No production SQL migration, account bootstrap/enablement,
-live-account cutover, or native restart/redeployment verification occurred.
+final manifest. No baseline was regenerated or job resumed/reset.
 
-## Remaining release gates
+## Production prerequisites completed on 2026-10-13
 
-1. Read-only authenticated Vercel inspection confirmed Node 24.x, Fluid enabled,
-   an active Hobby plan and owner-level project access. Encrypted WCL credentials
-   are configured for Preview and Production; Execution credentials/flags are not.
-   [Documented Hobby/Fluid duration limits](https://vercel.com/docs/functions/configuring-functions/duration)
-   allow 300 seconds. Authenticated deployed lambda metadata for the successful
-   `f927c80d` Preview confirms `nodejs24.x`, 180 seconds for native v3, and the
-   unchanged 60 seconds for comparison. Remaining usage headroom still needs
-   verification before native enablement; a successful disabled deployment alone
-   is not proof of acquisition capacity.
-2. Authenticated Supabase management inspection matches the existing application
-   project in `us-east-1`. Isolated scratch linkage succeeds without modifying the
-   repository or production SQL, but the installed CLI's advertised linked SQL
-   query failed on a read-only catalog SELECT. No direct SQL/password or Execution
-   database configuration was available among the checked keys. Management login
-   alone does not verify SQL migration/role authority or capacity. Obtain verified
-   SQL authority, check capacity, and provision a dedicated restricted executor
-   LOGIN with verified TLS. An unrestricted service-role REST key is not a
-   substitute.
-3. Stop every old native writer for the same WCL identity; conservatively import
-   the exact final live ledger/history and verify all charged, pending, uncertain,
-   legacy and unbound debt before the administrator enables the account.
-4. Verify the exact v4 deployment and repeat genuine Overall/Boss/Healing browser
-   checks through the hosted site. Local real-browser throughput checks above are
-   complete, but bounded private hosted Mythic DPS/healer/tank native tests still
-   need Any/Exclude, missing data, cached requests, contention and
-   restart/redeployment safety.
-5. Enable public native acquisition only after those checks succeed.
+- Standard linked Supabase SQL access works using ordinary pooler linkage. The
+  earlier `--skip-pooler` connectivity failure did not establish missing SQL
+  authority. Actual authorized schema/role DDL was verified and the reviewed
+  private migration committed in one guarded transaction. Read-only inspection
+  found no existing `supabase_migrations.schema_migrations` table; this was not a
+  bulk `db push` or migration-history rewrite. Do not replay this applied SQL or
+  the unrelated migration chain as a retry.
+- PostgreSQL 17.6 now has the isolated NOLOGIN owner/executor, four RLS-protected
+  private tables, and dedicated `castmirror_execution_runtime` LOGIN. Its
+  elevated attributes are false, connection limit is eight, and executor
+  membership has no admin or SET option. The application pool remains at most
+  two connections per invocation.
+- The runtime can execute exactly nine approved private functions, but cannot
+  read/write private tables, create database objects, seed or enable accounts.
+  Browser/service roles have zero private-function grants. The existing 31
+  public functions executable by anon/authenticated are unchanged.
+- Runtime preflight permits SELECT on the two genuine `pg_stat_statements`
+  extension views only after verifying their catalog extension membership. It
+  still rejects writes, same-name impostors and public application data. Four
+  new embedded-Postgres regressions pass; the Execution DB file has 26 tests.
+- The initial certificate-chain refusal occurred **after** the migration's
+  successful commit. The provider-published production CA resolved it without
+  disabling certificate or hostname verification. The real restricted runtime
+  connection and role preflight passed with `rejectUnauthorized: true`.
+- Hosted and standalone WCL quota identities match. The old local 8130 writer
+  was stopped and a sanitized Windows inventory found zero remaining native
+  process candidates/listeners. Its final exact 16,090-byte LIVE ledger was
+  imported and verified **disabled**, preserving 15 jobs, six windows, all 22
+  pending points and three nonterminal jobs, charged/legacy/uncertain debt, and
+  the original bytes/hash. There are no linked LIVE history segments. This did
+  not migrate protected historical/pilot files or dispatch provider requests.
+- Server-only `EXECUTION_DATABASE_URL`, `EXECUTION_DATABASE_CA` and
+  `EXECUTION_VERIFY_TOKEN` are durably configured as sensitive Vercel variables
+  for Preview and Production. Both `EXECUTION_RUNTIME_VERIFIED` and
+  `EXECUTION_NATIVE_ENABLED` are explicitly zero in both environments. The
+  original batch's unverified acknowledgement was reconciled read-only: no
+  native variables existed. Supported CLI additions then acknowledged each
+  value from private stdin; flags were independently verified through normal
+  private environment loading. No credentials, tokens or private report data
+  are included here or in Git.
+
+## Remaining activation gates
+
+1. Verify remaining provider capacity. Actual SQL measured approximately 18.9 MB
+   database size, `max_connections = 60`, and 16 observed connections after
+   provisioning; DDL/import writes succeeded. Physical disk allocation/free
+   space, the project's configured database quota and subscription allocation
+   were **not** established. The CLI session proves SQL authority, but exposes no
+   disk-allocation read command and the normal environment loader has no
+   authorized management API bearer for that endpoint. The project owner must
+   supply verified Supabase dashboard disk/quota figures or authorized capacity
+   API access. Do not substitute a service-role key or repeat provisioning.
+2. Vercel project inspection confirms Node 24.x, Fluid, active Hobby and OWNER
+   access. Actual native/comparison function durations are verified, but a
+   bounded `vercel usage --json` request exited 1 without a classified provider
+   error. Remaining active CPU, provisioned memory and invocation headroom still
+   require confirmation in Vercel Usage. A successful disabled deployment does
+   not establish that headroom.
+3. After capacity and cutover checks pass, an administrator explicitly enables
+   the **existing imported account**, then enables private runtime verification
+   with the public flag still zero. Never reseed it, reset debt, resume an old
+   job or restart the stale filesystem writer. A rollback after shared activity
+   requires reconciliation of the latest shared accounting first.
+4. Run bounded real hosted Mythic DPS, healer and tank native verification,
+   Any/Exclude PI, missing/unknown/incomplete data, shared cached requests,
+   contention, stale fencing and restart/redeployment durability. No such native
+   acquisition or native restart-safety test has yet succeeded. Historical
+   throughput fallback must not become false current-native provenance or a
+   mixed-patch cohort.
+5. Enable public native acquisition only after those checks succeed, verify
+   `https://pokedrafts.io/castmirror`, and report the exact deployed SHA.
 
 Provisioning, cutover and rollback procedures are in `castmirror-hosted.md`.

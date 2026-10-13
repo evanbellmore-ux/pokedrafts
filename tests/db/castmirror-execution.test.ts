@@ -126,6 +126,45 @@ describe('private CastMirror Execution PostgreSQL authority', () => {
     finally { await admin.query(`revoke select on execution_v3.accounts from ${login}`); }
   });
 
+  it('accepts the genuine Supabase public statistics views without changing their grants', async () => {
+    await admin.query('create extension if not exists pg_stat_statements with schema extensions');
+    const stats = await admin.query(`select c.relname,has_table_privilege($1,c.oid,'SELECT') readable
+      from pg_class c join pg_namespace n on n.oid=c.relnamespace
+      where n.nspname='extensions' and c.relname in ('pg_stat_statements','pg_stat_statements_info') order by 1`,[login]);
+    expect(stats.rows).toEqual([{ relname: 'pg_stat_statements', readable: true }, { relname: 'pg_stat_statements_info', readable: true }]);
+    const { account } = await seed();
+    expect(await call(runtime,'preflight',[account])).toBe(true);
+    const after = await admin.query(`select c.relname,has_table_privilege($1,c.oid,'SELECT') readable
+      from pg_class c join pg_namespace n on n.oid=c.relnamespace
+      where n.nspname='extensions' and c.relname in ('pg_stat_statements','pg_stat_statements_info') order by 1`,[login]);
+    expect(after.rows).toEqual(stats.rows);
+  });
+
+  it('rejects a same-name statistics view without genuine extension membership', async () => {
+    const { account } = await seed();
+    await admin.query('alter extension pg_stat_statements drop view extensions.pg_stat_statements');
+    try { await expectRpcError(call(runtime,'preflight',[account]),'live-role-invalid'); }
+    finally { await admin.query('alter extension pg_stat_statements add view extensions.pg_stat_statements'); }
+    expect(await call(runtime,'preflight',[account])).toBe(true);
+  });
+
+  it('still rejects write grants on genuine statistics views', async () => {
+    const { account } = await seed();
+    await admin.query(`grant update on extensions.pg_stat_statements to ${login}`);
+    try { await expectRpcError(call(runtime,'preflight',[account]),'live-role-invalid'); }
+    finally { await admin.query(`revoke update on extensions.pg_stat_statements from ${login}`); }
+    expect(await call(runtime,'preflight',[account])).toBe(true);
+  });
+
+  it('rejects public application data even when it resembles a statistics view', async () => {
+    const { account } = await seed();
+    await admin.query('create view public.execution_statistics_impostor as select 1 as value');
+    await admin.query('grant select on public.execution_statistics_impostor to public');
+    try { await expectRpcError(call(runtime,'preflight',[account]),'live-role-invalid'); }
+    finally { await admin.query('drop view public.execution_statistics_impostor'); }
+    expect(await call(runtime,'preflight',[account])).toBe(true);
+  });
+
   it('admin seed stays disabled and runtime cannot create implicit fresh credit', async () => {
     const { account } = await seed(ledger(),false);
     await expectRpcError(call(runtime,'preflight',[account]),'live-account-unavailable');

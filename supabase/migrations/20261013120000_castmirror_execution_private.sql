@@ -816,7 +816,16 @@ BEGIN
                 AND has_schema_privilege(r.oid,n.oid,'CREATE'))
      OR EXISTS (SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
                 WHERE n.nspname NOT LIKE 'pg_%' AND n.nspname <> 'information_schema' AND c.relkind IN ('r','p','v','m','f')
-                  AND (has_table_privilege(r.oid,c.oid,'SELECT') OR has_table_privilege(r.oid,c.oid,'INSERT')
+                  -- Supabase's public statistics views are system instrumentation,
+                  -- not application data. Names alone never establish membership.
+                  AND ((has_table_privilege(r.oid,c.oid,'SELECT') AND NOT
+                         (c.relkind = 'v' AND n.nspname = 'extensions'
+                          AND c.relname IN ('pg_stat_statements','pg_stat_statements_info')
+                          AND EXISTS (SELECT 1 FROM pg_depend d JOIN pg_extension e ON e.oid = d.refobjid
+                               WHERE d.classid = 'pg_class'::regclass AND d.objid = c.oid AND d.objsubid = 0
+                                 AND d.refclassid = 'pg_extension'::regclass AND d.deptype = 'e'
+                                 AND e.extname = 'pg_stat_statements' AND e.extnamespace = n.oid)))
+                       OR has_table_privilege(r.oid,c.oid,'INSERT')
                        OR has_table_privilege(r.oid,c.oid,'UPDATE') OR has_table_privilege(r.oid,c.oid,'DELETE')
                        OR has_table_privilege(r.oid,c.oid,'TRUNCATE') OR has_table_privilege(r.oid,c.oid,'REFERENCES')
                        OR has_table_privilege(r.oid,c.oid,'TRIGGER')))
