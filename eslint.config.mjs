@@ -18,6 +18,10 @@ const eslintConfig = defineConfig([
     // Placeholder app for another project that shares this repo; not held to
     // the PokeDrafts lint rules.
     "app/api/castmirror/**",
+    // Exact upstream native snapshots/generated modules are hash-checked and
+    // tested separately; do not rewrite vendor code to match local lint style.
+    "vendor/castmirror/native/**",
+    "vendor/castmirror/native-upstream/**",
   ]),
 ]);
 

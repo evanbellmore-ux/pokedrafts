@@ -13,6 +13,7 @@ export const HARDENING_MIGRATION = "20260909120000_release_hardening.sql";
 // Feature migrations sort after the hardening file and are applied in filename order.
 export const PLAYOFFS_MIGRATION = "20260912120000_playoffs.sql";
 export const POOL_BUILDER_MIGRATION = "20260916120000_pool_builder.sql";
+export const EXECUTION_MIGRATION = "20261013120000_castmirror_execution_private.sql";
 export const BASE_MIGRATION = "00000000000000_base_schema.sql";
 
 export type MigrationFile = { name: string; sql: string };

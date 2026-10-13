@@ -2,6 +2,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { connect, type Client } from "./harness";
 import {
   BASE_MIGRATION,
+  EXECUTION_MIGRATION,
   HARDENING_MIGRATION,
   PLAYOFFS_MIGRATION,
   POOL_BUILDER_MIGRATION,
@@ -233,13 +234,14 @@ describe("migrations", () => {
     await admin.end();
   });
 
-  it("ship a base schema first, the hardening migration after the eight legacy files, then the playoffs and pool builder feature migrations", () => {
+  it("ship the base, legacy, hardening, playoffs, pool builder and private Execution migrations in order", () => {
     const migrations = readMigrations();
     expect(migrations[0].name).toBe(BASE_MIGRATION);
     expect(migrations[9].name).toBe(HARDENING_MIGRATION);
     expect(migrations[10].name).toBe(PLAYOFFS_MIGRATION);
-    expect(migrations[migrations.length - 1].name).toBe(POOL_BUILDER_MIGRATION);
-    expect(migrations).toHaveLength(12);
+    expect(migrations[11].name).toBe(POOL_BUILDER_MIGRATION);
+    expect(migrations[12].name).toBe(EXECUTION_MIGRATION);
+    expect(migrations).toHaveLength(13);
   });
 
   it("the shared test database was migrated by the global setup", async () => {

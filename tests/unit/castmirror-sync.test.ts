@@ -17,7 +17,7 @@ describe("CastMirror pinned source generation", () => {
     assert.equal(manifest.schemaVersion, 1);
     assert.equal(manifest.upstream.revision, revision);
     assert.equal(manifest.upstream.repository, "https://github.com/evanbellmore-ux/cast-mirror");
-    assert.equal(manifest.adapterVersion, "castmirror-vercel-v2");
+    assert.equal(manifest.adapterVersion, "castmirror-vercel-v3");
     assert.ok(manifest.declarations.includes("sameRealm"), "the reviewed source's portable realm helper must be explicitly allowlisted");
     assert.deepEqual(Object.keys(manifest.sourceFiles).sort(), ["upstream/index.html", "upstream/throughput.mjs"]);
     for (const [name, entry] of Object.entries(manifest.sourceFiles) as Array<[string, { sha256: string }]>) {
@@ -40,7 +40,11 @@ describe("CastMirror pinned source generation", () => {
     assert.doesNotMatch(core, /\$partition|partition: \$partition/, "hosted throughput retains its existing ranking queries, not native acquisition");
     const injection = page.indexOf("window.MIRROR_API_BASE = '/api/castmirror'");
     assert.ok(injection >= 0 && injection < page.indexOf("const $ = (id)"));
-    assert.match(page, /Object\.freeze\(\{ build: false, reference: false \}\)/);
+    assert.match(page, /Object\.freeze\(\{ build: false, reference: true \}\)/);
+    assert.match(page, /status\?\.analyticalVersion === 'execution-statistical-3'/);
+    assert.match(page, /status\?\.available === true/);
+    assert.match(page, /status\?\.backend === 'native'/);
+    assert.match(page, /typeof pin === 'string'/);
     assert.ok(page.includes(revision));
   });
 

@@ -298,9 +298,9 @@ describe("pool builder migration", () => {
     await db.end();
   });
 
-  it("is the last migration file, after the hardening and playoffs files", () => {
+  it("sorts after the hardening and playoffs files", () => {
     const names = readMigrations().map((m) => m.name);
-    expect(names.at(-1)).toBe(POOL_BUILDER_MIGRATION);
+    expect(names).toContain(POOL_BUILDER_MIGRATION);
     expect(names.indexOf(POOL_BUILDER_MIGRATION)).toBeGreaterThan(names.indexOf(PLAYOFFS_MIGRATION));
     expect(names.indexOf(PLAYOFFS_MIGRATION)).toBeGreaterThan(names.indexOf(HARDENING_MIGRATION));
   });

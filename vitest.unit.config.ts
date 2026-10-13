@@ -25,6 +25,8 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": root,
+      // Unit tests run in Node, outside React's server-component resolver.
+      "server-only": fileURLToPath(new URL("./node_modules/server-only/empty.js", import.meta.url)),
     },
   },
   test: {

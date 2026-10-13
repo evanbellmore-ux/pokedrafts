@@ -50,11 +50,11 @@ describe("CastMirror hosted page local throughput switching", () => {
     assert.ok(p.executedScripts.length >= 2, "the API-base injection and app must both execute");
     assert.equal(p.evaluate("API"), "/api/castmirror/");
     assert.equal(p.evaluate("window.MIRROR_API_BASE"), "/api/castmirror");
-    assert.deepEqual(state(p, "window.MIRROR_EXECUTION_CAPABILITIES"), { build: false, reference: false });
+    assert.deepEqual(state(p, "window.MIRROR_EXECUTION_CAPABILITIES"), { build: false, reference: true });
     assert.equal(p.evaluate("Object.isFrozen(window.MIRROR_EXECUTION_CAPABILITIES)"), true);
     assert.equal(p.evaluate("Reflect.set(window.MIRROR_EXECUTION_CAPABILITIES, 'build', true)"), false);
     assert.equal(p.evaluate("Reflect.set(window.MIRROR_EXECUTION_CAPABILITIES, 'reference', true)"), false);
-    assert.deepEqual(state(p, "window.MIRROR_EXECUTION_CAPABILITIES"), { build: false, reference: false });
+    assert.deepEqual(state(p, "window.MIRROR_EXECUTION_CAPABILITIES"), { build: false, reference: true });
     assert.doesNotMatch(p.html, /<option>cn<\/option>/, "hosted region choices must match validated server regions");
     assert.ok(p.requests.length >= 2);
     assert.ok(p.requests.every((url: string) => url.startsWith("/api/castmirror/")));
@@ -324,19 +324,19 @@ describe("CastMirror hosted Execution capability guards", () => {
     const { p, clock } = await setup();
     await p.runMirror(42, "Test Boss");
     const requestCount = p.requests.length;
-    p.evaluate("const savedReleaseCapabilities = window.MIRROR_EXECUTION_CAPABILITIES");
+    p.evaluate("const savedReleaseCapabilities = window.MIRROR_EXECUTION_CAPABILITIES; comparison.comparisonID = '11111111-1111-4111-8111-111111111111'; comparison.executionV3Status = { state: 'available', available: true, backend: 'native', analyticalVersion: 'execution-statistical-3' }");
     // Probe the actual guard, without dispatching an action or changing the
     // shipped release. Otherwise static false could mask a loose runtime check.
     for (const release of [undefined, null, {}, { build: false, reference: false }, { build: "true", reference: 1 }, { build: true, reference: true }]) {
       for (const response of [undefined, null, {}, { build: false, reference: false }, { build: "true", reference: 1 }, { build: true, reference: true }]) {
         p.evaluate(`window.MIRROR_EXECUTION_CAPABILITIES = ${JSON.stringify(release) ?? "undefined"}`);
-        p.evaluate(`comparison.executionStatus.capabilities = ${JSON.stringify(response) ?? "undefined"}`);
+        p.evaluate(`comparison.executionV3Status.capabilities = ${JSON.stringify(response) ?? "undefined"}`);
         for (const capability of ["build", "reference"] as const) {
           assert.equal(p.evaluate(`executionAllowed('${capability}')`), release?.[capability] === true && response?.[capability] === true);
         }
       }
     }
-    p.evaluate("window.MIRROR_EXECUTION_CAPABILITIES = savedReleaseCapabilities; renderComparison()");
+    p.evaluate("window.MIRROR_EXECUTION_CAPABILITIES = savedReleaseCapabilities; delete comparison.executionV3Status; delete comparison.comparisonID; renderComparison()");
     assert.equal(p.evaluate("Object.isFrozen(window.MIRROR_EXECUTION_CAPABILITIES)"), true);
     assert.equal(p.requests.length, requestCount);
     assertHostedInactive(p, clock);
@@ -346,17 +346,17 @@ describe("CastMirror hosted Execution capability guards", () => {
     const { p, clock } = await setup();
     await p.runMirror(42, "Test Boss");
     const requestCount = p.requests.length;
-    p.evaluate("const savedNativeReleaseCapabilities = window.MIRROR_EXECUTION_CAPABILITIES; comparison.executionStatus.capabilities = { build: true, reference: true }");
+    p.evaluate("const savedNativeReleaseCapabilities = window.MIRROR_EXECUTION_CAPABILITIES; comparison.comparisonID = '11111111-1111-4111-8111-111111111111'; comparison.executionStatus.capabilities = { build: true, reference: true }");
     for (const release of [undefined, null, {}, { build: false, reference: false }, { build: "true", reference: 1 }, { build: true, reference: true }]) {
       for (const response of [undefined, null, {}, { build: false, reference: false }, { build: "true", reference: 1 }, { build: true, reference: true }]) {
         p.evaluate(`window.MIRROR_EXECUTION_CAPABILITIES = ${JSON.stringify(release) ?? "undefined"}`);
-        p.evaluate(`comparison.executionV3Status = { state: 'available', capabilities: ${JSON.stringify(response) ?? "undefined"} }`);
+        p.evaluate(`comparison.executionV3Status = { state: 'available', available: true, backend: 'native', analyticalVersion: 'execution-statistical-3', capabilities: ${JSON.stringify(response) ?? "undefined"} }`);
         for (const capability of ["build", "reference"] as const) {
           assert.equal(p.evaluate(`executionAllowed('${capability}')`), release?.[capability] === true && response?.[capability] === true);
         }
       }
     }
-    p.evaluate("window.MIRROR_EXECUTION_CAPABILITIES = savedNativeReleaseCapabilities; renderComparison()");
+    p.evaluate("window.MIRROR_EXECUTION_CAPABILITIES = savedNativeReleaseCapabilities; delete comparison.comparisonID; comparison.executionV3Status.capabilities = { build: false, reference: false }; renderComparison()");
     assert.equal(p.requests.length, requestCount);
     assertHostedInactive(p, clock);
   });

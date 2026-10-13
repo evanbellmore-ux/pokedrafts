@@ -12,7 +12,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const VENDOR = path.join(ROOT, 'vendor/castmirror');
 const MANIFEST = path.join(VENDOR, 'manifest.json');
 const REVISION = 'af7d034354abcb4cc4d52719989900a0e0b1b455';
-const ADAPTER = 'castmirror-vercel-v2';
+const ADAPTER = 'castmirror-vercel-v3';
 const REPOSITORY = 'https://github.com/evanbellmore-ux/cast-mirror';
 const DECLARATIONS = [
   'classes', 'ensureClasses', 'PI_SPELL', 'fightHasPI', 'HERO_SIG', 'heroOf',
@@ -29,6 +29,8 @@ const PATCHES = [
   'supported-region-picker',
   'frozen-execution-capabilities-and-handler-guards',
   'honest-unsupported-execution-projection',
+  'gated-durable-native-reference-capability',
+  'compact-native-response-with-pinned-throughput-streams',
 ];
 const normalize = (text) => text.replace(/\r\n/g, '\n');
 const digest = (text) => createHash('sha256').update(normalize(text)).digest('hex');
@@ -231,15 +233,20 @@ export function generatePage(snapshot) {
     `<script>
 window.MIRROR_API_BASE = '/api/castmirror';
 window.MIRROR_SOURCE_VERSION = '${REVISION}';
-window.MIRROR_EXECUTION_CAPABILITIES = Object.freeze({ build: false, reference: false });
+window.MIRROR_EXECUTION_CAPABILITIES = Object.freeze({ build: false, reference: true });
 </script>
 <script>
 const $ = (id) => document.getElementById(id);`, 'hosted configuration');
   html = patch(html, 'function referenceChoices() {',
     `// Both the release and service must explicitly support an Execution action.
 function executionAllowed(capability) {
-  const status = isExecutionV3() ? comparison.executionV3Status : comparison?.executionStatus;
-  return window.MIRROR_EXECUTION_CAPABILITIES?.[capability] === true &&
+  const status = comparison?.executionV3Status;
+  const pin = comparison?.comparisonID;
+  return isExecutionV3() && status?.state === 'available' &&
+    status?.available === true && status?.backend === 'native' &&
+    status?.analyticalVersion === 'execution-statistical-3' &&
+    typeof pin === 'string' && /^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i.test(pin) &&
+    window.MIRROR_EXECUTION_CAPABILITIES?.[capability] === true &&
     status?.capabilities?.[capability] === true;
 }
 function hostedExecutionStatus() {
@@ -262,6 +269,11 @@ function referenceChoices() {`, 'capability helpers');
     referenceMode = 'overall'; restoreExecution = false;
   }
   const choice = referenceChoices().find((c) => c.mode === referenceMode);`, 'unavailable projection');
+  html = patch(html, '    if (isExecutionV3()) D.a = comparison.a;',
+    `    if (isExecutionV3()) {
+      D.a = comparison.a;
+      if (choice?.value?.rankingMetric === 'execution') D.b = comparison.b;
+    }`, 'compact native response retains pinned throughput streams');
   html = patch(html, '    if (!isExecutionV3() && data.executionReference && restoreExecution) {',
     "    if (executionAllowed('reference') && !isExecutionV3() && data.executionReference && restoreExecution) {", 'hero reload guard');
   html = patch(html,
