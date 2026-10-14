@@ -5,7 +5,7 @@ import { ChevronDown } from "lucide-react";
 import PokemonSprite from "@/app/components/PokemonSprite";
 import { Alert, Button } from "@/app/components/ui";
 import PokePasteImporter from "@/app/(app)/calculator/PokePasteImporter";
-import { MyTeamPicker, OpponentPicker } from "@/app/(app)/calculator/LeagueMatchupPicker";
+import { MyTeamPicker, OpponentPicker, type OpponentQuickGroup } from "@/app/(app)/calculator/LeagueMatchupPicker";
 import type useCalculatorRosters from "@/app/(app)/calculator/useCalculatorRosters";
 import type { PasteImport, TeamSourceOwner } from "@/app/(app)/calculator/roster-prep";
 import type { DoublesSideId } from "@/app/lib/battle/doubles-types";
@@ -34,6 +34,8 @@ export type TeamSourcePanelProps = {
   shared: ReadonlySet<string>;
   /** Bumped by the Start bar's fact for this side: the Choose 6 list opens. */
   reveal: number;
+  /** The opponent's league picker: its quick picks ("Next match", "Recent"; next-opponent.ts opponentQuickPicks). */
+  quick?: readonly OpponentQuickGroup[];
   onSource(update: (source: TeamSourceDraft) => TeamSourceDraft): void;
   onRetrySuggest(): void;
   onLoadMoves(speciesId: string): void;
@@ -46,7 +48,7 @@ export const TRAINING_PICKER_TEXT = {
 
 const sourceButton ="min-h-11 rounded-lg border px-3 py-1.5 text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus";
 
-export default function TeamSourcePanel({ role, team, source, ownMode, rosters, runtime, visibility, problems, moveOptions, shared, reveal, onSource, onRetrySuggest, onLoadMoves }: TeamSourcePanelProps) {
+export default function TeamSourcePanel({ role, team, source, ownMode, rosters, runtime, visibility, problems, moveOptions, shared, reveal, quick, onSource, onRetrySuggest, onLoadMoves }: TeamSourcePanelProps) {
   const id = useId();
   const panel = useRef<HTMLElement>(null);
   /** Edit as PokéPaste and Import team unmount the pressed control: once the source's epoch moves past this one, the keyboard
@@ -127,7 +129,7 @@ export default function TeamSourcePanel({ role, team, source, ownMode, rosters, 
         role === "own"
           ? <MyTeamPicker embedded state={rosters.state} onLeagueChange={rosters.selectLeague} onRefresh={rosters.refresh} loginNext="/training" />
           : <OpponentPicker embedded state={rosters.state} onOpponentChange={rosters.selectOpponent} onRefresh={rosters.refresh} loginNext="/training"
-            onLeagueChange={ownMode === "paste" ? rosters.selectLeague : undefined} />
+            onLeagueChange={ownMode === "paste" ? rosters.selectLeague : undefined} quick={quick} />
       ) : (
         <PokePasteImporter embedded role={role} owner={owner} applied={source.paste} runtime={runtime} onApply={apply} onRemove={removePaste}
           removeDescription={TRAINING_PICKER_TEXT.removeDescription}

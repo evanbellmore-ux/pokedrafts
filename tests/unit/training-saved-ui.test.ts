@@ -5,10 +5,12 @@ import ReplayScreen from "@/app/(app)/training/replay/ReplayScreen";
 import {
   beatDelay, IDLE_MS, nextTurn, play, positionText, previousTurn, replayFrame, replayTurns, seek, START, tick, type ReplayPosition,
 } from "@/app/(app)/training/replay/replay-playback";
-import SavedBattles, { ResumePrompt } from "@/app/(app)/training/saved/SavedBattles";
+import SavedBattles, { LastBattle, ResumePrompt } from "@/app/(app)/training/saved/SavedBattles";
 import { ANNOUNCE_MS, HP_ANIMATION_MS, RESOLVE_MS } from "@/app/(app)/training/board/playback";
-import type { ReplayState, SavedBattlesState, SavedBattleSummary } from "@/app/(app)/training/model/saved-battle";
-import type { LogTurn, TurnStep } from "@/app/(app)/training/model/view-types";
+import {
+  parseSummary, RULES_VERSION, summaryOf, type ReplayState, type SavedBattle, type SavedBattlesState, type SavedBattleSummary,
+} from "@/app/(app)/training/model/saved-battle";
+import { TRAINING_FORMAT_ID, type LogTurn, type TurnStep } from "@/app/(app)/training/model/view-types";
 import { FORMAT_FACTS } from "@/app/(app)/training/model/format-facts";
 import { isoTime, savedDate } from "@/app/(app)/training/saved/download";
 import { capture, textOf } from "../fixtures/jsx-capture";
@@ -29,26 +31,32 @@ const savedState = (patch: Partial<SavedBattlesState> = {}): SavedBattlesState =
   message: null, import: { status: "idle" }, autosaved: null, ...patch,
 });
 const actions = () => ({
-  openReplay: vi.fn(), resume: vi.fn(), deleteSaved: vi.fn(), deleteAllSaved: vi.fn(), importSaved: vi.fn(),
+  openReplay: vi.fn(), resume: vi.fn(), rematchSaved: vi.fn(), deleteSaved: vi.fn(), deleteAllSaved: vi.fn(), importSaved: vi.fn(),
   exportSaved: vi.fn(async () => null as { name: string; text: string } | null),
 });
 const buttons = (elements: { type: string; props: Record<string, unknown> }[]) => elements.filter((element) => element.type === "button");
 const named = (elements: { type: string; props: Record<string, unknown> }[], label: string) => buttons(elements).find((button) => button.props["aria-label"] === label || textOf(button.props.children) === label);
 
 describe("Saved battles list (setup screen)", () => {
-  it("lists date, teams, result and turns with Replay, Export and Delete (Resume for an unfinished one), Import and Delete all", () => {
+  it("lists date, teams, result, turns and difficulty with Rematch, Replay, Export and Delete (Resume for an unfinished one), Import and Delete all", () => {
     const session = actions();
     const { result: html, elements } = capture(() => renderToStaticMarkup(createElement(SavedBattles, { saved: savedState(), session })));
     expect(html).toContain(">Saved battles</h2>");
     expect(html).toContain("3 of 100 in this browser · oldest removed first");
     expect(html).toContain("Your team vs Rival");
-    expect(html).toContain(" · Won · 7 turns");
-    expect(html).toContain(" · Unfinished · Turn 3");
-    expect(html).toContain(" · Forfeited · 4 turns · Imported");
+    expect(html).toContain(" · Won · 7 turns · Plays safe</p>");
+    expect(html).toContain(" · Unfinished · Turn 3 · Plays safe</p>");
+    // The difficulty sits before "Imported", as on the replay screen (package 4 adds it to every row).
+    expect(html).toContain(" · Forfeited · 4 turns · Plays safe · Imported</p>");
     expect(html).toMatch(/<time dateTime="2026-10-0\dT\d\d:02:00.000Z">/);
     expect(html).toContain("Export file (.json), up to 2 MB");
     expect(html).toMatch(/<input[^>]*type="file"[^>]*accept=".json,application\/json"[^>]*hidden=""/);
     const labels = buttons(elements).map((button) => String(button.props["aria-label"] ?? textOf(button.props.children)));
+    // A finished row: Rematch first, named by the teams and date as its other buttons are.
+    const row = `Your team vs Rival, ${savedDate(CREATED)}`;
+    expect(labels.slice(0, 4)).toEqual([`Rematch ${row}`, `Replay ${row}`, `Export ${row}`, `Delete ${row}`]);
+    expect(buttons(elements).slice(0, 4).map((button) => textOf(button.props.children))).toEqual(["Rematch", "Replay", "Export", "Delete"]);
+    expect(labels.filter((label) => label.startsWith("Rematch "))).toHaveLength(2);
     expect(labels.filter((label) => label.startsWith("Replay "))).toHaveLength(2);
     expect(labels.filter((label) => label.startsWith("Export "))).toHaveLength(2);
     expect(labels.filter((label) => label.startsWith("Resume "))).toHaveLength(1);
@@ -59,6 +67,8 @@ describe("Saved battles list (setup screen)", () => {
     const replay = buttons(elements).find((button) => String(button.props["aria-label"]).startsWith("Replay Your team vs Rival"))!;
     (replay.props.onClick as () => void)();
     expect(session.openReplay).toHaveBeenCalledWith("f1");
+    (buttons(elements).filter((button) => String(button.props["aria-label"]).startsWith("Rematch "))[1].props.onClick as () => void)();
+    expect(session.rematchSaved).toHaveBeenCalledExactlyOnceWith("i1");
     (buttons(elements).find((button) => String(button.props["aria-label"]).startsWith("Resume "))!.props.onClick as () => void)();
     expect(session.resume).toHaveBeenCalledWith("u1");
     (buttons(elements).find((button) => String(button.props["aria-label"]).startsWith("Delete "))!.props.onClick as () => void)();
@@ -119,6 +129,56 @@ describe("Saved battles list (setup screen)", () => {
     expect(renderToStaticMarkup(createElement(ResumePrompt, { saved: savedState({ list: [summary()] }), session }))).toBe("");
   });
 
+  it("shows the newest finished battle as Last battle, with Rematch and Replay, only while no battle is unfinished", () => {
+    const session = actions();
+    const list = [summary({ id: "f2", opponent: "Feralinatr", difficulty: "reads" }), summary()];
+    const { result: html, elements } = capture(() => renderToStaticMarkup(createElement(LastBattle, { saved: savedState({ list }), session })));
+    expect(html).toContain('data-training-last-battle="true"');
+    expect(html).toContain(">Last battle</h2>");
+    expect(html).toContain(">Your team vs Feralinatr</p>");
+    expect(html).toContain(">Won · 7 turns · Reads you</p>");
+    // Named by the teams and turns (as the Resume prompt's buttons), so they differ from the row's "{teams}, {date}" names.
+    expect(buttons(elements).map((button) => [textOf(button.props.children), button.props["aria-label"]])).toEqual([
+      ["Rematch", "Rematch Your team vs Feralinatr, 7 turns"], ["Replay", "Replay Your team vs Feralinatr, 7 turns"],
+    ]);
+    (buttons(elements)[0].props.onClick as () => void)();
+    expect(session.rematchSaved).toHaveBeenCalledExactlyOnceWith("f2");
+    (buttons(elements)[1].props.onClick as () => void)();
+    expect(session.openReplay).toHaveBeenCalledExactlyOnceWith("f2");
+    // Its Replay is marked for the focus to come back to when that replay closes.
+    expect(buttons(elements)[1].props["data-training-last-replay-for"]).toBe("f2");
+    // A test extra is a fact too: Rematch plays with the record's settings.
+    const tested = renderToStaticMarkup(createElement(LastBattle, { saved: savedState({ list: [summary({ testSettings: true })] }), session }));
+    expect(tested).toContain(">Won · 7 turns · Plays safe · Test settings on</p>");
+    // An imported battle (newest by its import) is not your last battle: the card shows the newest one you played.
+    const afterImport = renderToStaticMarkup(createElement(LastBattle, {
+      saved: savedState({ list: [summary({ id: "i2", source: "imported", opponent: "Someone else", updatedAt: CREATED + 120_000 }), summary()] }), session,
+    }));
+    expect(afterImport).toContain(">Your team vs Rival</p>");
+    expect(afterImport).not.toContain("Someone else");
+    expect(renderToStaticMarkup(createElement(LastBattle, { saved: savedState({ list: [summary({ source: "imported" })] }), session }))).toBe("");
+    // The Resume prompt takes the place while a battle is unfinished; nothing without a finished battle.
+    expect(renderToStaticMarkup(createElement(LastBattle, { saved: savedState(), session }))).toBe("");
+    expect(renderToStaticMarkup(createElement(LastBattle, { saved: savedState({ list: [] }), session }))).toBe("");
+    expect(renderToStaticMarkup(createElement(LastBattle, { saved: savedState({ status: "loading", list: [] }), session }))).toBe("");
+  });
+
+  it("states a battle's test extras in its row, from its record (a summary saved before the field states none until filled in)", () => {
+    const html = renderToStaticMarkup(createElement(SavedBattles, { saved: savedState({ list: [summary({ testSettings: true })] }), session: actions() }));
+    expect(html).toContain(" · Won · 7 turns · Plays safe · Test settings on</p>");
+    const exactHP = trainingSetup({ info: { ...trainingSetup().info, youSee: { ...trainingSetup().info.youSee, exactHP: true } } });
+    const record = { version: 1, id: "t1", status: "finished", source: "played", format: TRAINING_FORMAT_ID, rules: RULES_VERSION, createdAt: CREATED, updatedAt: CREATED,
+      setup: exactHP, turn: 7, result: { result: "win", forfeited: false }, seed: null, inputLog: null, log: [], resume: null, habitsBefore: null, habitsAfter: null, order: null } satisfies SavedBattle;
+    expect(summaryOf(record).testSettings).toBe(true);
+    expect(parseSummary(summaryOf(record))).toEqual(summaryOf(record));
+    expect(summaryOf({ ...record, setup: trainingSetup() }).testSettings).toBe(false);
+    expect(parseSummary({ ...summaryOf(record), testSettings: "yes" })).toBeNull();
+    const older = summaryOf(record);
+    delete older.testSettings;
+    expect(parseSummary(older)).toEqual(older);
+    expect(renderToStaticMarkup(createElement(SavedBattles, { saved: savedState({ list: [older] }), session: actions() }))).not.toContain("Test settings on");
+  });
+
   it("a time no Date holds renders as a fact instead of throwing", () => {
     expect(savedDate(Number.MAX_SAFE_INTEGER)).toBe("Unknown date");
     expect(isoTime(Number.MAX_SAFE_INTEGER)).toBeUndefined();
@@ -137,7 +197,7 @@ describe("Saved battles list (setup screen)", () => {
     expect(html).not.toContain("<img src=x");
     expect(html).toContain("&lt;script&gt;alert(1)&lt;/script&gt; vs &lt;img src=x onerror=&quot;alert(2)&quot;&gt;");
     const replay = renderToStaticMarkup(createElement(ReplayScreen, {
-      runtime, replay: { id: "x", summary: summary({ own: evil }), setup: trainingSetup(), log: logTurns(), status: "log", boards: null, message: null }, session: { closeReplay: vi.fn(), exportSaved: vi.fn(async () => null) },
+      runtime, replay: { id: "x", summary: summary({ own: evil }), setup: trainingSetup(), log: logTurns(), status: "log", boards: null, message: null }, session: { closeReplay: vi.fn(), exportSaved: vi.fn(async () => null), rematchSaved: vi.fn() },
     }));
     expect(replay).not.toContain("<script>");
   });
@@ -233,7 +293,7 @@ describe("replay screen (server render)", () => {
   const replay = (patch: Partial<ReplayState> = {}): ReplayState => ({
     id: "f1", summary: summary(), setup: trainingSetup(), log: replayLog(), status: "board", boards: BOARDS, message: null, ...patch,
   });
-  const session = { closeReplay: vi.fn(), exportSaved: vi.fn(async () => null) };
+  const session = { closeReplay: vi.fn(), exportSaved: vi.fn(async () => null), rematchSaved: vi.fn() };
 
   it("shows the facts, the controls (Previous, Play, Next, the turn slider, 1× / 2×), the board and the log", () => {
     const { result: html, elements } = capture(() => renderToStaticMarkup(createElement(ReplayScreen, { runtime, replay: replay(), session })));
@@ -250,10 +310,27 @@ describe("replay screen (server render)", () => {
     // Before turn 1's steps play, the panel shows what resolved before it (Start), as the battle did: not turn 1's lines yet.
     expect(html).toMatch(/data-training-replay-turn[^>]*aria-label="Start"/);
     const labels = buttons(elements).map((button) => String(button.props["aria-label"] ?? textOf(button.props.children)));
-    expect(labels).toEqual(["Export", "Close replay", "Previous turn", "Play", "Next turn", "1×", "2×"]);
+    // The header: Rematch (package 4), Export, Close replay.
+    expect(labels).toEqual(["Rematch", "Export", "Close replay", "Previous turn", "Play", "Next turn", "1×", "2×"]);
     expect(buttons(elements).find((button) => textOf(button.props.children) === "1×")!.props["aria-pressed"]).toBe(true);
     (named(elements, "Close replay")!.props.onClick as () => void)();
     expect(session.closeReplay).toHaveBeenCalledOnce();
+    (named(elements, "Rematch")!.props.onClick as () => void)();
+    expect(session.rematchSaved).toHaveBeenCalledExactlyOnceWith("f1");
+  });
+
+  it("states the battle's test extras beside its difficulty (Rematch plays with them)", () => {
+    const info = trainingSetup().info;
+    const setup = trainingSetup({ info: { ...info, aiKnows: { ...info.aiKnows, brought: true } } });
+    const html = renderToStaticMarkup(createElement(ReplayScreen, { runtime, replay: replay({ setup }), session }));
+    expect(html).toContain(" · Won · 7 turns · Plays safe · Test settings on</p>");
+    expect(renderToStaticMarkup(createElement(ReplayScreen, { runtime, replay: replay(), session }))).not.toContain("Test settings on");
+  });
+
+  it("states a header Rematch that could not read the record in its status region", () => {
+    const html = renderToStaticMarkup(createElement(ReplayScreen, { runtime, replay: replay({ notice: "The saved battle could not be read." }), session }));
+    expect(html).toMatch(/<div role="status"[^>]*>The saved battle could not be read\.<\/div>/);
+    expect(renderToStaticMarkup(createElement(ReplayScreen, { runtime, replay: replay(), session }))).not.toContain("could not be read");
   });
 
   it("while re-running: a status; when the re-run differs or fails: the fact and the saved log only", () => {

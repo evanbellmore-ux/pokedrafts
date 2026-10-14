@@ -54,6 +54,17 @@ export type SetupDraft = {
   own: TeamSourceDraft; opponent: TeamSourceDraft; difficulty: TrainingDifficulty; showRead: boolean;
   info: InfoSettings;
 };
+/**
+ * Your league picks remembered for the bound account (setup/remembered-setup.ts): the league and each league's opponent you
+ * last picked ("" for "—", which is your pick too), and each league's opponents of your last starts there (newest first).
+ */
+export type SetupPicks = {
+  userId: string | null;
+  /** null: none picked yet. */
+  leagueId: string | null;
+  opponents: Readonly<Record<string, string>>;
+  recent: Readonly<Record<string, readonly string[]>>;
+};
 export type TeamProblems = { team: string[]; members: Record<string, string[]> };
 export type SetupValidation =
   | { status: "idle" }
@@ -314,6 +325,8 @@ export type TrainingSnapshot = {
   revision: number;
   engine: EngineLoad;
   draft: SetupDraft;
+  /** Your remembered league picks; null until an account is bound. */
+  picks: SetupPicks | null;
   validation: SetupValidation;
   /** The stored habits: the decayed turn count and the parsed data (empty when none), for "Your trends". */
   habits: { turns: number; data: HabitsData };

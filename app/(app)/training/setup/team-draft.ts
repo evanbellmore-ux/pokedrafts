@@ -60,6 +60,11 @@ export function emptySource(): TeamSourceDraft {
   return { mode: "league", paste: null, pasteDraft: null, epoch: 0, chosen: null, otherChosen: null, edits: {} };
 }
 
+/** A side as it started: a League team never switched, nothing imported or typed in the PokéPaste importer. */
+export function untouched(source: TeamSourceDraft): boolean {
+  return source.mode === "league" && source.epoch === 0 && !source.paste && !source.pasteDraft;
+}
+
 /** The side's source switched to `mode`: each mode keeps its own Choose 6 picks (a roster change still starts from the first six). */
 export function withMode(source: TeamSourceDraft, mode: TeamSourceDraft["mode"]): TeamSourceDraft {
   if (source.mode === mode) return source;
@@ -73,6 +78,10 @@ export function createSetupDraft(info: InfoSettings = DEFAULT_INFO): SetupDraft 
 
 export function pasteKey(runtime: BattleRuntime, role: DoublesSideId, pasteId: string, index: number) {
   return JSON.stringify(["paste", runtime.identity, role, pasteId, index]);
+}
+/** A paste member's key (pasteKey); league member keys start with the runtime identity. */
+export function isPasteKey(key: string) {
+  return key.startsWith('["paste",');
 }
 
 function speciesName(runtime: BattleRuntime, speciesId: string | null, fallback: string) {

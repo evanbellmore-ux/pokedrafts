@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { emptyHabits } from "@/app/(app)/training/model/habits-data";
+import { DEFAULT_INFO } from "@/app/(app)/training/model/info";
 import {
   canonicalJson, EXPORT_KIND, exportFileName, exportText, firstDifference, IMPORT_MAX_BYTES, IMPORT_MAX_DEPTH, logHash, logShapeHash, MAX_TIME,
   migrateSavedBattle, nestsDeeper, parseExportText, parseFinishedBattle, parseStoredBattle, parseSummary, resultText, rewordedLog, RULES_VERSION,
@@ -7,7 +8,9 @@ import {
 } from "@/app/(app)/training/model/saved-battle";
 import { TRAINING_FORMAT_ID, type LogTurn } from "@/app/(app)/training/model/view-types";
 import type { FromWorker } from "@/app/(app)/training/model/worker-protocol";
-import { createBattleStore, memoryBackend, memoryBattleStore, STORAGE_FULL, STORAGE_UNAVAILABLE, storeErrorOf, type BattleStore } from "@/app/(app)/training/saved/battle-store";
+import {
+  createBattleStore, memoryBackend, memoryBattleStore, STORAGE_FULL, STORAGE_UNAVAILABLE, StoreError, storeErrorOf, type BattleStore,
+} from "@/app/(app)/training/saved/battle-store";
 import { createTrainingSession, HABITS_KEY } from "@/app/(app)/training/training-session";
 import { boardView, fakeTransport, logTurns, memoryStorage, moveRequest, trainingSetup } from "../fixtures/training";
 
@@ -77,7 +80,7 @@ describe("record format v1", () => {
   it("summarises a record for the list and words result and turns as facts", () => {
     expect(summaryOf(finished())).toEqual({
       id: "battle-1", status: "finished", source: "played", createdAt: 1_700_000_000_000, updatedAt: 1_700_000_100_000,
-      own: "Your team", opponent: "Rival", turn: 7, result: { result: "win", forfeited: false }, difficulty: "safe",
+      own: "Your team", opponent: "Rival", turn: 7, result: { result: "win", forfeited: false }, difficulty: "safe", testSettings: false,
     });
     expect(resultText(finished())).toBe("Won");
     expect(resultText(finished({ result: { result: "loss", forfeited: true } }))).toBe("Forfeited");
@@ -187,6 +190,39 @@ describe("BattleStore (in-memory adapter)", () => {
     expect(storeErrorOf(Object.assign(new Error("x"), { name: "NS_ERROR_DOM_QUOTA_REACHED" })).message).toBe(STORAGE_FULL);
     const broken = createBattleStore({ ...memoryBackend(), summaries: async () => { throw Object.assign(new Error("blocked"), { name: "InvalidStateError" }); } });
     await expect(broken.list()).rejects.toThrow(STORAGE_UNAVAILABLE);
+  });
+
+  it("fills in a summary saved before testSettings from its record, once, never over a newer save", async () => {
+    const backend = memoryBackend();
+    const store = createBattleStore(backend);
+    const testSetup = trainingSetup({ info: { ...DEFAULT_INFO, youSee: { ...DEFAULT_INFO.youSee, exactHP: true } } });
+    /** The record with its summary as saved before the field existed. */
+    const olderSummary = (record: SavedBattle) => {
+      const summary = summaryOf(record);
+      delete summary.testSettings;
+      return summary;
+    };
+    const older = (record: SavedBattle) => backend.write(record, olderSummary(record));
+    await older(finished({ setup: testSetup }));
+    await older(finished({ id: "plain" }));
+    await older(unfinished());
+    backend.records.set("plain", { nope: true } as unknown as SavedBattle);
+    const read = vi.spyOn(backend, "read");
+    const listed = Object.fromEntries((await store.list()).map((each) => [each.id, each.testSettings]));
+    // Its record states it (a test extra on, or none); an unreadable record leaves the summary as it was.
+    expect(listed).toEqual({ "battle-1": true, "battle-2": false, plain: undefined });
+    expect((await backend.summaries()).map((each) => (each as { testSettings?: boolean }).testSettings)).toEqual([true, undefined, false]);
+    expect(read).toHaveBeenCalledTimes(3);
+    await store.list();
+    expect(read).toHaveBeenCalledTimes(3);
+    // A summary a newer save wrote (with the field) is never replaced.
+    expect(await backend.backfill(summaryOf(finished({ turn: 1 })))).toBe(false);
+    expect(((await backend.summaries())[0] as { turn: number }).turn).toBe(7);
+    // A failed write leaves the list as it reads.
+    const failing = memoryBackend();
+    await failing.write(finished(), olderSummary(finished()));
+    failing.fail = "QuotaExceededError";
+    expect((await createBattleStore(failing).list())[0].testSettings).toBeUndefined();
   });
 
   it("skips corrupt rows, exports finished battles only, and imports a file after its check under a new id", async () => {
@@ -337,6 +373,149 @@ describe("page store: autosave, Resume, replays and imports", () => {
     fake.emit({ type: "battle-error", battleId: session.getSnapshot().battle!.id, message: "The saved battle cannot be opened in this browser." });
     expect(session.getSnapshot().battle).toBeNull();
     expect(session.getSnapshot().setupError).toBe("The saved battle cannot be opened in this browser.");
+  });
+
+  // Package 4: Rematch from Saved battles, the Last battle card and the replay screen.
+  const TEST_INFO = { aiKnows: { ...DEFAULT_INFO.aiKnows, exactHP: true }, youSee: { ...DEFAULT_INFO.youSee, brought: true } };
+
+  it("Rematch on a finished saved battle starts a new battle on its record's setup, test extras included, offering its order", async () => {
+    const store = memoryBattleStore();
+    const storage = memoryStorage();
+    const record = finished({ setup: trainingSetup({ difficulty: "reads", showRead: false, info: TEST_INFO }), order: [2, 1, 3, 4] });
+    await store.save(record);
+    const { session, fake } = setup(store, storage);
+    await flush();
+    // From the replay screen: the replay closes and the battle starts.
+    session.openReplay("battle-1");
+    await flush();
+    expect(session.getSnapshot().replay?.id).toBe("battle-1");
+    const draft = session.getSnapshot().draft;
+    session.rematchSaved("battle-1");
+    await flush();
+    const battle = session.getSnapshot().battle!;
+    expect(session.getSnapshot().replay).toBeNull();
+    expect(battle).toMatchObject({ phase: { kind: "starting" }, setup: record.setup, lastPreview: [2, 1, 3, 4] });
+    expect(battle.resumed).toBeUndefined();
+    // A new battle (its own saved record), sent with the record's settings; the setup draft and its remembered record keep theirs.
+    expect(battle.savedId).not.toBe("battle-1");
+    expect(fake.of("start")).toEqual([{ type: "start", battleId: battle.id, setup: record.setup, habits: null }]);
+    expect(session.getSnapshot().draft).toBe(draft);
+    expect(storage.getItem("pokedrafts:training:setup:v1:user-1") ?? "").not.toContain("exactHP");
+    // A finished battle's re-run for the closed replay is dropped.
+    const replayMessage = fake.of("replay")[0];
+    fake.emit({ type: "replay-ready", replayId: replayMessage.replayId, ...rerunOf(record.log), result: WON, starts: {}, end: boardView({ turn: 7 }) });
+    expect(session.getSnapshot().replay).toBeNull();
+    // Team preview's order is saved with the new record (Rematch again uses it).
+    fake.emit(battleMessage(battle.id, { seed: SEED, request: null, ended: { result: "win", forfeited: false }, inputLog: INPUT, board: boardView({ turn: 7 }) }));
+    await flush();
+    expect(await store.get(battle.savedId)).toMatchObject({ status: "finished", order: [2, 1, 3, 4], setup: record.setup });
+    session.changeTeams();
+    session.rematchSaved(battle.savedId);
+    await flush();
+    expect(session.getSnapshot().battle).toMatchObject({ setup: record.setup, lastPreview: [2, 1, 3, 4] });
+  });
+
+  it("Rematch from the replay screen states a record that cannot be read there, the replay staying open", async () => {
+    const store = memoryBattleStore();
+    await store.save(finished());
+    const { session, fake } = setup(store);
+    await flush();
+    session.openReplay("battle-1");
+    await flush();
+    // Deleted meanwhile (another tab's Delete all): Saved battles is not shown with the replay, so the replay states it too.
+    await store.removeAll();
+    session.rematchSaved("battle-1");
+    await flush();
+    expect(session.getSnapshot().replay).toMatchObject({ id: "battle-1", notice: "The saved battle could not be read." });
+    expect(session.getSnapshot().saved.message).toBe("The saved battle could not be read.");
+    expect(session.getSnapshot().battle).toBeNull();
+    // A storage failure: its fact.
+    vi.spyOn(store, "get").mockRejectedValueOnce(new StoreError(STORAGE_UNAVAILABLE));
+    session.rematchSaved("battle-1");
+    await flush();
+    expect(session.getSnapshot().replay?.notice).toBe(STORAGE_UNAVAILABLE);
+    // From Saved battles (no replay open), only Saved battles states it.
+    session.closeReplay();
+    session.rematchSaved("battle-1");
+    await flush();
+    expect(session.getSnapshot().replay).toBeNull();
+    expect(session.getSnapshot().saved.message).toBe("The saved battle could not be read.");
+    expect(fake.of("start")).toEqual([]);
+  });
+
+  it("Rematch refuses an unfinished or missing record, and returns to setup with the fact when the engine or the teams fail", async () => {
+    const store = memoryBattleStore();
+    await store.save(unfinished());
+    await store.save(finished());
+    const { session, fake } = setup(store);
+    await flush();
+    session.rematchSaved("battle-2");
+    await flush();
+    expect(session.getSnapshot().saved.message).toBe("The saved battle could not be read.");
+    expect(session.getSnapshot().battle).toBeNull();
+    session.rematchSaved("battle-gone");
+    await flush();
+    expect(session.getSnapshot().battle).toBeNull();
+    expect(fake.of("start")).toEqual([]);
+    // The worker refuses the record's teams (an imported one is validated again): back to Setup with its fact.
+    session.rematchSaved("battle-1");
+    await flush();
+    fake.emit({ type: "battle-error", battleId: session.getSnapshot().battle!.id, message: "Your team: Garchomp can't learn Spore." });
+    expect(session.getSnapshot().battle).toBeNull();
+    expect(session.getSnapshot().setupError).toBe("Your team: Garchomp can't learn Spore.");
+    // The engine did not load: the fact, no battle.
+    fake.emit({ type: "load-error", message: "Out of memory." });
+    session.rematchSaved("battle-1");
+    await flush();
+    expect(session.getSnapshot().battle).toBeNull();
+    expect(session.getSnapshot().setupError).toBe("The battle engine did not load: Out of memory.");
+    expect(fake.of("start")).toHaveLength(1);
+  });
+
+  it("Rematch before the worker loads waits for it (fails with it), and an account switch drops it", async () => {
+    const store = memoryBattleStore();
+    await store.save(finished({ order: [1, 2, 3, 4] }));
+    const fresh = () => {
+      const fake = fakeTransport();
+      const session = createTrainingSession({ transport: () => fake.transport, storage: null, battleStore: () => store });
+      session.subscribe(() => undefined);
+      session.bindAccount("user-1");
+      return { fake, session };
+    };
+    const waiting = fresh();
+    await flush();
+    waiting.session.rematchSaved("battle-1");
+    await flush();
+    const battle = waiting.session.getSnapshot().battle!;
+    expect(battle.phase.kind).toBe("starting");
+    expect(waiting.fake.of("start")).toEqual([]);
+    waiting.fake.emit({ type: "loaded", ms: 1 });
+    expect(waiting.fake.of("start")).toEqual([{ type: "start", battleId: battle.id, setup: finished().setup, habits: null }]);
+
+    const failing = fresh();
+    await flush();
+    failing.session.rematchSaved("battle-1");
+    await flush();
+    failing.fake.emit({ type: "load-error", message: "Out of memory." });
+    expect(failing.session.getSnapshot().battle).toBeNull();
+    expect(failing.session.getSnapshot().setupError).toBe("The battle engine did not load: Out of memory.");
+    expect(failing.fake.of("start")).toEqual([]);
+
+    // Change teams before the worker loads: the waiting start is never sent.
+    const stopped = fresh();
+    await flush();
+    stopped.session.rematchSaved("battle-1");
+    await flush();
+    stopped.session.changeTeams();
+    stopped.fake.emit({ type: "loaded", ms: 1 });
+    expect(stopped.fake.of("start")).toEqual([]);
+
+    const switched = fresh();
+    await flush();
+    switched.session.rematchSaved("battle-1");
+    switched.session.bindAccount("user-2");
+    await flush();
+    expect(switched.session.getSnapshot().battle).toBeNull();
   });
 
   it("Replay re-runs the battle in the worker; equal logs show the board, a different one only the saved log", async () => {

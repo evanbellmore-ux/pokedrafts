@@ -1,10 +1,14 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { createTrainingSession, getTrainingSession, HABITS_KEY, INFO_KEY, TRENDS_KEY } from "@/app/(app)/training/training-session";
+import { parseTeamImport } from "@/app/lib/battle/team-import";
+import { createTrainingSession, getTrainingSession, HABITS_KEY, INFO_KEY, SETUP_KEY, TRENDS_KEY } from "@/app/(app)/training/training-session";
 import { emptyHabits, type HabitsData } from "@/app/(app)/training/model/habits-data";
 import { PERFECT_INFORMATION } from "@/app/(app)/training/model/info";
-import type { BoardView, LogTurn, TrainingRequest } from "@/app/(app)/training/model/view-types";
+import type { BoardView, LogTurn, TeamSourceDraft, TrainingRequest } from "@/app/(app)/training/model/view-types";
 import type { FromWorker } from "@/app/(app)/training/model/worker-protocol";
-import { boardView, fakeTransport, logTurns, memoryStorage, moveRequest, PREVIEW_REQUEST, report, switchRequest, throwingStorage, trainingSetup } from "../fixtures/training";
+import { emptySource, pasteKey, withMode } from "@/app/(app)/training/setup/team-draft";
+import {
+  boardView, fakeTransport, logTurns, memoryStorage, moveRequest, OWN_MEMBERS, PASTE_TEXT, PREVIEW_REQUEST, report, runtime, switchRequest, throwingStorage, trainingSetup,
+} from "../fixtures/training";
 
 beforeEach(() => {
   vi.useFakeTimers();
@@ -342,6 +346,133 @@ describe("training session store", () => {
     expect(next.getSnapshot().draft.info.aiKnows).toEqual({ ...PERFECT_INFORMATION, exactHP: false, brought: false });
   });
 
+  it("remembers the setup per account and restores it on the next visit, without the information settings' test extras", () => {
+    const storage = memoryStorage();
+    const { session } = setupSession(storage);
+    session.bindAccount("user-1");
+    const keys = [0, 1, 2, 3, 4].map((index) => pasteKey(runtime, "own", "own-1", index));
+    const own: TeamSourceDraft = {
+      ...emptySource(), mode: "paste", epoch: 1, chosen: keys, otherChosen: null,
+      paste: { id: "own-1", title: "Sand team", url: null, text: PASTE_TEXT, team: parseTeamImport(PASTE_TEXT, "champions", runtime) },
+      edits: { [keys[0]]: { build: OWN_MEMBERS[0].build, moves: OWN_MEMBERS[0].moves } },
+    };
+    session.updateDraft((draft) => ({ ...draft, own, difficulty: "reads", showRead: false, info: { aiKnows: PERFECT_INFORMATION, youSee: PERFECT_INFORMATION } }));
+    const stored = storage.data.get(`${SETUP_KEY}user-1`)!;
+    expect(JSON.parse(stored)).toMatchObject({ version: 1, difficulty: "reads", showRead: false, own: { mode: "paste", paste: { text: PASTE_TEXT } } });
+    expect(stored).not.toMatch(/exactHP|brought|aiKnows/);
+    // A reload: the draft starts as new, then the account's remembered setup comes back once it is bound.
+    const next = setupSession(storage).session;
+    expect(next.getSnapshot().draft.difficulty).toBe("safe");
+    next.bindAccount("user-1");
+    const draft = next.getSnapshot().draft;
+    expect(draft).toMatchObject({ difficulty: "reads", showRead: false, own: { mode: "paste", epoch: 1, chosen: keys, edits: own.edits } });
+    expect(draft.own.paste).toEqual(own.paste);
+    expect(draft.info.aiKnows).toEqual({ ...PERFECT_INFORMATION, exactHP: false, brought: false });
+    // Another account reads its own record (none: the defaults); back again, the first account's.
+    next.bindAccount("user-2");
+    expect(next.getSnapshot().draft).toMatchObject({ difficulty: "safe", showRead: true, own: emptySource() });
+    next.bindAccount("user-1");
+    expect(next.getSnapshot().draft).toMatchObject({ difficulty: "reads", own: { mode: "paste", chosen: keys } });
+  });
+
+  it("keeps Same as last battle across a reload: the last team order is remembered per account", () => {
+    const storage = memoryStorage();
+    const first = setupSession(storage);
+    first.fake.emit({ type: "loaded", ms: 1 });
+    first.session.bindAccount("user-1");
+    first.session.start(trainingSetup());
+    first.fake.emit(battleMessage(1, PREVIEW_REQUEST));
+    first.session.choose({ kind: "team", order: [3, 1, 5, 2] });
+    const next = setupSession(storage);
+    next.fake.emit({ type: "loaded", ms: 1 });
+    next.session.bindAccount("user-1");
+    next.session.start(trainingSetup());
+    expect(next.session.getSnapshot().battle!.lastPreview).toEqual([3, 1, 5, 2]);
+    next.session.changeTeams();
+    next.session.bindAccount("user-2");
+    next.session.start(trainingSetup());
+    expect(next.session.getSnapshot().battle!.lastPreview).toBeNull();
+  });
+
+  it("remembers your league, each league's opponent (— included) and the opponents of your last starts there", () => {
+    const storage = memoryStorage();
+    const { session, fake } = setupSession(storage);
+    fake.emit({ type: "loaded", ms: 1 });
+    // Before an account is bound there is nothing to remember them for.
+    session.rememberLeague("league-b");
+    expect(session.getSnapshot().picks).toBeNull();
+    session.bindAccount("user-1");
+    expect(session.getSnapshot().picks).toEqual({ userId: "user-1", leagueId: null, opponents: {}, recent: {} });
+    session.rememberLeague("league-b");
+    session.rememberOpponent("league-b", "member-x");
+    session.start(trainingSetup(), { leagueId: "league-b", opponentId: "member-x" });
+    session.changeTeams();
+    session.start(trainingSetup(), { leagueId: "league-b", opponentId: "member-y" });
+    session.changeTeams();
+    session.start(trainingSetup(), null);
+    const picks = { userId: "user-1", leagueId: "league-b", opponents: { "league-b": "member-x" }, recent: { "league-b": ["member-y", "member-x"] } };
+    expect(session.getSnapshot().picks).toEqual(picks);
+    const next = setupSession(storage).session;
+    next.bindAccount("user-1");
+    expect(next.getSnapshot().picks).toEqual(picks);
+    // "—" is your pick too: remembered, so it comes back as "—".
+    next.rememberOpponent("league-b", "");
+    next.rememberLeague("");
+    expect(next.getSnapshot().picks).toEqual({ ...picks, leagueId: "", opponents: { "league-b": "" } });
+    expect(JSON.parse(storage.data.get(`${SETUP_KEY}user-1`)!)).toMatchObject({ leagueId: "", opponents: { "league-b": "" }, recent: picks.recent });
+    const again = setupSession(storage).session;
+    again.bindAccount("user-1");
+    expect(again.getSnapshot().picks).toEqual({ ...picks, leagueId: "", opponents: { "league-b": "" } });
+    next.bindAccount("user-2");
+    expect(next.getSnapshot().picks).toEqual({ userId: "user-2", leagueId: null, opponents: {}, recent: {} });
+  });
+
+  it("reads a malformed record part by part, and applies a change made before the account was bound over it", () => {
+    const key = `${SETUP_KEY}user-1`;
+    const storage = memoryStorage({ [key]: JSON.stringify({ version: 1, difficulty: "reads", showRead: "no", own: 5, leagueId: "league-a" }) });
+    const { session } = setupSession(storage);
+    session.bindAccount("user-1");
+    expect(session.getSnapshot().draft).toMatchObject({ difficulty: "reads", showRead: true, own: emptySource(), opponent: emptySource() });
+    expect(session.getSnapshot().picks?.leagueId).toBe("league-a");
+    const unreadable = setupSession(memoryStorage({ [key]: "{" })).session;
+    unreadable.bindAccount("user-1");
+    expect(unreadable.getSnapshot().draft).toMatchObject({ difficulty: "safe", showRead: true });
+    // Changed before the account was known: the change is applied over the remembered setup (then remembered), the picks kept.
+    const early = setupSession(storage).session;
+    early.updateDraft((draft) => ({ ...draft, showRead: false }));
+    early.bindAccount("user-1");
+    expect(early.getSnapshot().draft).toMatchObject({ difficulty: "reads", showRead: false });
+    expect(early.getSnapshot().picks?.leagueId).toBe("league-a");
+    expect(JSON.parse(storage.data.get(key)!)).toMatchObject({ difficulty: "reads", showRead: false, leagueId: "league-a" });
+  });
+
+  it("never loses a remembered PokéPaste side to a change made while the account was still being read", () => {
+    const storage = memoryStorage();
+    const first = setupSession(storage).session;
+    first.bindAccount("user-1");
+    const keys = [0, 1, 2, 3, 4].map((index) => pasteKey(runtime, "own", "own-1", index));
+    const own: TeamSourceDraft = {
+      ...emptySource(), mode: "paste", epoch: 1, chosen: keys, otherChosen: null,
+      paste: { id: "own-1", title: "Sand team", url: null, text: PASTE_TEXT, team: parseTeamImport(PASTE_TEXT, "champions", runtime) },
+      edits: { [keys[0]]: { build: OWN_MEMBERS[0].build, moves: OWN_MEMBERS[0].moves } },
+    };
+    first.updateDraft((draft) => ({ ...draft, own, difficulty: "reads" }));
+    // A reload: Setup shows the defaults until the account is bound; you turn the read off and press PokéPaste meanwhile.
+    const next = setupSession(storage).session;
+    next.updateDraft((draft) => ({ ...draft, showRead: false }));
+    next.updateDraft((draft) => ({ ...draft, own: withMode(draft.own, "paste") }));
+    next.bindAccount("user-1");
+    const draft = next.getSnapshot().draft;
+    expect(draft).toMatchObject({ difficulty: "reads", showRead: false, own: { mode: "paste", epoch: 1, chosen: keys, edits: own.edits } });
+    expect(draft.own.paste).toEqual(own.paste);
+    expect(JSON.parse(storage.data.get(`${SETUP_KEY}user-1`)!)).toMatchObject({ difficulty: "reads", showRead: false, own: { mode: "paste", paste: { text: PASTE_TEXT } } });
+    // Once bound, a change is the draft's own (nothing is applied again on the next bind).
+    next.updateDraft((draft) => ({ ...draft, difficulty: "safe" }));
+    next.bindAccount("user-2");
+    next.bindAccount("user-1");
+    expect(next.getSnapshot().draft).toMatchObject({ difficulty: "safe", showRead: false, own: { mode: "paste" } });
+  });
+
   it("resets draft, battle, habits view and information on another account", () => {
     const storage = memoryStorage({ [`${HABITS_KEY}user-2`]: JSON.stringify({ version: 1, turns: 5, data: null }) });
     const { session, fake } = setupSession(storage);
@@ -367,6 +498,12 @@ describe("training session store", () => {
       session.updateDraft((draft) => ({ ...draft, info: { ...draft.info, aiKnows: PERFECT_INFORMATION } }));
       session.clearHabits();
       expect(session.getSnapshot().habits).toEqual({ turns: 0, data: emptyHabits() });
+      // The remembered setup: kept for this visit, not stored.
+      session.updateDraft((draft) => ({ ...draft, difficulty: "reads" }));
+      session.rememberLeague("league-a");
+      session.rememberOpponent("league-a", "member-other");
+      expect(session.getSnapshot().picks).toMatchObject({ leagueId: "league-a", opponents: { "league-a": "member-other" } });
+      expect(session.getSnapshot().draft.difficulty).toBe("reads");
     }
   });
 

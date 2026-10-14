@@ -286,7 +286,7 @@ describe("contract shape", () => {
     expectTypeOf<TurnRecord["observedMega"]>().toEqualTypeOf<DoublesSlotId | null>();
     expectTypeOf<SlotContext["canMega"]>().toEqualTypeOf<boolean>();
     expectTypeOf<DecisionStats["statusOptions"]>().toEqualTypeOf<{ its: number; yours: number }>();
-    expectTypeOf<keyof TrainingSnapshot>().toEqualTypeOf<"revision" | "engine" | "draft" | "validation" | "habits" | "trendsOpen" | "setupError" | "battle" | "suggestions" | "moveOptions" | "saved" | "replay">();
+    expectTypeOf<keyof TrainingSnapshot>().toEqualTypeOf<"revision" | "engine" | "draft" | "picks" | "validation" | "habits" | "trendsOpen" | "setupError" | "battle" | "suggestions" | "moveOptions" | "saved" | "replay">();
     expectTypeOf<MegaPolicy>().toEqualTypeOf<"per-turn" | "first-chance">();
     expectTypeOf<PreviewContext["usage"]>().toEqualTypeOf<TrainingUsageData>();
     expectTypeOf<TurnContext["usage"]>().toEqualTypeOf<TrainingUsageData>();

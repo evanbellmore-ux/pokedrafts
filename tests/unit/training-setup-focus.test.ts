@@ -1,5 +1,6 @@
 import { act, createElement, useState } from "react";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import type { ReplayState, SavedBattlesState, SavedBattleSummary } from "@/app/(app)/training/model/saved-battle";
 import type { TrainingBattle, TrainingSnapshot, SetupDraft, SuggestionState, TeamSourceDraft } from "@/app/(app)/training/model/view-types";
 import type { DoublesSideId } from "@/app/lib/battle/doubles-types";
 import { emptyHabits } from "@/app/(app)/training/model/habits-data";
@@ -11,8 +12,8 @@ import { installFakeDom, reactProps, type FakeDocument, type FakeElement } from 
 import { OPPONENT_ROSTER, OWN_ROSTER, PREVIEW_REQUEST, rosterState, runtime, suggestedSet, trainingSetup } from "../fixtures/training";
 
 // Keyboard focus after the setup's controls unmount themselves (fake DOM): Edit as PokéPaste → the importer's Team text,
-// Import team → Choose 6, Change teams → Your team's heading. The browser moves the focus of a removed element to the page
-// body; the fake DOM does not, so each case puts it there as the press would.
+// Import team → Choose 6, Change teams → Your team's heading, a closed replay → the Replay button that opened it. The browser
+// moves the focus of a removed element to the page body; the fake DOM does not, so each case puts it there as the press would.
 
 const state = vi.hoisted(() => ({ snapshot: null as unknown, session: null as unknown }));
 vi.mock("@/app/(app)/training/useTrainingSession", () => ({ useTrainingSession: () => [state.snapshot, state.session] }));
@@ -22,6 +23,11 @@ vi.mock("@/app/(app)/calculator/useCalculatorRosters", async () => {
   return { default: () => rosters };
 });
 vi.mock("@/app/(app)/training/setup/useNextOpponent", () => ({ useNextOpponent: (rosters: unknown) => rosters }));
+// The replay screen as its heading only: these cases are about where the focus goes when it closes.
+vi.mock("@/app/(app)/training/replay/ReplayScreen", async () => {
+  const { createElement } = await import("react");
+  return { default: () => createElement("h2", { tabIndex: -1 }, "Replay") };
+});
 
 const ROSTERS = rosterState(OWN_ROSTER, OPPONENT_ROSTER);
 
@@ -137,6 +143,59 @@ describe("Change teams", () => {
     document.activeElement = document.body;
     await show(setupSnapshot({ setupError: "The battle engine stopped." }));
     expect(document.activeElement).toBe(document.body);
+    await act(async () => { root.render(null); });
+  });
+
+  const finished: SavedBattleSummary = {
+    id: "f1", status: "finished", source: "played", createdAt: 1, updatedAt: 2, own: "Home", opponent: "Rival", turn: 7,
+    result: { result: "win", forfeited: false }, difficulty: "safe", testSettings: false,
+  };
+  const saved: SavedBattlesState = { status: "ready", list: [finished], message: null, import: { status: "idle" }, autosaved: null };
+  const replay = { id: "f1" } as ReplayState;
+  const marked = (attribute: string) => document.querySelectorAll("button").find((each) => each.getAttribute(attribute) === "f1")!;
+
+  it("a replay left for a battle (its header's Rematch) takes no focus back: Change teams still gives it to Your team's heading", async () => {
+    document.activeElement = document.body;
+    await show(setupSnapshot({ saved }));
+    await show(setupSnapshot({ saved, replay }));
+    // Rematch in the replay's header: the battle replaces the replay in one snapshot.
+    document.activeElement = document.body;
+    await show(setupSnapshot({ saved, battle }));
+    expect((document.activeElement as FakeElement).textContent).toBe("Team preview");
+    await press("Change teams");
+    document.activeElement = document.body;
+    await show(setupSnapshot({ saved }));
+    expect(document.activeElement).toBe(ownHeading());
+    // Refused by the worker (Battle stopped): the focus stays where the page left it.
+    await show(setupSnapshot({ saved, replay }));
+    await show(setupSnapshot({ saved, battle }));
+    document.activeElement = document.body;
+    await show(setupSnapshot({ saved, setupError: "Your team: Garchomp can't learn Spore." }));
+    expect(document.activeElement).toBe(document.body);
+    await act(async () => { root.render(null); });
+  });
+
+  it("closing a replay gives the focus back to the Replay button that opened it: the Last battle card's, else its row's", async () => {
+    document.activeElement = document.body;
+    await show(setupSnapshot({ saved }));
+    const fromCard = marked("data-training-last-replay-for");
+    expect(fromCard.closest("[data-training-last-battle]")).not.toBeNull();
+    fromCard.focus();
+    await act(async () => { (reactProps(fromCard).onClick as () => void)(); });
+    expect(session.openReplay).toHaveBeenLastCalledWith("f1");
+    await show(setupSnapshot({ saved, replay }));
+    document.activeElement = document.body;
+    await show(setupSnapshot({ saved }));
+    expect(document.activeElement).toBe(marked("data-training-last-replay-for"));
+    // The same battle's row in Saved battles: back to the row.
+    const fromRow = marked("data-training-replay-for");
+    fromRow.focus();
+    await act(async () => { (reactProps(fromRow).onClick as () => void)(); });
+    await show(setupSnapshot({ saved, replay }));
+    document.activeElement = document.body;
+    await show(setupSnapshot({ saved }));
+    expect(document.activeElement).toBe(marked("data-training-replay-for"));
+    expect((document.activeElement as FakeElement).closest("[data-training-saved]")).not.toBeNull();
     await act(async () => { root.render(null); });
   });
 });

@@ -5,7 +5,7 @@ import { nextMatchFor, nextOpponentId, opponentId, parseScheduledMatches, type S
 // default opponent both read it.
 
 const match = (round: number, number: number, home: string | null, away: string | null, status = "upcoming"): ScheduledMatch => ({
-  round_number: round, match_number: number, home_member_id: home, away_member_id: away, status,
+  round_number: round, match_number: number, home_member_id: home, away_member_id: away, status, stage: "regular",
 });
 
 describe("next match", () => {
@@ -27,7 +27,7 @@ describe("next match", () => {
 
   it("reads league_matches rows, leaving out rows of another shape", () => {
     const good = match(1, 2, "a", null);
-    expect(parseScheduledMatches([good, { ...good, round_number: "1" }, { ...good, home_member_id: 7 }, { ...good, status: null }, null, "row", { ...good, extra: true }]))
+    expect(parseScheduledMatches([good, { ...good, round_number: "1" }, { ...good, home_member_id: 7 }, { ...good, status: null }, { ...good, stage: undefined }, null, "row", { ...good, extra: true }]))
       .toEqual([good, good]);
     expect(parseScheduledMatches(null)).toEqual([]);
     expect(parseScheduledMatches({ data: [] })).toEqual([]);

@@ -18,7 +18,7 @@ let document: FakeDocument;
 let root: { render(node: unknown): void; unmount(): void };
 let ReplayScreen: typeof import("@/app/(app)/training/replay/ReplayScreen").default;
 let replay: ReplayState;
-const session = { closeReplay: vi.fn(), exportSaved: vi.fn(async () => null) };
+const session = { closeReplay: vi.fn(), exportSaved: vi.fn(async () => null), rematchSaved: vi.fn() };
 
 beforeAll(async () => {
   const pair = teamPair("saved-screen", 0, parsePools("S,V"), runtime);
@@ -145,7 +145,7 @@ describe("Saved battles keyboard focus", () => {
     status: "ready" as const, message: null, import: { status: "idle" as const }, autosaved: null,
     list: ids.map((id) => ({ ...replay.summary, id })),
   });
-  const actions = () => ({ openReplay: vi.fn(), resume: vi.fn(), deleteSaved: vi.fn(), deleteAllSaved: vi.fn(), importSaved: vi.fn(), exportSaved: vi.fn(async () => null) });
+  const actions = () => ({ openReplay: vi.fn(), resume: vi.fn(), rematchSaved: vi.fn(), deleteSaved: vi.fn(), deleteAllSaved: vi.fn(), importSaved: vi.fn(), exportSaved: vi.fn(async () => null) });
 
   it("closing a replay gives the focus back to its row's Replay button; a delete moves it to the heading", async () => {
     const SavedBattles = (await import("@/app/(app)/training/saved/SavedBattles")).default;
