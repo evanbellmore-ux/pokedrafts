@@ -164,3 +164,38 @@ final manifest. No baseline was regenerated or job resumed/reset.
    `https://pokedrafts.io/castmirror`, and report the exact deployed SHA.
 
 Provisioning, cutover and rollback procedures are in `castmirror-hosted.md`.
+
+## Hosted pin diagnosis (2026-10-13)
+
+The activation resume recovered the existing private cutover rather than
+reprovisioning it. A fresh shared-account audit preserved all 15 original jobs,
+22 pending points and three nonterminal jobs exactly, with no new native job,
+pool or pin. Public native acquisition remained disabled.
+
+A comparison-only hosted probe verified the private nonexistent-pin route
+returned 409, then obtained a complete HTTP 200 comparison in 4.5 seconds with
+no historical A, Overall B or Boss B labels. Its native status was unavailable
+and it carried no comparison ID. Offline validation of the privately retained
+response identified exactly one failed pin assertion: requested-realm matching.
+The requested realm contained word separators, whereas the validated WCL actor
+realm omitted them. The two realms matched under the source-pinned throughput
+actor-identity rule, but not under the pin validator's API-slug equality.
+
+The focused fix uses that existing realm-identity rule for pin validation and
+Overall B current-ranking proof, without changing the original retained actor
+or request values. API query slug normalization remains unchanged. Regressions
+cover compact actor realms, independent current A/B proof, retained-row reads
+and rejection of genuinely different realms. The captured real comparison now
+passes the pin projection offline. No historical, authentication, ownership,
+TTL, deadline or acquisition-budget protection was relaxed.
+
+The original failed smoke did not retain its raw response, so its individual
+failed predicate cannot be reconstructed with certainty. The resumed probe
+provides the exact demonstrated blocker above; offline projection and mocked
+regressions alone are not proof of a hosted pin write or native scoring.
+
+Local gates passed: source parity; repository lint/typecheck; 9,062 unit tests
+across 281 files (one existing skip); all 597 CastMirror tests across 15 files;
+and 277 isolated embedded-Postgres tests across 24 files. Explicit lint with
+`--no-ignore` also passed for the changed hosted adapter files. The original
+private-smoke offline safeguard check still passed all 157 assertions.
