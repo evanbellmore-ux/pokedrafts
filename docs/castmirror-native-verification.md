@@ -1,8 +1,11 @@
 # Native Execution verification
 
-Status on 2026-10-13: implementation is gated and **not publicly activated**.
-The production site must not be described as running native Execution until the
-provisioning, cutover, and real hosted verification below are complete.
+Status on 2026-10-13: **private hosted DPS acquisition and persisted-cache checks
+passed; public Execution remains disabled**. The focused pin fix is deployed at
+`5c33ee020192128c50ecca7edc4b605422101b6a`. Real Chrome passed public
+Overall/Boss/Healing on that deployment. Native healer/tank, hosted restart and
+native browser verification remain incomplete; the single authorized new
+acquisition has been consumed. Do not describe public Execution as live.
 
 ## Implemented
 
@@ -132,38 +135,34 @@ final manifest. No baseline was regenerated or job resumed/reset.
   private environment loading. No credentials, tokens or private report data
   are included here or in Git.
 
-## Remaining activation gates
+## Current activation boundary
 
-1. Verify remaining provider capacity. Actual SQL measured approximately 18.9 MB
-   database size, `max_connections = 60`, and 16 observed connections after
-   provisioning; DDL/import writes succeeded. Physical disk allocation/free
-   space, the project's configured database quota and subscription allocation
-   were **not** established. The CLI session proves SQL authority, but exposes no
-   disk-allocation read command and the normal environment loader has no
-   authorized management API bearer for that endpoint. The project owner must
-   supply verified Supabase dashboard disk/quota figures or authorized capacity
-   API access. Do not substitute a service-role key or repeat provisioning.
-2. Vercel project inspection confirms Node 24.x, Fluid, active Hobby and OWNER
-   access. Actual native/comparison function durations are verified, but a
-   bounded `vercel usage --json` request exited 1 without a classified provider
-   error. Remaining active CPU, provisioned memory and invocation headroom still
-   require confirmation in Vercel Usage. A successful disabled deployment does
-   not establish that headroom.
-3. After capacity and cutover checks pass, an administrator explicitly enables
-   the **existing imported account**, then enables private runtime verification
-   with the public flag still zero. Never reseed it, reset debt, resume an old
-   job or restart the stale filesystem writer. A rollback after shared activity
-   requires reconciliation of the latest shared accounting first.
-4. Run bounded real hosted Mythic DPS, healer and tank native verification,
-   Any/Exclude PI, missing/unknown/incomplete data, shared cached requests,
-   contention, stale fencing and restart/redeployment durability. No such native
-   acquisition or native restart-safety test has yet succeeded. Historical
-   throughput fallback must not become false current-native provenance or a
-   mixed-patch cohort.
-5. Enable public native acquisition only after those checks succeed, verify
-   `https://pokedrafts.io/castmirror`, and report the exact deployed SHA.
+The resume recovered the completed private cutover: the existing imported account
+is enabled, Production runtime verification is enabled, and public native access
+is still disabled. The zero flags in the initial provisioning record above are
+historical, not the current Production state. Provisioning, import, account
+enablement and private runtime configuration were not repeated. Do not reopen
+those steps or invent a new capacity blocker from the earlier provisioning
+checkpoint.
 
-Provisioning, cutover and rollback procedures are in `castmirror-hosted.md`.
+The successful private acquisition and cache checks are recorded below. Remaining
+real hosted checks are healer/tank native data, explicit restart/redeployment
+native durability, and native browser interaction. Concurrent cached requests
+passed; this is not an acquisition-contention, stale-fence or hosted-restart test.
+Those protections passed isolated embedded-Postgres tests, which remain distinct
+from production evidence.
+
+The one authorized new acquisition reached the unchanged 60-GraphQL-query cap.
+Its Arcane pool cannot establish healer/tank coverage. The pool expired before
+native browser interaction could be verified, and an ordinary native GET on an
+expired/uncovered pool can acquire again. No second acquisition is authorized by
+this resume. Preserve all one-shot/uncertainty markers, existing jobs and debt;
+do not refresh, replay or expand the acquisition allowance to complete these
+checks. Public native access must remain disabled until the remaining real
+verification succeeds under an authorized acquisition budget.
+
+Provisioning, cutover and rollback procedures are in `castmirror-hosted.md`;
+they are not instructions to replay completed operations.
 
 ## Hosted pin diagnosis (2026-10-13)
 
@@ -198,4 +197,76 @@ Local gates passed: source parity; repository lint/typecheck; 9,062 unit tests
 across 281 files (one existing skip); all 597 CastMirror tests across 15 files;
 and 277 isolated embedded-Postgres tests across 24 files. Explicit lint with
 `--no-ignore` also passed for the changed hosted adapter files. The original
-private-smoke offline safeguard check still passed all 157 assertions.
+private-smoke offline safeguard check still passed all 157 assertions. The new
+reconciled continuation passed 19 offline checks, including durable dispatch
+markers and refusal to replay an ambiguous request after restart.
+
+## Actual hosted native results (2026-10-13)
+
+PR #32 merged fix `3aca4a78`. Vercel verified Production
+`5c33ee020192128c50ecca7edc4b605422101b6a` READY with both public aliases. The
+strict Linux postbuild audit passed 32 trace inventories / 184 native-route
+files. The native route remains Node 24.x / 180 seconds; comparison remains
+Node 24.x / 60 seconds with its unchanged 55-second application deadline.
+
+Before the new smoke, a fresh database audit reconciled the earlier zero-native-
+dispatch attempt and exact original ledger. A separately latched continuation
+then performed exactly one new acquisition, without resetting the original
+smoke latch or any pending/uncertain accounting:
+
+- Current-first comparison: HTTP 200 in 5.383 seconds. The server minted a UUID;
+  restricted Supabase read-back matched its compact projection. Both A and
+  Overall B independently proved current scope: zone 53, encounter 3445,
+  Mythic difficulty 5, size 20, partition 2, patch `12.1.5`.
+- Native Any: HTTP 200, real Mage/Arcane DPS observations and comparable partial
+  scores, three scored components per side. Thirteen observations / thirteen
+  players across six kills had low confidence. Per side, three components were
+  known, one incomplete, one missing and one unsupported. No absent component
+  received a fabricated value or score; no global winner was asserted.
+- Acquisition was honestly **limited**, not full coverage: 60 GraphQL queries,
+  61 network attempts, one ranking page / 100 rows, six report heads / kills,
+  and 315,858 events. All original acquisition limits remained unchanged.
+- Accounting/pool persistence was available. The database held one new job,
+  one pool and one pin; all 15 original jobs remained deep-equal to the imported
+  originals, including three nonterminal jobs and all 22 pending points.
+  Charged job totals increased from 657.12 to 746.41 points, a native increase
+  of 89.29. No pending points were reset or refunded.
+
+A new service with warm caching disabled read and validated the shared pool
+through the restricted runtime login. Both pinned sides satisfied the actual
+cache-coverage predicate before two concurrent hosted native follow-ups:
+
+| Policy | HTTP/cache | Result |
+| --- | --- | --- |
+| Any | 200 / cached | Comparable partial scores for both sides; mask `010110`; all 13 observations retained. |
+| Exclude | 200 / cached | Measurements-only, no score and mask `000000` on either side; noncomparable; all 13 observations excluded. |
+
+PI coverage was one confirmed present, zero confirmed absent and twelve unknown.
+Exclude did not treat unknown as absent or fall back to Any. Cached responses
+retain original acquisition counters; these are not new provider calls. Actual
+audits after the concurrent follow-ups and after Chrome checks confirmed no
+additional job, charge or pending debt: revision 1453, fence 1, charged total
+746.41, original pending 22, and no active lease. The previous owner UUID is
+intentionally retained with the lease released; it was not cleared or reset.
+
+## Production browser results and unfinished checks
+
+Real installed Chrome at `https://www.pokedrafts.io/castmirror` passed Arcane
+Mythic Overall/Boss and Discipline Mythic Healing, preserving the explicitly
+selected player fights. Both comparisons and metadata returned 200 with no
+historical labels on this run. Reference switching/restoration, desktop/phone
+widths, no horizontal overflow, both URL aliases and zero page errors passed.
+Public native controls remained disabled, direct off-mode handlers made zero
+native-page requests, and the unauthenticated native route returned
+503 / unsupported / private-no-store. An earlier pinned Arcane browser attempt
+had returned 504; that failed attempt is not counted as a pass or erased by the
+successful post-deployment rerun.
+
+A separate private-authenticated Chrome attempt required fresh exact shared-cache
+proof before permitting either native policy. It stopped with zero native HTTP
+requests and zero page errors; the original pool was expired by the end of that
+check. No private native UI rendering or public native browser result is claimed.
+No second acquisition or expired-cache retry was dispatched. Real healer/tank
+native coverage and explicit hosted restart/redeployment verification also remain
+unverified. The successful DPS/API/cache evidence does not replace those gates,
+and public Execution remains **off**.
