@@ -13,29 +13,39 @@ import {
 } from "./model/view-types";
 import type { FromWorker, ToWorker, TrainingTransport } from "./model/worker-protocol";
 import { browserBattleStore, STORAGE_UNAVAILABLE, StoreError, type BattleStore, type ImportCheck } from "./saved/battle-store";
+import {
+  parseStoredSetup, picksOf, restoredDraft, storedSetupOf, withLeague, withOpponent, withStart, type LastTeam, type StoredSetup,
+} from "./setup/remembered-setup";
 import { createSetupDraft } from "./setup/team-draft";
 import { createWorkerTransport } from "./worker/worker-transport";
 
 // The Training page's module-level store (browser only): the worker transport, the setup draft, the battle, saved battles and
 // the replay screen. It survives tab navigation; a reload ends the battle, which Resume rebuilds from its last autosave. The
-// transport is created on the first subscribe, never during server rendering. Habits, the information settings and whether
-// "Your trends" is open live in localStorage, per account (test extras are never stored); saved battles in the BattleStore
-// (this browser's IndexedDB, per account).
+// transport is created on the first subscribe, never during server rendering. Habits, the information settings, whether
+// "Your trends" is open and the remembered setup (setup/remembered-setup.ts) live in localStorage, per account (test extras
+// are never stored); saved battles in the BattleStore (this browser's IndexedDB, per account).
 
 export type TrainingSession = {
   subscribe(listener: () => void): () => void;
   getSnapshot(): TrainingSnapshot;
   getServerSnapshot(): TrainingSnapshot;
-  /** Also stores draft.info's categories (never the test extras). */
+  /** Also stores draft.info's categories (never the test extras) and the remembered setup. */
   updateDraft(update: (draft: SetupDraft) => SetupDraft): void;
+  /** The league you picked ("": "—"), remembered for this account. */
+  rememberLeague(leagueId: string): void;
+  /** The opponent you picked in a league ("": "—"), remembered for this account. */
+  rememberOpponent(leagueId: string, opponentId: string): void;
   /** Debounced 250 ms; results for another key are dropped. */
   validate(setup: TrainingSetup, key: string): void;
   /** Addendum A1.2: suggested sets for one side's chosen league members, in team order. `force` re-asks after an error. */
   suggest(side: DoublesSideId, key: string, members: SuggestMember[], force?: boolean): void;
   /** Addendum A1.3: the set editor's move list for a species (once per species unless it failed). */
   loadMoveOptions(speciesId: string): void;
-  /** Team preview offers "Same as last battle" when your six are the ones of the last order you submitted or resumed. */
-  start(setup: TrainingSetup): void;
+  /**
+   * Team preview offers "Same as last battle" when your six are the ones of the last order you submitted or resumed.
+   * `opponent`: the league opponent it is against, first of that league's recent opponents.
+   */
+  start(setup: TrainingSetup, opponent?: { leagueId: string; opponentId: string } | null): void;
   choose(choice: PlayerChoice): void;
   forfeit(): void;
   rematch(): void;
@@ -44,13 +54,22 @@ export type TrainingSession = {
   clearHabits(): void;
   /** Opens or closes "Your trends" on the setup screen (remembered). */
   setTrendsOpen(open: boolean): void;
-  /** From useCalculatorRosters().state.userId; another account resets draft, battle, habits and information settings. */
+  /**
+   * From useCalculatorRosters().state.userId; another account resets the battle and reads its own habits, information settings
+   * and remembered setup (the first account's, with the changes you made to the draft before it was bound applied again).
+   */
   bindAccount(userId: string | null): void;
   /** Saved battles: the replay screen for a finished one (re-run in the worker), and closing it. */
   openReplay(id: string): void;
   closeReplay(): void;
   /** An unfinished battle: rebuilt in the worker from its sealed checkpoint, then played on. */
   resume(id: string): void;
+  /**
+   * A finished battle played again as a new battle: its record's setup (both teams as played, the difficulty, the read and the
+   * information settings, test extras included); team preview offers its order as "Same as last battle". A record that cannot
+   * be read is stated in Saved battles, and on its replay screen when that is open (ReplayState.notice).
+   */
+  rematchSaved(id: string): void;
   deleteSaved(id: string): void;
   deleteAllSaved(): void;
   /** A finished battle's export file (the page downloads it on your click). */
@@ -72,6 +91,7 @@ export type TrainingSessionOptions = {
 export const HABITS_KEY = "pokedrafts:training:habits:v1:";
 export const INFO_KEY = "pokedrafts:training:info:v1:";
 export const TRENDS_KEY = "pokedrafts:training:trends:v1:";
+export const SETUP_KEY = "pokedrafts:training:setup:v1:";
 export const VALIDATE_DELAY_MS = 250;
 
 function accountKey(userId: string | null) {
@@ -83,6 +103,7 @@ export function initialSnapshot(info: InfoSettings = DEFAULT_INFO): TrainingSnap
     revision: 0,
     engine: { status: "idle" },
     draft: createSetupDraft(info),
+    picks: null,
     validation: { status: "idle" },
     habits: { turns: 0, data: emptyHabits() },
     trendsOpen: false,
@@ -156,8 +177,12 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
   let chosenFrom: TrainingPhase | null = null;
   /** The team order you submitted in this battle (1-based), for "Same as last battle". */
   let submittedOrder: number[] | null = null;
-  /** The last order you submitted (or resumed) and your six it was for: "Same as last battle" after Change teams. Never stored. */
-  let lastTeam: { ownKeys: string[]; order: number[] } | null = null;
+  /** The last order you submitted (or resumed) and your six it was for: "Same as last battle" after Change teams (remembered). */
+  let lastTeam: LastTeam | null = null;
+  /** The draft's changes before the first account was bound: applied again over that account's remembered setup. */
+  let early: ((draft: SetupDraft) => SetupDraft)[] = [];
+  /** The remembered setup's text as last written for the bound account (unchanged records are not written again). */
+  let setupText: string | null = null;
   // ---------- saved battles ----------
   let store: BattleStore | null = null;
   /** Bumped on every account change: answers for the previous account's store are dropped. */
@@ -229,6 +254,18 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
     const categories = (view: InfoSettings["aiKnows"]) => ({ open: Object.fromEntries(SHEET_FIELDS.map((field) => [field, view.open[field]])) });
     write(INFO_KEY + accountKey(account.id), { aiKnows: categories(info.aiKnows), youSee: categories(info.youSee) });
   }
+  function readSetup(userId: string | null): StoredSetup | null {
+    const value = read(SETUP_KEY + accountKey(userId));
+    return value === null ? null : parseStoredSetup(value);
+  }
+  /** The remembered setup: the draft's choices without the information settings, your league picks and the last team order. */
+  function storeSetup() {
+    if (!account || !snapshot.picks || !storage) return;
+    const text = JSON.stringify(storedSetupOf(snapshot.draft, snapshot.picks, lastTeam));
+    if (text === setupText) return;
+    setupText = text;
+    try { storage.setItem(SETUP_KEY + accountKey(account.id), text); } catch { /* storage full or blocked: not remembered */ }
+  }
 
   // ---------- the worker ----------
   function connect() {
@@ -274,7 +311,7 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
     const queued = waiting;
     waiting = [];
     for (const each of queued) {
-      if (each.type === "resume" && snapshot.battle?.id === each.battleId) set({ battle: null, setupError: `The battle engine did not load: ${message}` });
+      if ((each.type === "resume" || each.type === "start") && snapshot.battle?.id === each.battleId) set({ battle: null, setupError: `The battle engine did not load: ${message}` });
     }
     for (const job of [...replayJobs.values()]) replayFailed(job.replayId, `The battle engine did not load: ${message}`);
   }
@@ -434,14 +471,18 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
   }
 
   // ---------- battles ----------
-  function startBattle(setup: TrainingSetup, lastPreview: number[] | null) {
+  /** `whenReady`: posted once the worker has loaded (a saved battle's Rematch can come before it has). */
+  function startBattle(setup: TrainingSetup, lastPreview: number[] | null, whenReady = false) {
     const id = ++battleCounter;
     chosenFrom = null;
     submittedOrder = null;
     habitsDetached = false;
-    post({ type: "start", battleId: id, setup, habits });
+    const message: ToWorker = { type: "start", battleId: id, setup, habits };
+    if (whenReady) postWhenReady(message);
+    else post(message);
     set({
       setupError: null,
+      replay: null,
       saved: { ...snapshot.saved, autosaved: null },
       battle: {
         id, setup, seed: null, phase: { kind: "starting" }, board: null, log: [], ai: { status: "idle" }, lastPreview, habitsBefore: parseHabits(habits?.data),
@@ -451,7 +492,10 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
   }
   function stopBattle() {
     const battle = snapshot.battle;
-    if (battle && battle.phase.kind !== "ended") post({ type: "stop", battleId: battle.id });
+    if (!battle) return;
+    // A start or Resume still waiting for the worker is never sent.
+    waiting = waiting.filter((message) => (message.type !== "start" && message.type !== "resume") || message.battleId !== battle.id);
+    if (battle.phase.kind !== "ended") post({ type: "stop", battleId: battle.id });
   }
 
   // ---------- saved battles ----------
@@ -530,8 +574,26 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
       const draft = update(snapshot.draft);
       if (draft === snapshot.draft) return;
       const infoChanged = JSON.stringify(draft.info) !== JSON.stringify(snapshot.draft.info);
+      if (!account) early.push(update);
       set({ draft });
       if (infoChanged) storeInfo(draft.info);
+      storeSetup();
+    },
+
+    rememberLeague(leagueId) {
+      if (!snapshot.picks) return;
+      const picks = withLeague(snapshot.picks, leagueId);
+      if (picks === snapshot.picks) return;
+      set({ picks });
+      storeSetup();
+    },
+
+    rememberOpponent(leagueId, opponentId) {
+      if (!snapshot.picks) return;
+      const picks = withOpponent(snapshot.picks, leagueId, opponentId);
+      if (picks === snapshot.picks) return;
+      set({ picks });
+      storeSetup();
     },
 
     validate(setup, key) {
@@ -572,9 +634,14 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
       flush();
     },
 
-    start(setup) {
+    start(setup, opponent = null) {
       stopBattle();
       startBattle(setup, lastTeam && sameTeam(lastTeam.ownKeys, setup.own) ? [...lastTeam.order] : null);
+      if (!opponent || !snapshot.picks) return;
+      const picks = withStart(snapshot.picks, opponent.leagueId, opponent.opponentId);
+      if (picks === snapshot.picks) return;
+      set({ picks });
+      storeSetup();
     },
 
     choose(choice) {
@@ -585,6 +652,7 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
       if (choice.kind === "team") {
         submittedOrder = [...choice.order];
         lastTeam = { ownKeys: battle.setup.own.members.map((member) => member.key), order: [...choice.order] };
+        storeSetup();
       }
       chosenFrom = { ...battle.phase, error: undefined } as TrainingPhase;
       post({ type: "choose", battleId: battle.id, requestId: request.id, choice });
@@ -666,22 +734,34 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
       const stored = readInfo(userId);
       const view = habitsView(habits);
       const trendsOpen = readTrendsOpen(userId);
+      // The remembered setup: the draft's choices, your league picks (the page restores those) and the last team order.
+      const remembered = readSetup(userId);
+      const picks = picksOf(userId, remembered);
+      setupText = null;
       if (first) {
-        // The draft so far belongs to this account: keep it, with its remembered categories when there are any.
+        // The draft so far belongs to this account: its remembered setup with the changes you made before the account was
+        // known applied over it again (then remembered), or without one the draft as you changed it; with its remembered
+        // categories when there are any.
         const info = stored ?? snapshot.draft.info;
-        set({ draft: { ...snapshot.draft, info }, habits: view, trendsOpen, saved, replay: null });
+        const draft = remembered ? { ...early.reduce((current, update) => update(current), restoredDraft(remembered, info)), info } : { ...snapshot.draft, info };
+        const changed = early.length > 0;
+        early = [];
+        lastTeam ??= remembered?.lastTeam ?? null;
+        set({ draft, picks, habits: view, trendsOpen, saved, replay: null });
         if (!stored) storeInfo(info);
+        if (changed) storeSetup();
         refreshSaved();
         return;
       }
       stopBattle();
       chosenFrom = null;
       submittedOrder = null;
-      lastTeam = null;
+      lastTeam = remembered?.lastTeam ?? null;
       queuedValidate = null;
+      const info = stored ?? DEFAULT_INFO;
       set({
-        draft: createSetupDraft(stored ?? DEFAULT_INFO), battle: null, validation: { status: "idle" }, setupError: null, habits: view, trendsOpen,
-        suggestions: { own: { status: "idle" }, opponent: { status: "idle" } }, saved, replay: null,
+        draft: remembered ? restoredDraft(remembered, info) : createSetupDraft(info), picks, battle: null, validation: { status: "idle" }, setupError: null,
+        habits: view, trendsOpen, suggestions: { own: { status: "idle" }, opponent: { status: "idle" } }, saved, replay: null,
       });
       refreshSaved();
     },
@@ -714,6 +794,7 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
         chosenFrom = null;
         submittedOrder = record.order;
         lastTeam = record.order ? { ownKeys: record.setup.own.members.map((member) => member.key), order: [...record.order] } : null;
+        storeSetup();
         habitsDetached = canonicalJson(habits) !== canonicalJson(record.habitsAfter);
         const battleId = ++battleCounter;
         set({
@@ -726,6 +807,30 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
         if (snapshot.engine.status === "error") { set({ battle: null, setupError: `The battle engine did not load: ${snapshot.engine.message ?? "unknown error"}` }); return; }
         postWhenReady({ type: "resume", battleId, setup: record.setup, sealed: record.resume.sealed, log: record.log });
       }, (error: unknown) => { if (epoch === storeEpoch) setSaved({ message: factOf(error, UNREADABLE) }); });
+    },
+
+    rematchSaved(id) {
+      const target = store;
+      const epoch = storeEpoch;
+      if (!target) return;
+      // Stated in Saved battles, and on the replay screen when Rematch was pressed there (Saved battles is not shown with it).
+      const failed = (fact: string) => set({
+        saved: { ...snapshot.saved, message: fact },
+        ...(snapshot.replay?.id === id ? { replay: { ...snapshot.replay, notice: fact } } : {}),
+      });
+      target.get(id).then((record) => {
+        if (epoch !== storeEpoch) return;
+        if (!record || record.status !== "finished") { failed(UNREADABLE); return; }
+        stopBattle();
+        // From the replay screen: its re-run is no longer shown.
+        for (const job of [...replayJobs.values()]) if (job.kind === "view") replayJobs.delete(job.replayId);
+        if (snapshot.engine.status === "error") {
+          set({ replay: null, battle: null, setupError: `The battle engine did not load: ${snapshot.engine.message ?? "unknown error"}` });
+          return;
+        }
+        // The worker validates the record's teams again (an imported one included); a refused one returns to Setup.
+        startBattle(record.setup, record.order ? [...record.order] : null, true);
+      }, (error: unknown) => { if (epoch === storeEpoch) failed(factOf(error, UNREADABLE)); });
     },
 
     deleteSaved(id) {

@@ -6,13 +6,16 @@ import type { LeagueMatch } from "@/app/types/league";
  * read `league_matches` themselves.
  */
 
-/** The `league_matches` columns the next match needs (the overview reads more). */
+/**
+ * The `league_matches` columns the next match needs (the overview reads more);
+ * `stage` tells a playoff match, named as the bracket names it, from a round.
+ */
 export const NEXT_MATCH_SELECT =
-  "round_number, match_number, home_member_id, away_member_id, status";
+  "round_number, match_number, home_member_id, away_member_id, status, stage";
 
 export type ScheduledMatch = Pick<
   LeagueMatch,
-  "round_number" | "match_number" | "home_member_id" | "away_member_id" | "status"
+  "round_number" | "match_number" | "home_member_id" | "away_member_id" | "status" | "stage"
 >;
 
 /**
@@ -67,7 +70,7 @@ export function parseScheduledMatches(rows: unknown): ScheduledMatch[] {
   if (!Array.isArray(rows)) return [];
   return rows.flatMap((row): ScheduledMatch[] => {
     if (typeof row !== "object" || row === null) return [];
-    const { round_number, match_number, home_member_id, away_member_id, status } = row as Record<string, unknown>;
+    const { round_number, match_number, home_member_id, away_member_id, status, stage } = row as Record<string, unknown>;
     if (
       typeof round_number !== "number" ||
       !Number.isFinite(round_number) ||
@@ -75,10 +78,11 @@ export function parseScheduledMatches(rows: unknown): ScheduledMatch[] {
       !Number.isFinite(match_number) ||
       !isNullableId(home_member_id) ||
       !isNullableId(away_member_id) ||
-      typeof status !== "string"
+      typeof status !== "string" ||
+      typeof stage !== "string"
     ) {
       return [];
     }
-    return [{ round_number, match_number, home_member_id, away_member_id, status }];
+    return [{ round_number, match_number, home_member_id, away_member_id, status, stage }];
   });
 }

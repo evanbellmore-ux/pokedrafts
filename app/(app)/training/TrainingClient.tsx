@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button, PageHeader } from "@/app/components/ui";
 import useCalculatorRosters from "@/app/(app)/calculator/useCalculatorRosters";
 import { championsRuntime } from "@/app/lib/battle/runtime";
@@ -8,33 +8,50 @@ import BattleScreen from "./BattleScreen";
 import { TRAINING_LABEL } from "./model/format-facts";
 import TeamPreview from "./preview/TeamPreview";
 import ReplayScreen from "./replay/ReplayScreen";
-import SavedBattles, { ResumePrompt } from "./saved/SavedBattles";
+import SavedBattles, { LastBattle, ResumePrompt, type SavedActions } from "./saved/SavedBattles";
 import TeamSetup from "./setup/TeamSetup";
 import { useNextOpponent } from "./setup/useNextOpponent";
+import { useRememberedPicks } from "./setup/useRememberedPicks";
 import { useTrainingSession } from "./useTrainingSession";
 import styles from "./training.module.css";
 
 /** The Training tab: Setup (with Saved battles), Team preview, then the battle (SPEC 12.3 screen selection); or a replay. */
 export default function TrainingClient() {
   const [snapshot, session] = useTrainingSession();
-  // The calculator's rosters; Training's Opponent picker starts on your next scheduled opponent.
-  const rosters = useNextOpponent(useCalculatorRosters());
+  // The calculator's rosters; Training restores the league you last picked, and its Opponent picker starts on the opponent you
+  // last picked there, else your next scheduled opponent, else the only other coach. Your picks are remembered per account.
+  // The schedule's next match also comes back as the picker's "Next match" quick pick (rosters.nextMatch).
+  const calculatorRosters = useCalculatorRosters();
+  const { status, userId } = calculatorRosters.state;
+  const picks = snapshot.picks?.userId === userId ? snapshot.picks : null;
+  const rosters = useRememberedPicks(useNextOpponent(calculatorRosters, picks?.opponents ?? null), picks, session);
   const runtime = championsRuntime;
-  const { status, userId } = rosters.state;
   useEffect(() => {
     if (status !== "loading") session.bindAccount(userId);
   }, [status, userId, session]);
   const battle = snapshot.battle;
   const inProgress = !!battle && battle.phase.kind !== "ended";
-  // Closing a replay gives the keyboard focus back to its row in Saved battles.
+  // Closing a replay back to Setup gives the keyboard focus back to the Replay button that opened it: the Last battle card's,
+  // else its row's in Saved battles. A replay left for a battle (its header's Rematch) returns nowhere.
   const replayId = snapshot.replay?.id ?? null;
   const [shownReplay, setShownReplay] = useState<string | null>(null);
-  const [returnTo, setReturnTo] = useState<string | null>(null);
+  const [returnTo, setReturnTo] = useState<{ id: string; fromCard: boolean } | null>(null);
+  /** The battle whose replay the Last battle card opened (a row's Replay clears it). */
+  const [cardReplay, setCardReplay] = useState<string | null>(null);
   if (replayId !== shownReplay) {
     setShownReplay(replayId);
-    setReturnTo(replayId === null ? shownReplay : null);
+    setReturnTo(replayId === null && shownReplay !== null && !battle ? { id: shownReplay, fromCard: shownReplay === cardReplay } : null);
   }
   const returned = useCallback(() => setReturnTo(null), []);
+  const cardSession = useMemo(() => ({
+    rematchSaved: session.rematchSaved,
+    openReplay: (id: string) => { setCardReplay(id); session.openReplay(id); },
+  }), [session]);
+  const listSession = useMemo<SavedActions>(() => ({
+    openReplay: (id) => { setCardReplay(null); session.openReplay(id); },
+    resume: session.resume, rematchSaved: session.rematchSaved, deleteSaved: session.deleteSaved, deleteAllSaved: session.deleteAllSaved,
+    exportSaved: session.exportSaved, importSaved: session.importSaved,
+  }), [session]);
   // Change teams (team preview or the battle's end) gives the keyboard focus, left on the page body, to Your team's heading:
   // tracked from the battle back to Setup without an error (a stopped battle's alert speaks for itself), never on first load.
   const view = snapshot.replay ? "replay" : battle ? "battle" : "setup";
@@ -66,8 +83,9 @@ export default function TrainingClient() {
     screen = (
       <>
         <ResumePrompt saved={snapshot.saved} session={session} />
+        <LastBattle saved={snapshot.saved} session={cardSession} />
         <TeamSetup runtime={runtime} rosters={rosters} snapshot={snapshot} session={session} />
-        <SavedBattles saved={snapshot.saved} session={session} returnTo={returnTo} onReturned={returned} />
+        <SavedBattles saved={snapshot.saved} session={listSession} returnTo={returnTo?.id ?? null} fromCard={!!returnTo?.fromCard} onReturned={returned} />
       </>
     );
   } else if ((battle.phase.kind === "starting" && !battle.resumed) || battle.phase.kind === "preview") {

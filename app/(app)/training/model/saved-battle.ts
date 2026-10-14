@@ -4,7 +4,7 @@
 import { DOUBLES_SLOTS } from "@/app/lib/battle/doubles-types";
 import type { HabitsData } from "./habits-data";
 import type { HabitsRecord } from "./decision";
-import { SHEET_FIELDS } from "./info";
+import { SHEET_FIELDS, usesTestSettings } from "./info";
 import { fnv1a32 } from "./random";
 import { TRAINING_FORMAT_ID, type BoardView, type LogTurn, type TrainingDifficulty, type TrainingSetup } from "./view-types";
 
@@ -73,6 +73,11 @@ export type SavedBattleSummary = {
   turn: number;
   result: SavedResult | null;
   difficulty: TrainingDifficulty;
+  /**
+   * A test extra (exact HP, brought Pokémon) was on in its information settings. Missing from a summary saved before the
+   * field: the store's list fills it in from the record (battle-store.ts).
+   */
+  testSettings?: boolean;
 };
 
 /** The Saved battles list on the setup screen (the page store's view of the BattleStore). */
@@ -101,6 +106,8 @@ export type ReplayState = {
   /** The board as each turn began (turns 1…), and after the last one. */
   boards: { starts: Record<number, BoardView>; end: BoardView } | null;
   message: string | null;
+  /** The header's Rematch failed: the fact ("The saved battle could not be read."), in the replay's status region. */
+  notice?: string;
 };
 
 // ---------- the log hash (a re-run reproduces the log exactly) ----------
@@ -167,6 +174,7 @@ export function summaryOf(record: SavedBattle): SavedBattleSummary {
   return {
     id: record.id, status: record.status, source: record.source, createdAt: record.createdAt, updatedAt: record.updatedAt,
     own: record.setup.own.label, opponent: record.setup.opponent.label, turn: record.turn, result: record.result, difficulty: record.setup.difficulty,
+    testSettings: usesTestSettings(record.setup.info.aiKnows) || usesTestSettings(record.setup.info.youSee),
   };
 }
 /** "Won", "Lost", "Tie", "Forfeited", "Unfinished". */
@@ -283,6 +291,12 @@ const logTurn = shape({
   actions: nullable(shape({ own: jointAction, opponent: jointAction })), read: nullable(report),
   occupants: optional(map(slot, text(200), 4)), names: optional(map(slot, text(200), 4)),
 });
+/**
+ * The record's checks for Training's other stored data (setup/remembered-setup.ts, the remembered setup): the combinators,
+ * and a set editor result checked as a record member's build and moves.
+ */
+export const storedChecks = { text, int, bool, oneOf, nullable, list, shape, map, memberEdit: shape({ build, moves: list(moveSlot, 4, 4) }) } as const;
+export type StoredCheck = Check;
 const SEED = /^(sodium,[0-9a-f]{32}|gen5,[0-9a-f]{16}|\d+(,\d+){3})$/;
 const INPUT_LINE = /^>p[12] [\x20-\x7e]{1,300}$/;
 const finished = shape({
@@ -372,7 +386,7 @@ export function parseExportText(raw: string): ParsedBattle {
 const summaryCheck = shape({
   id: text(100), status: oneOf("finished", "unfinished"), source: oneOf("played", "imported"), createdAt: time, updatedAt: time,
   own: text(200), opponent: text(200), turn: int(0, 1000), result: nullable(shape({ result: oneOf("win", "loss", "tie"), forfeited: bool })),
-  difficulty: oneOf("safe", "reads"),
+  difficulty: oneOf("safe", "reads"), testSettings: optional(bool),
 });
 /** A stored summary back (null when corrupt). */
 export function parseSummary(value: unknown): SavedBattleSummary | null {

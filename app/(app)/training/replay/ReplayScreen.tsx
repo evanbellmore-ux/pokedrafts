@@ -15,7 +15,7 @@ import AIReadPanel from "../log/AIReadPanel";
 import BattleAnnouncer from "../log/BattleAnnouncer";
 import BattleLog from "../log/BattleLog";
 import { TurnLines, turnTitle } from "../log/TurnLines";
-import { infoFact } from "../model/info";
+import { infoFact, usesTestSettings } from "../model/info";
 import { resultText, turnsText, type ReplayState } from "../model/saved-battle";
 import type { BoardView, LogTurn } from "../model/view-types";
 import { downloadText, isoTime, savedDate } from "../saved/download";
@@ -27,22 +27,23 @@ import { useReplayPlayback } from "./useReplayPlayback";
 export type ReplayScreenProps = {
   runtime: BattleRuntime;
   replay: ReplayState;
-  session: Pick<TrainingSession, "closeReplay" | "exportSaved">;
+  session: Pick<TrainingSession, "closeReplay" | "exportSaved" | "rematchSaved">;
 };
 
 const DIFFICULTY = { safe: "Plays safe", reads: "Reads you" } as const;
 /** Looks disabled while it stays focusable (aria-disabled): a disabled button would drop keyboard focus at the first or last turn. */
 const UNAVAILABLE = "aria-disabled:cursor-not-allowed aria-disabled:opacity-60";
 
-/** The saved battle's facts: when, the teams, the result, the turns, the difficulty and what you saw. */
+/** The saved battle's facts: when, the teams, the result, the turns, the difficulty, its test extras (Rematch plays with them) and what you saw. */
 function ReplayFacts({ replay }: { replay: ReplayState }) {
   const { summary, setup } = replay;
+  const testOn = usesTestSettings(setup.info.aiKnows) || usesTestSettings(setup.info.youSee);
   return (
     <div className="min-w-0 space-y-0.5 text-sm">
       <p className="wrap-anywhere text-text">{summary.own} vs {summary.opponent}</p>
       <p className="wrap-anywhere tabular-nums text-muted">
         <time dateTime={isoTime(summary.createdAt)}>{savedDate(summary.createdAt)}</time>
-        {` · ${resultText(summary)} · ${turnsText(summary)} · ${DIFFICULTY[setup.difficulty]}${summary.source === "imported" ? " · Imported" : ""}`}
+        {` · ${resultText(summary)} · ${turnsText(summary)} · ${DIFFICULTY[setup.difficulty]}${testOn ? " · Test settings on" : ""}${summary.source === "imported" ? " · Imported" : ""}`}
       </p>
       <p className="wrap-anywhere text-xs text-muted">You saw: {infoFact(setup.info.youSee)}</p>
     </div>
@@ -151,11 +152,13 @@ export default function ReplayScreen({ runtime, replay, session }: ReplayScreenP
           <ReplayFacts replay={replay} />
         </div>
         <div className="flex flex-wrap gap-2">
+          {/* The saved battle played again with its own settings (a new battle; this replay closes). A record that cannot be read: the status region below states it (replay.notice). */}
+          <Button size="sm" className="min-h-11" onClick={() => session.rematchSaved(replay.id)}>Rematch</Button>
           <Button variant="secondary" size="sm" className="min-h-11" onClick={() => void exportFile()}>Export</Button>
           <Button variant="secondary" size="sm" className="min-h-11" onClick={session.closeReplay}>Close replay</Button>
         </div>
       </header>
-      <div role="status" className="text-sm text-text empty:hidden">{exported ?? ""}</div>
+      <div role="status" className="text-sm text-text empty:hidden">{replay.notice ?? exported ?? ""}</div>
       {replay.status === "loading" && <p role="status" className="text-sm text-muted">Re-running the battle…</p>}
       {replay.status === "log" && replay.message && <Alert variant="warning" title={replay.message} />}
       <div className={styles.battle}>

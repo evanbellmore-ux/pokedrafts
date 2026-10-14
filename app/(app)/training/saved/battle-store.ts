@@ -48,6 +48,8 @@ export type StoreBackend = {
   summaries(): Promise<unknown[]>;
   read(id: string): Promise<unknown>;
   write(record: SavedBattle, summary: SavedBattleSummary): Promise<void>;
+  /** Replaces a stored summary that has no `testSettings` yet, in one step (never one a newer save wrote); false when there is none. */
+  backfill(summary: SavedBattleSummary): Promise<boolean>;
   delete(ids: readonly string[]): Promise<void>;
   clear(): Promise<void>;
 };
@@ -73,9 +75,24 @@ export function createBattleStore(backend: StoreBackend, options: { cap?: number
   const cap = options.cap ?? SAVED_BATTLES_CAP;
   const now = options.now ?? Date.now;
   const newId = options.newId ?? (() => (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function" ? crypto.randomUUID() : `${now().toString(36)}${Math.random().toString(36).slice(2)}`));
+  /** Summaries saved before `testSettings` existed: each one's record is read once and the summary filled in from it. */
+  const tried = new Set<string>();
+  const filledIn = async (summary: SavedBattleSummary): Promise<SavedBattleSummary> => {
+    if (summary.testSettings !== undefined || tried.has(summary.id)) return summary;
+    tried.add(summary.id);
+    try {
+      const record = parseStoredBattle(await backend.read(summary.id));
+      if (!record || record.id !== summary.id) return summary;
+      const filled = summaryOf(record);
+      return (await backend.backfill(filled)) ? filled : summary;
+    } catch {
+      // Unreadable or not written: the list keeps the summary as it is.
+      return summary;
+    }
+  };
   const list = () => guard(async () => {
     const summaries = (await backend.summaries()).map(parseSummary).filter((each): each is SavedBattleSummary => !!each);
-    return summaries.sort((a, b) => b.updatedAt - a.updatedAt || b.createdAt - a.createdAt);
+    return (await Promise.all(summaries.map(filledIn))).sort((a, b) => b.updatedAt - a.updatedAt || b.createdAt - a.createdAt);
   });
   const get = (id: string) => guard(async () => parseStoredBattle(await backend.read(id)));
   const save = (record: SavedBattle) => guard(async () => {
@@ -122,6 +139,13 @@ export function memoryBackend(): StoreBackend & { records: Map<string, SavedBatt
       if (backend.fail) { const error = new Error(backend.fail); error.name = backend.fail; throw error; }
       records.set(record.id, structuredClone(record));
       summaries.set(record.id, structuredClone(summary));
+    },
+    async backfill(summary: SavedBattleSummary) {
+      if (backend.fail) { const error = new Error(backend.fail); error.name = backend.fail; throw error; }
+      const current = summaries.get(summary.id);
+      if (!current || "testSettings" in current) return false;
+      summaries.set(summary.id, structuredClone(summary));
+      return true;
     },
     async delete(ids: readonly string[]) { for (const id of ids) { records.delete(id); summaries.delete(id); } },
     async clear() { records.clear(); summaries.clear(); },
@@ -193,6 +217,21 @@ export function indexedDbBackend(factory: IDBFactory, name: string): StoreBacken
       tx.objectStore(RECORDS).put(record);
       tx.objectStore(SUMMARIES).put(summary);
       await done(tx);
+    },
+    async backfill(summary) {
+      // Read and written in one transaction: a save in between (with the field) is never replaced.
+      const tx = (await db()).transaction(SUMMARIES, "readwrite");
+      const store = tx.objectStore(SUMMARIES);
+      const request = store.get(summary.id);
+      let written = false;
+      request.onsuccess = () => {
+        const current: unknown = request.result;
+        if (!current || typeof current !== "object" || "testSettings" in current) return;
+        store.put(summary);
+        written = true;
+      };
+      await done(tx);
+      return written;
     },
     async delete(ids) {
       const tx = (await db()).transaction([SUMMARIES, RECORDS], "readwrite");

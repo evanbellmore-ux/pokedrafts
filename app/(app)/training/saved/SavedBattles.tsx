@@ -3,12 +3,16 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { Button } from "@/app/components/ui";
 import { IMPORT_MAX_LABEL, resultText, SAVED_BATTLES_CAP, turnsText, type SavedBattleSummary, type SavedBattlesState } from "../model/saved-battle";
+import { DIFFICULTY_LABEL } from "../setup/DifficultyField";
 import type { TrainingSession } from "../training-session";
 import { downloadText, isoTime, savedDate } from "./download";
 
-type SavedActions = Pick<TrainingSession, "openReplay" | "resume" | "deleteSaved" | "deleteAllSaved" | "exportSaved" | "importSaved">;
+export type SavedActions = Pick<TrainingSession,"openReplay" | "resume" | "rematchSaved" | "deleteSaved" | "deleteAllSaved" | "exportSaved" | "importSaved">;
 
 const teams = (summary: SavedBattleSummary) => `${summary.own} vs ${summary.opponent}`;
+/** "Won · 7 turns · Reads you" ("Unfinished · Turn 3 · …"), then " · Test settings on" (Rematch and Resume play with them) and " · Imported". */
+const facts = (summary: SavedBattleSummary) => `${resultText(summary)} · ${turnsText(summary)} · ${DIFFICULTY_LABEL[summary.difficulty]}`
+  + `${summary.testSettings ? " · Test settings on" : ""}${summary.source === "imported" ? " · Imported" : ""}`;
 /** After a delete the row (or the prompt) is gone: keyboard focus moves to the Saved battles heading instead of the page. */
 const focusSavedHeading = () => { if (typeof document !== "undefined") document.querySelector<HTMLElement>("[data-training-saved-heading]")?.focus(); };
 /** Looks disabled while it stays focusable (aria-disabled), so keyboard focus is not dropped while a file is checked. */
@@ -37,6 +41,37 @@ export function ResumePrompt({ saved, session }: { saved: SavedBattlesState; ses
   );
 }
 
+/** The Last battle card's battle: with none unfinished, the newest finished one you played (an imported one stays in the list). */
+export function lastBattleOf(saved: SavedBattlesState): SavedBattleSummary | null {
+  if (saved.list.some((summary) => summary.status === "unfinished")) return null;
+  return saved.list.find((summary) => summary.status === "finished" && summary.source === "played") ?? null;
+}
+
+/**
+ * With no unfinished battle, the newest finished one you played in the Resume prompt's place: Rematch or Replay. Its buttons
+ * are named by the teams and turns, as the Resume prompt's are (a row's by the teams and date).
+ */
+export function LastBattle({ saved, session }: { saved: SavedBattlesState; session: Pick<SavedActions, "rematchSaved" | "openReplay"> }) {
+  const id = useId();
+  const last = lastBattleOf(saved);
+  if (!last) return null;
+  const label = `${teams(last)}, ${turnsText(last)}`;
+  return (
+    <section data-training-last-battle aria-labelledby={`${id}-heading`}
+      className="flex min-w-0 flex-wrap items-center justify-between gap-2 rounded-xl border border-line bg-panel p-3 sm:p-4">
+      <div className="min-w-0 space-y-0.5">
+        <h2 id={`${id}-heading`} className="text-base font-semibold text-text">Last battle</h2>
+        <p className="wrap-anywhere text-sm text-text">{teams(last)}</p>
+        <p className="wrap-anywhere text-sm tabular-nums text-muted">{facts(last)}</p>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        <Button className="min-h-11" aria-label={`Rematch ${label}`} onClick={() => session.rematchSaved(last.id)}>Rematch</Button>
+        <Button variant="secondary" className="min-h-11" aria-label={`Replay ${label}`} data-training-last-replay-for={last.id} onClick={() => session.openReplay(last.id)}>Replay</Button>
+      </div>
+    </section>
+  );
+}
+
 function SavedRow({ summary, session, onExported }: { summary: SavedBattleSummary; session: SavedActions; onExported(text: string): void }) {
   const label = `${teams(summary)}, ${when(summary)}`;
   const unfinished = summary.status === "unfinished";
@@ -51,7 +86,7 @@ function SavedRow({ summary, session, onExported }: { summary: SavedBattleSummar
         <p className="wrap-anywhere text-sm font-medium text-text">{teams(summary)}</p>
         <p className="text-xs tabular-nums text-muted">
           <time dateTime={isoTime(summary.createdAt)}>{when(summary)}</time>
-          {` · ${resultText(summary)} · ${turnsText(summary)}${summary.source === "imported" ? " · Imported" : ""}`}
+          {` · ${facts(summary)}`}
         </p>
       </div>
       <div className="flex flex-wrap gap-2">
@@ -59,7 +94,8 @@ function SavedRow({ summary, session, onExported }: { summary: SavedBattleSummar
           ? <Button size="sm" className="min-h-11" aria-label={`Resume ${label}`} onClick={() => session.resume(summary.id)}>Resume</Button>
           : (
             <>
-              <Button size="sm" className="min-h-11" aria-label={`Replay ${label}`} data-training-replay-for={summary.id} onClick={() => session.openReplay(summary.id)}>Replay</Button>
+              <Button size="sm" className="min-h-11" aria-label={`Rematch ${label}`} onClick={() => session.rematchSaved(summary.id)}>Rematch</Button>
+              <Button variant="secondary" size="sm" className="min-h-11" aria-label={`Replay ${label}`} data-training-replay-for={summary.id} onClick={() => session.openReplay(summary.id)}>Replay</Button>
               <Button variant="secondary" size="sm" className="min-h-11" aria-label={`Export ${label}`} onClick={() => void exportFile()}>Export</Button>
             </>
           )}
@@ -71,11 +107,14 @@ function SavedRow({ summary, session, onExported }: { summary: SavedBattleSummar
 }
 
 /**
- * Saved battles in this browser, newest first (the newest five, the rest behind a disclosure): Replay, Export and Delete
- * (Resume for an unfinished one), Import and Delete all.
- * `returnTo`: the replay just closed; its row's Replay button (else the heading) takes the keyboard focus back.
+ * Saved battles in this browser, newest first (the newest five, the rest behind a disclosure): Rematch, Replay, Export and
+ * Delete (Resume for an unfinished one), Import and Delete all.
+ * `returnTo`: the replay just closed; the Replay button that opened it takes the keyboard focus back: the Last battle card's
+ * (`fromCard`, while the card shows that battle), else its row's, else the heading.
  */
-export default function SavedBattles({ saved, session, returnTo = null, onReturned }: { saved: SavedBattlesState; session: SavedActions; returnTo?: string | null; onReturned?(): void }) {
+export default function SavedBattles({ saved, session, returnTo = null, fromCard = false, onReturned }: {
+  saved: SavedBattlesState; session: SavedActions; returnTo?: string | null; fromCard?: boolean; onReturned?(): void;
+}) {
   const id = useId();
   const input = useRef<HTMLInputElement>(null);
   const heading = useRef<HTMLHeadingElement>(null);
@@ -84,14 +123,16 @@ export default function SavedBattles({ saved, session, returnTo = null, onReturn
   const shown = saved.status !== "idle";
   const newest = saved.list.slice(0, SAVED_SHOWN);
   const more = saved.list.slice(SAVED_SHOWN);
+  const toCard = !!returnTo && fromCard && lastBattleOf(saved)?.id === returnTo;
   // A replay closed from a row behind the disclosure: it opens first, so the Replay button can take the focus back.
-  if (returnTo && !moreOpen && more.some((summary) => summary.id === returnTo)) setMoreOpen(true);
+  if (returnTo && !toCard && !moreOpen && more.some((summary) => summary.id === returnTo)) setMoreOpen(true);
   useEffect(() => {
     if (!returnTo || !shown) return;
-    const row = [...document.querySelectorAll<HTMLElement>("[data-training-replay-for]")].find((button) => button.getAttribute("data-training-replay-for") === returnTo);
-    (row ?? heading.current)?.focus();
+    const marker = toCard ? "data-training-last-replay-for" : "data-training-replay-for";
+    const button = [...document.querySelectorAll<HTMLElement>(`[${marker}]`)].find((each) => each.getAttribute(marker) === returnTo);
+    (button ?? heading.current)?.focus();
     onReturned?.();
-  }, [returnTo, shown, onReturned]);
+  }, [returnTo, toCard, shown, onReturned]);
   if (!shown) return null;
   const count = saved.list.length;
   const importing = saved.import;

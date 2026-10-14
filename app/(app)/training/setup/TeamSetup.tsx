@@ -13,15 +13,17 @@ import DifficultyField, { DIFFICULTY_LABEL } from "./DifficultyField";
 import FormatFacts from "./FormatFacts";
 import HabitTrends from "./HabitTrends";
 import InfoSettingsPanel from "./InfoSettingsPanel";
-import { pendingSets, resolveSetup, sharedNames, type ResolvedTeam } from "./team-draft";
+import { opponentQuickPicks, type NextMatch } from "./next-opponent";
+import { pendingSets, resolveSetup, sharedNames, untouched, withMode, type ResolvedTeam } from "./team-draft";
 import { problemCount, problemsFact } from "./TeamMemberRow";
 import TeamSourcePanel from "./TeamSourcePanel";
 import styles from "./setup.module.css";
 
 export type TeamSetupProps = {
   runtime: BattleRuntime;
-  rosters: ReturnType<typeof useCalculatorRosters>;
-  snapshot: Pick<TrainingSnapshot, "draft" | "validation" | "engine" | "habits" | "trendsOpen" | "setupError" | "suggestions" | "moveOptions">;
+  /** `nextMatch`: your next scheduled match in the selected league (useNextOpponent), the Opponent picker's "Next match". */
+  rosters: ReturnType<typeof useCalculatorRosters> & { nextMatch?: NextMatch | null };
+  snapshot: Pick<TrainingSnapshot, "draft" | "picks" | "validation" | "engine" | "habits" | "trendsOpen" | "setupError" | "suggestions" | "moveOptions">;
   session: Pick<TrainingSession, "updateDraft" | "validate" | "suggest" | "loadMoveOptions" | "start" | "clearHabits" | "setTrendsOpen" | "retryEngine">;
 };
 
@@ -109,6 +111,15 @@ export default function TeamSetup({ runtime, rosters, snapshot, session }: TeamS
   useEffect(() => {
     if (engine.status === "ready" && setup && key) session.validate(setup, key);
   }, [engine.status, setup, key, session]);
+  // An account without leagues (its remembered setup read): each side as it started opens on PokéPaste; League team stays.
+  const noLeagues = rosters.state.status === "ready" && !rosters.state.leagues.length && snapshot.picks?.userId === rosters.state.userId;
+  useEffect(() => {
+    if (!noLeagues) return;
+    session.updateDraft((current) => {
+      const [ownSide, opponentSide] = [current.own, current.opponent].map((source) => untouched(source) ? withMode(source, "paste") : source);
+      return ownSide === current.own && opponentSide === current.opponent ? current : { ...current, own: ownSide, opponent: opponentSide };
+    });
+  }, [noLeagues, session]);
 
   const update = (change: (draft: SetupDraft) => SetupDraft) => session.updateDraft(change);
   const onSource = (role: DoublesSideId) => (change: (source: TeamSourceDraft) => TeamSourceDraft) => update((current) => {
@@ -140,6 +151,14 @@ export default function TeamSetup({ runtime, rosters, snapshot, session }: TeamS
   const matchup = own.candidates.length && opponent.candidates.length
     ? `${own.label} vs ${opponent.label} · ${DIFFICULTY_LABEL[draft.difficulty]}${testOn ? " · Test settings on" : ""}`
     : null;
+  // A start against a league opponent is remembered as that league's recent opponent.
+  const { selectedLeagueId, opponentId } = rosters.state;
+  const leagueOpponent = draft.opponent.mode === "league" && selectedLeagueId && opponentId ? { leagueId: selectedLeagueId, opponentId } : null;
+  // The Opponent picker's quick picks: your next scheduled match in the league and the opponents of your last starts there.
+  const nextMatch = rosters.nextMatch ?? null;
+  const picks = snapshot.picks && snapshot.picks.userId === rosters.state.userId ? snapshot.picks : null;
+  const recent = picks?.recent[selectedLeagueId];
+  const quick = useMemo(() => opponentQuickPicks(rosters.state, nextMatch, recent ?? []), [rosters.state, nextMatch, recent]);
   // Start is described by what it waits on: the rules' error, the status region, the failed Showdown check.
   const describedBy = [engine.status === "error" && `${id}-engine`, `${id}-state`, current?.status === "error" && `${id}-check`].filter(Boolean).join(" ");
 
@@ -158,7 +177,7 @@ export default function TeamSetup({ runtime, rosters, snapshot, session }: TeamS
           problems={problems?.own ?? null} moveOptions={moveOptions} shared={shared} reveal={reveal.own} onSource={onSource("own")} onLoadMoves={loadMoves}
           onRetrySuggest={() => own.suggestKey && session.suggest("own", own.suggestKey, own.suggestMembers, true)} />
         <TeamSourcePanel role="opponent" team={opponent} source={draft.opponent} ownMode={draft.own.mode} rosters={rosters} runtime={runtime} visibility={draft.info.youSee}
-          problems={problems?.opponent ?? null} moveOptions={moveOptions} shared={shared} reveal={reveal.opponent} onSource={onSource("opponent")} onLoadMoves={loadMoves}
+          problems={problems?.opponent ?? null} moveOptions={moveOptions} shared={shared} reveal={reveal.opponent} quick={quick} onSource={onSource("opponent")} onLoadMoves={loadMoves}
           onRetrySuggest={() => opponent.suggestKey && session.suggest("opponent", opponent.suggestKey, opponent.suggestMembers, true)} />
       </div>
 
@@ -216,7 +235,7 @@ export default function TeamSetup({ runtime, rosters, snapshot, session }: TeamS
           <StartFact lines={lines} startable={startable} onSide={showSide} />
         </div>
         <Button data-training-start size="lg" className={`min-h-11 shrink-0 max-sm:px-4 max-sm:text-sm ${UNAVAILABLE}`} aria-disabled={!startable || undefined}
-          aria-describedby={describedBy} onClick={() => { if (startable && setup) session.start(setup); }}>Start battle</Button>
+          aria-describedby={describedBy} onClick={() => { if (startable && setup) session.start(setup, leagueOpponent); }}>Start battle</Button>
       </div>
     </div>
   );

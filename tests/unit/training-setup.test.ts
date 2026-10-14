@@ -185,6 +185,8 @@ describe("Training setup", () => {
     expect(setup.own.members).toHaveLength(6);
     expect(setup.opponent.members).toHaveLength(6);
     expect(setup.info).toEqual(DEFAULT_INFO);
+    // Against a league opponent: the session remembers it as that league's recent opponent.
+    expect(vi.mocked(valid.actions.start).mock.calls[0][1]).toEqual({ leagueId: "league-a", opponentId: "member-other" });
   });
 
   it("keeps Start focusable while unavailable: described by the one status region, a press does nothing", () => {
@@ -614,5 +616,71 @@ describe("Training setup", () => {
     for (const fact of [">My team</h2>", ">Opponent</h2>", ">My team · PokéPaste</h2>", "Target game:", ">Your team</dt>"]) expect(html).toContain(fact);
     expect(html.split("Refresh teams").length - 1).toBe(2);
     expect(cards({ ...state, teamsStatus: "error", data: null }).split("League teams unavailable").length - 1).toBe(2);
+  });
+});
+
+describe("opponent quick picks (package 4)", () => {
+  const THIRD = { id: "member-third", role: "coach", team_name: "Third", draft_position: 3 };
+  const crowded = (state = rosterState(OWN_ROSTER, OPPONENT_ROSTER)) => ({ ...state, data: state.data && { ...state.data, members: [...state.data.members, THIRD] } });
+  /** The quick picks' markup: from their row to the Opponent select's label. */
+  const quickPart = (html: string) => html.slice(html.indexOf("<div data-opponent-quick"), html.lastIndexOf("<label", html.indexOf("data-opponent-selector")));
+
+  it("OpponentPicker puts groups of one-press picks above the select, named as its options, pressed when chosen", () => {
+    const onOpponentChange = vi.fn();
+    host.buttons = [];
+    host.capture = true;
+    let html: string;
+    try {
+      html = renderToStaticMarkup(createElement(OpponentPicker, {
+        state: crowded(), onOpponentChange, onRefresh: vi.fn(), embedded: true,
+        quick: [
+          { heading: "Next match", options: [{ id: "member-other", fact: "Round 3" }] },
+          { heading: "Recent", options: [{ id: "member-third" }, { id: "member-gone" }] },
+          { heading: "Yours", options: [{ id: "member-own" }] },
+        ],
+      }));
+    } finally {
+      host.capture = false;
+    }
+    const quick = quickPart(html);
+    expect(html.indexOf("data-opponent-quick")).toBeLessThan(html.indexOf("data-opponent-selector"));
+    expect([...quick.matchAll(/<p id="([^"]+)"[^>]*>([^<]*)<\/p>/g)].map((group) => group[2])).toEqual(["Next match", "Recent"]);
+    expect(quick.match(/role="group" aria-labelledby="[^"]+"/g)).toHaveLength(2);
+    expect(quick).toMatch(/<button type="button" data-opponent-quick-pick="member-other" aria-pressed="true"[^>]*>Away · Round 3<\/button>/);
+    expect(quick).toMatch(/<button type="button" data-opponent-quick-pick="member-third" aria-pressed="false"[^>]*>Third<\/button>/);
+    // A coach who is not one of the league's other members has no button; the select keeps every coach.
+    expect(quick).not.toContain("member-gone");
+    expect(quick).not.toContain("member-own");
+    expect(html).toContain('<option value="member-third">Third</option>');
+    (host.buttons.find((button) => button["data-opponent-quick-pick"] === "member-third")!.onClick as () => void)();
+    expect(onOpponentChange).toHaveBeenCalledExactlyOnceWith("member-third");
+    // None while the league's teams load, and none without the prop (the calculator's picker is unchanged).
+    const loading = renderToStaticMarkup(createElement(OpponentPicker, { state: { ...crowded(), teamsStatus: "loading", data: null }, onOpponentChange, onRefresh: vi.fn(), quick: [{ heading: "Recent", options: [{ id: "member-third" }] }] }));
+    expect(loading).not.toContain("data-opponent-quick");
+    const calculator = renderToStaticMarkup(createElement(OpponentPicker, { state: crowded(), onOpponentChange, onRefresh: vi.fn() }));
+    expect(calculator).not.toContain("data-opponent-quick");
+    expect(renderToStaticMarkup(createElement(OpponentPicker, { state: crowded(), onOpponentChange, onRefresh: vi.fn(), quick: [] }))).toBe(calculator);
+  });
+
+  it("Training's Opponent panel offers your next match and the opponents of your last starts in the league; a press is your pick", () => {
+    const state = crowded();
+    const picks = { userId: "user-1", leagueId: "league-a", opponents: {}, recent: { "league-a": ["member-other", "member-third"], "league-b": ["member-x"] } };
+    const value = { ...rosters(state), nextMatch: { opponentId: "member-other", name: "Round 3" } };
+    host.buttons = [];
+    host.capture = true;
+    let html: string;
+    try {
+      html = renderToStaticMarkup(createElement(TeamSetup, { runtime, rosters: value, snapshot: snapshotWith({ picks }, createSetupDraft(), state), session: session() }));
+    } finally {
+      host.capture = false;
+    }
+    const opponent = panelOf(html, "opponent");
+    expect(plain(quickPart(opponent))).toBe("Next matchAway · Round 3RecentThird");
+    expect(panelOf(html, "own")).not.toContain("data-opponent-quick");
+    (host.buttons.find((button) => button["data-opponent-quick-pick"] === "member-third")!.onClick as () => void)();
+    expect(value.selectOpponent).toHaveBeenCalledExactlyOnceWith("member-third");
+    // Another account's picks, or no schedule: no Recent, no Next match.
+    const other = renderToStaticMarkup(createElement(TeamSetup, { runtime, rosters: rosters(state), snapshot: snapshotWith({ picks: { ...picks, userId: "user-2" } }, createSetupDraft(), state), session: session() }));
+    expect(other).not.toContain("data-opponent-quick");
   });
 });
