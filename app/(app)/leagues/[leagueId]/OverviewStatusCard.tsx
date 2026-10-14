@@ -21,11 +21,10 @@ import {
 } from "@/app/lib/league/bracket";
 import { totalDraftPicks } from "@/app/lib/league/draft";
 import { pluralize, teamNameLabel } from "@/app/lib/league/labels";
+import { nextMatchFor, opponentId } from "@/app/lib/league/next-match";
 import type { LeagueStanding } from "@/app/types/league";
 import {
-  nextMatchFor,
   onClockMember,
-  opponentId,
   type OverviewMatch,
   type OverviewMember,
 } from "./overview";

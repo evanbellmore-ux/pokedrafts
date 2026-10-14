@@ -27,7 +27,7 @@ function render(props: Partial<SetEditorProps> = {}) {
   const onChange = vi.fn();
   const onReset = vi.fn();
   const { result: html, elements } = capture(() => renderToStaticMarkup(createElement(SetEditor, {
-    member: garchomp, runtime, moveOptions: READY, takenItems: new Map([["sitrusberry", "Gyarados"]]), canReset: false, onChange, onReset, ...props,
+    member: garchomp, label: "Garchomp", runtime, moveOptions: READY, takenItems: new Map([["sitrusberry", "Gyarados"]]), canReset: false, onChange, onReset, ...props,
   })));
   return { html, elements, onChange, onReset };
 }
@@ -115,6 +115,41 @@ describe("set editor", () => {
     expect(html).toContain("Loading legal moves…");
     expect(render({ moveOptions: { status: "error", message: "Validator failed." } }).html).toContain("Legal moves unavailable: Validator failed. · Showing the catalog learnset.");
     expect(render().html).not.toContain("Reset set");
+  });
+
+  it("is named by its Pokémon, as are its Moves and Stat Points and Reset set (with its team in a mirror)", () => {
+    const { html } = render({ canReset: true });
+    expect(html).toMatch(/^<div role="group" aria-label="Garchomp set" data-training-set-editor="own-garchomp"/);
+    expect(html).toContain('<legend class="text-xs font-semibold uppercase tracking-wide text-muted">Moves<span class="sr-only normal-case"> · Garchomp</span></legend>');
+    expect(html).toContain('<span>Stat Points<span class="sr-only normal-case"> · Garchomp</span></span>');
+    expect(html).toMatch(/>Reset set<span class="sr-only"> · Garchomp<\/span><\/button>/);
+    const mirror = render({ label: "Garchomp (opponent's)", canReset: true }).html;
+    expect(mirror).toMatch(/^<div role="group" aria-label="Garchomp \(opponent&#x27;s\) set"/);
+    expect(mirror).toContain("Moves<span class=\"sr-only normal-case\"> · Garchomp (opponent&#x27;s)</span>");
+    expect(mirror).toContain("Reset set<span class=\"sr-only\"> · Garchomp (opponent&#x27;s)</span>");
+  });
+
+  it("describes each Stat Points input by its stat, reads the total and the issues as they change, and keeps controls 44 px", () => {
+    const { html, elements } = render();
+    const inputs = elements.filter((element) => element.type === "input" && String(element.props["aria-label"] ?? "").includes("Stat Points"));
+    expect(inputs).toHaveLength(6);
+    for (const input of inputs) {
+      const stat = String(input.props["aria-label"]).split(" ")[0];
+      const described = String(input.props["aria-describedby"]);
+      expect(html).toMatch(new RegExp(`<span id="${described}" class="block text-xs tabular-nums text-muted"><span class="sr-only">${stat} </span>\\d+</span>`));
+    }
+    // The total stays in view in the legend; one status (always there) reads it and the issues.
+    expect(html).toContain("66 / 66");
+    expect(html).toContain('<div role="status" data-training-points-status="true" class="mt-1"><span class="sr-only">Stat Points: 66 / 66</span></div>');
+    const over = { ...garchomp, build: garchomp.build.game === "champions" ? { ...garchomp.build, points: { hp: 32, atk: 32, def: 32, spa: 0, spd: 0, spe: 0 } } : garchomp.build };
+    expect(render({ member: over }).html).toMatch(/<div role="status" data-training-points-status="true" class="mt-1"><span class="sr-only">Stat Points: 96 \/ 66<\/span><ul[^>]*><li>At most 66 Stat Points in total \(96\)\.<\/li><\/ul><\/div>/);
+    // Every select and text field of the editor is at least 44 px tall (no py-2 override).
+    const controls = [...html.matchAll(/<(?:select|input)\b[^>]*class="([^"]*)"/g)].map((match) => match[1]);
+    expect(controls.length).toBeGreaterThanOrEqual(13);
+    for (const control of controls) {
+      expect(control).toContain("min-h-11");
+      expect(control).not.toMatch(/(?:^|\s)py-2(?:\s|$)/);
+    }
   });
 
   it("shows a form's required item as a fact instead of a picker", () => {

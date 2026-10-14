@@ -40,6 +40,20 @@ describe("Training page shell", () => {
     expect(actions).toMatch(/\.submitBar \{[^}]*position: sticky;[^}]*z-index: 30;[^}]*env\(safe-area-inset-bottom\)/);
   });
 
+  it("keeps Setup's Start bar at the bottom like the submit bar, focused controls clear of it, in place while typing on a touch screen", () => {
+    const css = readFileSync(join(training, "setup", "setup.module.css"), "utf8");
+    expect(css).toMatch(/\.startBar \{[^}]*position: sticky;[^}]*bottom: 0;[^}]*z-index: 30;[^}]*env\(safe-area-inset-bottom\)/);
+    // The bar's own controls are in it: no margin that would scroll the page when they take the focus.
+    expect(css).toMatch(/\.setup :is\(input, select, textarea, button, summary, \[tabindex\]\):not\(\.startBar \*\) \{\s*scroll-margin-bottom: \d+rem;/);
+    // Only where an on-screen keyboard opens: a desktop keeps the bar while a text field has the focus.
+    expect(css).toMatch(/@media \(pointer: coarse\) \{\s*\.setup:has\(textarea:focus, .*input\[type="text"\]:focus.*\) \.startBar \{\s*position: static;\s*\}\s*\}/);
+    expect(css.match(/position: static/g)).toHaveLength(1);
+    expect(css).toMatch(/\.sideHeading \{\s*scroll-margin-top: calc\(var\(--app-nav-height, 0px\) \+ 0\.5rem\);/);
+    const setup = readFileSync(join(training, "setup", "TeamSetup.tsx"), "utf8");
+    expect(setup).toContain("data-training-screen=\"setup\" className={`${styles.setup} space-y-4`}");
+    expect(setup).toContain("data-training-start-bar className={`${styles.startBar} ");
+  });
+
   it("never logs to the console and never imports the simulator, the engine, sim/* or ai/* from page code", () => {
     const pageFiles = ["page.tsx", "TrainingClient.tsx", "BattleScreen.tsx", "training-session.ts", "useTrainingSession.ts"].map((file) => join(training, file));
     for (const folder of ["setup", "preview", "board", "actions", "end", "log", "saved", "replay"]) {

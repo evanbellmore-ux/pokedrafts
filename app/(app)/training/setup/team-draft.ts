@@ -38,6 +38,8 @@ export type ResolvedTeam = {
   label: string;
   status: RosterPanel["status"];
   message: string | null;
+  /** No members to choose from: the panel's fact ("No opponent chosen.", "No team imported."), which replaces the count blocker. */
+  fact: string | null;
   candidates: Candidate[];
   /** Chosen keys in candidate order. */
   chosen: string[];
@@ -55,7 +57,13 @@ export type ResolvedTeam = {
 export type ResolvedSetup = { own: ResolvedTeam; opponent: ResolvedTeam; setup: TrainingSetup | null; key: string | null };
 
 export function emptySource(): TeamSourceDraft {
-  return { mode: "league", paste: null, pasteDraft: null, epoch: 0, chosen: null, edits: {} };
+  return { mode: "league", paste: null, pasteDraft: null, epoch: 0, chosen: null, otherChosen: null, edits: {} };
+}
+
+/** The side's source switched to `mode`: each mode keeps its own Choose 6 picks (a roster change still starts from the first six). */
+export function withMode(source: TeamSourceDraft, mode: TeamSourceDraft["mode"]): TeamSourceDraft {
+  if (source.mode === mode) return source;
+  return { ...source, mode, epoch: source.epoch + 1, chosen: source.otherChosen, otherChosen: source.chosen };
 }
 
 /** Both teams from league rosters, Plays safe, the read shown, and the information settings (default: open team sheets). */
@@ -110,14 +118,22 @@ function leagueCandidate(choice: RosterChoice, runtime: BattleRuntime): Candidat
   };
 }
 
-/** The roster or paste members a side can choose from, with the panel's status. */
-export function teamCandidates(source: TeamSourceDraft, rosters: CalculatorRosterState, role: DoublesSideId, runtime: BattleRuntime) {
+/**
+ * The roster or paste members a side can choose from, with the panel's status. `ownMode` is your side's source: while your
+ * team is a paste, the opponent's league picker lists the leagues itself and, with none chosen, states "No league chosen.".
+ */
+export function teamCandidates(source: TeamSourceDraft, rosters: CalculatorRosterState, role: DoublesSideId, runtime: BattleRuntime, ownMode: TeamSourceDraft["mode"] = "league") {
   if (source.mode === "league") {
     const panel = getRosterPanel(rosters, role, runtime);
-    return { label: panel.teamName ?? (role === "own" ? "Your team" : "Opponent"), status: panel.status, message: panel.message, candidates: panel.choices.map((choice) => leagueCandidate(choice, runtime)) };
+    const noLeague = role === "opponent" && ownMode === "paste" && rosters.status === "ready" && rosters.leagues.length > 0
+      && !rosters.leagues.some((league) => league.id === rosters.selectedLeagueId);
+    return {
+      label: panel.teamName ?? (role === "own" ? "Your team" : "Opponent"), status: panel.status, message: noLeague ? "No league chosen." : panel.message,
+      candidates: panel.choices.map((choice) => leagueCandidate(choice, runtime)),
+    };
   }
   const paste = source.paste;
-  if (!paste) return { label: role === "own" ? "Your team" : "Opponent", status: "empty" as const, message: null, candidates: [] };
+  if (!paste) return { label: role === "own" ? "Your team" : "Opponent", status: "empty" as const, message: "No team imported.", candidates: [] };
   return {
     label: paste.title, status: "ready" as const, message: null,
     candidates: paste.team.members.map((member): Candidate => {
@@ -201,8 +217,11 @@ export function teamBlockers(members: readonly TrainingMember[], chosen: number,
   return blockers;
 }
 
-export function resolveTeam(source: TeamSourceDraft, rosters: CalculatorRosterState, role: DoublesSideId, suggestions: SuggestionState, runtime: BattleRuntime): ResolvedTeam {
-  const { label, status, message, candidates } = teamCandidates(source, rosters, role, runtime);
+export function resolveTeam(
+  source: TeamSourceDraft, rosters: CalculatorRosterState, role: DoublesSideId, suggestions: SuggestionState, runtime: BattleRuntime,
+  ownMode: TeamSourceDraft["mode"] = "league",
+): ResolvedTeam {
+  const { label, status, message, candidates } = teamCandidates(source, rosters, role, runtime, ownMode);
   const eligible = candidates.filter((candidate) => candidate.eligible);
   const fallback = eligible.slice(0, TEAM_SIZE).map((candidate) => candidate.key);
   // A choice made on another roster (another opponent or league) names none of these members: start from the first six.
@@ -222,12 +241,31 @@ export function resolveTeam(source: TeamSourceDraft, rosters: CalculatorRosterSt
     return set ? memberFromSuggestion(set, candidate, runtime) : null;
   });
   const ready = members.filter((member): member is TrainingMember => !!member);
-  const blockers = teamBlockers(ready, chosen.length, runtime);
+  // Nothing to choose from: the panel's fact says why ("No opponent chosen."), not "Choose 6 (0 chosen).".
+  const fact = candidates.length ? null : message;
+  const blockers = fact ? [] : teamBlockers(ready, chosen.length, runtime);
   const team = chosen.length === TEAM_SIZE && ready.length === TEAM_SIZE ? { label, members: ready } : null;
   return {
-    role, mode: source.mode, label, status, message, candidates, chosen, members, suggestMembers, suggestKey, suggestion,
+    role, mode: source.mode, label, status, message, fact, candidates, chosen, members, suggestMembers, suggestKey, suggestion,
     suggestError: current?.status === "error" ? current.message : null, blockers, team,
   };
+}
+
+/** The names both teams can choose (a mirror): there each member's labels carry its team (memberLabel). */
+export function sharedNames(own: Pick<ResolvedTeam, "candidates">, opponent: Pick<ResolvedTeam, "candidates">): ReadonlySet<string> {
+  const theirs = new Set(opponent.candidates.map((candidate) => candidate.name));
+  return new Set(own.candidates.map((candidate) => candidate.name).filter((name) => theirs.has(name)));
+}
+
+/** A member's name in its labels: "Garchomp", or "Garchomp (yours)" / "Garchomp (opponent's)" when both teams have one. */
+export function memberLabel(name: string, role: DoublesSideId, shared: ReadonlySet<string>) {
+  return shared.has(name) ? `${name} (${role === "own" ? "yours" : "opponent's"})` : name;
+}
+
+/** A chosen league member still without a set while the side's suggested sets load ("loading") or failed ("error"); else null. */
+export function pendingSets(team: Pick<ResolvedTeam, "suggestion" | "members">): "loading" | "error" | null {
+  if (team.suggestion !== "loading" && team.suggestion !== "error") return null;
+  return team.members.some((member) => !member) ? team.suggestion : null;
 }
 
 /** The validation cache key: both teams' members, sets and order. */
@@ -238,11 +276,20 @@ export function setupKey(own: TrainingTeam, opponent: TrainingTeam) {
 
 export function resolveSetup(draft: SetupDraft, rosters: CalculatorRosterState, suggestions: Record<DoublesSideId, SuggestionState>, runtime: BattleRuntime): ResolvedSetup {
   const own = resolveTeam(draft.own, rosters, "own", suggestions.own, runtime);
-  const opponent = resolveTeam(draft.opponent, rosters, "opponent", suggestions.opponent, runtime);
+  const opponent = resolveTeam(draft.opponent, rosters, "opponent", suggestions.opponent, runtime, draft.own.mode);
   const setup = own.team && opponent.team && !own.blockers.length && !opponent.blockers.length
     ? { own: own.team, opponent: opponent.team, difficulty: draft.difficulty, showRead: draft.showRead, info: draft.info }
     : null;
   return { own, opponent, setup, key: setup ? setupKey(setup.own, setup.opponent) : null };
+}
+
+/**
+ * Below 64rem a side's Choose 6 list opens by itself for what needs its rows: fewer than six chosen, suggested sets
+ * unavailable, a local blocker or a Showdown problem (`problems`: that side's count). Sets still loading are no reason: the
+ * collapsed line names the six meanwhile, and a problem their arrival brings opens it then.
+ */
+export function listNeedsRows(team: Pick<ResolvedTeam, "chosen" | "suggestion" | "members" | "blockers">, problems: number) {
+  return team.chosen.length < TEAM_SIZE || pendingSets(team) === "error" || team.blockers.length > 0 || problems > 0;
 }
 
 /** Choose 6: adds or removes a key (at most six), kept in candidate order. */

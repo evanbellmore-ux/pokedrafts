@@ -221,6 +221,33 @@ describe("training session store", () => {
     expect(session.getSnapshot().battle).toMatchObject({ id: 2, phase: { kind: "starting" }, ai: { status: "idle" } });
   });
 
+  it("offers Same as last battle after Change teams for the same six in the same order, not for other six; never after an account switch", () => {
+    const { session, fake } = loaded();
+    session.bindAccount("user-1");
+    session.start(trainingSetup());
+    expect(session.getSnapshot().battle!.lastPreview).toBeNull();
+    fake.emit(battleMessage(1, PREVIEW_REQUEST));
+    session.choose({ kind: "team", order: [3, 1, 5, 2] });
+    session.changeTeams();
+    session.start(trainingSetup());
+    expect(session.getSnapshot().battle!.lastPreview).toEqual([3, 1, 5, 2]);
+    // Another six, or the same six in another order: the positions would name other Pokémon.
+    session.changeTeams();
+    const [first, second, ...rest] = trainingSetup().own.members;
+    session.start(trainingSetup({ own: { label: "Your team", members: [second, first, ...rest] } }));
+    expect(session.getSnapshot().battle!.lastPreview).toBeNull();
+    session.changeTeams();
+    session.start(trainingSetup({ own: { label: "Your team", members: trainingSetup().own.members.slice(0, 5) } }));
+    expect(session.getSnapshot().battle!.lastPreview).toBeNull();
+    // A Change teams before choosing keeps the last order you did submit.
+    session.changeTeams();
+    session.start(trainingSetup());
+    expect(session.getSnapshot().battle!.lastPreview).toEqual([3, 1, 5, 2]);
+    session.bindAccount("user-2");
+    session.start(trainingSetup());
+    expect(session.getSnapshot().battle!.lastPreview).toBeNull();
+  });
+
   it("forfeits, stops on Change teams and keeps the draft; a battle error returns to Setup with the message", () => {
     const { session, fake } = loaded();
     session.updateDraft((draft) => ({ ...draft, difficulty: "reads" }));

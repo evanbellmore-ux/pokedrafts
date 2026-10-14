@@ -28,6 +28,11 @@ type Props = {
   heading?: string;
   /** The remove dialog's description; defaults to the calculator's. */
   removeDescription?: string;
+  /**
+   * Inside a page's own team panel (Training): no card, section or heading, and no target game line (the page states its
+   * one format). Defaults to the calculator's card.
+   */
+  embedded?: boolean;
 };
 
 function MemberPreview({ member, runtime }: { member: ImportedMember; runtime: BattleRuntime }) {
@@ -67,7 +72,7 @@ function MemberPreview({ member, runtime }: { member: ImportedMember; runtime: B
   );
 }
 
-export default function PokePasteImporter({ role, owner, applied, onApply, onRemove, onReveal, runtime = championsRuntime, draft, onDraftChange, heading, removeDescription = "This removes the team and its cached set edits from this session. Active Pokémon keep their builds." }: Props) {
+export default function PokePasteImporter({ role, owner, applied, onApply, onRemove, onReveal, runtime = championsRuntime, draft, onDraftChange, heading, removeDescription = "This removes the team and its cached set edits from this session. Active Pokémon keep their builds.", embedded = false }: Props) {
   const id = useId();
   const [localDraft, setLocalDraft] = useState<ImportDraft>(() => ({
     url: applied?.url ?? "", text: applied?.text ?? "", title: applied?.title ?? "",
@@ -169,10 +174,16 @@ export default function PokePasteImporter({ role, owner, applied, onApply, onRem
   const selectable = preview?.team.members.filter((member) => member.selectable).length ?? 0;
   const canApply = !!preview && selectable > 0 && !preview.team.diagnostics.some((entry) => entry.severity === "error");
 
+  const Root = embedded ? "div" : "section";
   return (
-    <section data-paste-importer={role} aria-labelledby={`${id}-heading`} className="min-w-0 space-y-4 rounded-xl border border-line bg-panel p-4 sm:p-5">
-      <h2 id={`${id}-heading`} className="text-lg font-semibold text-text">{heading ?? `${ownership} · PokéPaste`}</h2>
-      <p className="text-sm text-text"><strong>Target game:</strong> {runtime.profile.label}</p>
+    <Root data-paste-importer={role} aria-labelledby={embedded ? undefined : `${id}-heading`}
+      className={embedded ? "min-w-0 space-y-4" : "min-w-0 space-y-4 rounded-xl border border-line bg-panel p-4 sm:p-5"}>
+      {!embedded && (
+        <>
+          <h2 id={`${id}-heading`} className="text-lg font-semibold text-text">{heading ?? `${ownership} · PokéPaste`}</h2>
+          <p className="text-sm text-text"><strong>Target game:</strong> {runtime.profile.label}</p>
+        </>
+      )}
       {applied && (
         <div className="space-y-2 rounded-lg border border-line bg-bg p-3">
           <p className="wrap-anywhere text-sm text-text"><strong>{applied.title}</strong> · {applied.team.members.filter((member) => member.selectable).length} selectable / {applied.team.members.length} imported</p>
@@ -220,6 +231,6 @@ export default function PokePasteImporter({ role, owner, applied, onApply, onRem
         </div>
       )}
       <Dialog open={removeFor === scope} onReturnFocus={onReveal} onClose={() => setRemoveFor(null)} title="Remove imported team?" description={removeDescription} confirmLabel="Remove team" danger onConfirm={() => { setRemoveFor(null); onRemove(owner); }} />
-    </section>
+    </Root>
   );
 }

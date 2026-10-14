@@ -298,6 +298,21 @@ describe("page store: autosave, Resume, replays and imports", () => {
     expect(JSON.parse(storage.getItem(`${HABITS_KEY}user-1`)!)).toEqual({ version: 1, turns: 5, data: null });
   });
 
+  it("a resumed battle's order is Same as last battle after Change teams, for the same six", async () => {
+    const store = memoryBattleStore();
+    await store.save(unfinished({ order: [2, 1, 3, 4] }));
+    const { session } = setup(store);
+    await flush();
+    session.resume("battle-2");
+    await flush();
+    session.changeTeams();
+    session.start(trainingSetup());
+    expect(session.getSnapshot().battle!.lastPreview).toEqual([2, 1, 3, 4]);
+    session.changeTeams();
+    session.start(trainingSetup({ own: { label: "Your team", members: trainingSetup().own.members.slice().reverse() } }));
+    expect(session.getSnapshot().battle!.lastPreview).toBeNull();
+  });
+
   it("a resumed battle leaves the habits alone when they changed since its autosave", async () => {
     const store = memoryBattleStore();
     const storage = memoryStorage();

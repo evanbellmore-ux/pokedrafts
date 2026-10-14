@@ -9,7 +9,7 @@ import { DEFAULT_INFO, parseInfoSettings, SHEET_FIELDS, type InfoSettings } from
 import type { SuggestedSet, SuggestMember } from "./model/usage";
 import {
   TRAINING_FORMAT_ID, type LogTurn, type PlayerChoice, type SetupDraft, type TrainingBattle, type TrainingPhase, type TrainingRequest,
-  type TrainingSetup, type TrainingSnapshot,
+  type TrainingSetup, type TrainingSnapshot, type TrainingTeam,
 } from "./model/view-types";
 import type { FromWorker, ToWorker, TrainingTransport } from "./model/worker-protocol";
 import { browserBattleStore, STORAGE_UNAVAILABLE, StoreError, type BattleStore, type ImportCheck } from "./saved/battle-store";
@@ -34,6 +34,7 @@ export type TrainingSession = {
   suggest(side: DoublesSideId, key: string, members: SuggestMember[], force?: boolean): void;
   /** Addendum A1.3: the set editor's move list for a species (once per species unless it failed). */
   loadMoveOptions(speciesId: string): void;
+  /** Team preview offers "Same as last battle" when your six are the ones of the last order you submitted or resumed. */
   start(setup: TrainingSetup): void;
   choose(choice: PlayerChoice): void;
   forfeit(): void;
@@ -129,8 +130,9 @@ const resolvedBefore = (log: readonly LogTurn[], turn: number) => log.filter((ea
 const factOf = (error: unknown, fallback: string) => (error instanceof StoreError || error instanceof Error ? error.message : fallback);
 const UNREADABLE = "The saved battle could not be read.";
 
-function sameTeam(a: TrainingSetup, b: TrainingSetup) {
-  return a.own.members.length === b.own.members.length && a.own.members.every((member, index) => member.key === b.own.members[index]?.key);
+/** Your six by member key, in order (an order's 1-based positions mean the same Pokémon). */
+function sameTeam(keys: readonly string[], team: TrainingTeam) {
+  return keys.length === team.members.length && team.members.every((member, index) => member.key === keys[index]);
 }
 
 export function createTrainingSession(options: TrainingSessionOptions): TrainingSession {
@@ -154,6 +156,8 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
   let chosenFrom: TrainingPhase | null = null;
   /** The team order you submitted in this battle (1-based), for "Same as last battle". */
   let submittedOrder: number[] | null = null;
+  /** The last order you submitted (or resumed) and your six it was for: "Same as last battle" after Change teams. Never stored. */
+  let lastTeam: { ownKeys: string[]; order: number[] } | null = null;
   // ---------- saved battles ----------
   let store: BattleStore | null = null;
   /** Bumped on every account change: answers for the previous account's store are dropped. */
@@ -569,9 +573,8 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
     },
 
     start(setup) {
-      const previous = snapshot.battle;
       stopBattle();
-      startBattle(setup, previous && sameTeam(previous.setup, setup) ? submittedOrder ?? previous.lastPreview : null);
+      startBattle(setup, lastTeam && sameTeam(lastTeam.ownKeys, setup.own) ? [...lastTeam.order] : null);
     },
 
     choose(choice) {
@@ -579,7 +582,10 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
       if (!battle) return;
       const request = requestOf(battle.phase);
       if (!request) return;
-      if (choice.kind === "team") submittedOrder = [...choice.order];
+      if (choice.kind === "team") {
+        submittedOrder = [...choice.order];
+        lastTeam = { ownKeys: battle.setup.own.members.map((member) => member.key), order: [...choice.order] };
+      }
       chosenFrom = { ...battle.phase, error: undefined } as TrainingPhase;
       post({ type: "choose", battleId: battle.id, requestId: request.id, choice });
       setBattle({ phase: { kind: "waiting", reason: "simulating" } });
@@ -671,6 +677,7 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
       stopBattle();
       chosenFrom = null;
       submittedOrder = null;
+      lastTeam = null;
       queuedValidate = null;
       set({
         draft: createSetupDraft(stored ?? DEFAULT_INFO), battle: null, validation: { status: "idle" }, setupError: null, habits: view, trendsOpen,
@@ -706,6 +713,7 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
         stopBattle();
         chosenFrom = null;
         submittedOrder = record.order;
+        lastTeam = record.order ? { ownKeys: record.setup.own.members.map((member) => member.key), order: [...record.order] } : null;
         habitsDetached = canonicalJson(habits) !== canonicalJson(record.habitsAfter);
         const battleId = ++battleCounter;
         set({

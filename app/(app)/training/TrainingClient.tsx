@@ -10,13 +10,15 @@ import TeamPreview from "./preview/TeamPreview";
 import ReplayScreen from "./replay/ReplayScreen";
 import SavedBattles, { ResumePrompt } from "./saved/SavedBattles";
 import TeamSetup from "./setup/TeamSetup";
+import { useNextOpponent } from "./setup/useNextOpponent";
 import { useTrainingSession } from "./useTrainingSession";
 import styles from "./training.module.css";
 
 /** The Training tab: Setup (with Saved battles), Team preview, then the battle (SPEC 12.3 screen selection); or a replay. */
 export default function TrainingClient() {
   const [snapshot, session] = useTrainingSession();
-  const rosters = useCalculatorRosters();
+  // The calculator's rosters; Training's Opponent picker starts on your next scheduled opponent.
+  const rosters = useNextOpponent(useCalculatorRosters());
   const runtime = championsRuntime;
   const { status, userId } = rosters.state;
   useEffect(() => {
@@ -33,6 +35,20 @@ export default function TrainingClient() {
     setReturnTo(replayId === null ? shownReplay : null);
   }
   const returned = useCallback(() => setReturnTo(null), []);
+  // Change teams (team preview or the battle's end) gives the keyboard focus, left on the page body, to Your team's heading:
+  // tracked from the battle back to Setup without an error (a stopped battle's alert speaks for itself), never on first load.
+  const view = snapshot.replay ? "replay" : battle ? "battle" : "setup";
+  const [shownView, setShownView] = useState(view);
+  const [teamsReturn, setTeamsReturn] = useState(false);
+  if (view !== shownView) {
+    setShownView(view);
+    setTeamsReturn(shownView === "battle" && view === "setup" && !snapshot.setupError);
+  }
+  useEffect(() => {
+    if (!teamsReturn) return;
+    const active = document.activeElement;
+    if (!active || active === document.body) document.querySelector<HTMLElement>('[data-training-team-heading="own"]')?.focus();
+  }, [teamsReturn]);
   // A reload ends the battle; Resume rebuilds it from its last autosave (each resolved turn). Until this battle has one
   // (team preview, turn 1, or storage failed), the browser's own leave-page prompt.
   const autosaved = !!battle && snapshot.saved.autosaved?.battleId === battle.id;
