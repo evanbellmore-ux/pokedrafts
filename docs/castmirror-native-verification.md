@@ -1,13 +1,15 @@
 # Native Execution verification
 
-Status on 2026-10-14: **private hosted DPS, healer and tank results, tank native
-Chrome, and controlled redeployment/cache persistence passed; public Execution
-remains disabled**. The verified application source is
-`5c33ee020192128c50ecca7edc4b605422101b6a`. Real Chrome also passed public
-Overall/Boss/Healing. Public enablement stopped before mutation because its flag
-record targets both Production and Preview. The remaining native cache then
-expired; both authorized additional role jobs are consumed. Unauthenticated
-native Chrome has not passed. Do not describe public Execution as live.
+Status on 2026-10-14: **public Execution is LIVE**. Production and Preview native
+flags are independently configured: Production `1`, Preview `0`. Real
+unauthenticated Chrome selected Execution and displayed actual native Any and
+Exclude results on desktop and phone after a Production-only redeployment of
+`5ea2809df64e759201d4aa972edf17867f6be556`. Private healer Chrome and public
+Overall/Boss/Healing also passed. The one newly authorized release acquisition
+was used exactly once; final durable accounting is **971.26 charged / 46 pending**,
+with all 18 baseline jobs and their **901.64 charged / 36 pending** preserved.
+The shared-flag and expired-cache stops below are earlier historical boundaries,
+not the current activation state. See the final Production activation section.
 
 ## Implemented
 
@@ -377,3 +379,73 @@ public native browser pass. Completing that last pass requires both safe
 Production-only flag isolation and a fresh, valid acquisition-free cache window
 or an explicitly authorized additional bounded acquisition; the existing
 two-additional-job authorization does not permit creating one.
+
+## Final Production activation — 2026-10-14
+
+The user separately authorized at most one additional bounded native acquisition
+solely to finish missing healer/browser and public-release verification. Before
+using it, read-only reconciliation established zero new release jobs, unchanged
+901.64 charged / 36 pending, and no active ownership lease. No old one-shot
+marker, acquisition, import, provisioning step or uncertain request was replayed.
+
+The shared encrypted native flag was safely separated while both values remained
+zero. The existing Production record was retained and an explicit Preview-only
+zero record added. Effective Production/Preview settings and all other
+credential/runtime record metadata and value digests were verified; neither
+environment was temporarily enabled. Production runtime verification remained
+`1`, and Preview runtime verification remained `0`.
+
+All browser, raw-response retention, accounting and compensating-disable helpers
+were prepared before collection. Twelve helper syntax checks, offline imports
+and fail-closed guards passed. Actual installed Chrome passed the empty public
+page on desktop and phone with zero character, comparison or native requests;
+its safe screenshot was inspected. Restricted verified-TLS database clock
+samples, monotonic request bounds and fresh no-store response dates replaced
+local-clock assumptions in the verifier. Fixed ten-minute pin/pool TTLs and the
+existing collection limits were not extended or weakened.
+
+Exactly **one** new Discipline/healer job returned native HTTP 200 with a
+truthfully deadline-limited sample: six observations, six players and six kills.
+Any produced comparable partial ratings with two scored categories per side;
+unavailable/incomplete categories remained unscored. All six PI states were
+unknown, so Exclude correctly produced measurements-only results without an Any
+fallback. The terminal job added **69.62 charged / 10 pending**, with a null
+accounting failure. Pending uncertainty was retained, not refunded.
+
+Private installed Chrome then used the actual hosted form, Find kills, boss,
+Execution and Exclude controls. Both native responses were cached and matched
+the exact shared-pool projection. Statistical table semantics and desktop/phone
+layout passed with zero page or console errors. Only privacy-checked aggregate
+status crops were saved, and all four were inspected.
+
+After slow Vercel metadata checks, a fresh restricted DB-backed proof confirmed
+the exact original pool and sufficient remaining fixed expiry. Only Production
+was changed to native `1`; Preview stayed explicitly `0`. The existing Vercel
+redeployment workflow deployed the same verified application SHA
+`5ea2809df64e759201d4aa972edf17867f6be556`. Both public aliases resolved to the
+same READY Production deployment.
+
+A fresh ordinary public comparison issued an independently verified current pin
+for the exact original logical pair. **Real unauthenticated installed Chrome**,
+with no verification token, Authorization header or cookies, selected Execution
+and displayed native Any and Exclude comparisons. Both HTTP 200 responses were
+cached, matched the original pool's native projection after redeployment, and
+passed partial/incomplete/PI semantics on desktop and phone with zero page or
+console errors. The four privacy-checked public aggregate crops were inspected.
+No second acquisition or expired-cache retry was used.
+
+Separate unauthenticated Chrome interactions confirmed **Overall, Boss and
+Healing** remained functional: three real reference selections, rendered cast
+streams, desktop/phone layouts and zero page or console errors. This check
+blocked all native routes and sent zero native requests; its safe control crops
+were also inspected.
+
+Final read-only reconciliation verified independent effective native settings
+**Production `1` / Preview `0`**, unchanged nonselected environment records, the
+same READY source on both aliases, and durable accounting **971.26 charged /
+46 pending**. All 18 baseline jobs, original uncertain debt and history remained
+unchanged. Exactly one new release job was present, terminal with null accounting
+failure; revision was 5525, fence 4, and no ownership lease was active. Port 8130
+remained stopped. **Public Execution is LIVE; no release verification blocker
+remains.** The earlier DPS/healer/tank API investigations and private tank Chrome
+were not repeated.
