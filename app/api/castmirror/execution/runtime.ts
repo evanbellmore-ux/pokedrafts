@@ -5,7 +5,7 @@ import { createHash, timingSafeEqual } from 'node:crypto';
 import type { ComparisonClient } from '../compare/contracts';
 import type { ExecutionStore } from './store-types';
 import {
-  COMPARISON_ID_PATTERN, createComparisonPin, freezePin, isRecord, realmKey, validateRankingScope,
+  COMPARISON_ID_PATTERN, createComparisonPin, freezePin, isRecord, realmKey, sameRealm, validateRankingScope,
   type CompareExecutionBinder, type PinnedComparison, type PinnedParams,
 } from './pins';
 
@@ -198,7 +198,7 @@ export function createHostedComparisonBinder(request: Request, options: HostedBi
           pin.params.executionReferenceCurrentPartition = worlds.some(({ variables: v, rows }) =>
             v.enc === params.encounter && v.diff === params.difficulty && v.metric === params.metric && v.cls === pin.base.className && v.spec === pin.base.spec
             && rows.some((row) => row.code === pin.base.b.code && row.fightID === pin.base.b.fightID
-              && row.name.trim().toLowerCase() === pin.base.b.name.trim().toLowerCase() && realmKey(row.server) === realmKey(pin.base.b.server)
+              && row.name.trim().toLowerCase() === pin.base.b.name.trim().toLowerCase() && sameRealm(row.server, pin.base.b.server)
               && partitionMatches(row.partition, scope.partition)));
         } catch {
           // Historic or unverified ranking scope stays unknown. Native collection

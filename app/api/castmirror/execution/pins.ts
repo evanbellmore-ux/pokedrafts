@@ -62,6 +62,15 @@ function requirePin(condition: unknown): asserts condition { if (!condition) thr
 export function realmKey(value: string): string {
   return value.trim().toLowerCase().replace(/[\s_]+/g, '-').replace(/[^a-z0-9-]/g, '');
 }
+export function sameRealm(left: string, right: string): boolean {
+  // WCL actor realms omit spaces; use the throughput actor-identity rule,
+  // not API slug equality. Keep the original realm values in the retained pin.
+  const compact = (value: string) => value.trim().toLowerCase().replace(/[\s-]+/g, '');
+  const a = compact(left), b = compact(right);
+  if (a && a === b) return true;
+  const slug = (value: string) => realmKey(value).replaceAll('-', '');
+  return !!slug(left) && slug(left) === slug(right);
+}
 function support(value: unknown): SupportInfo {
   requirePin(isRecord(value) && ['a', 'b', 'excluded'].every((key) => typeof value[key] === 'boolean'));
   return { a: value.a as boolean, b: value.b as boolean, excluded: value.excluded as boolean };
@@ -100,7 +109,7 @@ export function createComparisonPin(comparison: unknown, params: CompareParams):
   requirePin(isRecord(comparison) && isRecord(comparison.encounter) && comparison.encounter.id === params.encounter && text(comparison.encounter.name, 256)
     && comparison.difficulty === params.difficulty && comparison.metric === params.metric && text(comparison.spec, 64) && text(comparison.className, 64));
   const a = side(comparison.a, params.encounter, params.difficulty), b = side(comparison.b, params.encounter, params.difficulty);
-  requirePin(a.name.trim().toLowerCase() === params.name.trim().toLowerCase() && realmKey(a.server) === realmKey(params.server)
+  requirePin(a.name.trim().toLowerCase() === params.name.trim().toLowerCase() && sameRealm(a.server, params.server)
     && (params.code === null || a.code === params.code && a.fightID === params.fightID));
   return {
     base: { encounter: { id: params.encounter, name: comparison.encounter.name }, difficulty: params.difficulty, metric: params.metric,

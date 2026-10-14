@@ -281,6 +281,37 @@ describe('protected comparison pins and default-current partition provenance', (
     assert.equal((await f.handler(compareRequest())).status, 200);
     assert.equal(f.store.putPin.mock.calls[0][1].executionReferenceCurrentPartition, false);
   });
+  test('compact WCL actor realms retain private pins and independent current A/B ranking proof', async () => {
+    const f = binderFixture({ env: { ...ENV, EXECUTION_NATIVE_ENABLED: '0' } }), build = f.builder.getMockImplementation()!;
+    f.builder.mockImplementation(async (client) => {
+      const out = await build(client);
+      out.a.server = 'TestRealm'; out.b.server = 'TestRealm';
+      return out;
+    });
+    const response = await f.handler(compareRequest('', { headers: { Authorization: `Bearer ${ENV.EXECUTION_VERIFY_TOKEN}` } }));
+    assert.equal(response.status, 200); assertPrivate(response);
+    const out = await response.json(); assert.equal(out.comparisonID, UUID); assert.equal(out.executionV3Status.available, true);
+    assert.equal(out.a.server, 'TestRealm'); assert.equal(out.b.server, 'TestRealm');
+    const [base, bound] = f.store.putPin.mock.calls[0];
+    assert.equal(bound.server, 'Test Realm'); assert.equal(bound.executionCurrentPartition, true); assert.equal(bound.executionReferenceCurrentPartition, true);
+    assert.equal(readComparisonPin({ base, params: bound }).base.a.server, 'TestRealm');
+    assert.equal(f.store.putPin.mock.calls.length, 1); assert.equal(f.store.close.mock.calls.length, 1);
+    assert.equal(f.store.claim.mock.calls.length, 0); assert.equal(f.native.compare.mock.calls.length, 0);
+  });
+  test('realm formatting equivalence never accepts a different realm or changes retained actor identity', () => {
+    for (const server of ['TestRealm', 'test-realm', 'Test Realm', 'TEST_REALM']) {
+      const out = comparison(); out.a.server = server;
+      const pin = createComparisonPin(out, params);
+      assert.equal(pin.base.a.server, server); assert.equal(pin.params.server, params.server);
+      assert.equal(readComparisonPin(pin).base.a.server, server);
+    }
+    for (const server of ['Different Realm', 'Test Realm Two', 'Test', '?']) {
+      const out = comparison(); out.a.server = server;
+      assert.throws(() => createComparisonPin(out, params));
+      const pin = createComparisonPin(comparison(), params); pin.base.a.server = server;
+      assert.throws(() => readComparisonPin(pin));
+    }
+  });
   test('unverified native scope remains unknown rather than trusting builder/browser partition', async () => {
     const f = binderFixture();
     vi.mocked(f.native.modules.resolveScope).mockRejectedValueOnce(new Error('synthetic unsupported metadata'));
