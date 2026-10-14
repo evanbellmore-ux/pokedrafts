@@ -75,6 +75,26 @@ describe("Saved battles list (setup screen)", () => {
     expect(target.value).toBe("");
   });
 
+  it("shows the newest five rows; the rest, with all their buttons, behind \"{n} more saved battles\"", () => {
+    const list = (count: number) => Array.from({ length: count }, (_, index) => summary({ id: `s${index}`, opponent: `Rival ${index}` }));
+    const session = actions();
+    const { result: html, elements } = capture(() => renderToStaticMarkup(createElement(SavedBattles, { saved: savedState({ list: list(8) }), session })));
+    expect(html).toContain("8 of 100 in this browser · oldest removed first");
+    const [newest, rest] = html.split("<details");
+    expect(newest.match(/data-training-saved-row=/g)).toHaveLength(5);
+    expect(newest).toContain("Your team vs Rival 4");
+    expect(newest).not.toContain("Rival 5");
+    expect(rest).toMatch(/^ data-training-saved-more="true" class="[^"]*"><summary[^>]*>3 more saved battles<\/summary><ul class="min-w-0">/);
+    expect(rest.match(/data-training-saved-row=/g)).toHaveLength(3);
+    expect(rest).toContain("Your team vs Rival 7");
+    // Closed, every row's buttons kept.
+    expect(html).not.toMatch(/<details[^>]*\sopen=""/);
+    expect(buttons(elements).filter((button) => String(button.props["aria-label"]).startsWith("Replay "))).toHaveLength(8);
+    expect(buttons(elements).filter((button) => String(button.props["aria-label"]).startsWith("Export "))).toHaveLength(8);
+    expect(renderToStaticMarkup(createElement(SavedBattles, { saved: savedState({ list: list(6) }), session }))).toContain(">1 more saved battle</summary>");
+    expect(renderToStaticMarkup(createElement(SavedBattles, { saved: savedState({ list: list(5) }), session }))).not.toContain("<details");
+  });
+
   it("states facts: none saved, unavailable storage, storage full, import checks and errors", () => {
     const render = (saved: SavedBattlesState) => renderToStaticMarkup(createElement(SavedBattles, { saved, session: actions() }));
     expect(render(savedState({ list: [] }))).toContain("No saved battles");

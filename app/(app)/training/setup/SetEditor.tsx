@@ -17,7 +17,7 @@ import {
 const STAT_SHORT: Record<BattleStat, string> = { hp: "HP", atk: "Atk", def: "Def", spa: "SpA", spd: "SpD", spe: "Spe" };
 
 /** Keeps unfinished text while its value is not a whole number (as the calculator's IntegerInput). */
-function PointsInput({ id, label, value, onValue }: { id: string; label: string; value: number | null; onValue(value: number | null): void }) {
+function PointsInput({ id, label, describedBy, value, onValue }: { id: string; label: string; describedBy: string; value: number | null; onValue(value: number | null): void }) {
   const format = (number: number | null) => number === null ? "" : String(number);
   const [text, setText] = useState(() => format(value));
   const [synced, setSynced] = useState(value);
@@ -26,7 +26,7 @@ function PointsInput({ id, label, value, onValue }: { id: string; label: string;
     setText(format(value));
   }
   return (
-    <Input id={id} aria-label={label} type="text" inputMode="numeric" autoComplete="off" value={text} className="px-2 py-2 tabular-nums"
+    <Input id={id} aria-label={label} aria-describedby={describedBy} type="text" inputMode="numeric" autoComplete="off" value={text} className="min-h-11 px-2 tabular-nums"
       onChange={(event) => {
         const next = event.target.value;
         const parsed = next.trim() === "" ? null : parseIntegerInput(next.trim());
@@ -48,6 +48,8 @@ function MoveGroup({ label, moves, taken, keep }: { label: string; moves: readon
 
 export type SetEditorProps = {
   member: TrainingMember;
+  /** The member's name in the editor's labels ("Garchomp", or "Garchomp (yours)" when both teams have one). */
+  label: string;
   runtime: BattleRuntime;
   moveOptions: MoveOptionsState | undefined;
   /** Items on the team's other chosen members (Item Clause = 1): item id → member name. */
@@ -58,7 +60,7 @@ export type SetEditorProps = {
   onReset(): void;
 };
 
-export default function SetEditor({ member, runtime, moveOptions, takenItems, canReset, onChange, onReset }: SetEditorProps) {
+export default function SetEditor({ member, label, runtime, moveOptions, takenItems, canReset, onChange, onReset }: SetEditorProps) {
   const id = useId();
   const [query, setQuery] = useState("");
   const edit = editOf(member);
@@ -76,12 +78,13 @@ export default function SetEditor({ member, runtime, moveOptions, takenItems, ca
   const stats = getBuildStats(build, runtime);
   const known = new Set([...list.usage, ...list.other].map((move) => move.id));
 
+  // Named by its Pokémon, as are its inner fieldsets (screen-reader text): two open editors never share a control's name.
   return (
-    <div data-training-set-editor={member.key} className="mt-2 space-y-3 border-t border-line pt-3">
+    <div role="group" aria-label={`${label} set`} data-training-set-editor={member.key} className="mt-2 space-y-3 border-t border-line pt-3">
       <fieldset className="min-w-0 space-y-2">
-        <legend className="text-xs font-semibold uppercase tracking-wide text-muted">Moves</legend>
+        <legend className="text-xs font-semibold uppercase tracking-wide text-muted">Moves<span className="sr-only normal-case"> · {label}</span></legend>
         <Field id={`${id}-search`} label="Search moves">
-          <Input type="search" autoComplete="off" spellCheck={false} value={query} onChange={(event) => setQuery(event.target.value)} className="py-2" />
+          <Input type="search" autoComplete="off" spellCheck={false} value={query} onChange={(event) => setQuery(event.target.value)} className="min-h-11" />
         </Field>
         {list.status === "loading" && <p role="status" className="text-xs text-muted">Loading legal moves…</p>}
         {list.status === "fallback" && <p className="wrap-anywhere text-xs text-muted">Legal moves unavailable: {list.message} · Showing the catalog learnset.</p>}
@@ -93,7 +96,7 @@ export default function SetEditor({ member, runtime, moveOptions, takenItems, ca
             const missing = keep && !known.has(keep);
             return (
               <Field key={index} id={`${id}-move-${index}`} label={`Move ${index + 1}`}>
-                <Select data-training-move-slot={index} value={keep ?? ""} className="py-2" onChange={(event) => onChange(withMove(edit, index, event.target.value || null))}>
+                <Select data-training-move-slot={index} value={keep ?? ""} className="min-h-11" onChange={(event) => onChange(withMove(edit, index, event.target.value || null))}>
                   <option value="">No move</option>
                   {missing && <option value={keep}>{runtime.movesById.get(keep)?.name ?? keep}</option>}
                   <MoveGroup label="Usage" moves={usage} taken={taken} keep={keep} />
@@ -113,7 +116,7 @@ export default function SetEditor({ member, runtime, moveOptions, takenItems, ca
           </div>
         ) : (
           <Field id={`${id}-item`} label="Item">
-            <Select data-training-item value={build.itemId} className="py-2" onChange={(event) => onChange(withItem(edit, event.target.value))}>
+            <Select data-training-item value={build.itemId} className="min-h-11" onChange={(event) => onChange(withItem(edit, event.target.value))}>
               {!requiredItems.length && <option value="">No item</option>}
               {(requiredItems.length ? items.filter((item) => requiredItems.includes(item.id)) : items).map((item) => {
                 const holder = takenItems.get(item.id);
@@ -123,13 +126,13 @@ export default function SetEditor({ member, runtime, moveOptions, takenItems, ca
           </Field>
         )}
         <Field id={`${id}-ability`} label="Ability">
-          <Select data-training-ability value={build.abilityId} className="py-2" onChange={(event) => onChange(withAbility(edit, event.target.value))}>
+          <Select data-training-ability value={build.abilityId} className="min-h-11" onChange={(event) => onChange(withAbility(edit, event.target.value))}>
             {!species?.abilities.includes(build.abilityId) && <option value={build.abilityId}>{runtime.abilitiesById.get(build.abilityId)?.name ?? build.abilityId}</option>}
             {(species?.abilities ?? []).map((ability) => <option key={ability} value={ability}>{runtime.abilitiesById.get(ability)?.name ?? ability}</option>)}
           </Select>
         </Field>
         <Field id={`${id}-nature`} label="Nature">
-          <Select data-training-nature value={build.nature} className="py-2" onChange={(event) => onChange(withNature(edit, event.target.value))}>
+          <Select data-training-nature value={build.nature} className="min-h-11" onChange={(event) => onChange(withNature(edit, event.target.value))}>
             {NATURES.map((nature) => <option key={nature.name} value={nature.name}>{natureLabel(nature.name)}</option>)}
           </Select>
         </Field>
@@ -138,23 +141,28 @@ export default function SetEditor({ member, runtime, moveOptions, takenItems, ca
       {points && (
         <fieldset className="min-w-0">
           <legend className="flex w-full flex-wrap justify-between gap-2 text-xs font-semibold uppercase tracking-wide text-muted">
-            <span>Stat Points</span>
+            <span>Stat Points<span className="sr-only normal-case"> · {label}</span></span>
             <span className={`tabular-nums normal-case ${total > TOTAL_STAT_POINTS ? "text-danger" : ""}`}>{total} / {TOTAL_STAT_POINTS}</span>
           </legend>
           <div className="mt-1.5 grid grid-cols-3 gap-2 sm:grid-cols-6">
             {STATS.map((stat) => (
               <div key={stat} className="min-w-0">
                 <label htmlFor={`${id}-points-${stat}`} className="block text-xs font-medium text-text">{STAT_SHORT[stat]}</label>
-                <PointsInput id={`${id}-points-${stat}`} label={`${STAT_SHORT[stat]} Stat Points (0–${MAX_STAT_POINTS})`} value={points[stat]} onValue={(value) => onChange(withPoints(edit, stat, value))} />
-                <span className="block text-xs tabular-nums text-muted">{stats ? stats[stat] : "—"}</span>
+                <PointsInput id={`${id}-points-${stat}`} label={`${STAT_SHORT[stat]} Stat Points (0–${MAX_STAT_POINTS})`} describedBy={`${id}-stat-${stat}`}
+                  value={points[stat]} onValue={(value) => onChange(withPoints(edit, stat, value))} />
+                <span id={`${id}-stat-${stat}`} className="block text-xs tabular-nums text-muted"><span className="sr-only">{STAT_SHORT[stat]} </span>{stats ? stats[stat] : "—"}</span>
               </div>
             ))}
           </div>
-          {!!issues.length && <ul className="mt-1 space-y-0.5 text-xs text-danger">{issues.map((issue) => <li key={issue}>{issue}</li>)}</ul>}
+          {/* The total (in view in the legend) and the issues, read as they change. */}
+          <div role="status" data-training-points-status className="mt-1">
+            <span className="sr-only">Stat Points: {total} / {TOTAL_STAT_POINTS}</span>
+            {!!issues.length && <ul className="space-y-0.5 text-xs text-danger">{issues.map((issue) => <li key={issue}>{issue}</li>)}</ul>}
+          </div>
         </fieldset>
       )}
 
-      {canReset && <Button variant="secondary" size="sm" className="min-h-11" onClick={onReset}>Reset set</Button>}
+      {canReset && <Button variant="secondary" size="sm" className="min-h-11" onClick={onReset}>Reset set<span className="sr-only"> · {label}</span></Button>}
     </div>
   );
 }

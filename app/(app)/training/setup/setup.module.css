@@ -22,3 +22,30 @@
     align-items: start;
   }
 }
+
+/* The Start bar sticks to the bottom of the setup as the battle's submit bar does (actions.module.css .submitBar): under the
+   nav's z-40, above the safe-area inset. It is the setup's last child (a sticky element stays inside its parent), so past the
+   setup it settles above Saved battles. It keeps one height at each width (TeamSetup.tsx: about 61px below 40rem, 81px from
+   40rem), so focused controls above it keep clear of it with 6rem; its own controls are in it. On a touch screen, while a
+   text field has the focus (the on-screen keyboard is open), it stays in place at the end of the setup. */
+.setup :is(input, select, textarea, button, summary, [tabindex]):not(.startBar *) {
+  scroll-margin-bottom: 6rem;
+}
+
+.startBar {
+  position: sticky;
+  bottom: 0;
+  z-index: 30;
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+}
+
+@media (pointer: coarse) {
+  .setup:has(textarea:focus, input:not([type]):focus, input[type="text"]:focus, input[type="search"]:focus, input[type="url"]:focus, input[type="number"]:focus) .startBar {
+    position: static;
+  }
+}
+
+/* A side's heading takes the focus (the Start bar's fact, Change teams): it scrolls in below the sticky nav. */
+.sideHeading {
+  scroll-margin-top: calc(var(--app-nav-height, 0px) + 0.5rem);
+}

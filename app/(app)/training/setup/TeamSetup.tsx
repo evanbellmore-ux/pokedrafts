@@ -1,17 +1,20 @@
 "use client";
 
-import { useCallback, useEffect, useId, useMemo } from "react";
+import { useCallback, useEffect, useId, useMemo, useState } from "react";
 import { Alert, Button } from "@/app/components/ui";
+import { RefreshTeamsButton, SourceFeedback } from "@/app/(app)/calculator/LeagueMatchupPicker";
 import type useCalculatorRosters from "@/app/(app)/calculator/useCalculatorRosters";
 import type { DoublesSideId } from "@/app/lib/battle/doubles-types";
 import type { BattleRuntime } from "@/app/lib/battle/runtime";
-import type { SetupDraft, TeamSourceDraft, TrainingSetup, TrainingSnapshot } from "../model/view-types";
+import { usesTestSettings } from "../model/info";
+import type { EngineLoad, SetupDraft, TeamSourceDraft, TrainingSetup, TrainingSnapshot } from "../model/view-types";
 import type { TrainingSession } from "../training-session";
-import DifficultyField from "./DifficultyField";
+import DifficultyField, { DIFFICULTY_LABEL } from "./DifficultyField";
 import FormatFacts from "./FormatFacts";
 import HabitTrends from "./HabitTrends";
 import InfoSettingsPanel from "./InfoSettingsPanel";
-import { resolveSetup } from "./team-draft";
+import { pendingSets, resolveSetup, sharedNames, type ResolvedTeam } from "./team-draft";
+import { problemCount, problemsFact } from "./TeamMemberRow";
 import TeamSourcePanel from "./TeamSourcePanel";
 import styles from "./setup.module.css";
 
@@ -26,8 +29,62 @@ export type TeamSetupProps = {
 export function canStart(snapshot: TeamSetupProps["snapshot"], setup: TrainingSetup | null, key: string | null) {
   const validation = snapshot.validation;
   if (!setup || !key || snapshot.engine.status !== "ready" || validation.status !== "ready" || validation.key !== key) return false;
-  const clean = (problems: { team: string[]; members: Record<string, string[]> }) => !problems.team.length && Object.values(problems.members).every((list) => !list.length);
-  return clean(validation.own) && clean(validation.opponent);
+  return !problemCount(validation.own) && !problemCount(validation.opponent);
+}
+
+/** Looks unavailable while it stays focusable (aria-disabled), so Start reads its own state and what it waits on. */
+const UNAVAILABLE = "aria-disabled:cursor-not-allowed aria-disabled:opacity-60 aria-disabled:hover:bg-accent";
+
+const LOADING_RULES = "Loading battle rules…";
+const CHECKING = "Checking teams with Showdown rules…";
+const VALID = "Teams valid for VGC 2026 Reg M-C.";
+const engineError = (engine: EngineLoad) => `Battle rules unavailable: ${engine.message ?? "the battle engine did not load."}`;
+const showdownCount = (name: string, count: number) => `${name}: ${problemsFact(count)}`;
+const checkFailed = (message: string) => `Showdown check failed: ${message}`;
+
+/** One side's lines Start waits on: why it has nothing to choose from, its suggested sets loading or unavailable, its blockers. */
+function sideLines(team: ResolvedTeam, name: string): { text: string; blocker: boolean }[] {
+  const pending = pendingSets(team);
+  return [
+    ...(team.fact ? [{ text: `${name}: ${team.fact}`, blocker: false }] : []),
+    ...(pending ? [{ text: `${name}: ${pending === "loading" ? "Suggesting sets…" : "Suggested sets unavailable."}`, blocker: false }] : []),
+    ...team.blockers.map((blocker) => ({ text: `${name}: ${blocker}`, blocker: true })),
+  ];
+}
+
+type StartLine = { text: string; side: DoublesSideId | null; tone: "muted" | "text" | "danger" };
+const TONE = { muted: "text-muted", text: "text-text", danger: "text-danger" } as const;
+
+/** The side's heading takes the keyboard focus (and scrolls in below the nav). */
+function focusSide(side: DoublesSideId) {
+  document.querySelector<HTMLElement>(`[data-training-team-heading="${side}"]`)?.focus();
+}
+
+/** The bar's fact in two lines at most (its whole text in its title), in a row as tall as Start: the bar keeps one height. */
+const CLAMP = "line-clamp-2 wrap-anywhere";
+const FACT_ROW = "flex min-h-11 min-w-0 items-center gap-1";
+
+/**
+ * The Start bar's one fact: the first line Start waits on (in the status region's order, with the engine's and the Showdown
+ * check's errors) and how many more there are, or the teams' validity. A side's line is a button to that side (its Choose 6
+ * list opens).
+ */
+function StartFact({ lines, startable, onSide }: { lines: StartLine[]; startable: boolean; onSide(side: DoublesSideId): void }) {
+  if (startable) return <p title={VALID} className={`${FACT_ROW} text-success`}><span className={CLAMP}>{VALID}</span></p>;
+  const [first, ...rest] = lines;
+  if (!first) return null;
+  const side = first.side;
+  return (
+    <p data-training-start-fact className={FACT_ROW}>
+      {side ? (
+        <button type="button" title={first.text} data-training-start-side={side} onClick={() => onSide(side)}
+          className={`min-h-11 min-w-0 rounded text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus ${TONE[first.tone]}`}>
+          <span className={`${CLAMP} underline decoration-dotted underline-offset-2`}>{first.text}</span>
+        </button>
+      ) : <span title={first.text} className={`min-w-0 ${CLAMP} ${TONE[first.tone]}`}>{first.text}</span>}
+      {rest.length > 0 && <span className="shrink-0 text-muted">· {rest.length} more</span>}
+    </p>
+  );
 }
 
 export default function TeamSetup({ runtime, rosters, snapshot, session }: TeamSetupProps) {
@@ -35,6 +92,13 @@ export default function TeamSetup({ runtime, rosters, snapshot, session }: TeamS
   const { draft, validation, engine, habits, trendsOpen, setupError, suggestions, moveOptions } = snapshot;
   const resolved = useMemo(() => resolveSetup(draft, rosters.state, suggestions, runtime), [draft, rosters.state, suggestions, runtime]);
   const { own, opponent, setup, key } = resolved;
+  const shared = useMemo(() => sharedNames(own, opponent), [own, opponent]);
+  // The Start bar's side fact opens that side's Choose 6 list (below 64rem) as its heading takes the focus.
+  const [reveal, setReveal] = useState({ own: 0, opponent: 0 });
+  const showSide = (side: DoublesSideId) => {
+    setReveal((current) => ({ ...current, [side]: current[side] + 1 }));
+    focusSide(side);
+  };
   // The habit counts decay by 0.9 per battle (ai/habits.ts): whole turns for display.
   const habitTurns = Math.round(habits.turns);
 
@@ -55,58 +119,105 @@ export default function TeamSetup({ runtime, rosters, snapshot, session }: TeamS
   const checking = !!key && validation.status === "checking" && validation.key === key;
   const current = validation.status !== "idle" && validation.key === key ? validation : null;
   const startable = canStart(snapshot, setup, key);
-  const blockers = [...own.blockers.map((text) => `Your team: ${text}`), ...opponent.blockers.map((text) => `Opponent: ${text}`)];
+  const sides = [{ team: own, name: "Your team" }, { team: opponent, name: "Opponent" }] as const;
   const problems = current?.status === "ready" ? current : null;
-  const problemCount = problems ? [problems.own, problems.opponent].reduce((sum, team) => sum + team.team.length + Object.values(team.members).reduce((each, list) => each + list.length, 0), 0) : 0;
+  const habitsText = `${habitTurns} ${habitTurns === 1 ? "turn" : "turns"}`;
+  const loadingRules = engine.status === "idle" || engine.status === "loading";
+  // What Start waits on, in the status region's order (the engine's and the Showdown check's errors where they stand).
+  const lines: StartLine[] = [
+    ...(loadingRules ? [{ text: LOADING_RULES, side: null, tone: "muted" as const }] : []),
+    ...(engine.status === "error" ? [{ text: engineError(engine), side: null, tone: "danger" as const }] : []),
+    ...sides.flatMap(({ team, name }) => sideLines(team, name).map((line) => ({ text: line.text, side: team.role, tone: "text" as const }))),
+    ...(checking ? [{ text: CHECKING, side: null, tone: "muted" as const }] : []),
+    ...(problems ? sides.flatMap(({ team, name }) => {
+      const count = problemCount(problems[team.role]);
+      return count > 0 ? [{ text: showdownCount(name, count), side: team.role, tone: "danger" as const }] : [];
+    }) : []),
+    ...(current?.status === "error" ? [{ text: checkFailed(current.message), side: null, tone: "danger" as const }] : []),
+  ];
+  // Both teams known: "Kingco and the Breezys vs Feralinatr · Plays safe" (as the Resume prompt names a battle).
+  const testOn = usesTestSettings(draft.info.aiKnows) || usesTestSettings(draft.info.youSee);
+  const matchup = own.candidates.length && opponent.candidates.length
+    ? `${own.label} vs ${opponent.label} · ${DIFFICULTY_LABEL[draft.difficulty]}${testOn ? " · Test settings on" : ""}`
+    : null;
+  // Start is described by what it waits on: the rules' error, the status region, the failed Showdown check.
+  const describedBy = [engine.status === "error" && `${id}-engine`, `${id}-state`, current?.status === "error" && `${id}-check`].filter(Boolean).join(" ");
 
   return (
-    <div data-training-screen="setup" className="space-y-4">
+    <div data-training-screen="setup" className={`${styles.setup} space-y-4`}>
+      {/* The league rosters both teams read: one Refresh teams and their status, said once (below 40rem the status takes the
+          row and Refresh teams the line under it). Its lines are not live: the status beside Start says them per team. */}
+      {(draft.own.mode === "league" || draft.opponent.mode === "league") && (
+        <div data-training-rosters className="flex flex-wrap items-start gap-2">
+          <div className="min-w-0 flex-1 space-y-2 empty:hidden max-sm:basis-full"><SourceFeedback state={rosters.state} loginNext="/training" live={false} /></div>
+          <RefreshTeamsButton state={rosters.state} onRefresh={rosters.refresh} className="ml-auto shrink-0" />
+        </div>
+      )}
       <div className={styles.teams}>
         <TeamSourcePanel role="own" team={own} source={draft.own} ownMode={draft.own.mode} rosters={rosters} runtime={runtime} visibility={null}
-          problems={problems?.own ?? null} moveOptions={moveOptions} onSource={onSource("own")} onLoadMoves={loadMoves}
+          problems={problems?.own ?? null} moveOptions={moveOptions} shared={shared} reveal={reveal.own} onSource={onSource("own")} onLoadMoves={loadMoves}
           onRetrySuggest={() => own.suggestKey && session.suggest("own", own.suggestKey, own.suggestMembers, true)} />
         <TeamSourcePanel role="opponent" team={opponent} source={draft.opponent} ownMode={draft.own.mode} rosters={rosters} runtime={runtime} visibility={draft.info.youSee}
-          problems={problems?.opponent ?? null} moveOptions={moveOptions} onSource={onSource("opponent")} onLoadMoves={loadMoves}
+          problems={problems?.opponent ?? null} moveOptions={moveOptions} shared={shared} reveal={reveal.opponent} onSource={onSource("opponent")} onLoadMoves={loadMoves}
           onRetrySuggest={() => opponent.suggestKey && session.suggest("opponent", opponent.suggestKey, opponent.suggestMembers, true)} />
       </div>
 
       <section aria-labelledby={`${id}-battle`} className="min-w-0 space-y-4 rounded-xl border border-line bg-panel p-3 sm:p-4">
-        <h2 id={`${id}-battle`} className="text-lg font-semibold text-text">Battle</h2>
-        <FormatFacts info={draft.info} />
+        <h2 id={`${id}-battle`} className="text-lg font-semibold text-text">Battle settings</h2>
         <div className={styles.battleFields}>
           <div className="min-w-0 space-y-3">
             <DifficultyField value={draft.difficulty} onChange={(difficulty) => update((current) => ({ ...current, difficulty }))} />
-            <div className="flex flex-wrap items-center gap-2 text-sm">
-              <span data-training-habits className="text-text">Habits: {habitTurns} {habitTurns === 1 ? "turn" : "turns"} in this browser</span>
-              <Button variant="secondary" size="sm" className="min-h-11" disabled={!habits.turns} onClick={() => session.clearHabits()}>Clear habits</Button>
-            </div>
-            <HabitTrends data={habits.data} runtime={runtime} open={trendsOpen} onToggle={(open) => session.setTrendsOpen(open)} />
             <label htmlFor={`${id}-read`} className="flex min-h-11 cursor-pointer items-center gap-2 text-sm text-text">
               <input id={`${id}-read`} type="checkbox" checked={draft.showRead} onChange={(event) => update((current) => ({ ...current, showRead: event.target.checked }))}
                 className="h-4 w-4 shrink-0 accent-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus" />
               Show the AI&apos;s read after each turn
             </label>
+            <div className="flex flex-wrap items-center gap-2 text-sm">
+              <span data-training-habits className="text-text">Habits: {habitsText} in this browser</span>
+              <Button variant="secondary" size="sm" className="min-h-11" disabled={!habits.turns}
+                onClick={() => { if (window.confirm(`Clear the AI's habits (${habitsText})?`)) session.clearHabits(); }}>Clear habits</Button>
+            </div>
+            <HabitTrends data={habits.data} runtime={runtime} open={trendsOpen} onToggle={(open) => session.setTrendsOpen(open)} />
           </div>
           <InfoSettingsPanel info={draft.info} onChange={(info) => update((current) => ({ ...current, info }))} />
         </div>
+        <FormatFacts />
 
         <div className="space-y-2">
-          {(engine.status === "idle" || engine.status === "loading") && <p role="status" className="text-sm text-muted">Loading battle rules…</p>}
           {engine.status === "error" && (
-            <Alert variant="error" title={`Battle rules unavailable: ${engine.message ?? "the battle engine did not load."}`}
+            <Alert variant="error" title={<span id={`${id}-engine`}>{engineError(engine)}</span>}
               action={<Button variant="secondary" size="sm" className="min-h-11" onClick={() => session.retryEngine()}>Retry</Button>} />
           )}
           {setupError && <Alert variant="error" title="Battle stopped">{setupError}</Alert>}
-          {!!blockers.length && (
-            <ul className="space-y-0.5 text-sm text-text">{blockers.map((blocker) => <li key={blocker} data-training-blocker>{blocker}</li>)}</ul>
-          )}
-          {checking && <p role="status" className="text-sm text-muted">Checking teams with Showdown rules…</p>}
-          {current?.status === "error" && <p data-training-blocker className="wrap-anywhere text-sm text-danger">Showdown check failed: {current.message}</p>}
-          {problems && problemCount > 0 && <p data-training-blocker className="text-sm text-danger">Showdown rules: {problemCount} problem{problemCount === 1 ? "" : "s"}.</p>}
-          {startable && <p role="status" className="text-sm text-success">Teams valid for VGC 2026 Reg M-C.</p>}
+          {/* One live region for what Start waits on (its description); additions are read, not the whole list again. */}
+          <div id={`${id}-state`} role="status" aria-atomic="false" data-training-readiness className="space-y-0.5 text-sm">
+            {loadingRules && <p className="text-muted">{LOADING_RULES}</p>}
+            <ul className="space-y-0.5 text-text empty:hidden">
+              {sides.flatMap(({ team, name }) => sideLines(team, name).map((line) => (
+                <li key={line.text} data-training-side={team.role} data-training-blocker={line.blocker || undefined}>{line.text}</li>
+              )))}
+            </ul>
+            {checking && <p className="text-muted">{CHECKING}</p>}
+            {problems && sides.map(({ team, name }) => {
+              const count = problemCount(problems[team.role]);
+              return count > 0 && <p key={team.role} data-training-blocker className="text-danger">{showdownCount(name, count)}</p>;
+            })}
+            {startable && <p className="text-success">{VALID}</p>}
+          </div>
+          {current?.status === "error" && <p id={`${id}-check`} role="alert" data-training-blocker className="wrap-anywhere text-sm text-danger">{checkFailed(current.message)}</p>}
         </div>
-        <Button data-training-start size="lg" className="min-h-11 w-full sm:w-auto" disabled={!startable} onClick={() => setup && session.start(setup)}>Start battle</Button>
       </section>
+
+      {/* Start in reach at every scroll position: the matchup (from 40rem, one line), the fact Start waits on, Start. One
+          height at each width (one fact row; the matchup's row kept from 40rem). Not a live region. */}
+      <div data-training-start-bar className={`${styles.startBar} flex items-center gap-2 border-t border-line bg-panel px-3 py-2`}>
+        <div className="flex min-h-11 min-w-0 flex-1 flex-col justify-center text-sm sm:min-h-16">
+          {matchup && <p data-training-matchup title={matchup} className="hidden truncate font-medium text-text sm:block">{matchup}</p>}
+          <StartFact lines={lines} startable={startable} onSide={showSide} />
+        </div>
+        <Button data-training-start size="lg" className={`min-h-11 shrink-0 max-sm:px-4 max-sm:text-sm ${UNAVAILABLE}`} aria-disabled={!startable || undefined}
+          aria-describedby={describedBy} onClick={() => { if (startable && setup) session.start(setup); }}>Start battle</Button>
+      </div>
     </div>
   );
 }

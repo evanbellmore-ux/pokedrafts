@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import PokemonSprite from "@/app/components/PokemonSprite";
 import TypeBadge from "@/app/components/TypeBadge";
 import { Alert, Button } from "@/app/components/ui";
@@ -36,11 +36,21 @@ export default function TeamPreview({ runtime, setup, request, lastPreview, erro
   const names = members.map((member) => member.name);
   const last = fromTeamOrder(lastPreview, members.length);
   const sheet = redactSheet(sheetFromTeam(setup.opponent), setup.info.youSee);
+  // Start (or Rematch) unmounted the pressed button: the keyboard focus, left on the page body, and the view move to the
+  // heading (as BattleScreen does for a new request).
+  const heading = useRef<HTMLHeadingElement>(null);
+  useEffect(() => {
+    const active = document.activeElement;
+    if (active && active !== document.body) return;
+    heading.current?.focus({ preventScroll: true });
+    heading.current?.scrollIntoView({ block: "nearest" });
+  }, []);
 
   return (
     <section data-training-screen="preview" aria-labelledby={`${id}-heading`} className="min-w-0 space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 id={`${id}-heading`} tabIndex={-1} className="rounded text-xl font-semibold text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus">Team preview</h2>
+        <h2 id={`${id}-heading`} ref={heading} tabIndex={-1}
+          className="scroll-mt-[calc(var(--app-nav-height,0px)+0.5rem)] rounded text-xl font-semibold text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus">Team preview</h2>
         <AIStatusPill ai={ai} />
       </div>
       {starting && <p role="status" className="text-sm text-muted">Starting battle…</p>}

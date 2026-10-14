@@ -43,6 +43,8 @@ export type TeamSourceDraft = {
   epoch: number;
   /** Chosen member keys in order; null = the first six eligible. */
   chosen: string[] | null;
+  /** The other source mode's `chosen`, back when that mode is chosen again (a mode change keeps each mode's picks). */
+  otherChosen: string[] | null;
   /** Addendum A1.3: set editor results by TrainingMember.key; each replaces that member's suggested or imported set. */
   edits: Readonly<Record<string, MemberEdit>>;
 };

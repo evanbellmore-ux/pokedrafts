@@ -3,10 +3,11 @@ import { parseTeamImport } from "@/app/lib/battle/team-import";
 import type { BattleBuild } from "@/app/lib/battle/types";
 import type { SuggestionState, TeamSourceDraft } from "@/app/(app)/training/model/view-types";
 import {
-  createSetupDraft, emptySource, pasteKey, resolveSetup, resolveTeam, setupKey, teamBlockers, toggleChosen,
+  createSetupDraft, emptySource, listNeedsRows, memberLabel, pasteKey, pendingSets, resolveSetup, resolveTeam, setupKey, sharedNames, teamBlockers,
+  toggleChosen, withMode,
 } from "@/app/(app)/training/setup/team-draft";
 import { exportTeamText } from "@/app/(app)/training/setup/team-export";
-import { OPPONENT_ROSTER, OWN_MEMBERS, OWN_ROSTER, PASTE_TEXT, rosterState, runtime, suggestedSet } from "../fixtures/training";
+import { MIRROR_ROSTER, OPPONENT_ROSTER, OWN_MEMBERS, OWN_ROSTER, PASTE_TEXT, rosterState, runtime, suggestedSet } from "../fixtures/training";
 
 const IDLE: SuggestionState = { status: "idle" };
 
@@ -71,6 +72,86 @@ describe("training setup teams", () => {
     expect(team.members.map((member) => member?.origin)).toEqual(Array(6).fill("imported"));
     team.members[0]!.build.itemId = "leftovers";
     expect(source.paste!.team.members[0].build!.itemId).toBe("lifeorb");
+  });
+
+  it("states a side's missing piece instead of a count when it has nothing to choose from", () => {
+    const state = rosterState(OWN_ROSTER, OPPONENT_ROSTER);
+    const noOpponent = resolveTeam(emptySource(), { ...state, opponentId: "" }, "opponent", IDLE, runtime);
+    expect(noOpponent).toMatchObject({ fact: "No opponent chosen.", blockers: [], candidates: [], team: null });
+    const noPaste = resolveTeam({ ...emptySource(), mode: "paste" }, state, "own", IDLE, runtime);
+    expect(noPaste).toMatchObject({ fact: "No team imported.", blockers: [], team: null });
+    const loadingRosters = resolveTeam(emptySource(), { ...state, teamsStatus: "loading", data: null }, "own", IDLE, runtime);
+    expect(loadingRosters).toMatchObject({ fact: "Loading current team rosters…", blockers: [] });
+    // No league chosen: your team a paste, the opponent's picker chooses the league ("No league chosen."); else no team.
+    const leagueless = { ...state, selectedLeagueId: "", opponentId: "", data: null, teamsStatus: "idle" as const };
+    expect(resolveTeam(emptySource(), leagueless, "opponent", IDLE, runtime, "paste")).toMatchObject({ fact: "No league chosen.", message: "No league chosen.", blockers: [] });
+    expect(resolveTeam(emptySource(), leagueless, "opponent", IDLE, runtime).fact).toBe("No team chosen.");
+    expect(resolveTeam(emptySource(), leagueless, "own", IDLE, runtime, "paste").fact).toBe("No team chosen.");
+    expect(resolveTeam(emptySource(), { ...leagueless, leagues: [] }, "opponent", IDLE, runtime, "paste").fact).toBe("No leagues.");
+    const ownPaste = createSetupDraft();
+    expect(resolveSetup({ ...ownPaste, own: { ...ownPaste.own, mode: "paste" } }, leagueless, { own: IDLE, opponent: IDLE }, runtime).opponent.fact).toBe("No league chosen.");
+    // Members that cannot be chosen are still members: the count is the fact.
+    const unusable = resolveTeam(emptySource(), rosterState(["Not A Pokemon"], OPPONENT_ROSTER), "own", IDLE, runtime);
+    expect(unusable).toMatchObject({ fact: null, blockers: ["Choose 6 (0 chosen)."] });
+    expect(resolveTeam(emptySource(), state, "own", IDLE, runtime).fact).toBeNull();
+  });
+
+  it("says a side's sets are pending only while a chosen member has none", () => {
+    const state = rosterState(OWN_ROSTER, OPPONENT_ROSTER);
+    const loading = resolveTeam(emptySource(), state, "own", IDLE, runtime);
+    expect(pendingSets(loading)).toBe("loading");
+    expect(pendingSets(resolveTeam(emptySource(), state, "own", { status: "error", key: loading.suggestKey!, message: "x" }, runtime))).toBe("error");
+    expect(pendingSets(resolveTeam(emptySource(), state, "own", ready(loading), runtime))).toBeNull();
+    // Every chosen member edited: nothing waits on the suggestion.
+    const edits = Object.fromEntries(loading.chosen.map((key, index) => [key, { build: { ...OWN_MEMBERS[index].build }, moves: OWN_MEMBERS[index].moves }]));
+    const edited = resolveTeam({ ...emptySource(), edits }, state, "own", IDLE, runtime);
+    expect(edited.suggestion).toBe("loading");
+    expect(pendingSets(edited)).toBeNull();
+    expect(pendingSets(resolveTeam(pasteSource(), state, "own", IDLE, runtime))).toBeNull();
+  });
+
+  it("keeps each source mode's Choose 6 picks across a switch; the same mode is no change", () => {
+    const picks = ["a", "b", "c", "d", "e", "f"];
+    const league: TeamSourceDraft = { ...emptySource(), chosen: picks };
+    expect(withMode(league, "league")).toBe(league);
+    const paste = withMode(league, "paste");
+    expect(paste).toMatchObject({ mode: "paste", epoch: 1, chosen: null, otherChosen: picks });
+    const pastePicks = ["p1", "p2"];
+    const back = withMode({ ...paste, chosen: pastePicks }, "league");
+    expect(back).toMatchObject({ mode: "league", epoch: 2, chosen: picks, otherChosen: pastePicks });
+    expect(withMode(back, "paste")).toMatchObject({ chosen: pastePicks, otherChosen: picks });
+    // Back on its roster, the kept picks are the side's six again.
+    const state = rosterState(OWN_ROSTER, OPPONENT_ROSTER);
+    const first = resolveTeam(emptySource(), state, "own", IDLE, runtime);
+    const swapped = [...first.chosen.slice(0, 5), first.candidates[6].key];
+    const kept = withMode(withMode({ ...emptySource(), chosen: swapped }, "paste"), "league");
+    expect(resolveTeam(kept, state, "own", IDLE, runtime).chosen).toEqual(swapped);
+  });
+
+  it("names a mirror's members by team, and only those", () => {
+    const state = rosterState(OWN_ROSTER, MIRROR_ROSTER);
+    const own = resolveTeam(emptySource(), state, "own", IDLE, runtime);
+    const opponent = resolveTeam(emptySource(), state, "opponent", IDLE, runtime);
+    const shared = sharedNames(own, opponent);
+    expect([...shared]).toEqual(["Garchomp"]);
+    expect(memberLabel("Garchomp", "own", shared)).toBe("Garchomp (yours)");
+    expect(memberLabel("Garchomp", "opponent", shared)).toBe("Garchomp (opponent's)");
+    expect(memberLabel("Gyarados", "own", shared)).toBe("Gyarados");
+    expect(sharedNames(own, resolveTeam(emptySource(), rosterState(OWN_ROSTER, OPPONENT_ROSTER), "opponent", IDLE, runtime)).size).toBe(0);
+  });
+
+  it("opens a Choose 6 list for what needs its rows, not for sets still loading", () => {
+    const state = rosterState(OWN_ROSTER, OPPONENT_ROSTER);
+    const loading = resolveTeam(emptySource(), state, "own", IDLE, runtime);
+    expect(pendingSets(loading)).toBe("loading");
+    expect(listNeedsRows(loading, 0)).toBe(false);
+    const team = resolveTeam(emptySource(), state, "own", ready(loading), runtime);
+    expect(listNeedsRows(team, 0)).toBe(false);
+    expect(listNeedsRows(team, 1)).toBe(true);
+    expect(listNeedsRows({ ...team, chosen: team.chosen.slice(0, 5) }, 0)).toBe(true);
+    expect(listNeedsRows({ ...team, blockers: ["Item Clause: Life Orb on Garchomp and Gyarados."] }, 0)).toBe(true);
+    const failed = resolveTeam(emptySource(), state, "own", { status: "error", key: loading.suggestKey!, message: "No usage data." }, runtime);
+    expect(listNeedsRows(failed, 0)).toBe(true);
   });
 
   it("caps Choose 6 at six and keeps roster order", () => {

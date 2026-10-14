@@ -5,11 +5,12 @@ import { DEFAULT_INFO } from "@/app/(app)/training/model/info";
 import type { StatPoints } from "@/app/(app)/training/model/sheet";
 import type { SuggestedSet } from "@/app/(app)/training/model/usage";
 import type {
-  BoardView, DecisionReport, LogTurn, MoveRequest, PokemonView, PreviewRequest, RequestPokemon, SwitchRequest, TrainingMember,
-  TrainingSetup, TrainingTeam,
+  BoardView, DecisionReport, LogTurn, MoveRequest, PokemonView, PreviewRequest, RequestPokemon, SetupDraft, SuggestionState, SwitchRequest,
+  TrainingMember, TrainingSetup, TrainingSnapshot, TrainingTeam,
 } from "@/app/(app)/training/model/view-types";
 import type { FromWorker, ToWorker, TrainingTransport } from "@/app/(app)/training/model/worker-protocol";
-import { memberFromSuggestion } from "@/app/(app)/training/setup/team-draft";
+import { createSetupDraft, memberFromSuggestion, resolveSetup } from "@/app/(app)/training/setup/team-draft";
+import { initialSnapshot } from "@/app/(app)/training/training-session";
 
 // Training UI fixtures: two six-member teams of suggested sets, p1 requests in the shapes pinned Showdown sends
 // (scripts/.cache/training/design/ui-probe.out, probe-midturn.out), a board, log turns and a read.
@@ -260,6 +261,30 @@ export function rosterState(ownNames: string[], opponentNames: string[]): import
 
 export const OWN_ROSTER = ["Garchomp", "Gyarados", "Incineroar", "Aerodactyl", "Aegislash", "Aggron", "Alakazam"];
 export const OPPONENT_ROSTER = ["Absol", "Altaria", "Ampharos", "Annihilape", "Appletun", "Araquanid"];
+/** An opponent roster with Garchomp first, as yours: a mirror. */
+export const MIRROR_ROSTER = ["Garchomp", ...OPPONENT_ROSTER];
+
+/**
+ * Ready suggested sets for both sides' chosen league members: Protect and Earthquake, each species' first ability; the first
+ * member of each side Life Orb, Jolly, 2 HP / 32 Atk / 32 Spe, with Protect added.
+ */
+export function suggestionsFor(draft: SetupDraft, state = rosterState(OWN_ROSTER, OPPONENT_ROSTER)): Record<"own" | "opponent", SuggestionState> {
+  const idle: SuggestionState = { status: "idle" };
+  const loading = resolveSetup(draft, state, { own: idle, opponent: idle }, runtime);
+  const sets = (team: typeof loading.own): SuggestionState => ({
+    status: "ready", key: team.suggestKey!,
+    sets: Object.fromEntries(team.suggestMembers.map((member, index) => [member.key, suggestedSet(member.key, member.speciesId, ["protect", "earthquake"], {
+      abilityId: runtime.speciesById.get(member.speciesId)!.abilities[0],
+      ...(index === 0 ? { itemId: "lifeorb", nature: "Jolly", points: { hp: 2, atk: 32, def: 0, spa: 0, spd: 0, spe: 32 }, protectAdded: true } : {}),
+    })])),
+  });
+  return { own: sets(loading.own), opponent: sets(loading.opponent) };
+}
+
+/** A Setup snapshot: the engine ready and both sides' suggested sets in (for `state`'s rosters). */
+export function snapshotWith(patch: Partial<TrainingSnapshot> = {}, draft: SetupDraft = createSetupDraft(), state = rosterState(OWN_ROSTER, OPPONENT_ROSTER)): TrainingSnapshot {
+  return { ...initialSnapshot(), engine: { status: "ready" }, draft, suggestions: suggestionsFor(draft, state), ...patch };
+}
 
 export const PASTE_TEXT = `Garchomp @ Life Orb
 Ability: Rough Skin

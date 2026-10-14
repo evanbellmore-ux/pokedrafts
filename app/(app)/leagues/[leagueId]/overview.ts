@@ -83,37 +83,6 @@ export function onClockMember<M>(
   return drafting[getSnakeDraftIndex(pick, drafting.length)] ?? null;
 }
 
-/**
- * The earliest upcoming match this coach plays in, or null. Regular and
- * playoff matches are ordered by round, so a waiting playoff slot the coach
- * already holds is returned too.
- */
-export function nextMatchFor<M extends OverviewMatch>(
-  matches: M[],
-  memberId: string
-): M | null {
-  const upcoming = matches.filter(
-    (match) =>
-      match.status !== "completed" &&
-      (match.home_member_id === memberId || match.away_member_id === memberId)
-  );
-  upcoming.sort(
-    (a, b) =>
-      a.round_number - b.round_number || a.match_number - b.match_number
-  );
-  return upcoming[0] ?? null;
-}
-
-/** The other side of a match; null while a playoff slot is undecided. */
-export function opponentId(
-  match: Pick<OverviewMatch, "home_member_id" | "away_member_id">,
-  memberId: string
-): string | null {
-  return match.home_member_id === memberId
-    ? match.away_member_id
-    : match.home_member_id;
-}
-
 export type NewsKind = "free_agent" | "match_result" | "season" | "other";
 
 /** `league_news.news_type` is never rendered raw (section 2). */

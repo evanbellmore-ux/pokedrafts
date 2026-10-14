@@ -161,4 +161,26 @@ describe("Saved battles keyboard focus", () => {
     expect(session.deleteSaved).toHaveBeenCalledWith("a");
     expect((document.activeElement as FakeElement).getAttribute("data-training-saved-heading")).not.toBeNull();
   });
+
+  it("a replay closed from a row behind \"{n} more saved battles\" opens it before its Replay button takes the focus back", async () => {
+    const SavedBattles = (await import("@/app/(app)/training/saved/SavedBattles")).default;
+    const session = actions();
+    const ids = ["a", "b", "c", "d", "e", "f", "g"];
+    const more = () => query("[data-training-saved-more]")[0];
+    await act(async () => { root.render(createElement(SavedBattles, { saved: saved(ids), session, returnTo: null, onReturned: vi.fn() })); });
+    expect(more().hasAttribute("open")).toBe(false);
+    expect(more().querySelectorAll("summary")[0].textContent).toBe("2 more saved battles");
+    const onReturned = vi.fn();
+    await act(async () => { root.render(createElement(SavedBattles, { saved: saved(ids), session, returnTo: "g", onReturned })); });
+    expect(more().hasAttribute("open")).toBe(true);
+    const focused = document.activeElement as FakeElement;
+    expect(focused.getAttribute("data-training-replay-for")).toBe("g");
+    expect(more().contains(focused)).toBe(true);
+    expect(onReturned).toHaveBeenCalledOnce();
+    // It stays open once the focus is back; the toggle event (a summary press) closes it.
+    await act(async () => { root.render(createElement(SavedBattles, { saved: saved(ids), session, returnTo: null, onReturned })); });
+    expect(more().hasAttribute("open")).toBe(true);
+    await act(async () => { (reactProps(more()).onToggle as (event: unknown) => void)({ currentTarget: { open: false } }); });
+    expect(more().hasAttribute("open")).toBe(false);
+  });
 });

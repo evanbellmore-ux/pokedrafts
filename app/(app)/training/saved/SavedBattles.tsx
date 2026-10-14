@@ -14,6 +14,8 @@ const focusSavedHeading = () => { if (typeof document !== "undefined") document.
 /** Looks disabled while it stays focusable (aria-disabled), so keyboard focus is not dropped while a file is checked. */
 const UNAVAILABLE = "aria-disabled:cursor-not-allowed aria-disabled:opacity-60";
 const when = (summary: SavedBattleSummary) => savedDate(summary.status === "unfinished" ? summary.updatedAt : summary.createdAt);
+/** The newest five rows show; the rest are behind "{n} more saved battles". */
+export const SAVED_SHOWN = 5;
 
 /** The newest unfinished battle (a reload ended it): Resume or Delete, above the setup. */
 export function ResumePrompt({ saved, session }: { saved: SavedBattlesState; session: Pick<SavedActions, "resume" | "deleteSaved"> }) {
@@ -69,7 +71,8 @@ function SavedRow({ summary, session, onExported }: { summary: SavedBattleSummar
 }
 
 /**
- * Saved battles in this browser, newest first: Replay, Export and Delete (Resume for an unfinished one), Import and Delete all.
+ * Saved battles in this browser, newest first (the newest five, the rest behind a disclosure): Replay, Export and Delete
+ * (Resume for an unfinished one), Import and Delete all.
  * `returnTo`: the replay just closed; its row's Replay button (else the heading) takes the keyboard focus back.
  */
 export default function SavedBattles({ saved, session, returnTo = null, onReturned }: { saved: SavedBattlesState; session: SavedActions; returnTo?: string | null; onReturned?(): void }) {
@@ -77,7 +80,12 @@ export default function SavedBattles({ saved, session, returnTo = null, onReturn
   const input = useRef<HTMLInputElement>(null);
   const heading = useRef<HTMLHeadingElement>(null);
   const [exported, setExported] = useState<string | null>(null);
+  const [moreOpen, setMoreOpen] = useState(false);
   const shown = saved.status !== "idle";
+  const newest = saved.list.slice(0, SAVED_SHOWN);
+  const more = saved.list.slice(SAVED_SHOWN);
+  // A replay closed from a row behind the disclosure: it opens first, so the Replay button can take the focus back.
+  if (returnTo && !moreOpen && more.some((summary) => summary.id === returnTo)) setMoreOpen(true);
   useEffect(() => {
     if (!returnTo || !shown) return;
     const row = [...document.querySelectorAll<HTMLElement>("[data-training-replay-for]")].find((button) => button.getAttribute("data-training-replay-for") === returnTo);
@@ -96,9 +104,19 @@ export default function SavedBattles({ saved, session, returnTo = null, onReturn
       </div>
       {saved.status === "loading" && <p role="status" className="text-sm text-muted">Loading saved battles…</p>}
       <div role="status" className="text-sm text-text empty:hidden">{saved.message ?? exported ?? ""}</div>
-      {saved.status === "ready" && (count
-        ? <ul aria-labelledby={`${id}-heading`} className="min-w-0">{saved.list.map((summary) => <SavedRow key={summary.id} summary={summary} session={session} onExported={setExported} />)}</ul>
-        : <p className="text-sm text-muted">No saved battles</p>)}
+      {saved.status === "ready" && (count ? (
+        <>
+          <ul aria-labelledby={`${id}-heading`} className="min-w-0">{newest.map((summary) => <SavedRow key={summary.id} summary={summary} session={session} onExported={setExported} />)}</ul>
+          {more.length > 0 && (
+            <details data-training-saved-more open={moreOpen} onToggle={(event) => setMoreOpen(event.currentTarget.open)} className="min-w-0 text-sm">
+              <summary className="min-h-11 cursor-pointer rounded py-3 font-medium text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus">
+                {more.length} more saved {more.length === 1 ? "battle" : "battles"}
+              </summary>
+              <ul className="min-w-0">{more.map((summary) => <SavedRow key={summary.id} summary={summary} session={session} onExported={setExported} />)}</ul>
+            </details>
+          )}
+        </>
+      ) : <p className="text-sm text-muted">No saved battles</p>)}
       {saved.status !== "unavailable" && (
         <div className="flex flex-wrap items-center gap-2">
           <input ref={input} id={`${id}-file`} type="file" accept=".json,application/json" hidden aria-describedby={`${id}-import-fact`}

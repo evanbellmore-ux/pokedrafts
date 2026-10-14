@@ -18,24 +18,36 @@ type SourcePickerProps = {
   onRefresh: () => void;
   /** Where "Log in again" returns to; defaults to the calculator. */
   loginNext?: string;
+  /**
+   * Inside a page's own team panel (Training): no card, heading, Refresh teams or roster status (the page states those once
+   * for both pickers, with RefreshTeamsButton and SourceFeedback), and "No team chosen." / "No league chosen." as plain text
+   * (the page's own status says each once). Defaults to the calculator's card.
+   */
+  embedded?: boolean;
 };
 
-function RefreshTeamsButton({ state, onRefresh }: SourcePickerProps) {
+export function RefreshTeamsButton({ state, onRefresh, className = "" }: Pick<SourcePickerProps, "state" | "onRefresh"> & { className?: string }) {
   const loading = state.status === "loading" || state.teamsStatus === "loading";
   const failed = state.status === "error" || state.teamsStatus === "error";
   return (
-    <Button variant="secondary" size="sm" onClick={onRefresh} disabled={loading}>
+    <Button variant="secondary" size="sm" className={`min-h-11 ${className}`.trim()} onClick={onRefresh} disabled={loading}>
       <RefreshCw className="h-4 w-4" aria-hidden="true" />{failed ? "Retry teams" : "Refresh teams"}
     </Button>
   );
 }
 
-function SourceFeedback({ state, loginNext = "/calculator" }: { state: CalculatorRosterState; loginNext?: string }) {
+export function SourceFeedback({ state, loginNext = "/calculator", live = true }: {
+  state: CalculatorRosterState;
+  loginNext?: string;
+  /** false: the loading and "No leagues." lines are plain text (the page's own status says them, Training's once per team). */
+  live?: boolean;
+}) {
   const loading = state.status === "loading" || state.teamsStatus === "loading";
   const failed = state.status === "error" || state.teamsStatus === "error";
+  const status = live ? "status" : undefined;
   return (
     <>
-      {loading && <p role="status" className="text-sm text-muted">{state.status === "loading" ? "Loading your leagues…" : "Loading current team rosters…"}</p>}
+      {loading && <p role={status} className="text-sm text-muted">{state.status === "loading" ? "Loading your leagues…" : "Loading current team rosters…"}</p>}
       {failed && (
         <Alert variant="error" title="League teams unavailable">
           {state.message ?? state.teamsMessage ?? "Could not load league teams."}
@@ -47,7 +59,7 @@ function SourceFeedback({ state, loginNext = "/calculator" }: { state: Calculato
           <ButtonLink href={`/login?next=${encodeURIComponent(loginNext)}`} variant="secondary" size="sm" className="mt-3">Log in again</ButtonLink>
         </Alert>
       )}
-      {state.status === "ready" && !state.leagues.length && <p role="status" className="text-sm text-muted">No leagues.</p>}
+      {state.status === "ready" && !state.leagues.length && <p role={status} className="text-sm text-muted">No leagues.</p>}
     </>
   );
 }
@@ -73,7 +85,7 @@ function LeagueSelector({ state, onLeagueChange, opponent = false }: {
   );
 }
 
-export function MyTeamPicker({ state, onLeagueChange, onRefresh, loginNext, heading = "My team" }: SourcePickerProps & {
+export function MyTeamPicker({ state, onLeagueChange, onRefresh, loginNext, heading = "My team", embedded = false }: SourcePickerProps & {
   onLeagueChange: (id: string) => void;
   /** The section heading; defaults to the calculator's. */
   heading?: string;
@@ -81,20 +93,26 @@ export function MyTeamPicker({ state, onLeagueChange, onRefresh, loginNext, head
   const id = useId();
   const ready = state.status === "ready";
   const league = state.leagues.find((entry) => entry.id === state.selectedLeagueId);
+  const fields = (
+    <>
+      <LeagueSelector state={state} onLeagueChange={onLeagueChange} />
+      {ready && !!state.leagues.length && !league && <p role={embedded ? undefined : "status"} className="text-sm text-muted">No team chosen.</p>}
+    </>
+  );
+  if (embedded) return <div className="min-w-0 space-y-3">{fields}</div>;
   return (
     <section aria-labelledby={`${id}-heading`} className="space-y-4 rounded-xl border border-line bg-panel p-4 sm:p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <h2 id={`${id}-heading`} className="text-lg font-semibold text-text">{heading}</h2>
         <RefreshTeamsButton state={state} onRefresh={onRefresh} />
       </div>
-      <LeagueSelector state={state} onLeagueChange={onLeagueChange} />
-      {ready && !!state.leagues.length && !league && <p role="status" className="text-sm text-muted">No team chosen.</p>}
+      {fields}
       <SourceFeedback state={state} loginNext={loginNext} />
     </section>
   );
 }
 
-export function OpponentPicker({ state, onOpponentChange, onRefresh, onLeagueChange, loginNext }: SourcePickerProps & {
+export function OpponentPicker({ state, onOpponentChange, onRefresh, onLeagueChange, loginNext, embedded = false }: SourcePickerProps & {
   onOpponentChange: (id: string) => void;
   /** Its own league selector (your team is a paste): the opponents are that league's. */
   onLeagueChange?: (id: string) => void;
@@ -105,16 +123,14 @@ export function OpponentPicker({ state, onOpponentChange, onRefresh, onLeagueCha
   const teamsReady = ready && !!league && state.teamsStatus === "ready" && state.data?.leagueId === league.id;
   const opponents = teamsReady ? [...(state.data?.members ?? [])].filter((member) => member.id !== league.memberId)
     .sort((a, b) => teamNameLabel(a.team_name).localeCompare(teamNameLabel(b.team_name), "en") || a.id.localeCompare(b.id, "en")) : [];
-  return (
-    <section aria-labelledby={`${id}-heading`} className="space-y-4 rounded-xl border border-line bg-panel p-4 sm:p-5">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <h2 id={`${id}-heading`} className="text-lg font-semibold text-text">Opponent</h2>
-        <RefreshTeamsButton state={state} onRefresh={onRefresh} />
-      </div>
+  // Embedded beside your own league team's picker, whose select already names your team: the League only.
+  const ownTeamShown = !embedded || !!onLeagueChange;
+  const fields = (
+    <>
       {onLeagueChange && <LeagueSelector state={state} onLeagueChange={onLeagueChange} opponent />}
       {league && (
         <dl className="grid gap-3 text-sm sm:grid-cols-2">
-          <div><dt className="text-muted">{onLeagueChange ? "Your league membership" : "Your team"}</dt><dd className="wrap-anywhere font-medium text-text">{teamNameLabel(league.teamName)}</dd></div>
+          {ownTeamShown && <div><dt className="text-muted">{onLeagueChange ? "Your league membership" : "Your team"}</dt><dd className="wrap-anywhere font-medium text-text">{teamNameLabel(league.teamName)}</dd></div>}
           <div><dt className="text-muted">League</dt><dd className="wrap-anywhere font-medium text-text">{league.name}</dd></div>
         </dl>
       )}
@@ -128,8 +144,18 @@ export function OpponentPicker({ state, onOpponentChange, onRefresh, onLeagueCha
           })}
         </Select>
       </Field>
-      {ready && !!state.leagues.length && !league && <p role="status" className="text-sm text-muted">{onLeagueChange ? "No league chosen." : "No team chosen."}</p>}
+      {ready && !!state.leagues.length && !league && <p role={embedded ? undefined : "status"} className="text-sm text-muted">{onLeagueChange ? "No league chosen." : "No team chosen."}</p>}
       {teamsReady && !opponents.length && <p role="status" className="text-sm text-muted">There are no other members in this league yet.</p>}
+    </>
+  );
+  if (embedded) return <div className="min-w-0 space-y-3">{fields}</div>;
+  return (
+    <section aria-labelledby={`${id}-heading`} className="space-y-4 rounded-xl border border-line bg-panel p-4 sm:p-5">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <h2 id={`${id}-heading`} className="text-lg font-semibold text-text">Opponent</h2>
+        <RefreshTeamsButton state={state} onRefresh={onRefresh} />
+      </div>
+      {fields}
       <SourceFeedback state={state} loginNext={loginNext} />
     </section>
   );

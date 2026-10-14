@@ -12,12 +12,18 @@ import { beforeAll, describe, expect, it, vi } from "vitest";
 import type { CalculatorState, DoublesMatchup } from "@/app/(app)/calculator/doubles-prep";
 import type { CalculatorRosterState } from "@/app/(app)/calculator/roster-data";
 import type { PreparedMatchup } from "@/app/(app)/calculator/roster-prep";
-import type { BoardView, PokemonView, TrainingBattle } from "@/app/(app)/training/model/view-types";
+import type { BoardView, PokemonView, SetupDraft, TrainingBattle } from "@/app/(app)/training/model/view-types";
 import type { DoublesSlotId } from "@/app/lib/battle/doubles-types";
+import { parseTeamImport } from "@/app/lib/battle/team-import";
 import type { BattleBuild } from "@/app/lib/battle/types";
+import { DEFAULT_INFO, PERFECT_INFORMATION } from "@/app/(app)/training/model/info";
+import { createSetupDraft, emptySource } from "@/app/(app)/training/setup/team-draft";
 import { FakeElement, FakeText, installFakeDom, reactProps, type FakeDocument } from "../fixtures/fake-dom";
 import { POSITIONAL } from "../fixtures/naming";
-import { boardView, logTurns, moveRequest, OPPONENT_ROSTER, OWN_ROSTER, rosterState, runtime as trainingRuntime, trainingSetup } from "../fixtures/training";
+import {
+  boardView, logTurns, MIRROR_ROSTER, moveRequest, OPPONENT_ROSTER, OWN_ROSTER, PASTE_TEXT, rosterState, runtime as trainingRuntime, snapshotWith,
+  trainingSetup,
+} from "../fixtures/training";
 
 const state = vi.hoisted(() => ({ matchup: null as unknown, doubles: null as unknown, desktop: false, rosters: null as unknown }));
 vi.mock("@/app/(app)/leagues/[leagueId]/useMinWidthMd", () => ({ useMinWidthMd: () => false }));
@@ -179,16 +185,22 @@ function groupOf(element: FakeElement): string {
   return "";
 }
 
-/** The name of the nearest named fieldset, group or region around `element` ("" when none). */
+/**
+ * The name of the nearest named fieldset, group or region around `element`; with none, of the nearest named section (a
+ * Training team panel, "Your team" / "Opponent"); "" when neither.
+ */
 function contextOf(element: FakeElement): string {
+  let section = "";
   for (let up = element.parentElement; up instanceof FakeElement; up = up.parentElement) {
     const role = up.getAttribute("role");
     if (up.localName === "fieldset" || role === "group" || role === "radiogroup" || role === "region") {
       const name = accessibleName(up);
       if (name) return name;
+    } else if (!section && up.localName === "section" && (up.hasAttribute("aria-label") || up.hasAttribute("aria-labelledby"))) {
+      section = accessibleName(up);
     }
   }
-  return "";
+  return section;
 }
 
 type Named = { kind: string; name: string; group: string; context: string; element: FakeElement };
@@ -294,6 +306,17 @@ async function showCalculator(mode: "1v1" | "2v2", calc: CalculatorState) {
     await click(closed[0]);
   }
 }
+/** Training's Setup on its own (the session's actions do nothing), its suggested sets in, with `rosters` as the league data. */
+async function showSetup(draft: SetupDraft, rosters: CalculatorRosterState) {
+  const { default: TeamSetup } = await import("@/app/(app)/training/setup/TeamSetup");
+  const session = { updateDraft() {}, validate() {}, suggest() {}, loadMoveOptions() {}, start() {}, clearHabits() {}, setTrendsOpen() {}, retryEngine() {} };
+  await mount(createElement(TeamSetup, {
+    runtime: trainingRuntime, rosters: { state: rosters, selectLeague() {}, selectOpponent() {}, refresh() {} }, snapshot: snapshotWith({}, draft, rosters), session,
+  }));
+}
+/** Every category of "You see" open, so the opponent's members have Edit set too. */
+const SEE_ALL = { ...createSetupDraft(), info: { ...DEFAULT_INFO, youSee: { ...PERFECT_INFORMATION, exactHP: false, brought: false } } };
+
 const otherMode = (mode: "1v1" | "2v2") => (element: FakeElement) => element.getAttribute("data-calculator-mode-only") === (mode === "1v1" ? "2v2" : "1v1");
 function inOtherMode(element: FakeElement, mode: "1v1" | "2v2") {
   for (let up: FakeElement | null = element; up instanceof FakeElement; up = up.parentElement) if (otherMode(mode)(up)) return true;
@@ -438,6 +461,54 @@ describe("naming guard: names, never positions", () => {
     expect(containerDuplicates(rows)).toEqual([]);
     expect(duplicates(rows)).toEqual([]);
     expect(positional(rows)).toEqual([]);
+  }, 120_000);
+
+  it("Training setup, both league teams with Garchomp on each and every category seen: names are unique", async () => {
+    const mirror = rosterState(OWN_ROSTER, MIRROR_ROSTER);
+    await showSetup(SEE_ALL, mirror);
+    let rows = namedElements();
+    dump("training-setup-league", rows);
+    const names = rows.map((row) => row.name);
+    for (const name of ["Edit set · Garchomp (yours)", "Edit set · Garchomp (opponent's)", "Edit set · Gyarados", "Edit set · Absol", "Choose 6 · 6 of 7 chosen · Your team",
+      "Choose 6 · 6 of 7 chosen · Opponent", "Your team Choose 6 · 6 of 7 chosen", "Opponent Choose 6 · 6 of 7 chosen", "Edit as PokéPaste", "Your team source", "Opponent source"]) expect(names, name).toContain(name);
+    expect(names.filter((name) => name === "Refresh teams")).toHaveLength(1);
+    expect(rows.filter((row) => row.kind === "input[checkbox]" && row.name === "Garchomp")).toHaveLength(2);
+    expect(rows.filter((row) => row.kind === "section").map((row) => row.name)).toEqual(["Your team", "Opponent", "Battle settings"]);
+    expect(positional(rows)).toEqual([]);
+    expect(duplicates(rows)).toEqual([]);
+    expect(containerDuplicates(rows)).toEqual([]);
+    // One set editor open on each side, both Garchomp.
+    for (const who of ["Garchomp (yours)", "Garchomp (opponent's)"]) {
+      const edit = all((element) => element.localName === "button" && textOf(element) === `Edit set · ${who}`);
+      expect(edit, who).toHaveLength(1);
+      await click(edit[0]);
+    }
+    rows = namedElements();
+    dump("training-setup-editors", rows);
+    const editing = rows.map((row) => row.name);
+    for (const name of ["Garchomp (yours) set", "Garchomp (opponent's) set", "Moves · Garchomp (yours)", "Moves · Garchomp (opponent's)", "Close editor · Garchomp (yours)"]) expect(editing, name).toContain(name);
+    for (const name of ["Search moves", "Move 1", "Item", "Ability", "Nature", "HP Stat Points (0–32)"]) expect(editing.filter((each) => each === name), name).toHaveLength(2);
+    expect(positional(rows)).toEqual([]);
+    expect(duplicates(rows)).toEqual([]);
+    expect(containerDuplicates(rows)).toEqual([]);
+  }, 120_000);
+
+  it("Training setup, both teams the same PokéPaste: names are unique", async () => {
+    const paste = (role: "own" | "opponent") => ({
+      ...emptySource(), mode: "paste" as const, paste: { id: `${role}-1`, title: "Sand team", url: null, text: PASTE_TEXT, team: parseTeamImport(PASTE_TEXT, "champions", trainingRuntime) },
+    });
+    await showSetup({ ...SEE_ALL, own: paste("own"), opponent: paste("opponent") }, rosterState(OWN_ROSTER, OPPONENT_ROSTER));
+    const rows = namedElements();
+    dump("training-setup-paste", rows);
+    const names = rows.map((row) => row.name);
+    for (const name of ["Spread format", "PokéPaste link", "Load link and preview", "Team text", "Team label", "Preview team text", "Remove imported team"]) {
+      expect(names.filter((each) => each === name), name).toHaveLength(2);
+    }
+    for (const name of ["Edit set · Garchomp (yours)", "Edit set · Garchomp (opponent's)"]) expect(names, name).toContain(name);
+    expect(names).not.toContain("Refresh teams");
+    expect(positional(rows)).toEqual([]);
+    expect(duplicates(rows)).toEqual([]);
+    expect(containerDuplicates(rows)).toEqual([]);
   }, 120_000);
 
   it("Training board with Transform look-alikes (across the sides and on one side): names are unique", async () => {

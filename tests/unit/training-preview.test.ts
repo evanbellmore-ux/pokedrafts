@@ -102,4 +102,25 @@ describe("team preview", () => {
     expect(document.body.textContent).toContain("Starting battle…");
     expect(toggles().every((element) => reactProps(element).disabled)).toBe(true);
   });
+
+  it("takes the keyboard focus, left on the page body by Start, to its heading when it opens; never from another control", async () => {
+    const heading = () => document.querySelectorAll("[tabindex]")[0];
+    await act(async () => { root.render(null); });
+    document.activeElement = document.body;
+    await show({ request: null });
+    expect(heading().textContent).toBe("Team preview");
+    expect(document.activeElement).toBe(heading());
+    // The request arriving later is the same screen: the focus stays where it is.
+    const confirm = button("Confirm");
+    confirm.focus();
+    await show();
+    expect(document.activeElement).toBe(confirm);
+    await act(async () => { root.render(null); });
+    const elsewhere = document.createElement("button");
+    document.body.appendChild(elsewhere);
+    elsewhere.focus();
+    await show();
+    expect(document.activeElement).toBe(elsewhere);
+    document.body.removeChild(elsewhere);
+  });
 });
