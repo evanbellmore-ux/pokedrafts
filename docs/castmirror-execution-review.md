@@ -4,6 +4,8 @@ The hosted Execution view now leads with reviewed avoidable damage, deaths and
 named personal defensive casts. It no longer presents the native mixed output
 index as a non-damage raider grade. Damage and healing remain labeled context;
 missing or incomplete observations remain unavailable or observed lower bounds.
+The current ten-encounter rule coverage is documented in
+[Mythic raid avoidance coverage](castmirror-raid-avoidance.md).
 
 The direct A/B avoidance comparison requires complete matching definitions,
 verified matching fight scope and full-fight exposure. It works independently of
@@ -64,7 +66,8 @@ The native response also returned six ranking-selected peers, low confidence
 and incomplete healing. The preview adds the reviewed avoidance measurements
 from separately bounded, complete, actor-verified public damage event pages. It
 does not recalculate or claim new cohort percentiles. The preview is labeled as
-a captured review and runs on loopback; these changes have not been deployed.
+a captured review and runs on loopback; it records the initial evidence preview
+before the Execution changes were deployed to production.
 
 Validation covers source parity, rule scope, bounded evidence, reconciliation,
 incomplete observations, incompatible definitions, death exposure, zero

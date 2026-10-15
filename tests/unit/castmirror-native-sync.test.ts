@@ -13,7 +13,7 @@ describe("reviewed native Execution source pin", () => {
   test("offline snapshots and generated modules match exact provenance", async () => {
     const manifest = JSON.parse(await read("native-manifest.json"));
     assert.equal(manifest.revision, NATIVE_REVISION);
-    assert.equal(manifest.adapter, "castmirror-native-postgres-4");
+    assert.equal(manifest.adapter, "castmirror-native-postgres-5");
     assert.deepEqual(manifest.adaptations, [...NATIVE_ADAPTATIONS]);
     assert.deepEqual(Object.keys(manifest.sourceFiles), [...NATIVE_FILES]);
     assert.ok(!NATIVE_FILES.some((file: string) => /registry|pilot|review|server|cache|catalog/.test(file)));
