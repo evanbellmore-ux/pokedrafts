@@ -7,20 +7,21 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Script } from 'node:vm';
 import ts from 'typescript';
+import { adaptExecutionReview } from './castmirror-execution-review.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const VENDOR = path.join(ROOT, 'vendor/castmirror');
 const MANIFEST = path.join(VENDOR, 'manifest.json');
 const REVISION = 'af7d034354abcb4cc4d52719989900a0e0b1b455';
-const ADAPTER = 'castmirror-vercel-v4';
-const PREVIOUS_ADAPTER = 'castmirror-vercel-v3';
+const ADAPTER = 'castmirror-vercel-v5';
+const PREVIOUS_ADAPTER = 'castmirror-vercel-v4';
 const REPOSITORY = 'https://github.com/evanbellmore-ux/cast-mirror';
 const DECLARATIONS = [
   'classes', 'ensureClasses', 'PI_SPELL', 'fightHasPI', 'HERO_SIG', 'heroOf',
   'heroCandCache', 'heroOfCandidate', 'heroBlocks', 'specFromFight', 'sideHead',
   'sameRealm', 'sideActor', 'fetchFightSide', 'recentKillFor', 'buildComparison',
 ];
-const PREVIOUS_PATCHES = [
+const BASE_PATCHES = [
   'request-scoped-class-and-hero-memoization',
   'realm-aware-pi-and-hero-actor-resolution',
   'ambiguous-spec-summary-fails-closed',
@@ -33,10 +34,11 @@ const PREVIOUS_PATCHES = [
   'gated-durable-native-reference-capability',
   'compact-native-response-with-pinned-throughput-streams',
 ];
-const PATCHES = [...PREVIOUS_PATCHES,
+const PREVIOUS_PATCHES = [...BASE_PATCHES,
   'current-first-immediate-previous-patch-throughput',
   'escaped-per-side-ranking-patch-labels',
 ];
+const PATCHES = [...PREVIOUS_PATCHES, 'non-damage-execution-evidence-review'];
 const normalize = (text) => text.replace(/\r\n/g, '\n');
 const digest = (text) => createHash('sha256').update(normalize(text)).digest('hex');
 const json = (value) => JSON.stringify(value, null, 2) + '\n';
@@ -431,7 +433,7 @@ export function generatePage(snapshot) {
   html = patch(html,
     `  <b>Execution</b> compares observed combat statistics against a compatible local sample,
   with unavailable measurements and partial coverage shown explicitly.</p>`,
-    `  <b>Execution</b> statistics are not connected on this site yet.</p>
+    `  <b>Execution</b> compares reviewed avoidable damage, survival and personal defensive use between the two logs.</p>
   <p class="hint" id="castmirrorSource" hidden>CastMirror source ${REVISION.slice(0, 7)} · hosted adapter ${ADAPTER}</p>`, 'hosted readiness');
   html = patch(html, '<option>tw</option><option>cn</option>', '<option>tw</option>', 'supported regions');
   html = patch(html, '  .execution-status button { margin-top: 8px; padding: 6px 12px; font-size: 12px; }',
@@ -536,6 +538,7 @@ function render(D) {`, 'numeric escaped ranking patch markup');
   html = patch(html,
     "    return '<div class=\"card ' + cls + '\"><h2>' + esc(s.name) + ' <span class=\"tag\">' + esc(tag) + '</span></h2>' +",
     "    return '<div class=\"card ' + cls + '\"><h2>' + esc(s.name) + ' <span class=\"tag\">' + esc(tag) + '</span></h2>' + rankingPatchMarkup(s) +", 'throughput per-side patch label');
+  html = adaptExecutionReview(html);
   const scripts = [...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)];
   if (scripts.length !== 2) throw new Error('Unexpected inline-script layout in generated page');
   for (const [index, script] of scripts.entries()) new Script(script[1], { filename: `castmirror-inline-${index}.js` });

@@ -3,6 +3,7 @@ import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { describe, test } from "vitest";
 import { generateNative, NATIVE_ADAPTATIONS, NATIVE_FILES, NATIVE_REVISION } from "../../scripts/sync-castmirror-native.mjs";
+import { adaptNativeExecutionEvidence } from "../../scripts/castmirror-execution-evidence.mjs";
 
 const root = new URL("../../vendor/castmirror/", import.meta.url);
 const read = async (file: string) => (await readFile(new URL(file, root), "utf8")).replace(/\r\n/g, "\n");
@@ -12,7 +13,7 @@ describe("reviewed native Execution source pin", () => {
   test("offline snapshots and generated modules match exact provenance", async () => {
     const manifest = JSON.parse(await read("native-manifest.json"));
     assert.equal(manifest.revision, NATIVE_REVISION);
-    assert.equal(manifest.adapter, "castmirror-native-postgres-3");
+    assert.equal(manifest.adapter, "castmirror-native-postgres-4");
     assert.deepEqual(manifest.adaptations, [...NATIVE_ADAPTATIONS]);
     assert.deepEqual(Object.keys(manifest.sourceFiles), [...NATIVE_FILES]);
     assert.ok(!NATIVE_FILES.some((file: string) => /registry|pilot|review|server|cache|catalog/.test(file)));
@@ -49,7 +50,7 @@ describe("reviewed native Execution source pin", () => {
     for (const { name, anchors } of cases) {
       const source = await read("native-upstream/" + name);
       const output = generateNative(name, source);
-      assert.equal(output.replaceAll("/*turbopackIgnore: true*/ ", ""), source);
+      assert.equal(output.replaceAll("/*turbopackIgnore: true*/ ", ""), adaptNativeExecutionEvidence(name, source));
       assert.equal(output.split("/*turbopackIgnore: true*/").length, anchors.length + 1);
       for (const anchor of anchors) {
         const changed = anchor.replace(/path\.resolve|fs\.openSync/, "changedAnchor");

@@ -10,7 +10,71 @@ import { STATISTICS_VERSION, STATISTICS_COMPONENTS, evaluateStatistics, compareS
 import { compactStatisticsObservation } from './compact-statistics.mjs';
 import reviewed from './statistics-v3-rules.json' with { type: 'json' };
 
-export const LIVE_RULES_VERSION = 'native-live-statistics-2';
+const LOST_EXPLORERS_REVIEW = {"version":"lost-explorers-mythic-contact-1","scope":{"zone":53,"encounter":3497,"difficulty":5,"size":20,"partition":2,"patch":"12.1.5"},"abilities":[{"abilityID":1305844,"name":"Blast Wave"},{"abilityID":1297650,"name":"Spreading Flames"},{"abilityID":1306127,"name":"Throw Junk"},{"abilityID":1292764,"name":"Evil Eyes"}],"sources":["https://www.wowhead.com/spell=1305844/blast-wave","https://www.wowhead.com/spell=1297650/spreading-flames","https://www.wowhead.com/spell=1306127/throw-junk","https://www.wowhead.com/spell=1292764/evil-eyes"]};
+function reviewedEncounterRules(scope, fallback, review) {
+  if (!Object.entries(review.scope).every(([key, value]) => scope?.[key] === value)) return fallback;
+  return { ...fallback, avoidableAbilityIDs: review.abilities.map((ability) => ability.abilityID) };
+}
+function retainAvoidanceEvidence(component, review, original = component?.measurements) {
+  const measurements = component?.measurements;
+  const ids = component?.definition?.abilityIDs;
+  if (!measurements || !Array.isArray(ids) || !ids.length || ids.length > 32
+      || !Array.isArray(measurements.incidents)) return;
+  const finite = (value) => typeof value === 'number' && Number.isFinite(value) && value >= 0;
+  if (!finite(measurements.total) || !Number.isSafeInteger(measurements.hits) || measurements.hits < 0) {
+    delete measurements.byAbility; delete measurements.incidents; return;
+  }
+  const names = new Map(review.abilities.map((ability) => [ability.abilityID, ability.name]));
+  const byAbility = new Map(ids.map((abilityID) => [abilityID,
+    { abilityID, name: names.get(abilityID) ?? 'Ability ' + abilityID, hits: 0, total: 0, absorbed: 0, mitigated: 0 }]));
+  const saved = original?.byAbility;
+  // Hydration compacts cached observations again. Keep reconciled full totals
+  // instead of deriving new aggregates from the capped timestamp sample.
+  if (saved !== undefined) {
+    const valid = Array.isArray(saved) && saved.length === ids.length
+      && new Set(saved.map((row) => row?.abilityID)).size === ids.length
+      && saved.every((row) => byAbility.has(row?.abilityID) && Number.isSafeInteger(row.hits) && row.hits >= 0
+        && ['total', 'absorbed', 'mitigated'].every((key) => finite(row[key])))
+      && saved.reduce((sum, row) => sum + row.hits, 0) === measurements.hits
+      && Math.abs(saved.reduce((sum, row) => sum + row.total, 0) - measurements.total) <= Math.max(0.001, measurements.total * 1e-9)
+      && original.incidentCount === measurements.hits
+      && original.incidentListComplete === (measurements.incidents.length === original.incidentCount);
+    if (!valid) { delete measurements.byAbility; delete measurements.incidents; return; }
+  }
+  const incidents = [];
+  for (const event of measurements.incidents) {
+    const row = byAbility.get(event?.abilityID);
+    if (!row || !['time', 'amount'].every((key) => typeof event[key] === 'number' && Number.isFinite(event[key]) && event[key] >= 0)) {
+      // Never attach a complete-looking breakdown to malformed evidence.
+      delete measurements.byAbility;
+      delete measurements.incidents;
+      return;
+    }
+    row.hits++; row.total += event.amount;
+    for (const key of ['absorbed', 'mitigated']) {
+      if (typeof event[key] === 'number' && Number.isFinite(event[key]) && event[key] >= 0) row[key] += event[key];
+    }
+    if (incidents.length < 60) incidents.push(Object.fromEntries(['time', 'abilityID', 'amount', 'absorbed', 'mitigated']
+      .filter((key) => typeof event[key] === 'number' && Number.isFinite(event[key]) && event[key] >= 0)
+      .map((key) => [key, event[key]])));
+  }
+  if ([...byAbility.values()].some((row) => !['total', 'absorbed', 'mitigated'].every((key) => Number.isFinite(row[key])))) {
+    delete measurements.byAbility; delete measurements.incidents; return;
+  }
+  const rows = saved === undefined ? [...byAbility.values()] : saved.map((row) => ({
+    abilityID: row.abilityID, name: names.get(row.abilityID) ?? 'Ability ' + row.abilityID,
+    hits: row.hits, total: row.total, absorbed: row.absorbed, mitigated: row.mitigated,
+  }));
+  if (saved === undefined && (measurements.hits !== measurements.incidents.length
+    || Math.abs(rows.reduce((sum, row) => sum + row.total, 0) - measurements.total) > Math.max(0.001, measurements.total * 1e-9))) {
+    delete measurements.byAbility; delete measurements.incidents; return;
+  }
+  measurements.byAbility = rows;
+  measurements.incidentCount = measurements.hits;
+  measurements.incidentListComplete = incidents.length === measurements.hits;
+  measurements.incidents = incidents;
+}
+export const LIVE_RULES_VERSION = 'native-live-statistics-3';
 export const LIVE_TTL = 10 * 60_000;
 const CACHE_LIMIT = 64, CACHE_BYTES = 8 * 1024 * 1024;
 const codeOK = (v) => /^[A-Za-z0-9]{16}$/.test(v ?? '');
@@ -38,9 +102,8 @@ function accountingDiagnostic(error) {
 }
 function compactLiveObservation(observation) {
   const compact = compactStatisticsObservation(observation);
-  // Aggregate avoidance and rejected-cast totals are sufficient for this UI.
-  // Do not retain potentially large incident/display lists in a live pool.
-  delete compact.components.avoidance.measurements.incidents;
+  // Retain complete per-ability totals plus at most 60 safe incident markers.
+  retainAvoidanceEvidence(compact.components.avoidance, LOST_EXPLORERS_REVIEW, observation.components.avoidance.measurements);
   for (const ability of compact.components.defenses.measurements.abilities ?? []) delete ability.rejected;
   return compact;
 }
@@ -49,11 +112,11 @@ export function liveStatisticsRules(scope) {
   // Personal cast definitions are independent of encounter mechanics. Keep their
   // reviewed class/spec restrictions; an unreviewed button stays unavailable.
   const exact = Object.keys(reviewed.scope).every((k) => scope[k] === reviewed.scope[k]);
-  return { version: LIVE_RULES_VERSION, defensives: structuredClone(reviewed.defensives),
+  return reviewedEncounterRules(scope, { version: LIVE_RULES_VERSION, defensives: structuredClone(reviewed.defensives),
     avoidableAbilityIDs: exact ? [...reviewed.avoidableAbilityIDs] : [],
     usefulTargetNPCIDs: exact ? [...reviewed.usefulTargetNPCIDs] : [],
     paddingTargetNPCIDs: [], incomingDirection: null,
-    nativeBossOutput: true };
+    nativeBossOutput: true }, LOST_EXPLORERS_REVIEW);
 }
 
 export async function readLiveRankings(client, scope, { className, spec, role }) {
@@ -93,7 +156,7 @@ function recordPage(input, page, budget) {
 const SAMPLE_FIELDS = ['observations', 'players', 'kills', 'fights', 'minimumObservations', 'minimumPlayers',
   'sufficient', 'confidence', 'confidenceCaps', 'legacyObservations', 'maxPlayerShare', 'maxFightShare',
   'duplicateCount', 'conflictingDuplicates', 'invalidObservations'];
-const MEASUREMENT_FIELDS = ['total', 'perSecond', 'damage', 'hits', 'complete', 'basis', 'exposure', 'deathCount',
+const MEASUREMENT_FIELDS = ['byAbility', 'incidents', 'incidentCount', 'incidentListComplete', 'total', 'perSecond', 'damage', 'hits', 'complete', 'basis', 'exposure', 'deathCount',
   'deathTimes', 'firstDeathSec', 'firstDeathFraction', 'firstLifeSec', 'aliveTimeSec', 'eventCount', 'absorbed', 'mitigated',
   'rawUses', 'boundedUses', 'boundedUsesPerMinute', 'rejectedCount', 'usefulDamage', 'usefulDamagePerSecond',
   'allDamage', 'allDamagePerSecond', 'paddingDamage', 'unknownDamage', 'effective', 'consumed', 'overheal',
@@ -312,7 +375,10 @@ export class LiveExecutionService {
         let input;
         try {
           await source.fight(boundScope, candidate, null, { analyticalVersion: STATISTICS_VERSION,
-            statisticsRules: liveStatisticsRules(boundScope), statisticsStreams: ['Deaths', 'Casts'], targetsFirst: true,
+            statisticsRules: liveStatisticsRules(boundScope),
+            statisticsStreams: liveStatisticsRules(boundScope).avoidableAbilityIDs.length > 0
+              && [base.a, base.b].some((side) => side.code === candidate.code && side.fightID === candidate.fightID)
+              ? ['Deaths', 'DamageTaken', 'Casts'] : ['Deaths', 'Casts'], targetsFirst: true,
             onProgress: (progress) => { input = progress.input; inputs.set(id, input); },
             onPage: (page) => recordPage(input, page, budget) });
         } finally {
@@ -353,6 +419,9 @@ export class LiveExecutionService {
       const priority = role === 'healer' ? ['Healing', 'CombatantInfo', 'Buffs', 'DamageTaken']
         : ['CombatantInfo', 'Buffs', 'Healing', 'DamageTaken'];
       for (const name of priority) for (const input of inputs.values()) {
+        // Selected reviewed damage is collected before optional cohort expansion.
+        // Keep completed or capped initial streams; never replay their pages.
+        if (input.streams[name]) continue;
         try {
           input.streams[name] = await readEvents(wrapped, input.candidate.code, input.fight, name,
             { maxPages: LIVE_LIMITS.eventPages, onPage: (page) => recordPage(input, page, budget) });
