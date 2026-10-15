@@ -11,6 +11,7 @@ const LEDGER_BYTES = 1024 * 1024;
 const HISTORY_BYTES = 2 * LEDGER_BYTES;
 const POOL_BYTES = 8 * LEDGER_BYTES;
 const PIN_BYTES = 128 * 1024;
+const RAID_REVIEW_BYTES = 2 * LEDGER_BYTES;
 const SAFE_CODES = new Set([
   'live-account-unavailable', 'live-account-busy', 'live-lock-lost', 'live-ledger-changed',
   'live-ledger-invalid', 'live-ledger-full', 'live-archive-invalid', 'live-role-invalid',
@@ -67,6 +68,8 @@ const SQL = {
   savePool: 'select execution_v3.save_pool($1::text, $2::uuid, $3::bigint, $4::text, $5::text) as result',
   putPin: 'select execution_v3.put_pin($1::text, $2::text) as result',
   pin: 'select execution_v3.read_pin($1::text, $2::uuid) as result',
+  raidReview: 'select execution_v3.read_raid_review($1::text, $2::text) as result',
+  saveRaidReview: 'select execution_v3.save_raid_review($1::text, $2::uuid, $3::bigint, $4::text, $5::text) as result',
 } as const;
 
 /** One bound account; the DB (not a warm process) is the sole authority. */
@@ -179,6 +182,24 @@ export class PostgresExecutionStore implements ExecutionStore {
     const id = await this.rpc(SQL.putPin, [this.account, text]);
     if (typeof id !== 'string' || !UUID.test(id)) refused('execution-pin-invalid');
     return id;
+  }
+  async readRaidReview(key: string): Promise<Record<string, unknown> | null> {
+    if (!SHA256.test(key)) refused('compact-cache-invalid');
+    const text = await this.rpc(SQL.raidReview, [this.account, key]);
+    if (text === null) return null;
+    exactText(text, RAID_REVIEW_BYTES, 'compact-cache-invalid');
+    try {
+      const review: unknown = JSON.parse(text);
+      if (!record(review) || review.key !== key || review.version !== 'raid-execution-review-1') refused('compact-cache-invalid');
+      return review;
+    } catch { refused('compact-cache-invalid'); }
+  }
+  async saveRaidReview(review: Record<string, unknown>, ownership?: ExecutionOwnership): Promise<void> {
+    if (!ownership) refused('live-lock-lost');
+    this.ownership(ownership);
+    if (!record(review) || typeof review.key !== 'string' || !SHA256.test(review.key) || review.version !== 'raid-execution-review-1') refused('compact-cache-invalid');
+    const text = jsonText(review, RAID_REVIEW_BYTES, 'compact-cache-size-cap');
+    await this.rpc(SQL.saveRaidReview, [this.account, ownership.owner, ownership.fence, review.key, text], true);
   }
   async readPin(id: string): Promise<ExecutionPin | null> {
     if (!UUID.test(id)) return null;

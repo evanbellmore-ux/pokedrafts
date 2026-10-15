@@ -15,6 +15,7 @@ export const PLAYOFFS_MIGRATION = "20260912120000_playoffs.sql";
 export const POOL_BUILDER_MIGRATION = "20260916120000_pool_builder.sql";
 export const EXECUTION_MIGRATION = "20261013120000_castmirror_execution_private.sql";
 export const EXECUTION_RULES_MIGRATION = "20261014224500_castmirror_raid_rules_pool_versions.sql";
+export const RAID_REVIEW_MIGRATION = "20261015120000_castmirror_raid_reviews.sql";
 export const BASE_MIGRATION = "00000000000000_base_schema.sql";
 
 export type MigrationFile = { name: string; sql: string };
