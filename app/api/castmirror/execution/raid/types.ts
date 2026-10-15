@@ -11,6 +11,8 @@ export interface RaidFightEvidence {
   /** Report start plus fight start, as Unix milliseconds. */
   date: number;
   durationSec: number;
+  /** Verified explicit ranking partition for this source kill; never inferred from its date. */
+  scope?: { partition: number; patch: string };
   damage: {
     complete: boolean;
     total: number;
@@ -60,6 +62,10 @@ export interface RaidBossReview {
   rulesVersion: string;
   identity: { name: string; server: string; region: string; className: string };
   scope: { zone: number; encounter: number; difficulty: number; size: number; partition: number; patch: string };
+  /** Reviewed source patches; scope above anchors the rule catalog, while fights retain their own patch. */
+  reviewedScopes?: Array<{ partition: number; patch: string }>;
+  /** Some sampled source patches cover a narrower independently verified mechanic subset. */
+  coverageLimited?: boolean;
   boss: { id: number; name: string };
   status: "complete" | "partial" | "unavailable";
   reason: string | null;

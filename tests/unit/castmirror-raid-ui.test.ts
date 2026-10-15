@@ -48,6 +48,7 @@ describe('CastMirror raid execution review UI', () => {
     assert.equal(page.nodes.get('raidExecution').style.display, '');
     assert.equal(page.nodes.get('raidExecutionStart').disabled, false);
     assert.match(page.nodes.get('raidExecutionProgress').textContent, /latest six public kills.*selected by date/);
+    assert.match(page.nodes.get('raidExecutionProgress').textContent, /across reviewed patches 12\.1 and 12\.1\.5/);
     assert.equal(raidRequests(page).length, 0);
     assert.equal(page.evaluate('comparison'), null);
   });
@@ -78,6 +79,8 @@ describe('CastMirror raid execution review UI', () => {
     assert.match(html, /dps: A \(provisional\)/);
     assert.match(html, /1 independently reviewed mechanic · narrow coverage/);
     assert.match(html, /Coverage and limitations/);
+    assert.match(html, /Patch 12\.1\.5 · current patch only/);
+    assert.match(html, /Sample dates:.*2027/);
     const links = page.nodes.get('raidExecutionResults').querySelectorAll('a');
     assert.equal(links.length, 10);
     assert.match(links[0].href, /^https:\/\/www\.warcraftlogs\.com\/reports\/Player0123456789#fight=7&type=damage-taken&source=123$/);
@@ -187,6 +190,35 @@ describe('CastMirror raid execution review UI', () => {
     const html = page.nodes.get('raidExecutionResults').htmlTree();
     assert.match(html, /Observed ≥ 0 reviewed avoidable health damage.*death evidence incomplete.*partial evidence/);
     assert.doesNotMatch(html, /· 0 deaths/);
+  });
+
+  test('labels date ranges and historical patch scope without presenting them as current', async () => {
+    const page = await pageFixture();
+    assert.equal(page.evaluate(`raidReviewScopeLabel({patch:'12.1'})`), 'Patch 12.1 · historical patch sample');
+    assert.equal(page.evaluate(`raidReviewDateRange([{date:null},{date:0}])`), null);
+    const range = page.evaluate(`raidReviewDateRange([{date:Date.UTC(2026,9,15)},{date:Date.UTC(2026,9,1)}])`);
+    assert.match(range, /^Sample dates:.*2026.*–.*2026$/);
+    const single = page.evaluate(`raidReviewDateRange([{date:Date.UTC(2026,9,15)}])`);
+    assert.doesNotMatch(single, /–/);
+  });
+
+  test('shows actual historical and current sample patches separately from reviewed coverage', async () => {
+    const result = review(bosses[0].id);
+    result.reviewedScopes = [{ partition: 1, patch: '12.1' }, { partition: 2, patch: '12.1.5' }];
+    result.fights[0].scope = { partition: 1, patch: '12.1' };
+    result.fights.push({ ...structuredClone(result.fights[0]), fightID: 8, date: result.fights[0].date + 86_400_000,
+      scope: { partition: 2, patch: '12.1.5' } });
+    const page = await pageFixture((_url, options) => ({ review: JSON.parse(String(options.body)).encounter === bosses[0].id
+      ? result : review(JSON.parse(String(options.body)).encounter) })); ready(page);
+    await page.nodes.get('raidExecutionStart').click();
+    const html = page.nodes.get('raidExecutionResults').htmlTree();
+    assert.match(html, /Reviewed patches: 12\.1, 12\.1\.5/);
+    assert.match(html, /Sample patches: 12\.1, 12\.1\.5 · includes historical kills/);
+    const card = page.nodes.get('raidExecutionResults').querySelectorAll('article').find((item: { dataset: { boss: number } }) => item.dataset.boss === bosses[0].id);
+    assert.doesNotMatch(card.htmlTree(), /current patch only/);
+    const links = card.querySelectorAll('a');
+    assert.match(links[0].textContent, /· Patch 12\.1$/);
+    assert.match(links[1].textContent, /· Patch 12\.1\.5$/);
   });
 
   test('refuses changed character lookup integration anchors', () => {
