@@ -3,6 +3,7 @@ import pg from 'pg';
 import { afterAll, beforeAll, describe, expect, inject, it, vi } from 'vitest';
 vi.mock('server-only', () => ({}));
 import { PostgresExecutionStore } from '../../app/api/castmirror/execution/postgres-store';
+import { LIVE_RULES_VERSION } from '../../vendor/castmirror/native/execution/live.mjs';
 import { connect, expectRpcError, expectSqlState, type Client } from './harness';
 
 const sha = (text: string) => createHash('sha256').update(text, 'utf8').digest('hex');
@@ -390,6 +391,68 @@ describe('private CastMirror Execution PostgreSQL authority', () => {
     expect(await call(runtime,'read_pool',[account,p.key])).toBeNull();
     await admin.query('update execution_v3.accounts set lease_until=0 where account=$1',[account]);
     await expectRpcError(call(runtime,'save_pool',[account,c.owner,c.fence,p.key,JSON.stringify(p)]),'live-lock-lost');
+  });
+  it.each(['native-live-statistics-2', 'native-live-statistics-3', LIVE_RULES_VERSION])(
+    'round-trips supported pool rules %s with matching relational metadata and unchanged accounting', async rulesVersion => {
+      const {account,text:ledgerText}=await seed(); const c=await claim(account);
+      const p={...pool(),rulesVersion}; const exact=JSON.stringify(p,null,1)+'\r\n';
+      await call(runtime,'save_pool',[account,c.owner,c.fence,p.key,exact]);
+      expect(await call(other,'read_pool',[account,p.key])).toBe(exact);
+      const row=await admin.query(`select rules_version,version,convert_from(bytes,'UTF8') bytes,
+        writer_owner,writer_fence,expires_at-created_at ttl from execution_v3.pools where account=$1 and key=$2`,[account,p.key]);
+      expect(row.rows[0]).toEqual({rules_version:rulesVersion,version:'execution-statistical-3',bytes:exact,
+        writer_owner:c.owner,writer_fence:String(c.fence),ttl:'600000'});
+      const accounting=await admin.query("select convert_from(ledger_bytes,'UTF8') ledger,revision,fence from execution_v3.accounts where account=$1",[account]);
+      expect(accounting.rows[0]).toEqual({ledger:ledgerText,revision:'0',fence:String(c.fence)});
+      await call(runtime,'release',[account,c.owner,c.fence,c.revision]);
+      const next=await claim(account);
+      expect(next.ledger).toBe(ledgerText); expect(next.revision).toBe(c.revision); expect(next.fence).toBe(c.fence+1);
+    });
+  it('same-key rule upgrades keep the fixed TTL and update the column to the saved payload version', async () => {
+    const {account}=await seed(); const c=await claim(account); const p=pool();
+    await call(runtime,'save_pool',[account,c.owner,c.fence,p.key,JSON.stringify(p)]);
+    const before=await admin.query('select created_at,expires_at from execution_v3.pools where account=$1 and key=$2',[account,p.key]);
+    for(const rulesVersion of ['native-live-statistics-3',LIVE_RULES_VERSION]) {
+      p.rulesVersion=rulesVersion; p.at=Date.now();
+      await call(runtime,'save_pool',[account,c.owner,c.fence,p.key,JSON.stringify(p)]);
+      const row=await admin.query("select rules_version,convert_from(bytes,'UTF8') bytes,created_at,expires_at from execution_v3.pools where account=$1 and key=$2",[account,p.key]);
+      expect(row.rows[0]).toEqual({...before.rows[0],rules_version:rulesVersion,bytes:JSON.stringify(p)});
+      expect(JSON.parse(await call<string>(other,'read_pool',[account,p.key])).rulesVersion).toBe(rulesVersion);
+    }
+  });
+  it('refuses unsupported or malformed pool rules at both the RPC and table constraint', async () => {
+    const {account,text:ledgerText}=await seed(); const c=await claim(account); const p=pool();
+    const invalid=['native-live-statistics-5','native-live-statistics-5-41a428147ec909d2',
+      'native-live-statistics-4','native-live-statistics-4-', 'native-live-statistics-4-1234',
+      'native-live-statistics-4-41A428147EC909D2','native-live-statistics-4-41a428147ec909d22',
+      'native-live-statistics-4-41a428147ec909dg','native-live-statistics-4-41a428147ec909d2-extra',''];
+    for(const rulesVersion of invalid) {
+      await expectRpcError(call(runtime,'save_pool',[account,c.owner,c.fence,p.key,JSON.stringify({...p,rulesVersion})]),'compact-cache-invalid');
+    }
+    const absent=await admin.query('select count(*)::int n from execution_v3.pools where account=$1',[account]);
+    expect(absent.rows[0].n).toBe(0);
+    await call(runtime,'save_pool',[account,c.owner,c.fence,p.key,JSON.stringify({...p,rulesVersion:LIVE_RULES_VERSION})]);
+    for(const rulesVersion of invalid) {
+      await expectSqlState(admin.query('update execution_v3.pools set rules_version=$3 where account=$1 and key=$2',[account,p.key,rulesVersion]),'23514');
+    }
+    const stored=await admin.query('select rules_version from execution_v3.pools where account=$1 and key=$2',[account,p.key]);
+    expect(stored.rows[0].rules_version).toBe(LIVE_RULES_VERSION);
+    const accounting=await admin.query("select convert_from(ledger_bytes,'UTF8') ledger,revision from execution_v3.accounts where account=$1",[account]);
+    expect(accounting.rows[0]).toEqual({ledger:ledgerText,revision:'0'});
+  });
+  it('the real PostgreSQL store saves the generated raid rules and releases its lease without latching a failure', async () => {
+    expect(LIVE_RULES_VERSION).toMatch(/^native-live-statistics-4-[a-f0-9]{16}$/);
+    const {account,text:ledgerText}=await seed();
+    const store=new PostgresExecutionStore({account,db:{query:(text,values)=>runtime.query(text,values)}});
+    const owner=randomUUID(); const c=await store.claim(account,owner,150000);
+    const ownership={account,owner,fence:c.fence}, p={...pool(),rulesVersion:LIVE_RULES_VERSION};
+    await store.savePool(p,ownership);
+    expect(await store.readPool(p.key)).toEqual(p);
+    await store.release({...ownership,revision:c.revision});
+    const row=await admin.query("select lease_until,revision,convert_from(ledger_bytes,'UTF8') ledger from execution_v3.accounts where account=$1",[account]);
+    expect(row.rows[0]).toEqual({lease_until:'0',revision:'0',ledger:ledgerText});
+    const next=await claim(account,randomUUID(),150000,other);
+    expect(next.fence).toBe(c.fence+1); expect(next.ledger).toBe(ledgerText);
   });
   it('accepts nonempty native compact statistics, preserves unknown metrics, and rejects malformed observations', async () => {
     const {account}=await seed(); const c=await claim(account); const p=pool();

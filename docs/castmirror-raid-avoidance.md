@@ -45,3 +45,12 @@ A catalog-content hash is part of the live rules version, invalidating stale
 short-lived pools when a rule or label changes. Reviewed upstream snapshots,
 provider acquisition limits and durable quota accounting are preserved. The two
 selected logs still collect reviewed damage before optional peer enrichment.
+
+The private database cache accepts legacy rule versions 2 and 3 plus the bounded
+`native-live-statistics-4-<16 lowercase hex characters>` revision family. The
+`20261014224500_castmirror_raid_rules_pool_versions.sql` migration updates only
+pool version validation and saved version metadata. Apply that file once in an
+administrator transaction; do not replay the migration chain or reseed accounts.
+Cache bytes, fixed ten-minute expiry, lease fencing, accounting and history are
+preserved. The database suite covers current-rule save/read/release, malformed
+version rejection, same-key version updates and unchanged accounting bytes.

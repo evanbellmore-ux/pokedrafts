@@ -3,6 +3,7 @@ import { connect, type Client } from "./harness";
 import {
   BASE_MIGRATION,
   EXECUTION_MIGRATION,
+  EXECUTION_RULES_MIGRATION,
   HARDENING_MIGRATION,
   PLAYOFFS_MIGRATION,
   POOL_BUILDER_MIGRATION,
@@ -241,7 +242,8 @@ describe("migrations", () => {
     expect(migrations[10].name).toBe(PLAYOFFS_MIGRATION);
     expect(migrations[11].name).toBe(POOL_BUILDER_MIGRATION);
     expect(migrations[12].name).toBe(EXECUTION_MIGRATION);
-    expect(migrations).toHaveLength(13);
+    expect(migrations[13].name).toBe(EXECUTION_RULES_MIGRATION);
+    expect(migrations).toHaveLength(14);
   });
 
   it("the shared test database was migrated by the global setup", async () => {
