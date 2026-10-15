@@ -59,7 +59,7 @@ describe("CastMirror hosted page local throughput switching", () => {
     assert.ok(p.requests.length >= 2);
     assert.ok(p.requests.every((url: string) => url.startsWith("/api/castmirror/")));
     assert.match(p.html, /af7d034354abcb4cc4d52719989900a0e0b1b455/);
-    assert.match(p.html, /Execution<\/b> statistics are not connected on this site yet/);
+    assert.match(p.html, /Execution<\/b> compares reviewed avoidable damage, survival and personal defensive use/);
     assert.match(p.html, /id="castmirrorSource" hidden/);
     assert.doesNotMatch(p.html, /encounter catalogs are not score-ready|top-ten-per-boss benchmark set|reviewed, holistic reference/);
     assert.equal(requestsTo(p, "execution/refresh").length, 0);

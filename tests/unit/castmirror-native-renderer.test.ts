@@ -81,8 +81,10 @@ describe("hosted native Execution renderer", () => {
     assert.deepEqual(state(p, "comparison.a"), player);
     assert.equal(p.nodes.get("executionPanel").style.display, "");
     const rows = p.nodes.get("executionBreakdown").querySelector("tbody").children;
-    assert.deepEqual(rows.map((row: { dataset: { category: string } }) => row.dataset.category), ["avoidance", "survival", "incoming", "defenses", "output", "healing"]);
-    assert.match(text(p), /Execution rating/);
+    assert.deepEqual(rows.map((row: { dataset: { category: string } }) => row.dataset.category), ["avoidance", "survival", "defenses", "incoming", "output", "healing"]);
+    assert.match(text(p), /Mechanics and survival/);
+    assert.match(text(p), /Damage output.*excluded from non-damage assessment/);
+    assert.doesNotMatch(text(p), /Execution rating|63 \/ 100/);
     assert.equal((text(p).match(/Peer sample/g) ?? []).length, 1);
     assert.doesNotMatch(text(p), /graphql|GraphQL|000000|010110|event-page-cap|sourceID|accountingWriteRetries/);
     assert.equal(requestsTo(p, "execution/v3").length, 1);
@@ -99,7 +101,7 @@ describe("hosted native Execution renderer", () => {
     assert.equal(p.nodes.get("executionBreakdown").querySelector("tbody").children.length, 6);
     assert.match(text(p), /40 DPS/);
     assert.doesNotMatch(p.nodes.get("board").innerHTML, /execution-rating/);
-    assert.match(p.nodes.get("executionSummary").textContent, /no fair shared Execution rating/i);
+    assert.match(p.nodes.get("executionSummary").textContent, /need complete reviewed avoidable-damage data/i);
   });
 
   test("incomplete healing is labeled as a lower bound, never as a complete scored total", async () => {
@@ -122,7 +124,7 @@ describe("hosted native Execution renderer", () => {
     await excluded.click();
     assert.deepEqual(requestsTo(p, "execution/v3").map((url: string) => new URL(url, "https://fixture.example").searchParams.get("pi")), ["Any", "Exclude"]);
     assert.doesNotMatch(p.nodes.get("board").innerHTML, /execution-rating/);
-    assert.match(p.nodes.get("executionSummary").textContent, /Measurements only/);
+    assert.match(p.nodes.get("executionSummary").textContent, /need complete reviewed avoidable-damage data/i);
     assert.match(p.nodes.get("executionPiHint").textContent, /No fallback to Any/);
     assert.equal(requestsTo(p, "compare").length, 1);
     assert.equal(clock.pending.size, 0);

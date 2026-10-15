@@ -6,14 +6,16 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import ts from 'typescript';
+import { adaptNativeExecutionEvidence } from './castmirror-execution-evidence.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const VENDOR = path.join(ROOT, 'vendor/castmirror');
 const MANIFEST = path.join(VENDOR, 'native-manifest.json');
 // Updated only after the native changes have passed their standalone suite.
 export const NATIVE_REVISION = '9d1c23fc00aba51c0357e4e312a9306bb1fda130';
-export const NATIVE_ADAPTER = 'castmirror-native-postgres-3';
-export const NATIVE_ADAPTATIONS = Object.freeze(['unused-filesystem-tracing-ignore']);
+export const NATIVE_ADAPTER = 'castmirror-native-postgres-4';
+const PREVIOUS_ADAPTER = 'castmirror-native-postgres-3';
+export const NATIVE_ADAPTATIONS = Object.freeze(['unused-filesystem-tracing-ignore', 'reviewed-lost-explorers-contact-evidence']);
 // Hosted callers use Postgres, never these legacy local-directory branches.
 // Annotations affect bundler tracing only; the reviewed runtime behavior stays intact.
 const tracingAnchors = Object.freeze({
@@ -78,6 +80,9 @@ export function generateNative(name, source) {
     const output = ts.createSourceFile(destination(name), text, ts.ScriptTarget.ESNext, true, ts.ScriptKind.JS);
     if (output.parseDiagnostics.length) throw new Error('Invalid adapted native JavaScript: ' + name);
   }
+  text = adaptNativeExecutionEvidence(name, text);
+  const adapted = ts.createSourceFile(destination(name), text, ts.ScriptTarget.ESNext, true, ts.ScriptKind.JS);
+  if (adapted.parseDiagnostics.length) throw new Error('Invalid adapted native JavaScript: ' + name);
   return normalize(text);
 }
 
@@ -96,9 +101,11 @@ export function syncNative({ check = false, source = null } = {}) {
     for (const [name, text] of Object.entries(snapshots)) manifest.sourceFiles[name] = digest(text);
   } else {
     manifest = JSON.parse(readFileSync(MANIFEST, 'utf8'));
+    const current = manifest.adapter === NATIVE_ADAPTER && JSON.stringify(manifest.adaptations) === JSON.stringify(NATIVE_ADAPTATIONS);
+    const previous = !check && manifest.adapter === PREVIOUS_ADAPTER
+      && JSON.stringify(manifest.adaptations) === JSON.stringify(['unused-filesystem-tracing-ignore']);
     if (manifest.schemaVersion !== 1 || manifest.repository !== 'https://github.com/evanbellmore-ux/cast-mirror' ||
-        manifest.revision !== NATIVE_REVISION || manifest.adapter !== NATIVE_ADAPTER ||
-        JSON.stringify(manifest.adaptations) !== JSON.stringify(NATIVE_ADAPTATIONS) ||
+        manifest.revision !== NATIVE_REVISION || !current && !previous ||
         JSON.stringify(Object.keys(manifest.sourceFiles).sort()) !== JSON.stringify([...NATIVE_FILES].sort())) {
       throw new Error('Native provenance or inventory changed without review');
     }
@@ -125,6 +132,8 @@ export function syncNative({ check = false, source = null } = {}) {
       const file = path.join(VENDOR, 'native', name);
       mkdirSync(path.dirname(file), { recursive: true }); writeFileSync(file, text);
     }
+    manifest.adapter = NATIVE_ADAPTER;
+    manifest.adaptations = [...NATIVE_ADAPTATIONS];
     manifest.generatedFiles = hashes;
     writeFileSync(MANIFEST, JSON.stringify(manifest, null, 2) + '\n');
   }
