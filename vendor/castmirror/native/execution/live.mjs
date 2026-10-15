@@ -10,10 +10,17 @@ import { STATISTICS_VERSION, STATISTICS_COMPONENTS, evaluateStatistics, compareS
 import { compactStatisticsObservation } from './compact-statistics.mjs';
 import reviewed from './statistics-v3-rules.json' with { type: 'json' };
 
-const LOST_EXPLORERS_REVIEW = {"version":"lost-explorers-mythic-contact-1","scope":{"zone":53,"encounter":3497,"difficulty":5,"size":20,"partition":2,"patch":"12.1.5"},"abilities":[{"abilityID":1305844,"name":"Blast Wave"},{"abilityID":1297650,"name":"Spreading Flames"},{"abilityID":1306127,"name":"Throw Junk"},{"abilityID":1292764,"name":"Evil Eyes"}],"sources":["https://www.wowhead.com/spell=1305844/blast-wave","https://www.wowhead.com/spell=1297650/spreading-flames","https://www.wowhead.com/spell=1306127/throw-junk","https://www.wowhead.com/spell=1292764/evil-eyes"]};
+const RAID_AVOIDANCE_REVIEW = {"scope":{"zone":53,"difficulty":5,"size":20,"partition":2,"patch":"12.1.5"},"encounters":[{"encounter":3470,"abilities":[{"abilityID":1288554,"name":"Latent Cultist"},{"abilityID":1294846,"name":"Anguished Echoes"},{"abilityID":1300239,"name":"Swirling Spirit"}]},{"encounter":3445,"abilities":[{"abilityID":1284209,"name":"Living Venom"}]},{"encounter":3455,"abilities":[{"abilityID":1295798,"name":"Plague Wave"},{"abilityID":1286737,"name":"Umbral Ejection"}]},{"encounter":3497,"abilities":[{"abilityID":1305844,"name":"Blast Wave"},{"abilityID":1297650,"name":"Spreading Flames"},{"abilityID":1306127,"name":"Throw Junk"},{"abilityID":1292764,"name":"Evil Eyes"}]},{"encounter":3420,"abilities":[{"abilityID":1287083,"name":"Tempest"},{"abilityID":1305998,"name":"Caustic Claws"},{"abilityID":1300089,"name":"Virulence"}]},{"encounter":3421,"abilities":[{"abilityID":1292807,"name":"Stir the Depths"},{"abilityID":1294605,"name":"Vile Flood"},{"abilityID":1307363,"name":"Barbed Bulwark"},{"abilityID":1306876,"name":"Sanguine Storm"},{"abilityID":1306925,"name":"Congealed Gore (Storm pools)"},{"abilityID":1309471,"name":"Noxious Slick"}]},{"encounter":3429,"abilities":[{"abilityID":1283840,"name":"Axegrinder (landing)"},{"abilityID":1285017,"name":"Axegrinder (wandering axes)"},{"abilityID":1283290,"name":"Noxious Ground"}]},{"encounter":3492,"abilities":[{"abilityID":1292403,"name":"Caustic Waves"},{"abilityID":1286885,"name":"Falling Debris"},{"abilityID":1302982,"name":"Virulent Spit"}]},{"encounter":3379,"abilities":[{"abilityID":1258677,"name":"Swirling Whirlpools"}]},{"encounter":3513,"abilities":[{"abilityID":1303685,"name":"Twisted Appendage"}]}]};
+function reviewedAvoidanceForScope(scope, review) {
+  if (!review?.scope || !Object.entries(review.scope).every(([key, value]) => scope?.[key] === value)) return null;
+  if (!Array.isArray(review.encounters)) return Array.isArray(review.abilities) && review.abilities.length ? review : null;
+  const matches = review.encounters.filter((entry) => entry.encounter === scope?.encounter);
+  return matches.length === 1 && Array.isArray(matches[0].abilities) && matches[0].abilities.length ? matches[0] : null;
+}
 function reviewedEncounterRules(scope, fallback, review) {
-  if (!Object.entries(review.scope).every(([key, value]) => scope?.[key] === value)) return fallback;
-  return { ...fallback, avoidableAbilityIDs: review.abilities.map((ability) => ability.abilityID) };
+  const entry = reviewedAvoidanceForScope(scope, review);
+  if (!entry) return fallback;
+  return { ...fallback, avoidableAbilityIDs: entry.abilities.map((ability) => ability.abilityID) };
 }
 function retainAvoidanceEvidence(component, review, original = component?.measurements) {
   const measurements = component?.measurements;
@@ -24,7 +31,7 @@ function retainAvoidanceEvidence(component, review, original = component?.measur
   if (!finite(measurements.total) || !Number.isSafeInteger(measurements.hits) || measurements.hits < 0) {
     delete measurements.byAbility; delete measurements.incidents; return;
   }
-  const names = new Map(review.abilities.map((ability) => [ability.abilityID, ability.name]));
+  const names = new Map(review.abilities.map((ability) => [ability.abilityID, ability.label ?? ability.name]));
   const byAbility = new Map(ids.map((abilityID) => [abilityID,
     { abilityID, name: names.get(abilityID) ?? 'Ability ' + abilityID, hits: 0, total: 0, absorbed: 0, mitigated: 0 }]));
   const saved = original?.byAbility;
@@ -74,7 +81,7 @@ function retainAvoidanceEvidence(component, review, original = component?.measur
   measurements.incidentListComplete = incidents.length === measurements.hits;
   measurements.incidents = incidents;
 }
-export const LIVE_RULES_VERSION = 'native-live-statistics-3';
+export const LIVE_RULES_VERSION = 'native-live-statistics-4-41a428147ec909d2';
 export const LIVE_TTL = 10 * 60_000;
 const CACHE_LIMIT = 64, CACHE_BYTES = 8 * 1024 * 1024;
 const codeOK = (v) => /^[A-Za-z0-9]{16}$/.test(v ?? '');
@@ -103,7 +110,7 @@ function accountingDiagnostic(error) {
 function compactLiveObservation(observation) {
   const compact = compactStatisticsObservation(observation);
   // Retain complete per-ability totals plus at most 60 safe incident markers.
-  retainAvoidanceEvidence(compact.components.avoidance, LOST_EXPLORERS_REVIEW, observation.components.avoidance.measurements);
+  retainAvoidanceEvidence(compact.components.avoidance, reviewedAvoidanceForScope(observation.scope, RAID_AVOIDANCE_REVIEW) ?? { abilities: [] }, observation.components.avoidance.measurements);
   for (const ability of compact.components.defenses.measurements.abilities ?? []) delete ability.rejected;
   return compact;
 }
@@ -116,7 +123,7 @@ export function liveStatisticsRules(scope) {
     avoidableAbilityIDs: exact ? [...reviewed.avoidableAbilityIDs] : [],
     usefulTargetNPCIDs: exact ? [...reviewed.usefulTargetNPCIDs] : [],
     paddingTargetNPCIDs: [], incomingDirection: null,
-    nativeBossOutput: true }, LOST_EXPLORERS_REVIEW);
+    nativeBossOutput: true }, RAID_AVOIDANCE_REVIEW);
 }
 
 export async function readLiveRankings(client, scope, { className, spec, role }) {

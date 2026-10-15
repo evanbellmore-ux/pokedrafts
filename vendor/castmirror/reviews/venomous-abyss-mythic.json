@@ -1,0 +1,892 @@
+{
+  "version": "venomous-abyss-mythic-contact-1",
+  "reviewedAt": "2026-10-14",
+  "scope": {
+    "zone": 53,
+    "difficulty": 5,
+    "size": 20,
+    "partition": 2,
+    "patch": "12.1.5"
+  },
+  "encounters": [
+    {
+      "encounter": 3470,
+      "name": "Nek'zali the Soulcoiler",
+      "abilities": [
+        {
+          "abilityID": 1288554,
+          "name": "Latent Cultist",
+          "reason": "Periodic ground contact with the cultist spirit. Live effect is Periodic Damage; this ID does not include the materialization burst.",
+          "sources": [
+            "https://www.wowhead.com/spell=1288554/latent-cultist",
+            "https://nether.wowhead.com/tooltip/spell/1288554?dataEnv=1&locale=0&dd=16",
+            "https://www.method.gg/guides/the-venomous-abyss/nekzali-the-soulcoiler-heroic"
+          ]
+        },
+        {
+          "abilityID": 1294846,
+          "name": "Anguished Echoes",
+          "reason": "Dodgeable impact circle. Live effect is Shadow School Damage with a five-yard radius and knockback.",
+          "sources": [
+            "https://www.wowhead.com/spell=1294846/anguished-echoes",
+            "https://nether.wowhead.com/tooltip/spell/1294846?dataEnv=1&locale=0&dd=16",
+            "https://www.method.gg/guides/the-venomous-abyss/nekzali-the-soulcoiler-heroic"
+          ]
+        },
+        {
+          "abilityID": 1300239,
+          "name": "Swirling Spirit",
+          "reason": "Contact with moving spirits within the well, separately from its baseline damage. Live effect is stacking Periodic Damage lasting five seconds.",
+          "sources": [
+            "https://www.wowhead.com/spell=1300239/swirling-spirit",
+            "https://nether.wowhead.com/tooltip/spell/1300239?dataEnv=1&locale=0&dd=16",
+            "https://www.method.gg/guides/the-venomous-abyss/nekzali-the-soulcoiler"
+          ]
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Soulcoil Well / Immortal Coil",
+          "reason": "Baseline damage to assigned players entering the well is not an avoidable contact failure."
+        },
+        {
+          "name": "Possession Barrage / Hollowing Strikes",
+          "reason": "Tank-directed duties and distance-dependent raid damage require role and positioning context."
+        },
+        {
+          "name": "Essence Rend",
+          "reason": "Assigned player debuff and dispel mechanic."
+        },
+        {
+          "name": "Hungering Pyre / Slithering Flame",
+          "reason": "Assigned soak and corpse-clearing mechanics."
+        },
+        {
+          "name": "Soulcoil Rite / Ritual Burn / Uncoiling",
+          "reason": "Raidwide damage or a group add-control failure does not establish individual avoidable contact."
+        },
+        {
+          "abilityID": 1292899,
+          "name": "Latent Cultist",
+          "reason": "Alternate damage ID not established as the reviewed ground-contact component."
+        },
+        {
+          "name": "Soul Transfer",
+          "reason": "Multiple damage IDs share this name; beam damage was not sufficiently separated from its raidwide component for this conservative review."
+        }
+      ],
+      "sources": [
+        "https://www.method.gg/guides/the-venomous-abyss/nekzali-the-soulcoiler",
+        "https://www.method.gg/guides/the-venomous-abyss/nekzali-the-soulcoiler-heroic"
+      ],
+      "limitations": [
+        "Swirling Spirit exposure differs for players assigned to enter the well; use comparison evidence and do not interpret contact totals as proof of fault.",
+        "Live Wowhead effects were checked on 2026-10-14; live pages are not an immutable version-pinned patch archive.",
+        "This retains the existing three damage IDs after checking their current live effects, without classifying every mechanic."
+      ]
+    },
+    {
+      "encounter": 3445,
+      "name": "Entombed Sentinels",
+      "abilities": [
+        {
+          "abilityID": 1284209,
+          "name": "Living Venom",
+          "reason": "Dodgeable venom projectile returning to the green golem after four seconds. Live effect is Nature School Damage, distinct from required Toxic Droplets orb pickups.",
+          "sources": [
+            "https://www.wowhead.com/spell=1284209/living-venom",
+            "https://nether.wowhead.com/tooltip/spell/1284209?dataEnv=1&locale=0&dd=16",
+            "https://www.method.gg/guides/the-venomous-abyss/entombed-sentinels-heroic",
+            "https://www.method.gg/guides/the-venomous-abyss/entombed-sentinels"
+          ]
+        }
+      ],
+      "excluded": [
+        {
+          "abilityID": 1284451,
+          "name": "Toxic Droplets",
+          "reason": "Actual Nature damage spell, but stepping on droplets is a required soak assignment."
+        },
+        {
+          "abilityID": 1284434,
+          "name": "Toxic Droplets",
+          "reason": "Guide's parent cast is Dummy, not the native damage event ID."
+        },
+        {
+          "abilityID": 1284207,
+          "name": "Living Venom",
+          "reason": "Passive parent identifier; use reviewed damage child 1284209 instead."
+        },
+        {
+          "abilityID": 1284210,
+          "name": "Blood Venom",
+          "reason": "Verified Periodic Damage from ground pools, but pool placement and assigned immune orb pickups can require pool contact; excluded from conservative individual assessment."
+        },
+        {
+          "abilityID": 1284208,
+          "name": "Blood Venom",
+          "reason": "Guide parent is a Dummy aura; it is not the native ground damage event ID."
+        },
+        {
+          "abilityID": 1296962,
+          "name": "Protovenom Eruption",
+          "reason": "Verified School Damage failure state, but blasts both an incorrect pair and bystanders; damage taken cannot identify responsibility."
+        },
+        {
+          "name": "Unstable Miasma / Clinging Murk",
+          "reason": "Required group soak and resulting debuff."
+        },
+        {
+          "name": "Helical Toxins / Cultivated Burst",
+          "reason": "Mandatory debuff pairing can fail because a partner touches the player; generic damage totals cannot resolve individual responsibility."
+        },
+        {
+          "name": "Mark of Acid / Mark of Blood / Contaminate / Noxious Blast",
+          "reason": "Background damage or raidwide consequence of group add and orb control."
+        },
+        {
+          "name": "Empowering Slam / Bloodvenom Injection",
+          "reason": "Tank mechanics."
+        }
+      ],
+      "sources": [
+        "https://www.method.gg/guides/the-venomous-abyss/entombed-sentinels",
+        "https://www.method.gg/guides/the-venomous-abyss/entombed-sentinels-heroic",
+        "https://www.wowhead.com/spell=1284210/blood-venom",
+        "https://www.wowhead.com/spell=1284451/toxic-droplets",
+        "https://www.wowhead.com/spell=1296962/protovenom-eruption"
+      ],
+      "limitations": [
+        "Conservative list covers the returning projectile only; it intentionally omits required orb damage and positional mechanics whose attribution depends on assignments.",
+        "Live Wowhead effects were checked on 2026-10-14; live pages are not an immutable version-pinned patch archive."
+      ]
+    },
+    {
+      "encounter": 3455,
+      "name": "Vashnik the Malignant",
+      "abilities": [
+        {
+          "abilityID": 1295798,
+          "name": "Plague Wave",
+          "reason": "Dodgeable cardinal wave released after Plague Froth. Live effect is Plague School Damage; the randomly assigned Plague Froth ticking debuff is separate.",
+          "sources": [
+            "https://www.wowhead.com/spell=1295798/plague-wave",
+            "https://nether.wowhead.com/tooltip/spell/1295798?dataEnv=1&locale=0&dd=16",
+            "https://www.method.gg/guides/the-venomous-abyss/vashnik-the-malignant",
+            "https://www.method.gg/guides/the-venomous-abyss/vashnik-the-malignant-heroic"
+          ]
+        },
+        {
+          "abilityID": 1286737,
+          "name": "Umbral Ejection",
+          "reason": "Dodgeable three-yard impact circles when Shrouded Venom dies. Live effect is Shadow School Damage; parent 1286736 only triggers the missile.",
+          "sources": [
+            "https://www.wowhead.com/spell=1286737/umbral-ejection",
+            "https://nether.wowhead.com/tooltip/spell/1286737?dataEnv=1&locale=0&dd=16",
+            "https://www.method.gg/guides/the-venomous-abyss/vashnik-the-malignant-heroic"
+          ]
+        }
+      ],
+      "excluded": [
+        {
+          "abilityID": 1281907,
+          "name": "Plague Froth",
+          "reason": "Assigned player debuff; guide parent is Dummy and aura ticks require source/target context to separate the victim from nearby allies."
+        },
+        {
+          "abilityID": 1286736,
+          "name": "Umbral Ejection",
+          "reason": "Trigger Missile parent, not the damage event; use 1286737."
+        },
+        {
+          "abilityID": 1302489,
+          "name": "Stygian Burst",
+          "reason": "Verified Shadow School Damage at an impact location, but generated by assigned Stygian Infection; this review did not establish whether the infected player's own hit is avoidable, so omit pending detailed source/target and timing review."
+        },
+        {
+          "name": "Catalytic Bile",
+          "reason": "Required assigned soak."
+        },
+        {
+          "name": "Imbibe / Toxic Vapor / Burning Presence / Caustic Surge / Caustic Explosion",
+          "reason": "Raidwide or deliberate strategy damage; staggered kills and dispels are a group responsibility."
+        },
+        {
+          "name": "Malignance / Malignant Burst",
+          "reason": "Raidwide consequence of uncleared totems or leaked adds; do not attribute the damage to each recipient."
+        },
+        {
+          "name": "Siphoning Infection / Siphon Blood / Stygian Infection / Exploding Infection",
+          "reason": "Assigned debuffs, required leech positioning or healer-controlled dispel timing."
+        },
+        {
+          "name": "Dripping Fangs",
+          "reason": "Tank mechanic."
+        }
+      ],
+      "sources": [
+        "https://www.method.gg/guides/the-venomous-abyss/vashnik-the-malignant",
+        "https://www.method.gg/guides/the-venomous-abyss/vashnik-the-malignant-heroic",
+        "https://www.wowhead.com/spell=1302489/stygian-burst",
+        "https://www.wowhead.com/spell=1294994/stygian-infection"
+      ],
+      "limitations": [
+        "Wave direction and add-death placement may be affected by other players; counted contact is not proof of sole responsibility.",
+        "Stygian Burst is left unclassified until its assigned source and impact timing can be resolved.",
+        "Live Wowhead effects were checked on 2026-10-14; live pages are not an immutable version-pinned patch archive."
+      ]
+    },
+    {
+      "encounter": 3497,
+      "name": "The Lost Explorers",
+      "abilities": [
+        {
+          "abilityID": 1305844,
+          "name": "Blast Wave",
+          "reason": "Contact with the bomb shockwave and its follow-up burn; the wave can be avoided.",
+          "sources": [
+            "https://www.wowhead.com/spell=1305844/blast-wave"
+          ]
+        },
+        {
+          "abilityID": 1297650,
+          "name": "Spreading Flames",
+          "reason": "Contact with persistent bomb fire on the ground.",
+          "sources": [
+            "https://www.wowhead.com/spell=1297650/spreading-flames"
+          ]
+        },
+        {
+          "abilityID": 1306127,
+          "name": "Throw Junk",
+          "reason": "Crate landing impact, distinct from the required crate opening.",
+          "sources": [
+            "https://www.wowhead.com/spell=1306127/throw-junk"
+          ]
+        },
+        {
+          "abilityID": 1292764,
+          "name": "Evil Eyes",
+          "reason": "Contact with statue-fired ground impacts.",
+          "sources": [
+            "https://www.wowhead.com/spell=1292764/evil-eyes"
+          ]
+        }
+      ],
+      "excluded": [
+        {
+          "abilityID": 1310500,
+          "name": "Aftershock",
+          "reason": "Initial ground exposure may follow an assigned Mighty Thud soak."
+        },
+        {
+          "abilityID": 1312853,
+          "name": "Splinters",
+          "reason": "Raid-wide damage from required crate opening."
+        },
+        {
+          "abilityID": 1300237,
+          "name": "Mighty Thud",
+          "reason": "Required group soak."
+        },
+        {
+          "abilityID": 1297648,
+          "name": "Frost Patch",
+          "reason": "Deliberate opposite-element debuff clearing can require contact."
+        },
+        {
+          "abilityID": 1310662,
+          "name": "Piercing Frost",
+          "reason": "Assigned debuff damage."
+        },
+        {
+          "abilityID": 1294334,
+          "name": "Blink Nova",
+          "reason": "Distance-scaled raid damage needs positioning and assignment context."
+        }
+      ],
+      "sources": [
+        "https://www.method.gg/guides/the-venomous-abyss/the-lost-explorers"
+      ],
+      "limitations": [
+        "Reviewed damage contacts are a subset, not a complete mistake or assignment audit.",
+        "Several impacts can belong to one brief mechanic event.",
+        "Damage reception does not establish individual fault; another player can consume a required mushroom early."
+      ]
+    },
+    {
+      "encounter": 3420,
+      "name": "Sszorak",
+      "abilities": [
+        {
+          "abilityID": 1287083,
+          "name": "Tempest",
+          "reason": "Contact with roaming tornadoes and the resulting poison ticks. This is the damage/debuff spell, distinct from cast 1287072 and area trigger 1287073. Strategy directs every role to dodge the tornadoes.",
+          "sources": [
+            "https://www.wowhead.com/spell=1287083/tempest",
+            "https://nether.wowhead.com/tooltip/spell/1287083?dataEnv=1&locale=0",
+            "https://www.wowhead.com/ptr/spell=1287083/tempest",
+            "https://www.method.gg/guides/the-venomous-abyss/sszorak-heroic",
+            "https://www.method.gg/guides/the-venomous-abyss/sszorak"
+          ]
+        },
+        {
+          "abilityID": 1305998,
+          "name": "Caustic Claws",
+          "reason": "Avoidable 6-yard toxin landing impact. This exact spell has a Nature School Damage effect; it is distinct from the obsolete melee-proc variants. Mythic retains the ground mechanic and the inherited strategy explicitly says to dodge impacts.",
+          "sources": [
+            "https://www.wowhead.com/spell=1305998/caustic-claws",
+            "https://nether.wowhead.com/tooltip/spell/1305998?dataEnv=1&locale=0",
+            "https://www.wowhead.com/ptr/spell=1305998/caustic-claws",
+            "https://www.method.gg/guides/the-venomous-abyss/sszorak-heroic",
+            "https://www.method.gg/guides/the-venomous-abyss/sszorak"
+          ]
+        },
+        {
+          "abilityID": 1300089,
+          "name": "Virulence",
+          "reason": "Direct 100-value Nature damage from a spread line striking another player, distinct from the required initial Virulence debuff and its 15-value periodic tick. Strategy requires spreading after the assigned Slaughter soak to avoid these line contacts.",
+          "sources": [
+            "https://www.wowhead.com/spell=1300089/virulence",
+            "https://nether.wowhead.com/tooltip/spell/1300089?dataEnv=1&locale=0",
+            "https://www.method.gg/guides/the-venomous-abyss/sszorak"
+          ]
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Tempest",
+          "abilityID": 1287072,
+          "reason": "Cast wrapper, not native damage."
+        },
+        {
+          "name": "Tempest",
+          "abilityID": 1287073,
+          "reason": "Creates area trigger, not native damage."
+        },
+        {
+          "name": "Caustic Residue",
+          "abilityID": 1296602,
+          "reason": "This journal-linked ID creates area trigger 43094. The actual damage child was not verified, so omit the puddle rather than use the trigger as a damage ID."
+        },
+        {
+          "name": "Virulence",
+          "abilityID": 1297707,
+          "reason": "The initial debuff is received from the assigned To the Slaughter stack; periodic dummy rather than spread-impact damage."
+        },
+        {
+          "name": "Virulence",
+          "abilityID": 1312189,
+          "reason": "15-value periodic tick; required initial debuffs and secondary debuffs share ticks, so not safe as a blanket avoidable rule."
+        },
+        {
+          "name": "To the Slaughter",
+          "abilityID": 1297414,
+          "reason": "Required 14-player rage-reset soak."
+        },
+        {
+          "name": "Mutilate / Mutilated Gash",
+          "reason": "Required alternating raid soaks and resulting debuff."
+        },
+        {
+          "name": "Ravage / Corroding Venom",
+          "reason": "Tank duties; blanket rules would penalize tanks."
+        },
+        {
+          "name": "Viscous Cyst",
+          "abilityID": 1287008,
+          "reason": "Required contact and raid damage during Howling Maelstrom, including deliberate spare-cyst clearing."
+        },
+        {
+          "name": "Venomous Surge / Raging Crosswinds",
+          "reason": "Assigned target debuffs and/or raidwide components cannot be cleanly distinguished by one damage ID."
+        },
+        {
+          "name": "Ula'tek's Presence / Howling Maelstrom / Unbound Ferocity",
+          "reason": "Ambient raid damage, forced movement, or raid-failure enrage; damage receipt does not establish personal avoidable contact."
+        }
+      ],
+      "sources": [
+        "https://www.method.gg/guides/the-venomous-abyss/sszorak",
+        "https://www.method.gg/guides/the-venomous-abyss/sszorak-heroic",
+        "https://www.wowhead.com/npc=257347/sszorak",
+        "https://www.wowhead.com/de/spell=1296602/ätzende-rückstände"
+      ],
+      "limitations": [
+        "Conservative contact subset, not all avoidable mechanics. Caustic Residue damage is deliberately withheld pending a verified native damage ID.",
+        "Live Wowhead tooltips were fetched from dataEnv=1 on October 14. Some full spell effect metadata was only accessible in indexed PTR pages; those corroborate effect identity rather than prove historical patch tuning.",
+        "Spread-line damage is a failed contact, not evidence that the recipient alone caused the failure. Damage events do not establish assignment completion."
+      ]
+    },
+    {
+      "encounter": 3421,
+      "name": "The Twin Fangs",
+      "abilities": [
+        {
+          "abilityID": 1292807,
+          "name": "Stir the Depths",
+          "reason": "The 15-value one-second wave-contact damage aura, distinct from the cast's unavoidable raid pulses. Its live buff describes the wave's 125011 per-second damage, and strategy explicitly says to dodge the waves.",
+          "sources": [
+            "https://www.wowhead.com/spell=1292807/stir-the-depths",
+            "https://nether.wowhead.com/tooltip/spell/1292807?dataEnv=1&locale=0",
+            "https://www.wowhead.com/ptr-2/spell=1292807/stir-the-depths",
+            "https://www.method.gg/guides/the-venomous-abyss/the-twin-fangs-heroic",
+            "https://www.method.gg/guides/the-venomous-abyss/the-twin-fangs"
+          ]
+        },
+        {
+          "abilityID": 1294605,
+          "name": "Vile Flood",
+          "reason": "Periodic damage from standing in the rotating toxin beam. This is the periodic-damage contact spell, distinct from cast 1294293 and dummy 1293749. Mythic strategy gives a safe path and gateway timing to skip the beam.",
+          "sources": [
+            "https://www.wowhead.com/spell=1294605/vile-flood",
+            "https://nether.wowhead.com/tooltip/spell/1294605?dataEnv=1&locale=0",
+            "https://www.wowhead.com/ptr/spell=1294605/vile-flood",
+            "https://www.method.gg/guides/the-venomous-abyss/the-twin-fangs"
+          ]
+        },
+        {
+          "abilityID": 1307363,
+          "name": "Barbed Bulwark",
+          "reason": "Direct Shadow damage from touching a protected globule before its shield is crowd controlled. Required globule collection happens after removing the shield and is excluded separately; this ID is the shield's damage effect.",
+          "sources": [
+            "https://www.wowhead.com/spell=1307363/barbed-bulwark",
+            "https://nether.wowhead.com/tooltip/spell/1307363?dataEnv=1&locale=0",
+            "https://www.wowhead.com/ptr/spell=1307363/barbed-bulwark",
+            "https://www.method.gg/guides/the-venomous-abyss/the-twin-fangs"
+          ]
+        },
+        {
+          "abilityID": 1306876,
+          "name": "Sanguine Storm",
+          "reason": "Avoidable four-yard falling-gore impact, distinct from the storm cast and 300-yard raid pulse 1313533. Mythic strategy directs players to avoid blood pools hitting the floor during Submerge.",
+          "sources": [
+            "https://www.wowhead.com/spell=1306876/sanguine-storm",
+            "https://nether.wowhead.com/tooltip/spell/1306876?dataEnv=1&locale=0",
+            "https://www.wowhead.com/ptr/spell=1306876/sanguine-storm",
+            "https://www.method.gg/guides/the-venomous-abyss/the-twin-fangs"
+          ]
+        },
+        {
+          "abilityID": 1306925,
+          "name": "Congealed Gore",
+          "label": "Congealed Gore (Storm pools)",
+          "reason": "Standing in short-lived ground pools from Sanguine Storm. Live tooltip verifies the native damage aura and six-second pool duration; distinct from pool-creation 1306922.",
+          "sources": [
+            "https://www.wowhead.com/spell=1306925/congealed-gore",
+            "https://nether.wowhead.com/tooltip/spell/1306925?dataEnv=1&locale=0",
+            "https://www.method.gg/guides/the-venomous-abyss/the-twin-fangs-heroic",
+            "https://www.method.gg/guides/the-venomous-abyss/the-twin-fangs"
+          ]
+        },
+        {
+          "abilityID": 1309471,
+          "name": "Noxious Slick",
+          "reason": "Standing in the hazardous ground left by Submerge. This exact ID applies periodic damage and vulnerability, and the strategy identifies it as harmful ground to avoid.",
+          "sources": [
+            "https://www.wowhead.com/spell=1309471/noxious-slick",
+            "https://nether.wowhead.com/tooltip/spell/1309471?dataEnv=1&locale=0",
+            "https://www.wowhead.com/ptr-2/spell=1309471/noxious-slick",
+            "https://www.method.gg/guides/the-venomous-abyss/the-twin-fangs-heroic",
+            "https://www.method.gg/guides/the-venomous-abyss/the-twin-fangs"
+          ]
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Stir the Depths",
+          "abilityID": 1290956,
+          "reason": "Cast includes unavoidable raid pulses; select only separate wave-contact damage 1292807."
+        },
+        {
+          "name": "Vile Flood",
+          "abilityID": 1294293,
+          "reason": "Cast/area trigger wrapper, not periodic contact damage."
+        },
+        {
+          "name": "Sanguine Storm",
+          "abilityID": 1313533,
+          "reason": "300-yard unavoidable raidwide pulse; distinct from four-yard impact1306876."
+        },
+        {
+          "name": "Sanguine Storm",
+          "abilityID": 1306872,
+          "reason": "Channel wrapper; native impact is1306876."
+        },
+        {
+          "name": "Barbed Bulwark",
+          "abilityID": 1303378,
+          "reason": "Channel wrapper; native damage is1307363."
+        },
+        {
+          "name": "Congealed Gore",
+          "abilityID": 1292505,
+          "reason": "Pool creation wrapper; native periodic damage is1292552."
+        },
+        {
+          "name": "Congealed Gore",
+          "abilityID": 1306922,
+          "reason": "Pool creation wrapper; native periodic damage is1306925."
+        },
+        {
+          "name": "Corrosive Spit",
+          "abilityID": 1291478,
+          "reason": "The spawn fixates on a player, who baits the frontal. Blanket damage-ID rules cannot distinguish the required target from other players clipped; conservative exclusion."
+        },
+        {
+          "name": "Caustic Deluge / Stone Breaker / Blood Torrent / Clotted Bolt",
+          "reason": "Tank duties, including required tank soaks."
+        },
+        {
+          "name": "Caustic Globule / Ravenous Feast / Tainted Blood",
+          "reason": "Required assigned collection and group soaks; necessary damage or healing absorbs."
+        },
+        {
+          "name": "Eternal Venom / Venomous Emergence / Toxic Fumes / Rouse the Brood",
+          "reason": "Ambient or unavoidable raid damage and mandatory venom stacks; receipt alone is not a personal contact failure."
+        },
+        {
+          "name": "Coiling Ichor",
+          "reason": "Assigned target debuff; blanket rule cannot distinguish target from splash recipients."
+        },
+        {
+          "name": "Visceral Burst / Tainted Burst",
+          "reason": "Raidwide punishment from missed interrupts or soaks; recipient damage does not identify the responsible player."
+        },
+        {
+          "name": "Submerge",
+          "abilityID": 1308556,
+          "reason": "Cast wrapper. Native landing impact was not verified, so only separately verified Noxious Slick is included."
+        },
+        {
+          "abilityID": 1292552,
+          "name": "Congealed Gore (Ichor pools)",
+          "reason": "The assigned Coiling Ichor target creates this pool at their feet. Initial tick timing was not proven avoidable, so this component is withheld pending placement-timing evidence."
+        }
+      ],
+      "sources": [
+        "https://www.method.gg/guides/the-venomous-abyss/the-twin-fangs",
+        "https://www.method.gg/guides/the-venomous-abyss/the-twin-fangs-heroic",
+        "https://www.wowhead.com/ptr-2/npc=257361/vexhul"
+      ],
+      "limitations": [
+        "Conservative contact subset; assigned target splash and native Submerge landing damage are deliberately withheld.",
+        "Current dataEnv=1 tooltips confirm all seven IDs and harmful contact descriptions. Indexed effect metadata for some IDs is from PTR snapshots and does not establish historical tuning.",
+        "The short-pool Congealed Gore live tooltip and buff confirm damage, but its full live spell page was blocked; its periodic effect was additionally corroborated by WowDB1306925.",
+        "Hits/ticks measure contact exposure, not independent mistakes or individual fault.",
+        "Ichor-created Congealed Gore1292552 is withheld because first-tick avoidance for the assigned dropper was not verified."
+      ]
+    },
+    {
+      "encounter": 3429,
+      "name": "The Coiled Altar",
+      "abilities": [
+        {
+          "abilityID": 1283840,
+          "name": "Axegrinder",
+          "label": "Axegrinder (landing)",
+          "reason": "Four-yard axe landing impact. Native School Damage effect is separate from cast1283832; Mythic strategy explicitly directs players to dodge the axes.",
+          "sources": [
+            "https://www.wowhead.com/spell=1283840/axegrinder",
+            "https://nether.wowhead.com/tooltip/spell/1283840?dataEnv=1&locale=0",
+            "https://www.wowhead.com/spell=1283840/axegrinder?dd=17",
+            "https://www.method.gg/guides/the-venomous-abyss/the-coiled-altar"
+          ]
+        },
+        {
+          "abilityID": 1285017,
+          "name": "Axegrinder",
+          "label": "Axegrinder (wandering axes)",
+          "reason": "Periodic contact damage from wandering axes. Native periodic-damage aura is distinct from cast1283832 and landing1283840; axes have no assigned soak duty.",
+          "sources": [
+            "https://www.wowhead.com/spell=1285017/axegrinder",
+            "https://nether.wowhead.com/tooltip/spell/1285017?dataEnv=1&locale=0",
+            "https://www.wowhead.com/ptr-2/spell=1285017/axegrinder",
+            "https://www.method.gg/guides/the-venomous-abyss/the-coiled-altar"
+          ]
+        },
+        {
+          "abilityID": 1283290,
+          "name": "Noxious Ground",
+          "reason": "Periodic damage from standing in poisonous floor patches. Separate from unavoidable Fangs of the Coiled Altar raid damage and assigned target debuffs.",
+          "sources": [
+            "https://www.wowhead.com/spell=1283290/noxious-ground",
+            "https://nether.wowhead.com/tooltip/spell/1283290?dataEnv=1&locale=0",
+            "https://www.wowhead.com/spell=1283290/noxious-ground?dd=17",
+            "https://www.method.gg/guides/the-venomous-abyss/the-coiled-altar-heroic",
+            "https://www.method.gg/guides/the-venomous-abyss/the-coiled-altar"
+          ]
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Axegrinder",
+          "abilityID": 1283832,
+          "reason": "Cast wrapper; select the verified impact and contact damage IDs."
+        },
+        {
+          "name": "Malevolent Resonance",
+          "abilityID": 1310732,
+          "reason": "Area-trigger/dummy wrapper, not damage. The damage child was not verified."
+        },
+        {
+          "name": "Malevolent Resonance",
+          "abilityID": 1310744,
+          "reason": "Periodic trigger aura, not verified native damage; withhold even though ghost collision is avoidable."
+        },
+        {
+          "name": "Defiled Ground",
+          "abilityID": 1298591,
+          "reason": "Applies healing absorb, not health damage; outside this damage metric."
+        },
+        {
+          "name": "Guillotine / Grim Guillotine / Execution / Grim Execution",
+          "reason": "Assigned group soaks and target damage; required hits cannot be treated as avoidable by one ID."
+        },
+        {
+          "name": "Sever / Soul Sever / Blighted Sever / Venomfang / Corrupted Toxin",
+          "reason": "Tank or assigned orb/ghost-clearing duties; broad damage rules would penalize required work."
+        },
+        {
+          "name": "Coalesced Venom / Volatile Venom / Virulent Mutation / Mutagenic Venom / Venom Rupture",
+          "reason": "Required orb collection, carrying and clearing, raidwide pulses and mixed collateral components cannot safely be distinguished by damage ID alone."
+        },
+        {
+          "name": "Gloombomb / Gravebound / Dreadmarch",
+          "reason": "Assigned target duties; Gloombomb overlap is required to break Mythic add shields. Damage alone cannot identify gratuitous clips."
+        },
+        {
+          "name": "Spirit Erasure",
+          "abilityID": 1287722,
+          "reason": "Required intermission soul-blocking causes raidwide damage/vulnerability."
+        },
+        {
+          "name": "Fangs of the Coiled Altar / Defilement of the Coiled Altar / Suffocating Darkness / Eternal Nightfall / Retaliatory Malice / Dreadful Presence",
+          "reason": "Ambient raid damage, random targeted damage, required shield phases or raid-level failure damage; not a conservative personal contact rule."
+        }
+      ],
+      "sources": [
+        "https://www.method.gg/guides/the-venomous-abyss/the-coiled-altar",
+        "https://www.method.gg/guides/the-venomous-abyss/the-coiled-altar-heroic",
+        "https://www.wowhead.com/guide/midnight/raids/venomous-abyss-coiled-altar-boss-strategy-abilities",
+        "https://www.wowhead.com/ptr/spell=1310732/malevolent-resonance",
+        "https://www.wowhead.com/ptr/spell=1310744/malevolent-resonance"
+      ],
+      "limitations": [
+        "Conservative contact subset, not every avoidable mechanic. Ghost collision is withheld because no native damage child ID was verified.",
+        "All included IDs have current dataEnv=1 tooltips. Live indexed metadata confirms Noxious Ground periodic damage and Axegrinder landing School Damage; Axegrinder periodic effect was corroborated in a PTR12.1.5 indexed page.",
+        "Rules do not grade orb cleanup, ghost positioning, interrupts or assigned soak completion. Damage receipt alone does not prove personal fault."
+      ]
+    },
+    {
+      "encounter": 3492,
+      "name": "Ula'tek",
+      "abilities": [
+        {
+          "abilityID": 1292403,
+          "name": "Caustic Waves",
+          "reason": "Contact with a travelling venom wave; the same native ID supplies both the initial hit and subsequent DoT. Live spell details explicitly list School Damage and Periodic Damage with Mythic variants.",
+          "sources": [
+            "https://www.wowhead.com/spell=1292403/caustic-waves?dd=16",
+            "https://nether.wowhead.com/tooltip/spell/1292403?dataEnv=1&locale=0&dd=16",
+            "https://www.method.gg/guides/the-venomous-abyss/ulatek-heroic"
+          ]
+        },
+        {
+          "abilityID": 1286885,
+          "name": "Falling Debris",
+          "reason": "Avoidable impact at a random ground destination during the heart window. Live spell details identify School Damage with a 7-yard radius and Mythic variant.",
+          "sources": [
+            "https://www.wowhead.com/spell=1286885/falling-debris?dd=16",
+            "https://nether.wowhead.com/tooltip/spell/1286885?dataEnv=1&locale=0&dd=16",
+            "https://www.method.gg/guides/the-venomous-abyss/ulatek-heroic"
+          ]
+        },
+        {
+          "abilityID": 1302982,
+          "name": "Virulent Spit",
+          "reason": "Avoidable venom impact within 4 yards of a marked destination. Live spell details identify School Damage with a Mythic variant; channel IDs 1307408 and 1302971 are not included.",
+          "sources": [
+            "https://www.wowhead.com/spell=1302982/virulent-spit?dd=16",
+            "https://nether.wowhead.com/tooltip/spell/1302982?dataEnv=1&locale=0&dd=16",
+            "https://www.method.gg/guides/the-venomous-abyss/ulatek-heroic"
+          ]
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Spectral Coils",
+          "reason": "Required group soak; incoming damage is legitimate assigned contribution."
+        },
+        {
+          "name": "Mother's Wrath / Gore Rattle / Rattler Slam / Unchecked Rage / Stone Venom",
+          "reason": "Tank duties or raidwide punishment from tank positioning; victim damage cannot assign personal blame."
+        },
+        {
+          "name": "Necrotic Vapors / Rage of the Shackled / Putrid Membrane / Acidic Expulsion / Fury Unleashed",
+          "reason": "Background, raidwide or enrage damage; receipt is not an individual avoidable contact."
+        },
+        {
+          "name": "Malignant Shell / Doomscale Shell / Warden's Protection / Doomscale Cauldron",
+          "reason": "Egg transport or assigned encounter work; cannot infer personal error from the damage event alone."
+        },
+        {
+          "name": "Grasping Fangs / Blight Vein / Serpent's Bite / Volatile Purge",
+          "reason": "Assigned debuffs, mandatory leeching or shared explosions; requires source and assignment context rather than a blanket ability ID rule."
+        },
+        {
+          "name": "Mephitic Thrash / Circling Prey",
+          "reason": "Include both near and far damage components, so a whole-ability rule could penalize unavoidable damage."
+        },
+        {
+          "name": "Call of the Serpent",
+          "abilityID": 1304012,
+          "reason": "Method links the cast/Dummy ID. Native impact damage ID was not verified, so omit rather than guess."
+        },
+        {
+          "name": "Venomous water / environmental damage",
+          "reason": "Movement and final-platform strategy may legitimately enter it; no unconditional personal-error classification."
+        },
+        {
+          "name": "Petrifying Sting / Acidic Burst / Vicious Echoes / Anguished Cry / Malice / Dread Roar",
+          "reason": "Random targeting or missed group interrupt/add handling; incoming damage alone does not establish responsibility."
+        }
+      ],
+      "sources": [
+        "https://www.method.gg/guides/the-venomous-abyss/ulatek-heroic",
+        "https://www.wowhead.com/spell=1292403/caustic-waves?dd=16",
+        "https://www.wowhead.com/spell=1286885/falling-debris?dd=16",
+        "https://www.wowhead.com/spell=1302982/virulent-spit?dd=16"
+      ],
+      "limitations": [
+        "Reviewed 2026-10-14 for Mythic patch 12.1.5. Method currently exposes a Heroic strategy guide; applicability to Mythic is corroborated by the live damage spells with explicit Mythic variants.",
+        "Conservative contact-only subset; not a complete mechanics score and not validated against a live player event sample.",
+        "Caustic Waves damage totals include its follow-on DoT ticks, not only the original contact."
+      ]
+    },
+    {
+      "encounter": 3379,
+      "name": "Nymrissa Wavecaller",
+      "abilities": [
+        {
+          "abilityID": 1258677,
+          "name": "Swirling Whirlpools",
+          "reason": "Direct contact with moving whirlpools outside their safe gap. This native damage ID is School Damage Frost with a Mythic variant; Method links Dummy spell 1258668, which is deliberately not included.",
+          "sources": [
+            "https://www.wowhead.com/spell=1258677/swirling-whirlpools?dd=16",
+            "https://nether.wowhead.com/tooltip/spell/1258677?dataEnv=1&locale=0&dd=16",
+            "https://www.method.gg/guides/the-tidebound-grotto/nymrissa-wavecaller"
+          ]
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Swirling Whirlpools cast / trigger",
+          "abilityID": 1258668,
+          "reason": "Dummy spell, not damage; area trigger 1258676 and dummy 1258669 are also not damage IDs."
+        },
+        {
+          "name": "Frost Orb / Frost Burst / Shatter",
+          "reason": "Orbs must be deliberately soaked on Mythic; raidwide burst or failure damage does not identify the responsible player."
+        },
+        {
+          "name": "Lingering Frost",
+          "abilityID": 1257654,
+          "reason": "Verified native periodic damage but an assigned orb pickup creates ice at the soaker's position and tanks clear it with Water Jet. A blanket ID rule could charge legitimate encounter work."
+        },
+        {
+          "name": "Water Jet / Iceblade Flurry",
+          "reason": "Tank duty or frontal collateral whose victim responsibility depends on role and positioning context."
+        },
+        {
+          "name": "Chilling Frost",
+          "reason": "Assigned target debuff rather than optional contact."
+        },
+        {
+          "name": "Pop! / Abyssal Rain / Pulsing Tides / Unending Tides",
+          "reason": "Raidwide/background/enrage damage; recipient damage cannot identify individual mistakes."
+        },
+        {
+          "name": "Shark / environmental damage",
+          "reason": "No native damage ID verified; omitted rather than guessed."
+        }
+      ],
+      "sources": [
+        "https://www.method.gg/guides/the-tidebound-grotto/nymrissa-wavecaller",
+        "https://www.wowhead.com/spell=1258677/swirling-whirlpools?dd=16",
+        "https://www.wowhead.com/spell=1257654/lingering-frost",
+        "https://www.wowhead.com/spell=1258668/swirling-whirlpools"
+      ],
+      "limitations": [
+        "Reviewed 2026-10-14 for Mythic patch 12.1.5. This is The Tidebound Grotto standalone raid, grouped into WCL zone 53 by the app.",
+        "WCL live zone 53 metadata reports Mythic difficulty 5 sizes [20]; this review uses the provider/native size-20 scope despite the encounter's in-game flexible Mythic format.",
+        "Conservative contact-only subset; not a complete mechanics score and not validated against a live player event sample."
+      ]
+    },
+    {
+      "encounter": 3513,
+      "name": "Kith'ix",
+      "abilities": [
+        {
+          "abilityID": 1303685,
+          "name": "Twisted Appendage",
+          "reason": "Avoidable nearby tentacle strike; the live spell is School Damage Shadow with a Mythic variant. Method instructs all nearby players, including melee and tanks, to step away. The linked cast1303681 is not used.",
+          "sources": [
+            "https://www.wowhead.com/spell=1303685/twisted-appendage?dd=16",
+            "https://nether.wowhead.com/tooltip/spell/1303685?dataEnv=1&locale=0&dd=16",
+            "https://www.method.gg/guides/the-unbinding-of-kithix/kithix"
+          ]
+        }
+      ],
+      "excluded": [
+        {
+          "name": "Nullshards area trigger",
+          "abilityID": 1308880,
+          "reason": "Creates an area trigger; not the native damage event ID."
+        },
+        {
+          "name": "Null Gate / Negation / Explosive Restabilization / Eclipse Fragment",
+          "reason": "Required tank clearing or deliberate projectile interception; incoming damage alone cannot classify those duties as personal mistakes."
+        },
+        {
+          "name": "Venom Roar",
+          "abilityID": 1302917,
+          "reason": "Verified Physical frontal damage (Nature component 1302914 also exists) but the Hulk must be tanked; a whole-ID rule would penalize the assigned tank."
+        },
+        {
+          "name": "Voidswarm / Nightfall / Gut Reaction / Digestive Juices / Eightfold Eclipse / Extinguish",
+          "reason": "Raidwide damage or planned beetle detonation; recipient event does not indicate optional contact."
+        },
+        {
+          "name": "Voidweave / Overwhelming Fear / Abyssal Grasp / Mindsting",
+          "reason": "Random target debuff, heal check or failed add control; no unconditional personal avoidance inference."
+        },
+        {
+          "name": "Suffocating Darkness / Voidscar",
+          "reason": "Safe-zone shrinkage, placement and group coordination can force exposure; omit ambiguous positioning from the contact-only subset."
+        },
+        {
+          "name": "Nullify",
+          "reason": "Aura/stack consequence; the actual contact damage is 1308881."
+        },
+        {
+          "abilityID": 1308881,
+          "name": "Nullshards",
+          "reason": "Tanks deliberately cross these projectiles during Negation immunity to clear required Null Gates. A blanket contact rule could penalize required work."
+        }
+      ],
+      "sources": [
+        "https://www.method.gg/guides/the-unbinding-of-kithix/kithix",
+        "https://www.wowhead.com/spell=1308881/nullshards?dd=16",
+        "https://nether.wowhead.com/tooltip/spell/1308881?dataEnv=1&locale=0",
+        "https://www.wowhead.com/spell=1318468/negation",
+        "https://www.wowhead.com/spell=1303685/twisted-appendage?dd=16",
+        "https://nether.wowhead.com/tooltip/spell/1303685?dataEnv=1&locale=0&dd=16"
+      ],
+      "limitations": [
+        "Conservative contact-only subset. Nullshards are withheld because tank immunity permits legitimate gate-clearing contact.",
+        "Live Twisted Appendage damage effects and tooltip were checked on October14,2026. This does not establish historical tuning or individual responsibility."
+      ]
+    }
+  ]
+}

@@ -1,26 +1,59 @@
 // Hosted adaptations keep the reviewed upstream snapshot immutable. These pure
 // helpers are embedded in the generated native module, with no runtime imports.
 import { emitHelpers } from './castmirror-emit-helpers.mjs';
+import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+
+export function validateRaidReview(review) {
+  const string = (value) => typeof value === 'string' && value.trim().length > 0;
+  if (!review || !string(review.version) || !/^\d{4}-\d{2}-\d{2}$/.test(review.reviewedAt)
+    || !review.scope || !['zone', 'difficulty', 'size', 'partition'].every((key) => Number.isSafeInteger(review.scope[key]) && review.scope[key] > 0)
+    || !string(review.scope.patch) || !Array.isArray(review.encounters) || !review.encounters.length || review.encounters.length > 16)
+    throw new Error('Invalid reviewed raid catalog');
+  const encounters = new Set(), names = new Map();
+  for (const entry of review.encounters) {
+    if (!Number.isSafeInteger(entry?.encounter) || entry.encounter < 1 || encounters.has(entry.encounter) || !string(entry.name)
+      || !Array.isArray(entry.abilities) || !entry.abilities.length || entry.abilities.length > 32
+      || !Array.isArray(entry.excluded) || !Array.isArray(entry.sources) || !Array.isArray(entry.limitations))
+      throw new Error('Invalid reviewed encounter');
+    encounters.add(entry.encounter);
+    const ids = new Set();
+    for (const ability of entry.abilities) {
+      if (!Number.isSafeInteger(ability?.abilityID) || ability.abilityID < 1 || ids.has(ability.abilityID)
+        || !string(ability.name) || ability.label !== undefined && !string(ability.label)
+        || !string(ability.reason) || !Array.isArray(ability.sources)
+        || !ability.sources.some((source) => typeof source === 'string'
+          && (source.startsWith('https://www.wowhead.com/spell=' + ability.abilityID + '/')
+            || source.startsWith('https://nether.wowhead.com/tooltip/spell/' + ability.abilityID + '?')))
+        || names.has(ability.abilityID) && names.get(ability.abilityID) !== ability.name
+        || entry.excluded.some((excluded) => excluded.abilityID === ability.abilityID))
+        throw new Error('Invalid reviewed damage ability');
+      ids.add(ability.abilityID); names.set(ability.abilityID, ability.name);
+    }
+  }
+  return review;
+}
+
+export const RAID_AVOIDANCE_REVIEW = validateRaidReview(JSON.parse(readFileSync(
+  new URL('../vendor/castmirror/reviews/venomous-abyss-mythic.json', import.meta.url), 'utf8')));
+// Retained for the existing single-encounter consumers and regression fixtures.
 export const LOST_EXPLORERS_REVIEW = Object.freeze({
-  version: 'lost-explorers-mythic-contact-1',
-  scope: { zone: 53, encounter: 3497, difficulty: 5, size: 20, partition: 2, patch: '12.1.5' },
-  abilities: [
-    { abilityID: 1305844, name: 'Blast Wave' },
-    { abilityID: 1297650, name: 'Spreading Flames' },
-    { abilityID: 1306127, name: 'Throw Junk' },
-    { abilityID: 1292764, name: 'Evil Eyes' },
-  ],
-  sources: [
-    'https://www.wowhead.com/spell=1305844/blast-wave',
-    'https://www.wowhead.com/spell=1297650/spreading-flames',
-    'https://www.wowhead.com/spell=1306127/throw-junk',
-    'https://www.wowhead.com/spell=1292764/evil-eyes',
-  ],
+  ...RAID_AVOIDANCE_REVIEW.encounters.find((entry) => entry.encounter === 3497),
+  version: RAID_AVOIDANCE_REVIEW.version,
+  scope: { ...RAID_AVOIDANCE_REVIEW.scope, encounter: 3497 },
 });
 
+export function reviewedAvoidanceForScope(scope, review) {
+  if (!review?.scope || !Object.entries(review.scope).every(([key, value]) => scope?.[key] === value)) return null;
+  if (!Array.isArray(review.encounters)) return Array.isArray(review.abilities) && review.abilities.length ? review : null;
+  const matches = review.encounters.filter((entry) => entry.encounter === scope?.encounter);
+  return matches.length === 1 && Array.isArray(matches[0].abilities) && matches[0].abilities.length ? matches[0] : null;
+}
+
 export function reviewedEncounterRules(scope, fallback, review) {
-  if (!Object.entries(review.scope).every(([key, value]) => scope?.[key] === value)) return fallback;
-  return { ...fallback, avoidableAbilityIDs: review.abilities.map((ability) => ability.abilityID) };
+  const entry = reviewedAvoidanceForScope(scope, review);
+  if (!entry) return fallback;
+  return { ...fallback, avoidableAbilityIDs: entry.abilities.map((ability) => ability.abilityID) };
 }
 
 export function retainAvoidanceEvidence(component, review, original = component?.measurements) {
@@ -32,7 +65,7 @@ export function retainAvoidanceEvidence(component, review, original = component?
   if (!finite(measurements.total) || !Number.isSafeInteger(measurements.hits) || measurements.hits < 0) {
     delete measurements.byAbility; delete measurements.incidents; return;
   }
-  const names = new Map(review.abilities.map((ability) => [ability.abilityID, ability.name]));
+  const names = new Map(review.abilities.map((ability) => [ability.abilityID, ability.label ?? ability.name]));
   const byAbility = new Map(ids.map((abilityID) => [abilityID,
     { abilityID, name: names.get(abilityID) ?? 'Ability ' + abilityID, hits: 0, total: 0, absorbed: 0, mitigated: 0 }]));
   const saved = original?.byAbility;
@@ -89,15 +122,19 @@ export function adaptNativeExecutionEvidence(name, source) {
     if (source.split(before).length !== 2) throw new Error('Execution evidence anchor missing or ambiguous');
     source = source.replace(before, after);
   };
+  const catalog = { scope: RAID_AVOIDANCE_REVIEW.scope, encounters: RAID_AVOIDANCE_REVIEW.encounters.map((entry) => ({
+    encounter: entry.encounter, abilities: entry.abilities.map(({ abilityID, name, label }) => ({ abilityID, name: label ?? name })),
+  })) };
+  const revision = createHash('sha256').update(JSON.stringify(RAID_AVOIDANCE_REVIEW)).digest('hex').slice(0, 16);
   replace("export const LIVE_RULES_VERSION = 'native-live-statistics-2';",
-    `const LOST_EXPLORERS_REVIEW = ${JSON.stringify(LOST_EXPLORERS_REVIEW)};\n${emitHelpers(import.meta.url, ['reviewedEncounterRules', 'retainAvoidanceEvidence'])}\nexport const LIVE_RULES_VERSION = 'native-live-statistics-3';`);
+    `const RAID_AVOIDANCE_REVIEW = ${JSON.stringify(catalog)};\n${emitHelpers(import.meta.url, ['reviewedAvoidanceForScope', 'reviewedEncounterRules', 'retainAvoidanceEvidence'])}\nexport const LIVE_RULES_VERSION = 'native-live-statistics-4-${revision}';`);
   replace('  delete compact.components.avoidance.measurements.incidents;',
-    '  retainAvoidanceEvidence(compact.components.avoidance, LOST_EXPLORERS_REVIEW, observation.components.avoidance.measurements);');
+    '  retainAvoidanceEvidence(compact.components.avoidance, reviewedAvoidanceForScope(observation.scope, RAID_AVOIDANCE_REVIEW) ?? { abilities: [] }, observation.components.avoidance.measurements);');
   replace('  // Aggregate avoidance and rejected-cast totals are sufficient for this UI.\n  // Do not retain potentially large incident/display lists in a live pool.',
     '  // Retain complete per-ability totals plus at most 60 safe incident markers.');
   replace('  return { version: LIVE_RULES_VERSION, defensives: structuredClone(reviewed.defensives),',
     '  return reviewedEncounterRules(scope, { version: LIVE_RULES_VERSION, defensives: structuredClone(reviewed.defensives),');
-  replace('    nativeBossOutput: true };', '    nativeBossOutput: true }, LOST_EXPLORERS_REVIEW);');
+  replace('    nativeBossOutput: true };', '    nativeBossOutput: true }, RAID_AVOIDANCE_REVIEW);');
   replace("            statisticsRules: liveStatisticsRules(boundScope), statisticsStreams: ['Deaths', 'Casts'], targetsFirst: true,",
     `            statisticsRules: liveStatisticsRules(boundScope),
             statisticsStreams: liveStatisticsRules(boundScope).avoidableAbilityIDs.length > 0
