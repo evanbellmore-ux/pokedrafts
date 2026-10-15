@@ -4,6 +4,7 @@ import {
   BASE_MIGRATION,
   EXECUTION_MIGRATION,
   EXECUTION_RULES_MIGRATION,
+  EXECUTION_TIMEOUT_MIGRATION,
   RAID_REVIEW_MIGRATION,
   HARDENING_MIGRATION,
   PLAYOFFS_MIGRATION,
@@ -245,7 +246,8 @@ describe("migrations", () => {
     expect(migrations[12].name).toBe(EXECUTION_MIGRATION);
     expect(migrations[13].name).toBe(EXECUTION_RULES_MIGRATION);
     expect(migrations[14].name).toBe(RAID_REVIEW_MIGRATION);
-    expect(migrations).toHaveLength(15);
+    expect(migrations[15].name).toBe(EXECUTION_TIMEOUT_MIGRATION);
+    expect(migrations).toHaveLength(16);
   });
 
   it("the shared test database was migrated by the global setup", async () => {

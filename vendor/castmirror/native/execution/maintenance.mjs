@@ -29,8 +29,10 @@ export class MaintenanceStop extends Error {
 function limitsFor(overrides, previous) {
   const limits = { ...PILOT_LIMITS };
   for (const [key, value] of Object.entries(overrides ?? {})) {
+    // Live requests may wait longer without changing the saved pilot defaults.
+    const maximum = key === 'requestTimeoutMs' ? 60_000 : limits[key];
     if (!Object.hasOwn(limits, key) || !positive(value) ||
-        (key === 'reserveFraction' ? value < limits[key] || value >= 1 : value > limits[key]) ||
+        (key === 'reserveFraction' ? value < limits[key] || value >= 1 : value > maximum) ||
         (!key.endsWith('Fraction') && !Number.isSafeInteger(value))) {
       throw new MaintenanceStop('invalid-limits');
     }

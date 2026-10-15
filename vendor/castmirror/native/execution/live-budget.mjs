@@ -8,7 +8,7 @@ import { MaintenanceBudget, MaintenanceStop, MAINTENANCE_VERSION, PILOT_LIMITS }
 export const LIVE_LIMITS = Object.freeze({
   graphql: 60, network: 75, rankingPages: 1, rankingRows: 100, reportHeads: 6,
   kills: 6, observations: 120, playersPerKill: 20, eventPages: 3, events: 500_000,
-  deadlineMs: 120_000, points: 150, maxAttempts: 2, retryPointHeadroom: 4,
+  deadlineMs: 120_000, requestTimeoutMs: 60_000, points: 150, maxAttempts: 2, retryPointHeadroom: 4,
 });
 const LIMITS = Object.freeze({ ...PILOT_LIMITS, ...LIVE_LIMITS });
 const VERSION = 'execution-v3-live-account-1';
@@ -80,7 +80,10 @@ function validState(s) {
     s.deadline === s.startedAt + LIVE_LIMITS.deadlineMs && integer(s.lastObservedAt) &&
     s.lastObservedAt >= s.startedAt && object(s.limits) &&
     Object.keys(s.limits).length === Object.keys(LIMITS).length &&
-    Object.entries(LIMITS).every(([key, value]) => s.limits[key] === value) &&
+    // Existing jobs and immutable history retain their original 15s policy.
+    // This accepts the two released policies; it never rewrites or resumes one.
+    Object.entries(LIMITS).every(([key, value]) => s.limits[key] === value ||
+      (key === 'requestTimeoutMs' && s.limits[key] === 15_000)) &&
     object(s.counters) && Object.keys(s.counters).length === COUNTERS.length &&
     COUNTERS.every((key) => integer(s.counters[key]) && s.counters[key] <= LIMITS[key]) &&
     integer(s.unmeasuredGraphql) && s.unmeasuredGraphql <= s.counters.graphql &&
