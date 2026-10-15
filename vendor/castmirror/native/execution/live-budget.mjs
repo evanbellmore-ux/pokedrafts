@@ -415,6 +415,7 @@ export function stageLiveJob(ledger, { state, jobID, admissionWindow = null, acc
     record = { id: jobID, window: null, charged: 0, pending: 0, terminal: false, accountingFailure: null, uncertainUntil: null, budget: null };
     next.jobs.push(record);
   }
+  accountingFailure = record.accountingFailure ?? accountingFailure;
   if (record.terminal) return { ledger, accountingFailure }; // Never resume/reset a terminal job.
   try { if (!accountingFailure) reconcileLiveJob(next, record, state, admissionWindow); }
   catch (error) {
@@ -423,11 +424,25 @@ export function stageLiveJob(ledger, { state, jobID, admissionWindow = null, acc
     if (!record) throw error;
   }
   if (accountingFailure) {
-    record.accountingFailure = accountingFailure;
+    const priorFailure = record.accountingFailure, priorBudget = record.budget;
     const observedEnd = state.points && state.points.measuredAt + state.points.resetIn * 1000;
-    const priorEnd = next.windows.find((w) => windowKey(w) === record.window)?.resetAt ?? 0;
-    record.uncertainUntil = positive(observedEnd) ? Math.max(record.uncertainUntil ?? 0, priorEnd, observedEnd) : null;
-    record.pending = Math.max(record.pending, state.unmeasuredGraphql * state.pointEstimate);
+    // A rejected quota observation cannot settle earlier dispatch debt. Keep a
+    // separate stored snapshot; the caller's freshly observed state is untouched.
+    state = structuredClone(state);
+    state.unmeasuredGraphql = Math.max(state.unmeasuredGraphql, priorBudget?.unmeasuredGraphql ?? 0);
+    state.pointEstimate = Math.max(state.pointEstimate, priorBudget?.pointEstimate ?? 0);
+    state.points ??= priorBudget?.points ? structuredClone(priorBudget.points) : null;
+    record.accountingFailure = accountingFailure;
+    const window = next.windows.find((w) => windowKey(w) === record.window);
+    const priorEnd = window?.resetAt ?? 0;
+    // Null on an existing failure is unbounded uncertainty, not an absent value
+    // that a later response may replace with an earlier finite expiry.
+    if (!(priorFailure && record.uncertainUntil === null) && positive(observedEnd)) {
+      record.uncertainUntil = Math.max(record.uncertainUntil ?? 0, priorEnd, observedEnd);
+    }
+    const estimate = Math.max(state.pointEstimate, window?.pointEstimate ?? 0,
+      next.legacyUnknown?.boundWindow === null ? next.legacyUnknown.estimatedRequestCost : 0);
+    record.pending = Math.max(record.pending, state.unmeasuredGraphql * estimate);
   }
   record.budget = state; record.terminal = state.stop !== null;
   next.updatedAt = state.lastObservedAt;
