@@ -174,6 +174,37 @@ describe('CastMirror raid execution review UI', () => {
     assert.deepEqual(encounters, [bosses[0].id, bosses[1].id]);
   });
 
+  for (const reason of ['timeout', 'response-too-large']) for (const evidence of ['empty', 'retained'])
+    test(`stops a ${reason} with ${evidence} evidence and never replays it on Continue`, async () => {
+      const encounters: number[] = [];
+      const page = await pageFixture((_url, options) => {
+        const encounter = JSON.parse(String(options.body)).encounter; encounters.push(encounter);
+        const result = review(encounter);
+        if (encounters.length === 1) {
+          result.reason = reason;
+          // Transport uncertainty takes precedence over a simultaneous quota reason.
+          result.acquisition = { reason: evidence === 'empty' ? reason : 'rate-limit' } as NonNullable<RaidBossReview['acquisition']>;
+          if (evidence === 'empty') { result.status = 'unavailable'; result.fights = []; }
+        }
+        return { review: result };
+      }); ready(page);
+      await page.nodes.get('raidExecutionStart').click();
+      assert.deepEqual(encounters, [bosses[0].id]);
+      assert.equal(page.evaluate(`raidReviewDone.has(${bosses[0].id})`), true);
+      assert.equal(page.evaluate(`raidReviewUncertain.has(${bosses[0].id})`), true);
+      const retained = JSON.parse(page.evaluate('JSON.stringify(raidReviewResults[0])'));
+      assert.deepEqual(retained.fights, evidence === 'empty' ? [] : review(bosses[0].id).fights);
+      assert.equal(retained.status, evidence === 'empty' ? 'unavailable' : 'partial');
+      assert.match(page.nodes.get('raidExecutionProgress').textContent, /could not verify this request.*remaining bosses later/);
+      assert.match(page.nodes.get('raidExecutionResults').htmlTree(), evidence === 'empty' ? /0 of 10 bosses graded/ : /1 of 10 bosses graded/);
+      await page.nodes.get('raidExecutionStart').click();
+      assert.deepEqual(encounters, bosses.map((boss: { id: number }) => boss.id));
+      assert.match(page.nodes.get('raidExecutionProgress').textContent, /could not verify this request/);
+      assert.doesNotMatch(page.nodes.get('raidExecutionProgress').textContent, /Reviewing|Review complete/);
+      assert.equal(page.nodes.get('raidExecutionStart').disabled, true);
+      assert.equal(page.nodes.get('raidExecutionStart').textContent, 'Review stopped');
+    });
+
   test('a final uncertain boss retains the failure message and cannot restart the uncertain requests', async () => {
     const page = await pageFixture((_url, options) => {
       const result = review(JSON.parse(String(options.body)).encounter);

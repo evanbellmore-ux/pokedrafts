@@ -1921,11 +1921,13 @@ async function startRaidReview() {
       if (!raidReviewMatches(data.review, context, boss)) throw new Error('unavailable');
       raidReviewResults = raidReviewResults.filter((review) => review.boss.id !== boss.id).concat(data.review);
       const acquisition = data.review.acquisition;
-      const reason = [acquisition?.reason, data.review.reason, acquisition?.accountingReason, acquisition?.cacheReason].filter(Boolean).join(' ');
+      const reasons = [acquisition?.reason, data.review.reason, acquisition?.accountingReason, acquisition?.cacheReason].filter(Boolean);
+      const reason = reasons.join(' ');
       const uncertain = acquisition?.accountingPersistence === 'unavailable' || acquisition?.cachePersistence === 'unavailable'
+        || reasons.some((code) => code === 'timeout' || code === 'response-too-large')
         || /live-window-incompatible|live-(?:claim-(?:failed|timeout|invalid)|checkpoint|release|lock-lost|ledger-changed|store|lease-expired)/.test(reason);
       if (uncertain) {
-        // A failed accounting attempt is retained, never replayed by Continue.
+        // A failed accounting or transport attempt is retained, never replayed by Continue.
         raidReviewDone.add(boss.id); raidReviewUncertain.add(boss.id);
         if (data.review.status === 'complete') raidReviewResults = raidReviewResults.map((review) => review.boss.id === boss.id
           ? { ...review, status: 'partial', reason: reason || 'accounting-unavailable' } : review);
