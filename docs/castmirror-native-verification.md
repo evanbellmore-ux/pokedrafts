@@ -1,5 +1,29 @@
 # Native Execution verification
 
+## Failed quota observation debt (2026-10-15)
+
+The hosted collector now pins native source
+`946c7d46f8460702662d5a288fa09259d6cf178a` (standalone PR #7). A quota reset
+observation can pass the per-job tolerance while exceeding the canonical account
+window. Previously, its failed snapshot could clear an unconfirmed dispatch,
+which the unchanged PostgreSQL successor guard correctly rejected. Failure
+staging now retains outstanding dispatches, pending credit, measured facts and
+latched uncertainty, including repeated stop publication. It does not rewrite
+prior jobs, replay requests, change SQL authority, or alter scoring and raid rules.
+
+The standalone suite passed 1,148 tests with 15 expected private-artifact skips.
+Hosted checks passed all 748 Cast Mirror tests, 40 local PostgreSQL tests, lint,
+type checking, source parity and the production build with all 35 trace inventories.
+The database regression demonstrates rejection of the old counter refund and
+acceptance of the corrected native stages through the actual restricted store.
+
+The overnight guild test exposed a live persistence failure after the first
+priest event response. Its failed quota sample was not captured. The reproduced
+contract mismatch fits that phase, but the exact original live cause is not
+asserted. Existing uncertain outcomes and accounting debt remain preserved.
+
+## Earlier verification record
+
 Status on 2026-10-14: **private hosted DPS, healer and tank results, tank native
 Chrome, and controlled redeployment/cache persistence passed; public Execution
 remains disabled**. The verified application source is

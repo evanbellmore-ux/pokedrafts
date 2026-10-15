@@ -4,6 +4,7 @@ import { afterAll, beforeAll, describe, expect, inject, it, vi } from 'vitest';
 vi.mock('server-only', () => ({}));
 import { PostgresExecutionStore } from '../../app/api/castmirror/execution/postgres-store';
 import { LIVE_RULES_VERSION } from '../../vendor/castmirror/native/execution/live.mjs';
+import { stageLiveJob } from '../../vendor/castmirror/native/execution/live-budget.mjs';
 import { connect, expectRpcError, expectSqlState, type Client } from './harness';
 
 const sha = (text: string) => createHash('sha256').update(text, 'utf8').digest('hex');
@@ -44,6 +45,9 @@ async function call<T = unknown>(db: Client, name: string, values: unknown[] = [
   return rows[0].result as T;
 }
 type Claim = { ledger: string; revision: number; fence: number; leaseUntil: number };
+const stageNativeJob = stageLiveJob as unknown as (value: ReturnType<typeof ledger>, options: {
+  state: ReturnType<typeof budget>; jobID: string; accountingFailure?: string | null;
+}) => { ledger: ReturnType<typeof stageLiveJob>['ledger']; accountingFailure: string | null };
 
 // Every mutation is local to the embedded cluster. No production URL/env is read.
 describe('private CastMirror Execution PostgreSQL authority', () => {
@@ -261,6 +265,58 @@ describe('private CastMirror Execution PostgreSQL authority', () => {
     expect(await checkpoint(account,c,next)).toEqual({revision:2}); c.revision=2;
     const lower=structuredClone(next); lower.jobs[0].charged=0; lower.jobs[0].budget.points!.jobSpent=0;
     await expectRpcError(checkpoint(account,c,lower),'live-ledger-invalid');
+  });
+
+  it('unchanged SQL rejects the old reset-drift refund and accepts native failed stages that preserve dispatch debt', async () => {
+    const { account } = await seed(); const c = await claim(account);
+    const at = Date.now(), canonicalReset = at + 100000;
+    const value = ledger(at), prior = job(c.owner,at-1000);
+    prior.budget.lastObservedAt = at;
+    prior.budget.counters.graphql = prior.budget.counters.network = 2;
+    prior.budget.points = { limit:2000,spent:10,resetIn:(canonicalReset+1427-at)/1000,
+      measuredAt:at,allowance:150,jobSpent:4 };
+    prior.window = JSON.stringify([2000,canonicalReset]); prior.charged=4; prior.pending=8;
+    value.jobs.push(prior);
+    value.windows.push({limit:2000,resetAt:canonicalReset,pointEstimate:8,native:{spent:10,measuredAt:at},legacy:null});
+    c.revision = (await checkpoint(account,c,value)).revision;
+    const incoming = structuredClone(prior.budget);
+    incoming.lastObservedAt=at+1000; incoming.unmeasuredGraphql=0;
+    incoming.pointEstimate=12;
+    incoming.points={...prior.budget.points,spent:11,jobSpent:5,measuredAt:incoming.lastObservedAt,
+      resetIn:(canonicalReset+1427+9000-incoming.lastObservedAt)/1000};
+
+    // This is the pre-fix candidate: the inner accepted measurement clears its
+    // counter before canonical-window reconciliation fails. Shape is valid,
+    // but the unchanged SQL successor guard must reject its unproven refund.
+    const oldCandidate={...structuredClone(value),updatedAt:incoming.lastObservedAt,jobs:[{
+      ...structuredClone(prior),budget:incoming,accountingFailure:'live-window-incompatible',uncertainUntil:canonicalReset+10427,
+    }]};
+    expect(await call(admin,'_ledger',[JSON.stringify(oldCandidate)])).toEqual(oldCandidate);
+    await expectRpcError(checkpoint(account,c,oldCandidate),'live-ledger-invalid');
+    const rejected=await admin.query("select convert_from(ledger_bytes,'UTF8') bytes,revision from execution_v3.accounts where account=$1",[account]);
+    expect(JSON.parse(rejected.rows[0].bytes)).toEqual(value); expect(Number(rejected.rows[0].revision)).toBe(c.revision);
+
+    const staged=stageNativeJob(value,{state:incoming,jobID:c.owner});
+    expect(staged.accountingFailure).toBe('live-window-incompatible');
+    expect(staged.ledger.jobs[0].budget.unmeasuredGraphql).toBe(1);
+    expect(staged.ledger.jobs[0].pending).toBe(12); expect(staged.ledger.jobs[0].charged).toBe(4);
+    expect(staged.ledger.jobs[0].budget.pointEstimate).toBe(12);
+    expect(staged.ledger.jobs[0].window).toBe(prior.window); expect(staged.ledger.windows).toEqual(value.windows);
+    const store=new PostgresExecutionStore({account,db:{query:(text,values)=>runtime.query(text,values)}});
+    c.revision=(await store.checkpoint({account,owner:c.owner,fence:c.fence,revision:c.revision,ledger:JSON.stringify(staged.ledger)+'\n'})).revision;
+    const changedFailure=structuredClone(staged.ledger); changedFailure.jobs[0].accountingFailure='quota-window-changed';
+    await expectRpcError(checkpoint(account,c,changedFailure),'live-ledger-invalid');
+    const closed=stageNativeJob(staged.ledger,{state:{...incoming,lastObservedAt:at+2000,stop:'closed'},
+      jobID:c.owner,accountingFailure:'quota-window-changed'});
+    expect(closed.accountingFailure).toBe(staged.accountingFailure);
+    expect(closed.ledger.jobs[0].budget.unmeasuredGraphql).toBe(1); expect(closed.ledger.jobs[0].pending).toBe(12);
+    c.revision=(await store.checkpoint({account,owner:c.owner,fence:c.fence,revision:c.revision,ledger:JSON.stringify(closed.ledger)+'\n'})).revision;
+    await store.release({account,owner:c.owner,fence:c.fence,revision:c.revision});
+    const saved=await admin.query("select convert_from(ledger_bytes,'UTF8') bytes,ledger_hash,revision,lease_until from execution_v3.accounts where account=$1",[account]);
+    expect(JSON.parse(saved.rows[0].bytes)).toEqual(closed.ledger);
+    expect(saved.rows[0].ledger_hash).toBe(sha(saved.rows[0].bytes)); expect(saved.rows[0].lease_until).toBe('0');
+    expect(Number(saved.rows[0].revision)).toBe(c.revision);
+    expect(incoming.unmeasuredGraphql).toBe(0); // Native staging does not mutate its caller's snapshot.
   });
 
   it('terminal jobs remain immutable and new IDs must match the current owner', async () => {
