@@ -188,7 +188,7 @@ describe('CastMirror raid execution review UI', () => {
     fight.survival.complete = false;
     page.evaluate(`$('raidExecutionResults').append(raidReviewFight(${JSON.stringify(fight)}))`);
     const html = page.nodes.get('raidExecutionResults').htmlTree();
-    assert.match(html, /Observed ≥ 0 reviewed avoidable health damage.*death evidence incomplete.*partial evidence/);
+    assert.match(html, /Observed ≥ 0 reviewed mechanic health damage.*death evidence incomplete.*partial evidence/);
     assert.doesNotMatch(html, /· 0 deaths/);
   });
 
