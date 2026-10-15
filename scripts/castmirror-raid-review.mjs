@@ -45,7 +45,8 @@ function prepareRaidReview(character, request) {
     && window.MIRROR_EXECUTION_CAPABILITIES?.reference === true;
   $('raidExecutionStart').disabled = !supported;
   raidReviewMessage = supported
-    ? 'Review the latest six public kills per boss, selected by date. Your damage ranking does not affect the grade.'
+    ? 'Review the latest six public kills per boss across reviewed patches ' + RAID_REVIEW_SCOPE.reviewedScopes.map((scope) => scope.patch).join(' and ')
+      + ', selected by date. Your damage ranking does not affect the grade.'
     : 'Raid execution grading is available for the current reviewed Mythic raid. Choose Mythic and find kills again.';
   renderRaidReview();
 }
@@ -105,11 +106,38 @@ async function startRaidReview() {
   if (!raidReviewCurrent(generation, context)) return;
   raidReviewRunning = false; raidReviewController = null;
   if (raidReviewDone.size === context.bosses.length)
-    raidReviewMessage = 'Review complete · latest public kill sample. Bosses without enough evidence remain ungraded.';
+    raidReviewMessage = 'Review complete · public kills from the reviewed patches. Bosses without enough evidence remain ungraded.';
   renderRaidReview();
 }
 function raidReviewNumber(value) {
   return typeof value === 'number' && Number.isFinite(value) && value >= 0 ? value.toLocaleString(undefined, { maximumFractionDigits: 0 }) : 'Unavailable';
+}
+function raidReviewScopeLabel(scope) {
+  if (typeof scope?.patch !== 'string' || !scope.patch.trim()) return 'Patch scope unavailable';
+  return 'Patch ' + scope.patch + (scope.patch === RAID_REVIEW_SCOPE.patch ? ' · current patch only' : ' · historical patch sample');
+}
+function raidReviewPatchLabels(reviews) {
+  const sampled = [], reviewed = [];
+  for (const review of reviews) {
+    for (const scope of review.reviewedScopes || [review.scope])
+      if (typeof scope?.patch === 'string' && scope.patch.trim()) reviewed.push(scope.patch);
+    for (const fight of review.fights || []) {
+      const patch = fight.scope?.patch || review.scope?.patch;
+      if (typeof patch === 'string' && patch.trim()) sampled.push(patch);
+    }
+  }
+  const ordered = (values) => [...new Set(values)].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+  const samples = ordered(sampled), coverage = ordered(reviewed);
+  return { reviewed: 'Reviewed patches: ' + (coverage.join(', ') || 'Unavailable'),
+    sampled: samples.length > 1 ? 'Sample patches: ' + samples.join(', ') + ' · includes historical kills'
+      : samples.length === 1 ? 'Sample scope: ' + raidReviewScopeLabel({ patch: samples[0] }) : 'No eligible kills sampled.' };
+}
+function raidReviewDateRange(fights) {
+  const dates = fights.map((fight) => fight.date).filter((date) => typeof date === 'number' && Number.isFinite(date) && date > 0);
+  if (!dates.length) return null;
+  const first = Math.min(...dates), last = Math.max(...dates);
+  const format = (date) => new Date(date).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+  return 'Sample dates: ' + format(first) + (first === last ? '' : ' – ' + format(last));
 }
 function raidReviewUtility(utility) {
   const section = document.createElement('div'); section.className = 'raid-execution-utility';
@@ -123,18 +151,20 @@ function raidReviewUtility(utility) {
     section.append(textNode('p', 'Utility evidence is incomplete in some fights; the totals are observed lower bounds.', 'hint'));
   return section;
 }
-function raidReviewSource(fight) {
+function raidReviewSource(fight, fallbackScope) {
   if (!/^[A-Za-z0-9]{16}$/.test(fight.code || '') || !Number.isSafeInteger(fight.fightID) || fight.fightID < 1
     || !Number.isSafeInteger(fight.actorID) || fight.actorID < 1) return null;
-  const link = textNode('a', new Date(fight.date).toLocaleDateString() + ' · ' + fight.spec + ' · ' + fight.role);
+  const patch = fight.scope?.patch || fallbackScope?.patch;
+  const link = textNode('a', new Date(fight.date).toLocaleDateString() + ' · ' + fight.spec + ' · ' + fight.role
+    + (typeof patch === 'string' && patch.trim() ? ' · Patch ' + patch : ''));
   link.href = 'https://www.warcraftlogs.com/reports/' + encodeURIComponent(fight.code) + '#fight=' + fight.fightID
     + '&type=damage-taken&source=' + fight.actorID;
   link.target = '_blank'; link.rel = 'noopener noreferrer';
   return link;
 }
-function raidReviewFight(fight) {
+function raidReviewFight(fight, fallbackScope) {
   const item = document.createElement('li');
-  const source = raidReviewSource(fight); if (source) item.append(source);
+  const source = raidReviewSource(fight, fallbackScope); if (source) item.append(source);
   const complete = fight.damage?.complete && fight.survival?.complete;
   const deaths = Array.isArray(fight.survival?.deaths) ? fight.survival.deaths.length : null;
   item.append(textNode('p', (fight.damage?.complete ? '' : 'Observed ≥ ') + raidReviewNumber(fight.damage?.avoidableHealth)
@@ -162,6 +192,10 @@ function raidReviewBoss(boss, grade, review) {
     card.append(textNode('p', raidReviewRunning ? 'Waiting for review.' : 'No evidence reviewed yet.', 'hint')); return card;
   }
   card.append(textNode('p', grade.summary));
+  const patches = raidReviewPatchLabels(review ? [review] : []);
+  card.append(textNode('p', patches.reviewed, 'hint'), textNode('p', patches.sampled, 'hint'));
+  const dates = raidReviewDateRange(review?.fights || []);
+  if (dates) card.append(textNode('p', dates, 'hint'));
   card.append(textNode('p', grade.sample.kills + ' sampled kills · ' + grade.sample.gradedFights + ' gradeable fights · '
     + grade.sample.survivedKills + ' kills survived', 'hint'));
   card.append(textNode('p', (grade.provisional ? 'Provisional · ' : '') + grade.survival.confirmedAvoidableDeaths
@@ -185,7 +219,7 @@ function raidReviewBoss(boss, grade, review) {
     const details = document.createElement('details'); details.className = 'raid-execution-sources';
     details.append(textNode('summary', 'Inspect ' + review.fights.length + ' source kills'));
     const list = document.createElement('ul');
-    for (const fight of review.fights) list.append(raidReviewFight(fight));
+    for (const fight of review.fights) list.append(raidReviewFight(fight, review.scope));
     details.append(list); card.append(details);
   }
   const limitations = (grade.limitations || []).filter((limit) => !/^(?:damage|casts|deaths|interrupts|dispels|healing):|^Boss review is /.test(limit));
@@ -216,6 +250,11 @@ function renderRaidReview() {
   assessment.append(title);
   assessment.append(textNode('p', 'An automated coaching rubric, not an official execution percentile.', 'hint'));
   assessment.append(textNode('p', context.name + ' · ' + context.server + ' · ' + context.zoneName + ' ' + (DIFF[context.difficulty] || '')));
+  const compatibleReviews = raidReviewResults.filter((review) => overall.bosses.some((boss) => boss.key === review.key));
+  const patches = raidReviewPatchLabels(compatibleReviews);
+  assessment.append(textNode('p', patches.reviewed, 'hint'), textNode('p', patches.sampled, 'hint'));
+  const dates = raidReviewDateRange(compatibleReviews.flatMap((review) => review.fights));
+  if (dates) assessment.append(textNode('p', dates, 'hint'));
   assessment.append(textNode('p', overall.summary));
   assessment.append(textNode('p', overall.gradedBosses + ' of ' + overall.totalBosses + ' bosses graded · '
     + overall.bosses.reduce((sum, boss) => sum + boss.sample.kills, 0) + ' sampled kills', 'hint'));
@@ -269,7 +308,12 @@ export function emitRaidGradeModel() {
 }
 export function adaptRaidReview(html) {
   const catalog = JSON.parse(readFileSync(new URL('../vendor/castmirror/reviews/venomous-abyss-mythic.json', import.meta.url), 'utf8'));
-  const scope = { zone: catalog.scope.zone, difficulty: catalog.scope.difficulty,
+  const reviewed = JSON.parse(readFileSync(new URL('../vendor/castmirror/reviews/raid-execution-scopes.json', import.meta.url), 'utf8'));
+  if (reviewed.zone !== catalog.scope.zone || reviewed.difficulty !== catalog.scope.difficulty || reviewed.size !== catalog.scope.size
+    || !Array.isArray(reviewed.scopes) || !reviewed.scopes.length || reviewed.scopes.some((scope) => !Number.isSafeInteger(scope.partition)
+      || scope.partition < 1 || typeof scope.patch !== 'string' || !scope.patch.trim())) throw new Error('Raid review patch scopes are invalid');
+  const scope = { zone: catalog.scope.zone, difficulty: catalog.scope.difficulty, patch: catalog.scope.patch,
+    reviewedScopes: reviewed.scopes,
     bosses: catalog.encounters.map((boss) => ({ id: boss.encounter, name: boss.name })) };
   const section = `
 <section id="raidExecution" class="raid-execution" style="display:none" aria-labelledby="raidExecutionTitle">
@@ -284,7 +328,8 @@ export function adaptRaidReview(html) {
   html = replaceExactlyOnce(html, '  e.preventDefault();\n  const go =', '  e.preventDefault();\n  const raidLookupContext = raidReviewCharacterRequest();\n  const go =', 'character lookup context');
   html = replaceExactlyOnce(html, '    renderKills(data);\n    say', '    renderKills(data);\n    prepareRaidReview(data, raidLookupContext);\n    say', 'character lookup result');
   const helpers = [raidReviewForm, raidReviewKey, raidReviewCurrent, cancelRaidReview, raidReviewCharacterRequest, prepareRaidReview,
-    raidReviewFriendlyReason, raidReviewMatches, startRaidReview, raidReviewNumber, raidReviewUtility, raidReviewSource, raidReviewFight,
+    raidReviewFriendlyReason, raidReviewMatches, startRaidReview, raidReviewNumber, raidReviewScopeLabel, raidReviewPatchLabels, raidReviewDateRange,
+    raidReviewUtility, raidReviewSource, raidReviewFight,
     raidReviewBoss, renderRaidReview, bindRaidReview];
   const emitted = '// BEGIN CASTMIRROR RAID REVIEW\nconst RAID_REVIEW_SCOPE = Object.freeze(' + JSON.stringify(scope) + ');\n'
     + 'let raidReviewContext = null, raidReviewGeneration = 0, raidReviewController = null, raidReviewRunning = false;\n'

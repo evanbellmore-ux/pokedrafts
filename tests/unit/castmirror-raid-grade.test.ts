@@ -39,6 +39,67 @@ function review(fights: RaidFightEvidence[], overrides: Partial<RaidBossReview> 
   };
 }
 
+describe("verified source patch bindings", () => {
+  const scopes = [{ partition: 1, patch: "12.1" }, { partition: 2, patch: "12.1.5" }];
+
+  it("grades explicitly reviewed historical and current kills without relabeling their source patch", () => {
+    const historical = contacted(2, 1); historical.scope = scopes[0];
+    const current = fight({ fightID: 2, scope: scopes[1] });
+    const input = review([historical, current], { reviewedScopes: scopes });
+    expect(gradeBoss(input).score).toBe(95);
+    expect(input.fights[0].scope).toEqual({ partition: 1, patch: "12.1" });
+    expect(input.scope.patch).toBe("12.1.5");
+  });
+
+  it("does not let an unknown or missing source patch earn clean credit", () => {
+    const unreviewed = fight({ scope: { partition: 3, patch: "12.2" } });
+    const missing = fight({ fightID: 2 });
+    const grade = gradeBoss(review([unreviewed, missing], { reviewedScopes: scopes }));
+    expect(grade.status).toBe("ungraded");
+    expect(grade.sample.kills).toBe(0);
+    expect(grade.limitations.join(" ")).toContain("verified reviewed patch binding");
+  });
+
+  it("rejects a historical partition mislabeled with the current patch", () => {
+    const mislabeled = fight({ scope: { partition: 1, patch: "12.1.5" } });
+    expect(gradeBoss(review([mislabeled], { reviewedScopes: scopes })).letter).toBeNull();
+  });
+
+  it("rejects conflicting reviewed partition declarations", () => {
+    const grade = gradeBoss(review([fight({ scope: scopes[0] })], {
+      reviewedScopes: [scopes[0], { partition: 1, patch: "12.1.5" }],
+    }));
+    expect(grade.status).toBe("ungraded");
+  });
+
+  it("combines matching reviewed scope policies independently of declaration order", () => {
+    const first = review([contacted(2)], { reviewedScopes: scopes }); first.fights[0].scope = scopes[0];
+    const second = review([fight({ scope: scopes[1] })], {
+      reviewedScopes: [...scopes].reverse(), boss: { id: 3445, name: "Sentinels" },
+      scope: { ...first.scope, encounter: 3445 },
+    });
+    expect(gradeRaid([first, second], 10)).toMatchObject({ gradedBosses: 2, score: 95 });
+  });
+
+  it("combines boss-specific historical coverage under one reviewed rule policy", () => {
+    const historical = review([contacted(2)], { reviewedScopes: scopes }); historical.fights[0].scope = scopes[0];
+    const currentOnly = review([fight({ scope: scopes[1] })], {
+      reviewedScopes: [scopes[1]], boss: { id: 3513, name: "Kith'ix" },
+      scope: { ...historical.scope, encounter: 3513 },
+    });
+    expect(gradeRaid([historical, currentOnly], 10)).toMatchObject({ gradedBosses: 2, score: 95 });
+  });
+
+  it("keeps a narrower historical mechanic subset provisional in both boss and role grades", () => {
+    const kills = [1, 2, 3].map((fightID) => fight({ fightID, scope: scopes[0] }));
+    const grade = gradeBoss(review(kills, { reviewedScopes: scopes, coverageLimited: true }));
+    expect(grade.letter).toBe("A");
+    expect(grade.provisional).toBe(true);
+    expect(grade.roles[0].provisional).toBe(true);
+    expect(grade.limitations.join(" ")).toContain("fewer verified mechanics");
+  });
+});
+
 describe("reviewed contact clustering", () => {
   const event = (at: number, abilityID = 1, health = 10, absorbed = 0): RaidContactEvent => ({ at, abilityID, health, absorbed });
 

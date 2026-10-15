@@ -224,15 +224,30 @@ function summarizeFights(rawFights: RaidFightEvidence[], inheritedLimitations: s
   };
 }
 
+function sourceScopesFor(review: RaidBossReview): Array<{ partition: number; patch: string }> {
+  const scopes = review.reviewedScopes ?? [{ partition: review.scope.partition, patch: review.scope.patch }];
+  if (!Array.isArray(scopes) || !scopes.length || scopes.some((scope) => !scope
+    || !Number.isSafeInteger(scope.partition) || scope.partition <= 0 || typeof scope.patch !== "string" || !scope.patch.trim())
+    || new Set(scopes.map((scope) => scope.partition)).size !== scopes.length) return [];
+  return scopes.map(({ partition, patch }) => ({ partition, patch })).sort((a, b) => a.partition - b.partition);
+}
+
 export function gradeBoss(review: RaidBossReview): RaidBossGrade {
   const limitations = review.status !== "complete" ? [`Boss review is ${review.status}${review.reason ? `: ${review.reason}` : "."}`] : [];
-  const grade = summarizeFights(review.fights, limitations);
-  const roles = ROLE_ORDER.filter((role) => review.fights.some((fight) => fight.role === role)).map((role) => ({
-    ...summarizeFights(review.fights.filter((fight) => fight.role === role), limitations),
+  if (review.coverageLimited) limitations.push("Some historical kills cover fewer verified mechanics; unreviewed effects are withheld rather than counted as clean.");
+  const scopes = sourceScopesFor(review);
+  const fights = review.fights.filter((fight) => scopes.some((scope) =>
+    (fight.scope?.partition ?? (review.reviewedScopes ? null : review.scope.partition)) === scope.partition
+    && (fight.scope?.patch ?? (review.reviewedScopes ? null : review.scope.patch)) === scope.patch));
+  if (fights.length < review.fights.length) limitations.push("Source kills without a verified reviewed patch binding were excluded.");
+  const grade = summarizeFights(fights, limitations);
+  const roles = ROLE_ORDER.filter((role) => fights.some((fight) => fight.role === role)).map((role) => ({
+    ...summarizeFights(fights.filter((fight) => fight.role === role), limitations),
     role,
     bosses: 1,
   }));
-  return { ...grade, provisional: grade.provisional || review.status !== "complete", boss: review.boss, key: review.key, roles };
+  return { ...grade, provisional: grade.provisional || review.status !== "complete" || fights.length < review.fights.length || review.coverageLimited === true,
+    boss: review.boss, key: review.key, roles: roles.map((role) => ({ ...role, provisional: role.provisional || review.coverageLimited === true })) };
 }
 
 function combineUtility(values: ExecutionUtility[]): ExecutionUtility {
