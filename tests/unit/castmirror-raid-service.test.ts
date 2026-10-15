@@ -14,13 +14,14 @@ const REQUEST: RaidReviewRequest = { name: 'Reviewer', server: "Mal'Ganis", regi
 const CODE = 'AAAAAAAAAAAAAA01';
 type Options = { onAttempt(event: { kind: string; attempt: number }): Promise<void>; onResponseBytes(event: { bytes: number }): Promise<void> };
 type Row = Record<string, unknown>;
-interface FixtureOptions { kills?: number; patch?: string; partition?: number; malformed?: string; mixedZone?: boolean; paginated?: boolean; endless?: boolean; failAt?: number; busy?: boolean; unavailableUtility?: boolean; moreRankings?: boolean; signedHeal?: boolean; participantIdentities?: number; partitionConflict?: boolean; wrongEnvelope?: boolean; encounter?: number; historicalOnly?: boolean }
+interface FixtureOptions { kills?: number; patch?: string; partition?: number; malformed?: string; mixedZone?: boolean; paginated?: boolean; endless?: boolean; failAt?: number; busy?: boolean; unavailableUtility?: boolean; moreRankings?: boolean; signedHeal?: boolean; participantIdentities?: number; partitionConflict?: boolean; wrongEnvelope?: boolean; encounter?: number; historicalOnly?: boolean; mixedHealing?: boolean; extraTeammateAbsorb?: boolean; healingPages?: 'two'|'empty-first'|'empty-endless' }
 function fixture(options: FixtureOptions = {}) {
   const kills = options.kills ?? 1;
   const encounter = options.encounter ?? 3470;
   const boss = catalog.encounters.find((b) => b.encounter === encounter)!;
   const firstAbility = boss.abilities[0].abilityID;
   const selected: number[] = [], documents: string[] = [], order: string[] = [];
+  const healingQueries: Array<{ filter: string | null; cursor: number; types: string[] }> = [];
   const cache = new Map<string, RaidBossReview>();
   const budgetOptions = { now: () => NOW, limits: LIVE_LIMITS };
   const budget = new MaintenanceBudget(budgetOptions);
@@ -88,11 +89,37 @@ function fixture(options: FixtureOptions = {}) {
     if (options.malformed === 'context-death') source.deaths[1].killingAbilityGameID = 1300239;
     if (options.malformed === 'death-target') delete source.deaths[1].targetID;
     if (options.signedHeal) source.healing.push(event('heal', 9000, { targetID: 2, abilityGameID: 98021, amount: -20000 }));
+    if (options.mixedHealing) source.healing.push(
+      event('heal', 8000, { targetID: 2, abilityGameID: 98021, amount: -20000 }),
+      event('heal', 8500, { targetID: 2, abilityGameID: 999, amount: 200000, tick: true }),
+      event('healabsorbed', 9500, { targetID: 2, abilityGameID: 999, amount: 300000 }));
+    if (options.extraTeammateAbsorb) source.healing.push(event('absorbed', 9000, { targetID: 3, abilityGameID: 209426, amount: 250 }));
+    if (options.malformed === 'absorb-source') source.healing[0].sourceID = 50;
+    if (options.malformed === 'absorb-amount-negative') source.healing[0].amount = -1;
+    if (options.malformed === 'absorb-amount-string') source.healing[0].amount = '500';
+    if (options.malformed === 'absorb-amount-missing') delete source.healing[0].amount;
+    if (options.malformed === 'absorb-ability') delete source.healing[0].abilityGameID;
+    if (options.malformed === 'absorb-target') delete source.healing[0].targetID;
     for (const [name, rows] of Object.entries(source)) {
       if (!document.includes(`${name}:events(`)) continue;
       if (name === 'healing' && options.unavailableUtility) { data.healing = null; continue; }
       const cursor = variables[name + 'S'] as number;
       let events = rows, next: number | null = null;
+      if (name === 'healing') {
+        // Project the requested provider filter instead of returning unsolicited
+        // ordinary heals. WCL documents type/equality at /help/pins and the
+        // filterExpression argument at /v2-api-docs/warcraft/report.doc.html.
+        const args = document.match(/healing:events\(([^)]*)\)/)?.[1] ?? '';
+        const literal = args.match(/filterExpression:("(?:[^"\\]|\\.)*")/)?.[1];
+        const filter = literal ? JSON.parse(literal) as string : null;
+        assert.ok(filter === null || filter === 'type = "absorbed"', 'fixture must understand the exact provider expression');
+        if (filter !== null) events = events.filter((e) => e.type === 'absorbed');
+        if (options.healingPages === 'two' && cursor === start) { events = events.slice(0, 1); next = start + 6250; }
+        else if (options.healingPages === 'empty-endless') { events = []; next = cursor + 1000; }
+        else if (options.healingPages === 'empty-first' && cursor === start) { events = []; next = start + 100; }
+        else events = events.filter((e) => (e.timestamp as number) >= cursor);
+        healingQueries.push({ filter, cursor, types: events.map((e) => String(e.type)) });
+      }
       if (name === 'damage' && (options.paginated || options.endless)) {
         if (cursor === start) { events = rows.slice(0, 1); next = start + 2000; }
         else { events = rows.filter((e) => (e.timestamp as number) >= cursor); next = options.endless ? cursor + 1000 : null; }
@@ -113,7 +140,7 @@ function fixture(options: FixtureOptions = {}) {
       order.push('claim'); if (options.busy) throw new MaintenanceStop('live-account-busy');
       return { budget, ownership: { account: 'fixture-account', owner: 'fixture-owner', fence: 1 }, release };
     }), store: { readRaidReview: vi.fn(async (key) => cache.get(key) ?? null), saveRaidReview: save }, close: vi.fn(async () => { order.push('close'); }) };
-  return { runtime, query, budget, cache, save, release, selected, documents, order };
+  return { runtime, query, budget, cache, save, release, selected, documents, order, healingQueries };
 }
 const collect = (f: ReturnType<typeof fixture>) => collectRaidBoss(f.runtime, REQUEST, { now: () => NOW });
 function request(body: unknown = REQUEST, init: RequestInit = {}) { return new Request('https://hosted.example/api/castmirror/execution/raid', {
@@ -191,6 +218,44 @@ describe('raid Execution bounded public collector', () => {
     assert.equal(review.status, 'complete'); assert.equal(review.fights[0].utility.complete, true);
     assert.equal(review.fights[0].utility.raidAbsorbed, 500);
   });
+  test('requests only consumed shields while preserving the baseline qualifying teammate absorbs', async () => {
+    const baseline = await collect(fixture({ extraTeammateAbsorb: true }));
+    const f = fixture({ extraTeammateAbsorb: true, mixedHealing: true }); const review = await collect(f);
+    assert.equal(review.status, 'complete'); assert.deepEqual(review.fights, baseline.fights);
+    assert.deepEqual(gradeBoss(review), gradeBoss(baseline));
+    assert.equal(review.fights[0].utility.raidAbsorbed, 750, 'self and pet-recipient shields are excluded; both teammate shields remain');
+    assert.deepEqual(f.healingQueries.map((q) => q.filter), ['type = "absorbed"']);
+    assert.deepEqual(f.healingQueries[0].types, ['absorbed', 'absorbed', 'absorbed', 'absorbed']);
+    const eventQueries = f.documents.filter((d) => d.includes('events('));
+    for (const document of eventQueries) {
+      const aliases = [...document.matchAll(/(\w+):events\(([^)]*)\)/g)];
+      for (const [, alias, args] of aliases) assert.equal(args.includes('filterExpression:'), alias === 'healing', 'only the raid consumed-shield stream is narrowed');
+    }
+  });
+  for (const healingPages of ['two', 'empty-first'] as const) test(`filtered shield pagination preserves all qualifying rows: ${healingPages}`, async () => {
+    const baseline = await collect(fixture({ extraTeammateAbsorb: true, mixedHealing: true }));
+    const f = fixture({ extraTeammateAbsorb: true, mixedHealing: true, healingPages }); const review = await collect(f);
+    assert.equal(review.status, 'complete'); assert.deepEqual(review.fights, baseline.fights); assert.equal(review.fights[0].utility.raidAbsorbed, 750);
+    assert.equal(f.healingQueries.length, 2); assert.ok(f.healingQueries.every((q) => q.filter === 'type = "absorbed"' && q.types.every((t) => t === 'absorbed')));
+    assert.ok(f.healingQueries[1].cursor > f.healingQueries[0].cursor);
+    if (healingPages === 'empty-first') assert.deepEqual(f.healingQueries[0].types, [], 'an empty filtered page with continuation is followed');
+    const followup = f.documents.filter((d) => d.includes('healing:events('))[1];
+    assert.ok(!followup.includes('damage:events(') && !followup.includes('deaths:events('), 'completed independent evidence is not reacquired');
+  });
+  test('empty filtered pages cannot bypass the unchanged event page cap or imply complete utility', async () => {
+    const f = fixture({ healingPages: 'empty-endless' }); const review = await collect(f);
+    assert.equal(review.status, 'partial'); assert.equal(f.healingQueries.length, 3);
+    assert.equal(review.fights[0].damage.complete, true); assert.equal(review.fights[0].survival.complete, true); assert.equal(review.fights[0].utility.complete, false);
+    assert.ok(review.fights[0].limitations.includes('healing: event-page-cap')); assert.equal(gradeBoss(review).utility.completeFights, 0);
+  });
+  for (const malformed of ['absorb-source', 'absorb-amount-negative', 'absorb-amount-string', 'absorb-amount-missing', 'absorb-ability', 'absorb-target'])
+    test(`filtered shields retain strict attribution and consumed fields: ${malformed}`, async () => {
+      const f = fixture({ malformed }); const review = await collect(f);
+      assert.equal(review.status, 'partial'); assert.equal(review.fights[0].utility.complete, false); assert.equal(review.fights[0].utility.raidAbsorbed, 0);
+      assert.ok(review.fights[0].limitations.includes('healing: event-actor-unverified'));
+      assert.equal(review.fights[0].damage.complete, true); assert.equal(review.fights[0].survival.complete, true);
+      assert.deepEqual(f.healingQueries.map((q) => q.filter), ['type = "absorbed"']);
+    });
   test('a death without an identified recipient is incomplete rather than a clean survival record', async () => {
     const review = await collect(fixture({ malformed: 'death-target' }));
     assert.equal(review.status, 'partial'); assert.equal(review.fights[0].survival.complete, false);

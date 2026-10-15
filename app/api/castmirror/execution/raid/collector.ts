@@ -187,7 +187,7 @@ function eventDocument(active: StreamName[], details: boolean): string {
   return `query($code:String!,$fid:[Int]!,$e:Float!${actorVariable},${variables}){reportData{report(code:$code){
     ${details ? 'playerDetails(fightIDs:$fid,includeCombatantInfo:true)' : ''}
     ${active.map((n) => `${n}:events(dataType:${STREAMS[n]},hostilityType:Friendlies,fightIDs:$fid,startTime:$${n}S,endTime:$e,
-      ${n === 'deaths' ? '' : 'sourceID:$actor,'}${n === 'damage' ? 'includeResources:true,' : ''}limit:10000){data nextPageTimestamp}`).join('\n')}
+      ${n === 'deaths' ? '' : 'sourceID:$actor,'}${n === 'damage' ? 'includeResources:true,' : ''}${n === 'healing' ? 'filterExpression:' + JSON.stringify('type = "absorbed"') + ',' : ''}limit:10000){data nextPageTimestamp}`).join('\n')}
   }}}`;
 }
 function acceptPage(stream: Stream, raw: unknown, name: StreamName, fight: Row, actorID: number, budget: RaidBudget) {
