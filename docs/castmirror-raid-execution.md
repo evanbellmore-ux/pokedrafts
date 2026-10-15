@@ -1,0 +1,15 @@
+# Raid execution review
+
+Find a character's kills in Cast Mirror, then choose **Review raid execution**. The review does not require a selected damage log or a world-ranking reference. It uses the selected character, realm, region, raid and difficulty. The first release supports the reviewed current Mythic raid.
+
+The review checks each boss in order and collects up to six of the character's latest eligible public kills per boss. Selection uses date, not damage or healing rank. A character with no suitable public evidence for a boss remains ungraded on that boss. Coverage is always shown alongside the overall letter.
+
+The grade is a provisional automated coaching rubric, not an official percentile. Complete kills start at 100; each independently avoidable contact incident subtracts 5, and a directly attributed avoidable death subtracts 35, with a floor of zero. Adjacent damaging ticks of one ability within five seconds form one contact cluster. Grades average kills within each boss and weight graded bosses equally. The page shows the exact grade bands and limitations. Incomplete or shortened exposure cannot earn favorable credit. Context-dependent damage and deaths with unproven responsibility do not receive blame.
+
+Successful interrupts, dispels and logged damage absorbed on teammates appear as observed raid support. Unknown assignments and opportunities prevent using those raw totals as bonus or penalty points. Damage output, healing output and personal defensive cast counts do not affect the letter. Tank, healer and damage roles are identified in the evidence and receive separate role summaries when applicable.
+
+Each boss includes its grade, reasons, sample size and source-log links. Expand source kills to inspect reviewed mechanics, hit/tick counts, contact clusters and death causes. Assigned soaks, tank duties and ambiguous mechanics are governed by the reviewed encounter rules; see [raid avoidance coverage](castmirror-raid-avoidance.md).
+
+Reviewing is explicit. Opening a character does not start the raid acquisition. **Stop review** cancels the current browser request and keeps collected results. **Continue raid review** resumes the remaining bosses only when chosen. A busy account or exhausted log allowance stops the queue without automatic retries. Changing the character, realm, region, raid or difficulty clears the review and suppresses late responses, preventing stale grades from appearing for another character.
+
+The browser receives the same pure grading functions used by the service through the hosted generator. The vendored upstream snapshot stays immutable. UI regression tests exercise the checked-in generated page, including sequential requests, cancellation, identity matching, unsupported scopes and source-link validation.

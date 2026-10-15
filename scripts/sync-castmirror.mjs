@@ -8,13 +8,14 @@ import { fileURLToPath } from 'node:url';
 import { Script } from 'node:vm';
 import ts from 'typescript';
 import { adaptExecutionReview } from './castmirror-execution-review.mjs';
+import { adaptRaidReview } from './castmirror-raid-review.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const VENDOR = path.join(ROOT, 'vendor/castmirror');
 const MANIFEST = path.join(VENDOR, 'manifest.json');
 const REVISION = 'af7d034354abcb4cc4d52719989900a0e0b1b455';
-const ADAPTER = 'castmirror-vercel-v5';
-const PREVIOUS_ADAPTER = 'castmirror-vercel-v4';
+const ADAPTER = 'castmirror-vercel-v6';
+const PREVIOUS_ADAPTER = 'castmirror-vercel-v5';
 const REPOSITORY = 'https://github.com/evanbellmore-ux/cast-mirror';
 const DECLARATIONS = [
   'classes', 'ensureClasses', 'PI_SPELL', 'fightHasPI', 'HERO_SIG', 'heroOf',
@@ -37,8 +38,9 @@ const BASE_PATCHES = [
 const PREVIOUS_PATCHES = [...BASE_PATCHES,
   'current-first-immediate-previous-patch-throughput',
   'escaped-per-side-ranking-patch-labels',
+  'non-damage-execution-evidence-review',
 ];
-const PATCHES = [...PREVIOUS_PATCHES, 'non-damage-execution-evidence-review'];
+const PATCHES = [...PREVIOUS_PATCHES, 'raidwide-non-damage-execution-grade'];
 const normalize = (text) => text.replace(/\r\n/g, '\n');
 const digest = (text) => createHash('sha256').update(normalize(text)).digest('hex');
 const json = (value) => JSON.stringify(value, null, 2) + '\n';
@@ -539,6 +541,7 @@ function render(D) {`, 'numeric escaped ranking patch markup');
     "    return '<div class=\"card ' + cls + '\"><h2>' + esc(s.name) + ' <span class=\"tag\">' + esc(tag) + '</span></h2>' +",
     "    return '<div class=\"card ' + cls + '\"><h2>' + esc(s.name) + ' <span class=\"tag\">' + esc(tag) + '</span></h2>' + rankingPatchMarkup(s) +", 'throughput per-side patch label');
   html = adaptExecutionReview(html);
+  html = adaptRaidReview(html);
   const scripts = [...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)];
   if (scripts.length !== 2) throw new Error('Unexpected inline-script layout in generated page');
   for (const [index, script] of scripts.entries()) new Script(script[1], { filename: `castmirror-inline-${index}.js` });

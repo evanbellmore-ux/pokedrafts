@@ -28,7 +28,7 @@ describe("CastMirror generated per-side previous-patch labels", () => {
     data.b.rankingPatch = { ...otherLabel, partition: "PrivateInternalPartitionB", diagnostic: "PrivateDiagnosticB" };
     const { page } = await setup(() => data);
     await page.runMirror(42, "Test Boss");
-    assert.match(page.html, /name="castmirror-adapter" content="castmirror-vercel-v5"/);
+    assert.match(page.html, /name="castmirror-adapter" content="castmirror-vercel-v6"/);
     assert.match(page.html, /af7d034354abcb4cc4d52719989900a0e0b1b455/);
     assert.ok(playerCard(page).includes(previousText));
     assert.ok(!playerCard(page).includes(otherText));

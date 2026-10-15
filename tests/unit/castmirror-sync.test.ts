@@ -17,7 +17,7 @@ describe("CastMirror pinned source generation", () => {
     assert.equal(manifest.schemaVersion, 1);
     assert.equal(manifest.upstream.revision, revision);
     assert.equal(manifest.upstream.repository, "https://github.com/evanbellmore-ux/cast-mirror");
-    assert.equal(manifest.adapterVersion, "castmirror-vercel-v5");
+    assert.equal(manifest.adapterVersion, "castmirror-vercel-v6");
     assert.ok(manifest.patches.includes("current-first-immediate-previous-patch-throughput"));
     assert.ok(manifest.patches.includes("escaped-per-side-ranking-patch-labels"));
     assert.ok(manifest.declarations.includes("sameRealm"), "the reviewed source's portable realm helper must be explicitly allowlisted");

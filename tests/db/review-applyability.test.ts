@@ -21,7 +21,7 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { asUser, connect, createUser, inviteCodeFor, rpcAs, type Client } from "./harness";
-import { EXECUTION_RULES_MIGRATION, HARDENING_MIGRATION, PLAYOFFS_MIGRATION, applyMigration, createDatabaseSql, createScaffolding, readMigrations } from "./migrations-lib";
+import { RAID_REVIEW_MIGRATION, HARDENING_MIGRATION, PLAYOFFS_MIGRATION, applyMigration, createDatabaseSql, createScaffolding, readMigrations } from "./migrations-lib";
 
 const RERUN_DB = "pokedrafts_rerun_review";
 
@@ -53,10 +53,10 @@ describe("review: re-running migration files", () => {
     await admin.end();
   });
 
-  it("all fourteen files apply a second time in filename order and leave the hardened policy set", async () => {
+  it("all fifteen files apply a second time in filename order and leave the hardened policy set", async () => {
     const migrations = readMigrations();
-    expect(migrations).toHaveLength(14);
-    expect(migrations.at(-1)?.name).toBe(EXECUTION_RULES_MIGRATION);
+    expect(migrations).toHaveLength(15);
+    expect(migrations.at(-1)?.name).toBe(RAID_REVIEW_MIGRATION);
     for (const migration of migrations) {
       await applyMigration(db, migration);
     }

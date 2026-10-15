@@ -72,12 +72,12 @@ describe('private CastMirror Execution PostgreSQL authority', () => {
     return call<{ revision: number }>(db, 'checkpoint', [account, c.owner, c.fence, c.revision, typeof value === 'string' ? value : JSON.stringify(value) + '\n', JSON.stringify(history)]);
   }
 
-  it('keeps a private nine-function executor catalog and public 31 functions untouched', async () => {
+  it('keeps a private eleven-function executor catalog and public 31 functions untouched', async () => {
     const { rows } = await admin.query<{ name: string; definer: boolean; owner: string; config: string[] }>(`
       select p.proname name,p.prosecdef definer,r.rolname owner,p.proconfig config from pg_proc p
       join pg_roles r on r.oid=p.proowner where p.pronamespace='execution_v3'::regnamespace
       and has_function_privilege('execution_v3_executor',p.oid,'EXECUTE') order by 1`);
-    expect(rows.map(r => r.name)).toEqual(['checkpoint','claim','preflight','put_pin','read_history','read_pin','read_pool','release','save_pool']);
+    expect(rows.map(r => r.name)).toEqual(['checkpoint','claim','preflight','put_pin','read_history','read_pin','read_pool','read_raid_review','release','save_pool','save_raid_review']);
     for (const row of rows) {
       expect(row.definer).toBe(true); expect(row.owner).toBe('execution_v3_owner');
       expect(row.config).toContain('search_path=pg_catalog, execution_v3, pg_temp');

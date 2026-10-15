@@ -152,7 +152,7 @@ const buckets = new Map<string, { count: number; resetAt: number }>();
 const MAX_BUCKETS = 4096;
 
 /** Existing per-IP limits on fresh requests, per warm instance. */
-export function rateOk(ip: string, kind: 'compare' | 'character'): boolean {
+export function rateOk(ip: string, kind: 'compare' | 'character' | 'raid'): boolean {
   const now = Date.now();
   for (const [key, bucket] of buckets) if (now >= bucket.resetAt) buckets.delete(key);
   const key = kind + ':' + ip.slice(0, 128);

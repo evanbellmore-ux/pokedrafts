@@ -8,6 +8,7 @@ const slash = (value) => value.replaceAll('\\', '/');
 const required = [
   '.next/server/app/api/castmirror/compare/route.js.nft.json',
   '.next/server/app/api/castmirror/execution/v3/route.js.nft.json',
+  '.next/server/app/api/castmirror/execution/raid/route.js.nft.json',
 ];
 
 export function validateTrace(trace, tracePath, root = ROOT) {
