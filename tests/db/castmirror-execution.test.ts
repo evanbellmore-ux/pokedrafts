@@ -8,6 +8,7 @@ import { createDurableLiveBudget, stageLiveJob } from '../../vendor/castmirror/n
 import { maintenanceClient } from '../../vendor/castmirror/native/execution/maintenance.mjs';
 import { WclClient } from '../../vendor/castmirror/native/wcl-client/wcl.mjs';
 import { connect, expectRpcError, expectSqlState, type Client } from './harness';
+import { EXECUTION_MIGRATION, EXECUTION_TIMEOUT_MIGRATION, readMigrations } from './migrations-lib';
 
 const sha = (text: string) => createHash('sha256').update(text, 'utf8').digest('hex');
 const VERSION = 'execution-v3-live-account-1';
@@ -410,6 +411,55 @@ describe('private CastMirror Execution PostgreSQL authority', () => {
     await expectRpcError(checkpoint(account,c,terminalMutation),'live-ledger-invalid');
   });
 
+  it('admits a new exact 60-second request policy while preserving imported 15-second jobs and debt', async () => {
+    const value=ledger(); value.jobs.push(job(randomUUID(),value.updatedAt,true));
+    const {account}=await seed(value); const c=await claim(account);
+    const next=structuredClone(value); next.updatedAt=Date.now();
+    const current=job(c.owner,next.updatedAt);
+    current.budget.limits={...LIMITS,requestTimeoutMs:60000}; next.jobs.push(current);
+    expect(await checkpoint(account,c,next)).toEqual({revision:1});
+    const saved=await admin.query("select convert_from(ledger_bytes,'UTF8') bytes from execution_v3.accounts where account=$1",[account]);
+    expect(saved.rows[0].bytes).toBe(JSON.stringify(next)+'\n');
+    expect(JSON.parse(saved.rows[0].bytes).jobs[0]).toEqual(value.jobs[0]);
+    expect(next.jobs[0].pending).toBe(4); expect(next.jobs[0].budget.unmeasuredGraphql).toBe(1);
+  });
+
+  it('rejects timeout values above 60 seconds or between the two exact approved policies without persisting them', async () => {
+    const {account,text}=await seed(); const c=await claim(account);
+    for(const timeout of [60001,30000,15001,0]) {
+      const next=ledger(); const current=job(c.owner,next.updatedAt);
+      current.budget.limits={...LIMITS,requestTimeoutMs:timeout}; next.jobs.push(current);
+      await expectRpcError(checkpoint(account,c,next),'live-ledger-invalid');
+    }
+    const saved=await admin.query("select convert_from(ledger_bytes,'UTF8') bytes,revision from execution_v3.accounts where account=$1",[account]);
+    expect(saved.rows[0]).toEqual({bytes:text,revision:'0'});
+  });
+
+  it('never widens an existing active 15-second job to the new 60-second policy', async () => {
+    const {account}=await seed(); const c=await claim(account); const value=ledger();
+    value.jobs.push(job(c.owner,value.updatedAt)); c.revision=(await checkpoint(account,c,value)).revision;
+    const wider=structuredClone(value); wider.jobs[0].budget.limits.requestTimeoutMs=60000;
+    await expectRpcError(checkpoint(account,c,wider),'live-ledger-invalid');
+    const saved=await admin.query("select convert_from(ledger_bytes,'UTF8') bytes,revision,lease_until from execution_v3.accounts where account=$1",[account]);
+    expect(saved.rows[0]).toEqual({bytes:JSON.stringify(value)+'\n',revision:'1',lease_until:String(c.leaseUntil)});
+  });
+
+  it('keeps every other budget guard exact under the 60-second policy', async () => {
+    const {account,text}=await seed(); const c=await claim(account);
+    for(const [key,amount] of Object.entries(LIMITS)) {
+      if(key==='requestTimeoutMs') continue;
+      const next=ledger(); const current=job(c.owner,next.updatedAt);
+      current.budget.limits={...LIMITS,requestTimeoutMs:60000,[key]:amount+1}; next.jobs.push(current);
+      await expectRpcError(checkpoint(account,c,next),'live-ledger-invalid');
+    }
+    const extended=ledger(); const current=job(c.owner,extended.updatedAt);
+    current.budget.limits={...LIMITS,requestTimeoutMs:60000}; current.budget.deadline+=1; extended.jobs.push(current);
+    await expectRpcError(checkpoint(account,c,extended),'live-ledger-invalid');
+    await expectRpcError(claim(account,randomUUID(),150001),'live-lock-lost');
+    const saved=await admin.query("select convert_from(ledger_bytes,'UTF8') bytes,revision,lease_until from execution_v3.accounts where account=$1",[account]);
+    expect(saved.rows[0]).toEqual({bytes:text,revision:'0',lease_until:String(c.leaseUntil)});
+  });
+
   it('never removes or lowers unbound legacy debt or monetary/counter bounds', async () => {
     const value={...ledger(),legacyUnknown:{charged:12,pending:8,estimatedRequestCost:4,boundWindow:null}};
     const { account }=await seed(value); const c=await claim(account);
@@ -435,6 +485,39 @@ describe('private CastMirror Execution PostgreSQL authority', () => {
     const next={...ledger(now),archive:head};
     return {l,h,entry,head,next};
   }
+  it('upgrades only the private validator and leaves exact legacy ledger/history bytes, hashes, debt and authority untouched', async () => {
+    const migrations=readMigrations();
+    const original=migrations.find(value=>value.name===EXECUTION_MIGRATION)!;
+    const upgrade=migrations.find(value=>value.name===EXECUTION_TIMEOUT_MIGRATION)!;
+    const originalBudget=original.sql.match(/CREATE OR REPLACE FUNCTION execution_v3\._budget\(p_value jsonb\)[\s\S]*?\$fn\$;/)?.[0];
+    expect(originalBudget).toBeTruthy();
+    await admin.query('begin');
+    try {
+      // Reproduce an already-deployed old validator with real 15-second live
+      // and archived records. Roll back the whole exercise after verification.
+      await admin.query(originalBudget!);
+      const old=ledger(); old.jobs.push(job(randomUUID(),old.updatedAt,true));
+      const imported=JSON.stringify(old,null,2)+'\r\n';
+      const {account}=await seed(imported); const archived=archiveFixture();
+      const history=await seed(archived.next,false,[archived.entry]);
+      const before=await admin.query('select * from execution_v3.accounts where account=any($1::text[]) order by account',[[account,history.account]]);
+      const oldHistory=await admin.query('select * from execution_v3.history where account=$1',[history.account]);
+      const authority=await admin.query("select proowner,proacl,prosecdef,provolatile,proconfig from pg_proc where oid='execution_v3._budget(jsonb)'::regprocedure");
+      const transition=await admin.query("select pg_get_functiondef('execution_v3._transition(text,uuid,jsonb,jsonb,jsonb)'::regprocedure) definition");
+      const proposed={...budget(old.updatedAt),limits:{...LIMITS,requestTimeoutMs:60000}};
+      expect(await call(admin,'_budget',[JSON.stringify(proposed)])).toBe(false);
+      expect(await call(admin,'_budget',[JSON.stringify(old.jobs[0].budget)])).toBe(true);
+      await admin.query(upgrade.sql);
+      expect(await call(admin,'_budget',[JSON.stringify(proposed)])).toBe(true);
+      expect(await call(admin,'_budget',[JSON.stringify(old.jobs[0].budget)])).toBe(true);
+      expect(await call(admin,'_ledger',[imported])).toEqual(old);
+      const after=await admin.query('select * from execution_v3.accounts where account=any($1::text[]) order by account',[[account,history.account]]);
+      expect(after.rows).toEqual(before.rows);
+      expect((await admin.query('select * from execution_v3.history where account=$1',[history.account])).rows).toEqual(oldHistory.rows);
+      expect((await admin.query("select proowner,proacl,prosecdef,provolatile,proconfig from pg_proc where oid='execution_v3._budget(jsonb)'::regprocedure")).rows).toEqual(authority.rows);
+      expect((await admin.query("select pg_get_functiondef('execution_v3._transition(text,uuid,jsonb,jsonb,jsonb)'::regprocedure) definition")).rows).toEqual(transition.rows);
+    } finally { await admin.query('rollback'); }
+  });
   it('atomically appends exact hashed expired history with the ledger, then forbids mutation/reuse of archived IDs', async () => {
     const {l,entry,next}=archiveFixture(); const {account}=await seed(l); const c=await claim(account);
     expect(await checkpoint(account,c,next,[entry])).toEqual({revision:1});

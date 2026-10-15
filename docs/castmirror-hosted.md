@@ -208,9 +208,10 @@ The reviewed source pin is
 `vendor/castmirror/manifest.json` records origin hashes, the declaration allowlist,
 minimal pinned source files, hosted adaptation names, and generated checksums.
 The frontend/throughput pin remains independent of the reviewed native pin,
-`9d1c23fc00aba51c0357e4e312a9306bb1fda130`. Its standalone suite passed 1,154
-cases before import. Adapter `castmirror-vercel-v4` preserves successful current
-throughput queries and adds bounded immediate-previous-patch fallback and narrow
+`3373a335ea435d2885091c0c51046e42640f7fc6`. Its standalone suite passed 1,175
+cases with 15 expected private-artifact skips before import. Adapter
+`castmirror-vercel-v4` preserves successful current throughput queries and adds
+bounded immediate-previous-patch fallback and narrow
 per-side labels. Native binding is an optional server-side hook, not a scoring
 rewrite. Native
 provenance and the explicit transitive inventory live in

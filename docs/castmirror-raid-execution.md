@@ -12,4 +12,6 @@ Each boss includes its grade, reasons, sample size and source-log links. Expand 
 
 Reviewing is explicit. Opening a character does not start the raid acquisition. **Stop review** cancels the current browser request and keeps collected results. **Continue raid review** resumes the remaining bosses only when chosen. A busy account or exhausted log allowance stops the queue without automatic retries. Changing the character, realm, region, raid or difficulty clears the review and suppresses late responses, preventing stale grades from appearing for another character.
 
+Each live Warcraft Logs request has up to 60 seconds to finish, including authentication, retries and response delivery. That allowance is shortened when less time remains in the two-minute boss review. A timeout still stops the queue and preserves the attempted boss and any collected evidence; increasing the request timeout does not restart failed attempts or extend the review deadline.
+
 The browser receives the same pure grading functions used by the service through the hosted generator. The vendored upstream snapshot stays immutable. UI regression tests exercise the checked-in generated page, including sequential requests, cancellation, identity matching, unsupported scopes and source-link validation.

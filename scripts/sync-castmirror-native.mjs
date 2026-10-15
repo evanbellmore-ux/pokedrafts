@@ -12,7 +12,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const VENDOR = path.join(ROOT, 'vendor/castmirror');
 const MANIFEST = path.join(VENDOR, 'native-manifest.json');
 // Updated only after the native changes have passed their standalone suite.
-export const NATIVE_REVISION = 'a3a5b7cbfdc1ff4db1143e9a7e36d04e4b96e809';
+export const NATIVE_REVISION = '3373a335ea435d2885091c0c51046e42640f7fc6';
 export const NATIVE_ADAPTER = 'castmirror-native-postgres-5';
 const PREVIOUS_ADAPTER = 'castmirror-native-postgres-4';
 export const NATIVE_ADAPTATIONS = Object.freeze(['unused-filesystem-tracing-ignore', 'reviewed-raid-contact-evidence']);
