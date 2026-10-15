@@ -4,7 +4,9 @@ import { afterAll, beforeAll, describe, expect, inject, it, vi } from 'vitest';
 vi.mock('server-only', () => ({}));
 import { PostgresExecutionStore } from '../../app/api/castmirror/execution/postgres-store';
 import { LIVE_RULES_VERSION } from '../../vendor/castmirror/native/execution/live.mjs';
-import { stageLiveJob } from '../../vendor/castmirror/native/execution/live-budget.mjs';
+import { createDurableLiveBudget, stageLiveJob } from '../../vendor/castmirror/native/execution/live-budget.mjs';
+import { maintenanceClient } from '../../vendor/castmirror/native/execution/maintenance.mjs';
+import { WclClient } from '../../vendor/castmirror/native/wcl-client/wcl.mjs';
 import { connect, expectRpcError, expectSqlState, type Client } from './harness';
 
 const sha = (text: string) => createHash('sha256').update(text, 'utf8').digest('hex');
@@ -48,6 +50,10 @@ type Claim = { ledger: string; revision: number; fence: number; leaseUntil: numb
 const stageNativeJob = stageLiveJob as unknown as (value: ReturnType<typeof ledger>, options: {
   state: ReturnType<typeof budget>; jobID: string; accountingFailure?: string | null;
 }) => { ledger: ReturnType<typeof stageLiveJob>['ledger']; accountingFailure: string | null };
+// Native JS defaults underdescribe the required durable-store options.
+const createStoredBudget = createDurableLiveBudget as unknown as (options: {
+  store: PostgresExecutionStore; account: string; now: () => number;
+}) => ReturnType<typeof createDurableLiveBudget>;
 
 // Every mutation is local to the embedded cluster. No production URL/env is read.
 describe('private CastMirror Execution PostgreSQL authority', () => {
@@ -317,6 +323,81 @@ describe('private CastMirror Execution PostgreSQL authority', () => {
     expect(saved.rows[0].ledger_hash).toBe(sha(saved.rows[0].bytes)); expect(saved.rows[0].lease_until).toBe('0');
     expect(Number(saved.rows[0].revision)).toBe(c.revision);
     expect(incoming.unmeasuredGraphql).toBe(0); // Native staging does not mutate its caller's snapshot.
+  });
+
+  it('real transport and restricted PostgreSQL retain the canonical quota expiry across awaited body checkpoints', async () => {
+    const at=Date.now(), canonicalReset=at+100000, {account}=await seed(ledger(at));
+    let clock=at, graphql=0, delayed=false;
+    const checkpoints:ReturnType<typeof ledger>[]=[];
+    const dateNow=vi.spyOn(Date,'now').mockImplementation(()=>clock);
+    const store=new PostgresExecutionStore({account,db:{query:async(text,values)=>{
+      if(text.includes('execution_v3.checkpoint')){
+        const next=JSON.parse(String(values?.[4])) as ReturnType<typeof ledger>;
+        checkpoints.push(structuredClone(next));
+        const current=next.jobs.at(-1)!;
+        // The second response has already received its headers and bytes, but
+        // its quota is not yet parsed/observed. Await an actual SQL checkpoint
+        // while advancing the same transport/native clock by >10s and <15s.
+        if(!delayed&&graphql===2&&current.budget.counters.evidenceBytes>65536){
+          expect(current.budget.unmeasuredGraphql).toBe(1);expect(current.pending).toBeGreaterThan(0);
+          expect(current.budget.points?.spent).toBe(11);
+          delayed=true;clock+=10427;
+          await Promise.resolve();
+        }
+      }
+      return runtime.query(text,values);
+    }}});
+    const fetchMock=vi.fn(async(input:string|URL|Request)=>{
+      const url=input instanceof Request?input.url:input.toString();
+      if(url==='https://www.warcraftlogs.com/oauth/token')return Response.json({access_token:'embedded-synthetic-token',expires_in:3600});
+      expect(url).toBe('https://www.warcraftlogs.com/api/v2/client');graphql++;
+      // The TTL is the provider's value at dispatch/header receipt. Body and
+      // durable byte-observer latency must not be added to its reset boundary.
+      return Response.json({data:{_executionMaintenanceQuota:{limitPerHour:graphql===3?3000:2000,
+        pointsSpentThisHour:10+graphql,pointsResetIn:(canonicalReset-clock)/1000},
+        __typename:'Query',...(graphql===2?{payload:'x'.repeat(131072)}:{})}});
+    });
+    vi.stubGlobal('fetch',fetchMock);
+    let live:Awaited<ReturnType<typeof createDurableLiveBudget>>|undefined;
+    try{
+      live=await createStoredBudget({store,account,now:()=>clock});
+      const client=maintenanceClient(new WclClient('embedded-synthetic-client','embedded-synthetic-secret'),live.budget);
+      await client.measure();
+      const initial=live.budget.snapshot();
+      expect(initial.points!.measuredAt+initial.points!.resetIn*1000).toBe(canonicalReset);
+      expect(initial.unmeasuredGraphql).toBe(0);
+      const response=await client.query('query { __typename }',{});
+      expect(response.__typename).toBe('Query');expect(delayed).toBe(true);expect(clock-at).toBe(10427);
+      const accepted=live.budget.snapshot();
+      expect(accepted.points!.measuredAt).toBe(clock);
+      expect(accepted.points!.measuredAt+accepted.points!.resetIn*1000).toBe(canonicalReset);
+      expect(accepted.unmeasuredGraphql).toBe(0);expect(accepted.stop).toBe(null);
+      const settled=checkpoints.at(-1)!, settledJob=settled.jobs.at(-1)!;
+      expect(settled.windows).toHaveLength(1);expect(settled.windows[0].resetAt).toBe(canonicalReset);
+      expect(settledJob.window).toBe(JSON.stringify([2000,canonicalReset]));
+      expect(settledJob.pending).toBe(0);expect(settledJob.charged).toBe(5);
+      expect(settledJob.accountingFailure).toBe(null);
+      expect(checkpoints.some(value=>{const j=value.jobs.at(-1)!;return j.budget.counters.graphql===2&&j.budget.unmeasuredGraphql===1&&j.pending>0&&j.budget.points?.spent===11;})).toBe(true);
+
+      // A genuine incompatible quota is still rejected and cannot settle the
+      // third dispatched request's pending debt or extend the canonical expiry.
+      await expect(client.query('query { __typename }',{})).rejects.toMatchObject({code:'quota-window-changed'});
+      expect(graphql).toBe(3);expect(fetchMock).toHaveBeenCalledTimes(4);
+      const failed=checkpoints.at(-1)!, failedJob=failed.jobs.at(-1)!;
+      expect(failed.windows[0].resetAt).toBe(canonicalReset);expect(failedJob.pending).toBeGreaterThan(0);
+      expect(failedJob.budget.unmeasuredGraphql).toBe(1);expect(failedJob.budget.points?.spent).toBe(12);
+      expect(failedJob.charged).toBe(5);
+      await client.settle();await live.release();live=undefined;
+      const saved=await admin.query("select convert_from(ledger_bytes,'UTF8') bytes,ledger_hash,revision,lease_until from execution_v3.accounts where account=$1",[account]);
+      const stored=JSON.parse(saved.rows[0].bytes) as ReturnType<typeof ledger>;
+      expect(stored.windows[0].resetAt).toBe(canonicalReset);expect(stored.jobs.at(-1)!.pending).toBeGreaterThan(0);
+      expect(stored.jobs.at(-1)!.budget.unmeasuredGraphql).toBe(1);expect(stored.jobs.at(-1)!.terminal).toBe(true);
+      expect(saved.rows[0].ledger_hash).toBe(sha(saved.rows[0].bytes));expect(saved.rows[0].lease_until).toBe('0');
+      expect(Number(saved.rows[0].revision)).toBeGreaterThan(0);
+    }finally{
+      if(live)await live.release().catch(()=>undefined);
+      dateNow.mockRestore();vi.unstubAllGlobals();
+    }
   });
 
   it('terminal jobs remain immutable and new IDs must match the current owner', async () => {

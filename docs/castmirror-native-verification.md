@@ -1,5 +1,37 @@
 # Native Execution verification
 
+## Bound quota response timing (2026-10-15)
+
+The hosted collector pins native source
+`a3a5b7cbfdc1ff4db1143e9a7e36d04e4b96e809` (standalone PRs #8 and #9).
+Successful GraphQL responses carry private dispatch/header timing bound to the
+current logical operation, final attempt and exact quota object. A known quota
+reset stays fixed when the response's sampling interval is compatible. The first
+unknown measurement keeps its conservative receipt anchor. Current-time expiry,
+deadlines, monotonic spending, reserves, debt and the ten-second tolerance remain
+enforced. Deliberate observer wrappers retain their operation capability; stale,
+cloned or transplanted receipts cannot settle a new request.
+
+A follow-up live sample proves an 11,367 ms mismatch against one canonical
+window. Its actual response-processing delay was not captured. Offline tests
+reproduce the mismatch using delayed body checkpoints and delayed server
+responses; they do not establish which delay occurred live. The earlier debt
+fix correctly retained the failed dispatch and blocked later provider sends.
+
+The browser queue now stops on window/accounting or ambiguous transport
+failures, retains collected evidence, and skips uncertain attempts on Continue.
+It preserves the failure message when the remaining bosses finish. Definite
+rate limits and busy responses still require another explicit click to retry.
+
+Validation passed 20 timing regressions, including independent review, and the
+full standalone suite passed 1,168 tests with 15 expected private-artifact skips.
+Hosted checks cover 757 Cast Mirror tests and 41 actual local PostgreSQL tests.
+The unchanged database regression fails against the earlier source and passes
+with the timing fix; incompatible quota still retains pending debt. Source
+parity, type checking, lint and production build/trace checks are recorded with
+the deployment checkpoint. No SQL migration, ledger rewrite, lease forcing,
+scoring weight or encounter rule changes are part of this fix.
+
 ## Failed quota observation debt (2026-10-15)
 
 The hosted collector now pins native source

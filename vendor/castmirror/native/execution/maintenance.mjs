@@ -1,5 +1,5 @@
 // One public, offline Mythic job. Counters and the original deadline survive resume.
-import { getWclRequestDiagnostic, getWclResponseDiagnostic } from '../wcl-client/wcl.mjs';
+import { getWclRequestDiagnostic, getWclResponseDiagnostic, getWclResponseTiming, bindWclRequestIdentity } from '../wcl-client/wcl.mjs';
 import { rememberFailure, describeFailure, getFailureDiagnostic } from './diagnostics.mjs';
 
 export const MAINTENANCE_VERSION = 'mythic-maintenance-1';
@@ -131,14 +131,38 @@ export class MaintenanceBudget {
     if (points.jobSpent + pending + reserve > points.allowance) throw this.stop('point-cap');
     if (points.spent + pending + reserve > points.limit * (1 - this.limits.reserveFraction)) throw this.stop('foreground-reserve');
   }
-  observeQuota(rate) {
+  observeQuota(rate, response = null, receipt = null) {
     const at = this.check();
     if (!positive(rate?.limitPerHour) || !nonnegative(rate?.pointsSpentThisHour) ||
         rate.pointsSpentThisHour > rate.limitPerHour || !positive(rate?.pointsResetIn)) throw this.stop('quota-unknown');
     const old = this.state.points;
+    const timing = getWclResponseTiming(response);
+    let resetAt = at + rate.pointsResetIn * 1000;
+    let resetIn = rate.pointsResetIn;
+    if (timing !== null) {
+      if (!receipt || !receipt.options || typeof receipt.options !== 'object' || getWclResponseTiming(response, receipt.options) === null ||
+          timing.attempt !== receipt.attempt || timing.count !== receipt.count ||
+          response?.[QUOTA_ALIAS] !== rate || !integer(timing.dispatchedAt) || !integer(timing.headersAt) ||
+          timing.dispatchedAt < this.state.startedAt || timing.headersAt < timing.dispatchedAt || timing.headersAt > at ||
+          at - timing.dispatchedAt > this.limits.requestTimeoutMs ||
+          !Number.isSafeInteger(timing.attempt) || timing.attempt < 1 || timing.attempt > this.limits.maxAttempts ||
+          !Number.isSafeInteger(timing.count) || timing.count < 1 || timing.count > this.state.counters.network) throw this.stop('quota-unknown');
+      if (old) {
+        const fixedResetAt = old.measuredAt + old.resetIn * 1000;
+        // The provider may resolve quota before a slower sibling GraphQL field.
+        // Keep the existing boundary fixed; body/checkpoint latency never moves
+        // it. Successful attempt bounds only establish compatible sampling.
+        const earliest = timing.dispatchedAt + rate.pointsResetIn * 1000;
+        const latest = timing.headersAt + rate.pointsResetIn * 1000;
+        if (!nonnegative(earliest) || !nonnegative(latest) || fixedResetAt < earliest - 10_000 ||
+            fixedResetAt > latest + 10_000) throw this.stop('quota-window-changed');
+        resetAt = fixedResetAt;
+        resetIn = (fixedResetAt - at) / 1000;
+      }
+    }
     if (old && (rate.limitPerHour !== old.limit || rate.pointsSpentThisHour < old.spent ||
         at >= old.measuredAt + old.resetIn * 1000 ||
-        Math.abs((at + rate.pointsResetIn * 1000) - (old.measuredAt + old.resetIn * 1000)) > 10_000)) {
+        Math.abs(resetAt - (old.measuredAt + old.resetIn * 1000)) > 10_000)) {
       throw this.stop('quota-window-changed');
     }
     // Charge all observed use, including concurrent foreground use. Conservatively
@@ -149,7 +173,7 @@ export class MaintenanceBudget {
       this.state.pointEstimate = Math.ceil(delta / this.state.unmeasuredGraphql) * 2;
     }
     this.state.points = { limit: rate.limitPerHour, spent: rate.pointsSpentThisHour,
-      resetIn: rate.pointsResetIn, measuredAt: at,
+      resetIn, measuredAt: at,
       allowance: old?.allowance ?? Math.min(this.limits.points, Math.floor(rate.limitPerHour * this.limits.allowanceFraction)), jobSpent };
     this.state.unmeasuredGraphql = 0;
     this.publish();
@@ -159,6 +183,7 @@ export class MaintenanceBudget {
   transportOptions({ review = false, measure = false } = {}) {
     this.check();
     return {
+      now: this.now,
       signal: this.controller.signal,
       timeoutMs: Math.min(this.limits.requestTimeoutMs, this.state.deadline - this.now()),
       maxAttempts: this.limits.maxAttempts, maxResponseBytes: this.limits.responseBytes, omitErrorBody: true,
@@ -207,11 +232,12 @@ export function maintenanceClient(client, budget, { review = false } = {}) {
     const text = document.slice(0, start[0].length) +
       ` ${QUOTA_ALIAS}: rateLimitData { limitPerHour pointsSpentThisHour pointsResetIn } ` + document.slice(start[0].length);
     const admission = budget.transportOptions({ review, measure });
-    let attempts = null, quotaMeasured = false, phase = 'unknown', responseDiagnostic = null;
-    const options = { ...admission, onAttempt: (event) => {
+    let attempts = null, graphqlAttempt = null, quotaMeasured = false, phase = 'unknown', responseDiagnostic = null;
+    const options = bindWclRequestIdentity({ ...admission, onAttempt: (event) => {
       if (Number.isSafeInteger(event.attempt) && event.attempt >= 1) attempts = event.attempt;
+      if (event.kind === 'graphql') graphqlAttempt = { attempt: event.attempt, count: event.count };
       return admission.onAttempt(event);
-    } };
+    } });
     active = true;
     requestDiagnostic = null;
     const task = (async () => {
@@ -226,7 +252,7 @@ export function maintenanceClient(client, budget, { review = false } = {}) {
         phase = 'job-admission'; budget.check();
         phase = 'quota-observation';
         const before = budget.state.points;
-        try { budget.observeQuota(data?.[QUOTA_ALIAS]); }
+        try { budget.observeQuota(data?.[QUOTA_ALIAS], data, { options, ...graphqlAttempt }); }
         finally {
           quotaMeasured = budget.state.points !== before;
           // Native quota reconciliation/settlement is committed before any data

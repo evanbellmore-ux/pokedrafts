@@ -17,6 +17,15 @@ export class WclTransportError extends Error {
 // is added to the exception, including exceptions thrown by caller observers.
 const requestDiagnostics = new WeakMap();
 const responseDiagnostics = new WeakMap();
+// Successful response identity binds the quota timing to its exact GraphQL
+// attempt. No provider-controlled field or OAuth/failed attempt can supply it.
+const requestIdentity = Symbol('wcl-maintenance-operation');
+const requestIdentities = new WeakSet();
+const identityFor = (options) => {
+    const identity = options?.[requestIdentity];
+    return identity !== null && typeof identity === 'object' && requestIdentities.has(identity) ? identity : null;
+};
+const responseTimings = new WeakMap();
 const objectKey = (value) => value !== null && (typeof value === 'object' || typeof value === 'function');
 const record = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
 const httpStatus = (value) => Number.isInteger(value) && value >= 100 && value <= 599 ? value : null;
@@ -27,6 +36,24 @@ export function getWclRequestDiagnostic(error) {
 export function getWclResponseDiagnostic(data) {
     const saved = objectKey(data) ? responseDiagnostics.get(data) : undefined;
     return saved ? Object.freeze({ ...saved }) : null;
+}
+export function getWclResponseTiming(data, expectedOptions) {
+    const saved = objectKey(data) ? responseTimings.get(data) : undefined;
+    if (!saved)
+        return null;
+    const expectedIdentity = expectedOptions === undefined ? null : identityFor(expectedOptions);
+    return expectedOptions === undefined || saved.options === expectedOptions || expectedIdentity !== null && expectedIdentity === saved.identity
+        ? Object.freeze({ ...saved.timing }) : null;
+}
+/** Fresh caller-owned options receive one logical-operation capability. Symbol
+ * identity survives deliberate observer wrappers/spreads but never JSON input. */
+export function bindWclRequestIdentity(options) {
+    if (!options || typeof options !== 'object' || identityFor(options) !== null)
+        throw new TypeError('Fresh transport options required');
+    const identity = Object.freeze({});
+    requestIdentities.add(identity);
+    Object.defineProperty(options, requestIdentity, { value: identity, enumerable: true });
+    return options;
 }
 const GRAPHQL_CATEGORIES = Object.freeze({
     RATE_LIMITED: 'rate-limit', RATE_LIMIT_EXCEEDED: 'rate-limit', TOO_MANY_REQUESTS: 'rate-limit',
@@ -48,6 +75,8 @@ const transportKey = Symbol('transport');
 // Nested authenticate/exchangeToken calls share the query's controller and
 // counters, rather than resetting its deadline or adding another retry layer.
 class Transport {
+    sourceOptions;
+    requestIdentity;
     options;
     controller = new AbortController();
     attempt = 1;
@@ -76,12 +105,16 @@ class Transport {
         }
         if (options.signal !== undefined && !(options.signal instanceof AbortSignal))
             throw new TypeError('signal must be an AbortSignal');
+        if (options.now !== undefined && typeof options.now !== 'function')
+            throw new TypeError('now must be a function');
         for (const key of ['onAttempt', 'onResponseBytes']) {
             if (options[key] !== undefined && typeof options[key] !== 'function')
                 throw new TypeError(`${key} must be a function`);
         }
         if (options.omitErrorBody !== undefined && typeof options.omitErrorBody !== 'boolean')
             throw new TypeError('omitErrorBody must be a boolean');
+        this.sourceOptions = options;
+        this.requestIdentity = identityFor(options);
         this.options = { ...options, signal: this.controller.signal, [transportKey]: this };
         this.callerSignal = options.signal;
         if (this.callerSignal?.aborted)
@@ -139,6 +172,17 @@ class Transport {
     errorBody(text) {
         return this.options.omitErrorBody ? '' : text;
     }
+    wallTime() {
+        try {
+            const at = (this.options.now ?? Date.now)();
+            if (!Number.isSafeInteger(at) || at < 0)
+                throw new TypeError('Invalid transport wall clock');
+            return at;
+        }
+        catch (error) {
+            throw this.stop(error);
+        }
+    }
     async fetch(kind, url, init) {
         this.phase = kind === 'oauth' ? 'oauth-fetch' : 'graphql-fetch';
         this.status = null;
@@ -157,6 +201,7 @@ class Transport {
         }
         this.check();
         this.phase = kind === 'oauth' ? 'oauth-fetch' : 'graphql-fetch';
+        const dispatchedAt = this.wallTime();
         let res;
         try {
             res = await fetch(url, { ...init, signal: this.controller.signal });
@@ -164,8 +209,12 @@ class Transport {
         catch (error) {
             throw this.diagnose(error);
         }
+        let headersAt;
         this.status = httpStatus(res.status);
         try {
+            headersAt = this.wallTime();
+            if (headersAt < dispatchedAt)
+                throw this.stop(new TypeError('Transport wall clock regressed'));
             this.check();
         }
         catch (error) {
@@ -173,7 +222,7 @@ class Transport {
             await res.body?.cancel(error).catch(() => { });
             throw error;
         }
-        return { res, event };
+        return { res, event, timing: Object.freeze({ dispatchedAt, headersAt, attempt: event.attempt, count: event.count }) };
     }
     async text(res, event) {
         const phase = event.kind === 'oauth' ? 'oauth-body' : 'graphql-body';
@@ -405,7 +454,7 @@ export class WclClient {
                     continue;
                 }
                 this.queries++;
-                const { res, event } = response;
+                const { res, event, timing } = response;
                 const text = await transport.text(res, event);
                 transport.check();
                 transport.phase = 'graphql-response';
@@ -468,9 +517,11 @@ export class WclClient {
                 }
                 if (!json.data)
                     throw transport.diagnose(new WclError('Response contained no data', res.status, errorBody.slice(0, 500)), 'response-contract');
-                if (objectKey(json.data))
+                if (objectKey(json.data)) {
                     responseDiagnostics.set(json.data, Object.freeze({ classification: 'unknown', phase: 'graphql-response',
                         httpStatus: transport.status, graphqlCategory: null, attempts: attempt, retries: Math.max(0, attempt - 1) }));
+                    responseTimings.set(json.data, { timing, options: transport.sourceOptions, identity: transport.requestIdentity });
+                }
                 return json.data;
             }
             throw lastError instanceof Error ? lastError : new Error('Query failed after retries');

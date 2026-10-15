@@ -20,7 +20,7 @@ function cancelRaidReview(clear = false) {
   raidReviewGeneration++;
   raidReviewController?.abort(); raidReviewController = null; raidReviewRunning = false;
   if (clear) {
-    raidReviewContext = null; raidReviewResults = []; raidReviewDone = new Set(); raidReviewMessage = '';
+    raidReviewContext = null; raidReviewResults = []; raidReviewDone = new Set(); raidReviewUncertain = new Set(); raidReviewMessage = '';
     $('raidExecution').style.display = 'none';
     $('raidExecutionResults').innerHTML = '';
   } else {
@@ -52,6 +52,7 @@ function prepareRaidReview(character, request) {
 }
 function raidReviewFriendlyReason(reason) {
   const text = String(reason || '').toLowerCase();
+  if (/live-window-incompatible|accounting-unavailable|live-(?:claim-(?:failed|timeout|invalid)|checkpoint|release|lock-lost|ledger-changed|store|lease-expired)/.test(text)) return 'The log service could not verify this request. Collected results are kept; you can continue with any remaining bosses later.';
   if (/busy|lease|already.*running/.test(text)) return 'Another execution review is running. Continue this review after it finishes.';
   if (/quota|budget|rate.?limit|reserve|point-cap|account-background-cap/.test(text)) return 'The log service allowance is temporarily exhausted. Collected results are kept; continue later.';
   if (/hidden|private/.test(text)) return 'Public log evidence is unavailable for this character.';
@@ -84,29 +85,47 @@ async function startRaidReview() {
     if (!raidReviewCurrent(generation, context)) return;
     raidReviewMessage = 'Reviewing ' + boss.name + ' · ' + raidReviewDone.size + ' of ' + context.bosses.length + ' bosses checked…';
     renderRaidReview();
+    let retrySafe = false;
     try {
       const res = await fetch(API + 'execution/raid', { method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: context.name, server: context.server, region: context.region,
           zone: context.zone, difficulty: context.difficulty, encounter: boss.id }), signal: raidReviewController?.signal });
+      retrySafe = res.status === 429;
       const data = await res.json();
       if (!raidReviewCurrent(generation, context)) return;
+      retrySafe ||= res.ok && /live-account-busy|native-account-busy/.test(String(data.reason || data.error || ''));
       if (!res.ok || data.error) throw new Error(data.reason || data.error || 'unavailable');
       if (!raidReviewMatches(data.review, context, boss)) throw new Error('unavailable');
       raidReviewResults = raidReviewResults.filter((review) => review.boss.id !== boss.id).concat(data.review);
-      const reason = data.review.acquisition?.reason || data.review.reason || '';
+      const acquisition = data.review.acquisition;
+      const reason = [acquisition?.reason, data.review.reason, acquisition?.accountingReason, acquisition?.cacheReason].filter(Boolean).join(' ');
+      const uncertain = acquisition?.accountingPersistence === 'unavailable' || acquisition?.cachePersistence === 'unavailable'
+        || /live-window-incompatible|live-(?:claim-(?:failed|timeout|invalid)|checkpoint|release|lock-lost|ledger-changed|store|lease-expired)/.test(reason);
+      if (uncertain) {
+        // A failed accounting attempt is retained, never replayed by Continue.
+        raidReviewDone.add(boss.id); raidReviewUncertain.add(boss.id);
+        if (data.review.status === 'complete') raidReviewResults = raidReviewResults.map((review) => review.boss.id === boss.id
+          ? { ...review, status: 'partial', reason: reason || 'accounting-unavailable' } : review);
+        raidReviewMessage = raidReviewFriendlyReason('accounting-unavailable'); break;
+      }
       if (/busy|quota|budget|rate.?limit|reserve|point-cap|account-background-cap/.test(reason)) {
         raidReviewMessage = raidReviewFriendlyReason(reason); break;
       }
       raidReviewDone.add(boss.id);
     } catch (error) {
       if (!raidReviewCurrent(generation, context)) return;
-      raidReviewMessage = raidReviewFriendlyReason(error.message); break;
+      if (!retrySafe) {
+        raidReviewDone.add(boss.id); raidReviewUncertain.add(boss.id);
+        raidReviewMessage = raidReviewFriendlyReason('accounting-unavailable');
+      } else raidReviewMessage = raidReviewFriendlyReason(retrySafe && /json|token/i.test(error.message) ? 'rate-limit' : error.message);
+      break;
     }
   }
   if (!raidReviewCurrent(generation, context)) return;
   raidReviewRunning = false; raidReviewController = null;
   if (raidReviewDone.size === context.bosses.length)
-    raidReviewMessage = 'Review complete · public kills from the reviewed patches. Bosses without enough evidence remain ungraded.';
+    raidReviewMessage = raidReviewUncertain.size ? raidReviewFriendlyReason('accounting-unavailable')
+      : 'Review complete · public kills from the reviewed patches. Bosses without enough evidence remain ungraded.';
   renderRaidReview();
 }
 function raidReviewNumber(value) {
@@ -234,9 +253,11 @@ function raidReviewBoss(boss, grade, review) {
 function renderRaidReview() {
   const context = raidReviewContext; if (!context) return;
   const start = $('raidExecutionStart');
-  start.textContent = raidReviewRunning ? 'Reviewing raid…' : raidReviewDone.size === context.bosses.length
+  start.textContent = raidReviewRunning ? 'Reviewing raid…' : raidReviewDone.size === context.bosses.length && raidReviewUncertain.size
+    ? 'Review stopped' : raidReviewDone.size === context.bosses.length
     ? 'Review raid again' : raidReviewDone.size || raidReviewResults.length ? 'Continue raid review' : 'Review raid execution';
-  start.disabled = raidReviewRunning || context.zone !== RAID_REVIEW_SCOPE.zone || context.difficulty !== RAID_REVIEW_SCOPE.difficulty
+  start.disabled = raidReviewRunning || (raidReviewDone.size === context.bosses.length && raidReviewUncertain.size > 0)
+    || context.zone !== RAID_REVIEW_SCOPE.zone || context.difficulty !== RAID_REVIEW_SCOPE.difficulty
     || window.MIRROR_EXECUTION_CAPABILITIES?.reference !== true;
   $('raidExecutionCancel').style.display = raidReviewRunning ? '' : 'none';
   $('raidExecutionProgress').textContent = raidReviewMessage;
@@ -333,7 +354,7 @@ export function adaptRaidReview(html) {
     raidReviewBoss, renderRaidReview, bindRaidReview];
   const emitted = '// BEGIN CASTMIRROR RAID REVIEW\nconst RAID_REVIEW_SCOPE = Object.freeze(' + JSON.stringify(scope) + ');\n'
     + 'let raidReviewContext = null, raidReviewGeneration = 0, raidReviewController = null, raidReviewRunning = false;\n'
-    + 'let raidReviewResults = [], raidReviewDone = new Set(), raidReviewMessage = "";\n'
+    + 'let raidReviewResults = [], raidReviewDone = new Set(), raidReviewUncertain = new Set(), raidReviewMessage = "";\n'
     + emitRaidGradeModel() + '\n' + emitHelpers(import.meta.url, helpers.map((fn) => fn.name))
     + '\nbindRaidReview();\n// END CASTMIRROR RAID REVIEW\n';
   // The hosted page has two scripts: configuration, then the one application.
