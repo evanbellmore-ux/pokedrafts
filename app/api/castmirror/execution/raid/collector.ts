@@ -13,7 +13,7 @@ export const RAID_REVIEW_VERSION = 'raid-execution-review-1';
 export const RAID_REVIEW_TTL_MS = 600_000;
 export const RAID_REVIEW_RULES_VERSION = 'reviewed-contact-rubric-1-' + createHash('sha256')
   .update(JSON.stringify([catalog, reviewedScopes])).digest('hex').slice(0, 16);
-export const RAID_REVIEW_SELECTION = 'latest-six-reviewed-public-kills-2';
+export const RAID_REVIEW_SELECTION = 'latest-six-reviewed-public-kills-3';
 export const RAID_REVIEW_SCOPE = catalog.scope;
 export const RAID_REVIEW_BOSSES = catalog.encounters.map(({ encounter, name }) => ({ id: encounter, name }));
 export interface RaidReviewRequest { name: string; server: string; region: 'us' | 'eu' | 'kr' | 'tw'; zone: number; difficulty: number; encounter: number }
@@ -153,7 +153,7 @@ function verifyFight(head: Head, candidate: Candidate, request: RaidReviewReques
   requireEvidence(fight.kill === true && fight.encounterID === request.encounter && fight.difficulty === request.difficulty
     && fight.size === catalog.scope.size && finite(fight.startTime) && finite(fight.endTime) && fight.endTime > fight.startTime
     && head.startTime + fight.endTime <= head.endTime && head.startTime + fight.startTime === candidate.date
-    && Array.isArray(fight.friendlyPlayers) && fight.friendlyPlayers.length >= 20 && fight.friendlyPlayers.length <= 40
+    && Array.isArray(fight.friendlyPlayers) && fight.friendlyPlayers.length > 0 && fight.friendlyPlayers.length <= 40
     && fight.friendlyPlayers.every(positiveID) && new Set(fight.friendlyPlayers).size === fight.friendlyPlayers.length, 'fight-scope-unverified');
   const players = fight.friendlyPlayers as number[];
   requireEvidence(players.every((id) => head.actors.some((a) => a.id === id && a.type === 'Player')), 'fight-roster-unverified');
@@ -254,7 +254,7 @@ function summarize(head: Head, fight: Row, actor: Row, role: RaidRole, candidate
   }
   const limitations = names.filter((n) => !streams[n].complete).map((n) => `${n}: ${streams[n].reason ?? 'incomplete-event-stream'}`);
   if (head.mixedZone) limitations.push('Mixed report raid label; scope verified from an explicit reviewed-partition character ranking and exact encounter, difficulty and size.');
-  if (roster.length > 20) limitations.push(`The provider lists ${roster.length} participant identities in this ranked 20-player kill; both public roster sources agree. The reason for extra identities is unknown.`);
+  if (roster.length !== 20) limitations.push(`The provider lists ${roster.length} participant identities in this ranked 20-player kill; both public roster sources agree. The reason this differs from the nominal fight size is unknown.`);
   if (reviewedAbilities.length < reviewed.abilities.length) limitations.push(`Patch ${candidate.scope.patch} has a narrower reviewed mechanic list; omitted abilities are unreviewed, not observed zero contacts.`);
   limitations.push('Interrupt and dispel assignments are unknown; counts describe successful logged actions, not missed opportunities.',
     'Consumed shields credit only this player on other roster players; self, pets and inferred reduction are excluded.',

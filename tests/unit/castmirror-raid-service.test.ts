@@ -61,7 +61,7 @@ function fixture(options: FixtureOptions = {}) {
         masterData: { actors: outActors, abilities: [...boss.abilities.map((a) => ({ gameID: a.abilityID, name: a.name })), { gameID: 209426, name: 'Darkness' }] },
         fights: ranks.map((r) => ({ id: r.report.fightID, encounterID: options.malformed === 'encounter' ? 99 : encounter, difficulty: 5, size: 20,
           kill: true, startTime: 1000 + r.report.fightID * 10_000, endTime: 301000 + r.report.fightID * 10_000,
-          friendlyPlayers: options.malformed === 'roster' ? players.slice(1) : players })) } } };
+          friendlyPlayers: options.malformed === 'roster' ? players.slice(1) : options.malformed === 'roster-mismatch' ? players.slice(0, -1) : players })) } } };
     }
     assert.ok(document.includes('events('), 'unexpected query');
     const fightID = (variables.fid as number[])[0];
@@ -223,6 +223,21 @@ describe('raid Execution bounded public collector', () => {
     assert.ok(review.fights[0].limitations.some((s) => s.startsWith('The provider lists 21 participant identities')));
     const capped = await collect(fixture({ participantIdentities: 41 }));
     assert.equal(capped.status, 'unavailable'); assert.equal(capped.fights.length, 0);
+  });
+  test('a ranked Mythic 20-player kill with 19 matching participant identities retains the verified raider', async () => {
+    const review = await collect(fixture({ participantIdentities: 19 }));
+    assert.equal(review.status, 'complete'); assert.equal(review.scope.size, 20);
+    assert.equal(review.fights.length, 1); assert.equal(review.fights[0].actorID, 1);
+    assert.equal(review.fights[0].damage.complete, true); assert.equal(review.fights[0].survival.complete, true);
+    assert.ok(review.fights[0].limitations.some((s) => s.startsWith('The provider lists 19 participant identities') && s.includes('nominal fight size is unknown')));
+  });
+  test('empty or disagreeing participant rosters cannot become a graded kill', async () => {
+    for (const options of [{ participantIdentities: 0 }, { malformed: 'roster-mismatch' }]) {
+      const review = await collect(fixture(options));
+      assert.equal(review.status, 'unavailable'); assert.equal(review.fights.length, 0);
+      assert.equal(gradeBoss(review).letter, null);
+      assert.equal(review.reason, options.participantIdentities === 0 ? 'fight-scope-unverified' : 'player-roster-unverified');
+    }
   });
   test('no current public kills is unavailable without a report crawl', async () => {
     const f = fixture({ kills: 0 }); const review = await collect(f);

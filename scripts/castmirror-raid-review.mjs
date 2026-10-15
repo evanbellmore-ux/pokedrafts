@@ -168,7 +168,7 @@ function raidReviewFight(fight, fallbackScope) {
   const complete = fight.damage?.complete && fight.survival?.complete;
   const deaths = Array.isArray(fight.survival?.deaths) ? fight.survival.deaths.length : null;
   item.append(textNode('p', (fight.damage?.complete ? '' : 'Observed ≥ ') + raidReviewNumber(fight.damage?.avoidableHealth)
-    + ' reviewed avoidable health damage · ' + (!fight.survival?.complete ? 'death evidence incomplete'
+    + ' reviewed mechanic health damage · ' + (!fight.survival?.complete ? 'death evidence incomplete'
       : deaths === null ? 'deaths unavailable' : deaths + ' deaths') + (complete ? '' : ' · partial evidence'), 'hint'));
   for (const ability of fight.damage?.abilities || []) {
     if (!(ability.hits > 0)) continue;
