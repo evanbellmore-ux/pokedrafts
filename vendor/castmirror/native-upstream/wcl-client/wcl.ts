@@ -33,6 +33,8 @@ export interface TransportBytes extends TransportAttempt {
 
 /** Opt-in limits for one logical operation, including auth and retry waits. */
 export interface WclTransportOptions {
+  /** Wall clock shared with a caller's accounting budget; deadlines still use performance.now(). */
+  now?: () => number;
   signal?: AbortSignal;
   timeoutMs?: number;
   /** Retry rounds, including auth failures; defaults to five. Each round can send OAuth + GraphQL. */
@@ -70,6 +72,22 @@ export interface WclRequestDiagnostic {
 // is added to the exception, including exceptions thrown by caller observers.
 const requestDiagnostics = new WeakMap<object, { operation: symbol; diagnostic: WclRequestDiagnostic }>();
 const responseDiagnostics = new WeakMap<object, WclRequestDiagnostic>();
+export interface WclResponseTiming {
+  readonly dispatchedAt: number;
+  readonly headersAt: number;
+  readonly attempt: number;
+  readonly count: number;
+}
+// Successful response identity binds the quota timing to its exact GraphQL
+// attempt. No provider-controlled field or OAuth/failed attempt can supply it.
+const requestIdentity = Symbol('wcl-maintenance-operation');
+const requestIdentities = new WeakSet<object>();
+type IdentifiedOptions = WclTransportOptions & { [requestIdentity]?: object };
+const identityFor = (options: WclTransportOptions): object | null => {
+  const identity = (options as IdentifiedOptions)?.[requestIdentity];
+  return identity !== null && typeof identity === 'object' && requestIdentities.has(identity) ? identity : null;
+};
+const responseTimings = new WeakMap<object, { timing: WclResponseTiming; options: WclTransportOptions; identity: object | null }>();
 const objectKey = (value: unknown): value is object => value !== null && (typeof value === 'object' || typeof value === 'function');
 const record = (value: unknown): value is Record<string, unknown> => value !== null && typeof value === 'object' && !Array.isArray(value);
 const httpStatus = (value: number): number | null => Number.isInteger(value) && value >= 100 && value <= 599 ? value : null;
@@ -82,6 +100,23 @@ export function getWclRequestDiagnostic(error: unknown): WclRequestDiagnostic | 
 export function getWclResponseDiagnostic(data: unknown): WclRequestDiagnostic | null {
   const saved = objectKey(data) ? responseDiagnostics.get(data) : undefined;
   return saved ? Object.freeze({ ...saved }) : null;
+}
+
+export function getWclResponseTiming(data: unknown, expectedOptions?: WclTransportOptions): WclResponseTiming | null {
+  const saved = objectKey(data) ? responseTimings.get(data) : undefined;
+  if (!saved) return null;
+  const expectedIdentity = expectedOptions === undefined ? null : identityFor(expectedOptions);
+  return expectedOptions === undefined || saved.options === expectedOptions || expectedIdentity !== null && expectedIdentity === saved.identity
+    ? Object.freeze({ ...saved.timing }) : null;
+}
+
+/** Fresh caller-owned options receive one logical-operation capability. Symbol
+ * identity survives deliberate observer wrappers/spreads but never JSON input. */
+export function bindWclRequestIdentity<T extends WclTransportOptions>(options: T): T {
+  if (!options || typeof options !== 'object' || identityFor(options) !== null) throw new TypeError('Fresh transport options required');
+  const identity = Object.freeze({}); requestIdentities.add(identity);
+  Object.defineProperty(options, requestIdentity, { value: identity, enumerable: true });
+  return options;
 }
 
 type GraphQLError = { message: string; extensions?: unknown };
@@ -107,6 +142,8 @@ type ScopedOptions = WclTransportOptions & { [transportKey]?: Transport };
 // Nested authenticate/exchangeToken calls share the query's controller and
 // counters, rather than resetting its deadline or adding another retry layer.
 class Transport {
+  sourceOptions: WclTransportOptions;
+  requestIdentity: object | null;
   options: ScopedOptions;
   controller = new AbortController();
   attempt = 1;
@@ -135,11 +172,14 @@ class Transport {
       }
     }
     if (options.signal !== undefined && !(options.signal instanceof AbortSignal)) throw new TypeError('signal must be an AbortSignal');
+    if (options.now !== undefined && typeof options.now !== 'function') throw new TypeError('now must be a function');
     for (const key of ['onAttempt', 'onResponseBytes'] as const) {
       if (options[key] !== undefined && typeof options[key] !== 'function') throw new TypeError(`${key} must be a function`);
     }
     if (options.omitErrorBody !== undefined && typeof options.omitErrorBody !== 'boolean') throw new TypeError('omitErrorBody must be a boolean');
 
+    this.sourceOptions = options;
+    this.requestIdentity = identityFor(options);
     this.options = { ...options, signal: this.controller.signal, [transportKey]: this };
     this.callerSignal = options.signal;
     if (this.callerSignal?.aborted) this.onAbort();
@@ -194,7 +234,15 @@ class Transport {
     return this.options.omitErrorBody ? '' : text;
   }
 
-  async fetch(kind: TransportAttempt['kind'], url: string, init: RequestInit): Promise<{ res: Response; event: TransportAttempt }> {
+  wallTime(): number {
+    try {
+      const at = (this.options.now ?? Date.now)();
+      if (!Number.isSafeInteger(at) || at < 0) throw new TypeError('Invalid transport wall clock');
+      return at;
+    } catch (error) { throw this.stop(error); }
+  }
+
+  async fetch(kind: TransportAttempt['kind'], url: string, init: RequestInit): Promise<{ res: Response; event: TransportAttempt; timing: WclResponseTiming }> {
     this.phase = kind === 'oauth' ? 'oauth-fetch' : 'graphql-fetch';
     this.status = null; this.graphql = null;
     this.check();
@@ -208,18 +256,22 @@ class Transport {
     }
     this.check();
     this.phase = kind === 'oauth' ? 'oauth-fetch' : 'graphql-fetch';
+    const dispatchedAt = this.wallTime();
     let res: Response;
     try { res = await fetch(url, { ...init, signal: this.controller.signal }); }
     catch (error) { throw this.diagnose(error); }
+    let headersAt: number;
     this.status = httpStatus(res.status);
     try {
+      headersAt = this.wallTime();
+      if (headersAt < dispatchedAt) throw this.stop(new TypeError('Transport wall clock regressed'));
       this.check();
     } catch (error) {
       // A fetch can resolve just as the signal aborts, before a reader exists.
       await res.body?.cancel(error).catch(() => {});
       throw error;
     }
-    return { res, event };
+    return { res, event, timing: Object.freeze({ dispatchedAt, headersAt, attempt: event.attempt, count: event.count }) };
   }
 
   async text(res: Response, event: TransportAttempt): Promise<string> {
@@ -443,7 +495,7 @@ export class WclClient {
 
       for (let attempt = 1; attempt <= maxAttempts; attempt++) {
         transport.attempt = attempt;
-        let response: { res: Response; event: TransportAttempt };
+        let response: { res: Response; event: TransportAttempt; timing: WclResponseTiming };
         try {
           // Token fetch shares the retry path: a transient failure hitting the
           // OAuth endpoint mid-crawl must not abort a multi-hundred-report run.
@@ -472,7 +524,7 @@ export class WclClient {
         }
 
         this.queries++;
-        const { res, event } = response;
+        const { res, event, timing } = response;
         const text = await transport.text(res, event);
         transport.check();
         transport.phase = 'graphql-response';
@@ -537,8 +589,11 @@ export class WclClient {
         }
 
         if (!json.data) throw transport.diagnose(new WclError('Response contained no data', res.status, errorBody.slice(0, 500)), 'response-contract');
-        if (objectKey(json.data)) responseDiagnostics.set(json.data, Object.freeze({ classification: 'unknown', phase: 'graphql-response',
-          httpStatus: transport.status, graphqlCategory: null, attempts: attempt, retries: Math.max(0, attempt - 1) }));
+        if (objectKey(json.data)) {
+          responseDiagnostics.set(json.data, Object.freeze({ classification: 'unknown', phase: 'graphql-response',
+            httpStatus: transport.status, graphqlCategory: null, attempts: attempt, retries: Math.max(0, attempt - 1) }));
+          responseTimings.set(json.data, { timing, options: transport.sourceOptions, identity: transport.requestIdentity });
+        }
         return json.data;
       }
 

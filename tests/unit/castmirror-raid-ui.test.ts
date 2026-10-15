@@ -154,6 +154,86 @@ describe('CastMirror raid execution review UI', () => {
     assert.equal(page.nodes.get('raidExecutionStart').textContent, 'Continue raid review');
   });
 
+  for (const failure of ['live-window-incompatible', 'accountingPersistence', 'cachePersistence']) test(`stops and retains an uncertain ${failure} without replay on Continue`, async () => {
+    const encounters: number[] = [];
+    const page = await pageFixture((_url, options) => {
+      const encounter = JSON.parse(String(options.body)).encounter;
+      encounters.push(encounter);
+      const result = review(encounter); result.status = 'unavailable'; result.fights = [];
+      if (encounters.length > 1) result.reason = 'live-account-busy';
+      else if (failure === 'live-window-incompatible') result.reason = failure;
+      else result.acquisition = { [failure]: 'unavailable' } as NonNullable<RaidBossReview['acquisition']>;
+      return { review: result };
+    }); ready(page);
+    await page.nodes.get('raidExecutionStart').click();
+    assert.deepEqual(encounters, [bosses[0].id]);
+    assert.match(page.nodes.get('raidExecutionProgress').textContent, /could not verify this request.*remaining bosses later/);
+    assert.match(page.nodes.get('raidExecutionResults').htmlTree(), /0 of 10 bosses graded/);
+    assert.equal(page.evaluate(`raidReviewDone.has(${bosses[0].id})`), true);
+    await page.nodes.get('raidExecutionStart').click();
+    assert.deepEqual(encounters, [bosses[0].id, bosses[1].id]);
+  });
+
+  test('a final uncertain boss retains the failure message and cannot restart the uncertain requests', async () => {
+    const page = await pageFixture((_url, options) => {
+      const result = review(JSON.parse(String(options.body)).encounter);
+      result.status = 'unavailable'; result.reason = 'live-window-incompatible'; result.fights = [];
+      return { review: result };
+    }); ready(page);
+    page.evaluate(`raidReviewDone = new Set(RAID_REVIEW_SCOPE.bosses.slice(0,-1).map(boss => boss.id))`);
+    await page.nodes.get('raidExecutionStart').click();
+    assert.equal(raidRequests(page).length, 1);
+    assert.match(page.nodes.get('raidExecutionProgress').textContent, /could not verify this request/);
+    assert.doesNotMatch(page.nodes.get('raidExecutionProgress').textContent, /Review complete/);
+    assert.equal(page.nodes.get('raidExecutionStart').disabled, true);
+    assert.equal(page.nodes.get('raidExecutionStart').textContent, 'Review stopped');
+    await page.evaluate('startRaidReview()');
+    assert.equal(raidRequests(page).length, 1);
+  });
+
+  test('an early uncertain boss remains visibly stopped after the remaining bosses finish', async () => {
+    let count = 0;
+    const page = await pageFixture((_url, options) => {
+      const result = review(JSON.parse(String(options.body)).encounter);
+      if (++count === 1) { result.status = 'unavailable'; result.reason = 'live-window-incompatible'; result.fights = []; }
+      return { review: result };
+    }); ready(page);
+    await page.nodes.get('raidExecutionStart').click();
+    await page.nodes.get('raidExecutionStart').click();
+    assert.equal(raidRequests(page).length, 10);
+    assert.match(page.nodes.get('raidExecutionProgress').textContent, /could not verify this request/);
+    assert.doesNotMatch(page.nodes.get('raidExecutionProgress').textContent, /Reviewing|Review complete/);
+    assert.equal(page.nodes.get('raidExecutionStart').disabled, true);
+  });
+
+  for (const failure of ['http-503', 'invalid-json', 'transport']) test(`does not replay an ambiguous ${failure} on Continue`, async () => {
+    const encounters: number[] = [];
+    const page = await pageFixture((_url, options) => {
+      const encounter = JSON.parse(String(options.body)).encounter; encounters.push(encounter);
+      if (encounters.length === 1) {
+        if (failure === 'transport') throw new Error('Synthetic connection failure');
+        return new Response(failure === 'invalid-json' ? 'Not JSON' : JSON.stringify({ error: 'runtime-close-failed' }),
+          { status: failure === 'invalid-json' ? 200 : 503 });
+      }
+      const result = review(encounter); result.status = 'unavailable'; result.reason = 'live-account-busy'; result.fights = [];
+      return { review: result };
+    }); ready(page);
+    await page.nodes.get('raidExecutionStart').click();
+    assert.equal(page.evaluate(`raidReviewUncertain.has(${bosses[0].id})`), true);
+    await page.nodes.get('raidExecutionStart').click();
+    assert.deepEqual(encounters, [bosses[0].id, bosses[1].id]);
+  });
+
+  test('a definite HTTP429 stays deferred and can retry only on another click', async () => {
+    const page = await pageFixture(() => new Response(JSON.stringify({ error: 'rate-limit' }), { status: 429 })); ready(page);
+    await page.nodes.get('raidExecutionStart').click();
+    assert.equal(raidRequests(page).length, 1);
+    assert.equal(page.evaluate('raidReviewUncertain.size'), 0);
+    assert.equal(page.evaluate('raidReviewDone.size'), 0);
+    await page.nodes.get('raidExecutionStart').click();
+    assert.equal(raidRequests(page).length, 2);
+  });
+
   test('blocks unsupported difficulty and disabled hosted capability even through the direct handler', async () => {
     const page = await pageFixture(); ready(page);
     page.nodes.get('difficulty').value = '4';
@@ -172,7 +252,7 @@ describe('CastMirror raid execution review UI', () => {
     await page.nodes.get('raidExecutionStart').click();
     assert.equal(raidRequests(page).length, 1);
     assert.equal(page.nodes.get('raidExecutionResults').htmlTree(), '');
-    assert.match(page.nodes.get('raidExecutionProgress').textContent, /Evidence is unavailable/);
+    assert.match(page.nodes.get('raidExecutionProgress').textContent, /could not verify this request/);
   });
 
   test('does not build source links from unverified report identities', async () => {
