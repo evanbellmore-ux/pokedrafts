@@ -143,6 +143,23 @@ afterEach(() => {
   vi.unstubAllEnvs();
 });
 
+describe("public saved Cast Mirror guild review", () => {
+  it("allows the published guild ranking without a signed-in session", async () => {
+    const response = await run("/castmirror/guild-execution", { claims: null });
+    expect(response.status).toBe(200);
+    expect(response.headers.get("location")).toBeNull();
+  });
+
+  it.each(["/castmirror/guild-execution/admin", "/castmirror/private"])(
+    "does not make neighboring routes public: %s", async (pathname) => {
+      const response = await run(pathname, { claims: null });
+      expect(response.status).toBe(307);
+      expect(location(response).pathname).toBe("/login");
+      expect(location(response).searchParams.get("next")).toBe(pathname);
+    },
+  );
+});
+
 describe("proxy: refreshed cookies and cache headers survive every response", () => {
   it("pass-through response carries the refreshed cookies and Cache-Control", async () => {
     const response = await run("/dashboard", {

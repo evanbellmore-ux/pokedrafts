@@ -159,3 +159,91 @@ export interface RaidContactEvent {
   health: number;
   absorbed: number;
 }
+
+export interface RaidRankingOptions {
+  /** Primary uses most gradeable kills in the selected patch view; ties use dps, tank, healer. */
+  role?: "primary" | RaidRole;
+  /** "current" resolves only the explicit currentPatch or the review's anchored catalog patch. */
+  patch?: "all" | "current" | string;
+  currentPatch?: string;
+}
+
+export interface RaidRankingSelection {
+  reviews: RaidBossReview[];
+  role: RaidRole | null;
+  primaryRole: RaidRole | null;
+  tiedRoles: RaidRole[];
+  primaryRoleAmbiguous: boolean;
+  patch: string;
+  patchLabel: string;
+  exclusions: string[];
+}
+
+export interface RaidRankingBossAssessment {
+  boss: { id: number; name: string };
+  score: number | null;
+  letter: ExecutionLetter | null;
+  sampledKills: number;
+  gradeableKills: number;
+  /** Capped at three so repeated farming cannot overwhelm encounter balance. */
+  weight: number;
+  sampleSupported: boolean;
+  grade: RaidBossGrade;
+  sourcePatches: string[];
+  firstDate: number | null;
+  lastDate: number | null;
+}
+
+export interface RaidRankingAssessment {
+  version: "raid-ranking-assessment-1";
+  identity: { name: string; server: string; region: string } | null;
+  role: RaidRole | null;
+  primaryRole: RaidRole | null;
+  tiedRoles: RaidRole[];
+  primaryRoleAmbiguous: boolean;
+  patch: string;
+  patchLabel: string;
+  status: "graded" | "ungraded";
+  score: number | null;
+  letter: ExecutionLetter | null;
+  sample: "broader" | "limited";
+  sampleLabel: "Broader sample" | "Limited sample";
+  rankEligible: boolean;
+  sampledKills: number;
+  gradeableKills: number;
+  gradedBosses: number;
+  /** Bosses with at least three gradeable kills, independently of utility completeness. */
+  supportedBosses: number;
+  bosses: RaidRankingBossAssessment[];
+  utility: ExecutionUtility;
+  utilityConfidence: "complete" | "incomplete" | "unavailable";
+  sourcePatches: string[];
+  firstDate: number | null;
+  lastDate: number | null;
+  exclusions: string[];
+  provisional: true;
+  summary: string;
+}
+
+export interface SharedRaidRankingComparison {
+  version: "shared-raid-ranking-comparison-1";
+  status: "compared" | "insufficient-evidence";
+  reason: string;
+  role: RaidRole | null;
+  sharedFights: number;
+  sharedBosses: number;
+  sources: Array<{
+    code: string;
+    fightID: number;
+    bossID: number;
+    role: RaidRole;
+    partition: number;
+    patch: string;
+    actorA: number;
+    actorB: number;
+  }>;
+  a: RaidRankingAssessment;
+  b: RaidRankingAssessment;
+  exclusions: string[];
+  provisional: true;
+}

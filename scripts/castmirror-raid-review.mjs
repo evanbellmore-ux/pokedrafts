@@ -160,11 +160,16 @@ function raidReviewDateRange(fights) {
   const format = (date) => new Date(date).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
   return 'Sample dates: ' + format(first) + (first === last ? '' : ' – ' + format(last));
 }
+function raidReviewSupportNumber(utility, value) {
+  const complete = utility.observedFights > 0 && utility.completeFights === utility.observedFights;
+  return !complete && !(value > 0) ? 'Unverified' : (complete ? '' : 'Observed ≥ ') + raidReviewNumber(value);
+}
 function raidReviewUtility(utility) {
   const section = document.createElement('div'); section.className = 'raid-execution-utility';
   section.append(textNode('h4', 'Observed raid support'));
-  section.append(textNode('p', raidReviewNumber(utility.successfulInterrupts) + ' successful interrupts · '
-    + raidReviewNumber(utility.dispels) + ' dispels · ' + raidReviewNumber(utility.raidAbsorbed) + ' damage absorbed on teammates'));
+  const observed = (value) => raidReviewSupportNumber(utility, value);
+  section.append(textNode('p', observed(utility.successfulInterrupts) + ' successful interrupts · '
+    + observed(utility.dispels) + ' dispels · ' + observed(utility.raidAbsorbed) + ' damage absorbed on teammates'));
   for (const ability of utility.absorbAbilities || [])
     section.append(textNode('p', ability.name + ': ' + raidReviewNumber(ability.amount) + ' absorbed', 'hint'));
   section.append(textNode('p', 'These are observed contributions. Assignments and opportunities are unknown, so utility totals do not raise or lower the letter grade.', 'hint'));
@@ -210,7 +215,7 @@ function raidReviewBoss(boss, grade, review) {
   heading.append(textNode('strong', grade?.letter || 'Ungraded', 'raid-execution-boss-letter'));
   card.append(heading);
   if (!grade) {
-    card.append(textNode('p', raidReviewRunning ? 'Waiting for review.' : 'No evidence reviewed yet.', 'hint')); return card;
+    card.append(textNode('p', raidReviewDone.has(boss.id) ? 'No eligible evidence for this role and patch.' : raidReviewRunning ? 'Waiting for review.' : 'No evidence reviewed yet.', 'hint')); return card;
   }
   card.append(textNode('p', grade.summary));
   const patches = raidReviewPatchLabels(review ? [review] : []);
@@ -231,8 +236,8 @@ function raidReviewBoss(boss, grade, review) {
     card.append(textNode('p', role.role + ': ' + (role.letter || 'Ungraded') + (role.provisional ? ' (provisional)' : '')
       + ' · ' + role.sample.kills + ' kills', 'hint'));
   if (grade.utility.observedFights > 0) {
-    card.append(textNode('p', 'Observed support: ' + raidReviewNumber(grade.utility.successfulInterrupts) + ' successful interrupts · '
-      + raidReviewNumber(grade.utility.dispels) + ' dispels · ' + raidReviewNumber(grade.utility.raidAbsorbed) + ' absorbed on teammates', 'hint'));
+    card.append(textNode('p', 'Observed support: ' + raidReviewSupportNumber(grade.utility, grade.utility.successfulInterrupts) + ' successful interrupts · '
+      + raidReviewSupportNumber(grade.utility, grade.utility.dispels) + ' dispels · ' + raidReviewSupportNumber(grade.utility, grade.utility.raidAbsorbed) + ' absorbed on teammates', 'hint'));
     for (const ability of grade.utility.absorbAbilities || [])
       card.append(textNode('p', ability.name + ': ' + raidReviewNumber(ability.amount) + ' absorbed', 'hint'));
   }
@@ -265,20 +270,33 @@ function renderRaidReview() {
   $('raidExecutionProgress').textContent = raidReviewMessage;
   const root = $('raidExecutionResults'); root.innerHTML = '';
   if (!raidReviewResults.length) return;
-  const overall = gradeRaid(raidReviewResults, context.bosses.length);
+  const options = { role: $('raidExecutionRole').value || 'primary', patch: $('raidExecutionPatch').value || 'all', currentPatch: RAID_REVIEW_SCOPE.patch };
+  const ranking = assessRaidRanking(raidReviewResults, options);
+  const selected = selectRaidRankingReviews(raidReviewResults, options);
+  const overall = gradeRaid(selected.reviews, context.bosses.length);
+  const legacyOverall = gradeRaid(raidReviewResults, context.bosses.length);
   const assessment = document.createElement('div'); assessment.className = 'raid-execution-overall';
   const title = document.createElement('div'); title.className = 'raid-execution-grade';
-  title.append(textNode('strong', overall.letter || '—'));
-  title.append(textNode('span', overall.status === 'graded' ? 'Provisional non-damage grade' : 'Not enough evidence to grade'));
+  title.append(textNode('strong', ranking.letter || '—'));
+  title.append(textNode('span', ranking.score !== null ? 'Provisional non-damage grade · ' + ranking.role : 'Not enough evidence to grade'));
   assessment.append(title);
+  assessment.append(textNode('p', 'Evidence-adjusted execution · ' + (ranking.score === null ? 'Ungraded' : ranking.score + ' / 100')
+    + ' · ' + ranking.sampleLabel, 'raid-ranking-summary'));
+  assessment.append(textNode('p', ranking.primaryRoleAmbiguous && options.role === 'primary'
+    ? 'Primary role is tied; choose a role explicitly before comparison.' : ranking.rankEligible ? 'Enough repeated boss evidence for a supported comparison.'
+      : 'Limited evidence: score shown for coaching, without an authoritative placement.', 'hint'));
+  assessment.append(textNode('p', ranking.patchLabel + ' · primary role: ' + (ranking.primaryRole || 'unavailable'), 'hint'));
+  for (const exclusion of ranking.exclusions.filter((reason) => options.role === 'primary' || !reason.startsWith('Primary role tie')))
+    assessment.append(textNode('p', exclusion, 'hint'));
   assessment.append(textNode('p', 'An automated coaching rubric, not an official execution percentile.', 'hint'));
   assessment.append(textNode('p', context.name + ' · ' + context.server + ' · ' + context.zoneName + ' ' + (DIFF[context.difficulty] || '')));
-  const compatibleReviews = raidReviewResults.filter((review) => overall.bosses.some((boss) => boss.key === review.key));
+  const compatibleReviews = selected.reviews.filter((review) => overall.bosses.some((boss) => boss.key === review.key));
   const patches = raidReviewPatchLabels(compatibleReviews);
   assessment.append(textNode('p', patches.reviewed, 'hint'), textNode('p', patches.sampled, 'hint'));
   const dates = raidReviewDateRange(compatibleReviews.flatMap((review) => review.fights));
   if (dates) assessment.append(textNode('p', dates, 'hint'));
   assessment.append(textNode('p', overall.summary));
+  assessment.append(textNode('p', ranking.summary, 'hint'));
   assessment.append(textNode('p', overall.gradedBosses + ' of ' + overall.totalBosses + ' bosses graded · '
     + overall.bosses.reduce((sum, boss) => sum + boss.sample.kills, 0) + ' sampled kills', 'hint'));
   assessment.append(textNode('p', overall.bosses.reduce((sum, boss) => sum + boss.survival.confirmedAvoidableDeaths, 0)
@@ -291,11 +309,21 @@ function renderRaidReview() {
   root.append(assessment, raidReviewUtility(overall.utility));
   const grid = document.createElement('div'); grid.className = 'raid-execution-bosses';
   for (const boss of context.bosses) grid.append(raidReviewBoss(boss, overall.bosses.find((entry) => entry.boss.id === boss.id),
-    raidReviewResults.find((review) => review.boss.id === boss.id)));
+    selected.reviews.find((review) => review.boss.id === boss.id)));
   root.append(grid);
+  const legacy = document.createElement('details'); legacy.className = 'raid-execution-rubric';
+  legacy.append(textNode('summary', 'Legacy overall score · all reviewed roles and patches'));
+  legacy.append(textNode('p', (legacyOverall.letter || 'Ungraded') + (legacyOverall.score === null ? '' : ' · ' + legacyOverall.score + ' / 100')
+    + ' · equal boss weighting before evidence adjustment'));
+  legacy.append(textNode('p', legacyOverall.gradedBosses + ' of ' + legacyOverall.totalBosses + ' bosses graded · '
+    + legacyOverall.bosses.reduce((sum, boss) => sum + boss.sample.kills, 0) + ' sampled kills', 'hint'));
+  legacy.append(textNode('p', 'This retained score can blend roles. The headline, boss evidence and support above use your selected role and patch.', 'hint'));
+  root.append(legacy);
   const rubric = document.createElement('details'); rubric.className = 'raid-execution-rubric';
   rubric.append(textNode('summary', 'How this grade works and what it cannot measure'));
-  rubric.append(textNode('p', overall.rubric.label + ': ' + overall.rubric.description));
+  rubric.append(textNode('p', 'Headline ranking: one selected role and patch view. Each boss is weighted by its gradeable kill count, capped at three. '
+    + 'A supported comparison needs at least four bosses with three gradeable kills each; this is a sample heuristic, not statistical confidence.'));
+  rubric.append(textNode('p', 'Underlying per-kill penalties and retained legacy aggregation · ' + overall.rubric.label + ': ' + overall.rubric.description));
   rubric.append(textNode('p', 'Grade bands: ' + overall.rubric.thresholds.map((band) => band.letter + ' ≥ ' + band.minimum).join(' · '), 'hint'));
   for (const limit of overall.limitations || []) rubric.append(textNode('p', limit, 'hint'));
   root.append(rubric);
@@ -303,6 +331,8 @@ function renderRaidReview() {
 function bindRaidReview() {
   $('raidExecutionStart').onclick = startRaidReview;
   $('raidExecutionCancel').onclick = () => cancelRaidReview();
+  $('raidExecutionRole').onchange = renderRaidReview;
+  $('raidExecutionPatch').onchange = renderRaidReview;
   for (const id of ['name', 'server', 'region', 'zone', 'difficulty']) {
     const input = $(id), previous = input.onchange;
     input.onchange = (event) => { previous?.(event); cancelRaidReview(true); };
@@ -342,6 +372,9 @@ export function adaptRaidReview(html) {
 <section id="raidExecution" class="raid-execution" style="display:none" aria-labelledby="raidExecutionTitle">
   <h3 id="raidExecutionTitle">Raid execution</h3>
   <p class="hint">Review positioning, survival and observed raid support across the raid. Damage output is excluded.</p>
+  <p><a href="/castmirror/guild-execution">Open the saved Nothing But Trouble execution board →</a></p>
+  <div class="raid-execution-filters"><label>Role <select id="raidExecutionRole"><option value="primary">Primary role</option><option value="dps">DPS</option><option value="tank">Tank</option><option value="healer">Healer</option></select></label>
+    <label>Patch <select id="raidExecutionPatch"><option value="all">All reviewed patches</option><option value="current">${scope.patch} · current only</option>${scope.reviewedScopes.filter((entry) => entry.patch !== scope.patch).map((entry) => '<option value="' + entry.patch + '">' + entry.patch + ' · historical only</option>').join('')}</select></label></div>
   <div class="raid-execution-actions"><button type="button" id="raidExecutionStart">Review raid execution</button><button type="button" id="raidExecutionCancel" style="display:none">Stop review</button></div>
   <p class="hint" id="raidExecutionProgress" role="status" aria-live="polite"></p>
   <div id="raidExecutionResults"></div>
@@ -352,7 +385,7 @@ export function adaptRaidReview(html) {
   html = replaceExactlyOnce(html, '    renderKills(data);\n    say', '    renderKills(data);\n    prepareRaidReview(data, raidLookupContext);\n    say', 'character lookup result');
   const helpers = [raidReviewForm, raidReviewKey, raidReviewCurrent, cancelRaidReview, raidReviewCharacterRequest, prepareRaidReview,
     raidReviewFriendlyReason, raidReviewMatches, startRaidReview, raidReviewNumber, raidReviewScopeLabel, raidReviewPatchLabels, raidReviewDateRange,
-    raidReviewUtility, raidReviewSource, raidReviewFight,
+    raidReviewSupportNumber, raidReviewUtility, raidReviewSource, raidReviewFight,
     raidReviewBoss, renderRaidReview, bindRaidReview];
   const emitted = '// BEGIN CASTMIRROR RAID REVIEW\nconst RAID_REVIEW_SCOPE = Object.freeze(' + JSON.stringify(scope) + ');\n'
     + 'let raidReviewContext = null, raidReviewGeneration = 0, raidReviewController = null, raidReviewRunning = false;\n'
@@ -368,6 +401,7 @@ export function adaptRaidReview(html) {
   .raid-execution h3 { margin: 0 0 8px; } .raid-execution p { line-height: 1.6; overflow-wrap: anywhere; }
   .raid-execution .hint { color: var(--dim); font-size: 12px; }
   .raid-execution-actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 15px 0 8px; }
+  .raid-execution-filters { display: flex; flex-wrap: wrap; gap: 16px; margin: 16px 0; } .raid-execution-filters label { display: grid; gap: 6px; font-size: 13px; } .raid-execution-filters select { padding: 8px; color: var(--text); background: var(--panel); border: 1px solid var(--line); border-radius: 6px; }
   .raid-execution-actions button { padding: 9px 14px; } .raid-execution-actions button:disabled { cursor: not-allowed; opacity: .65; }
   .raid-execution-overall { border-top: 1px solid var(--line); margin-top: 18px; padding-top: 18px; }
   .raid-execution-grade { display: flex; gap: 18px; align-items: center; } .raid-execution-grade strong { font-size: 48px; line-height: 1.2; color: var(--text); }
