@@ -51,6 +51,7 @@ describe("route map (docs section 3)", () => {
         "/auth/callback",
         "/builder",
         "/calculator",
+        "/castmirror/guild-execution",
         "/dashboard",
         "/forgot-password",
         "/invite/[code]",

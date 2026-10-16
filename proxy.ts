@@ -26,7 +26,7 @@ const AUTH_ENTRY_PATHS = new Set(["/", "/login", "/signup"]);
 
 // Another project shares this repo (static pages under public/ plus
 // app/api/castmirror); those routes were public before the proxy existed.
-const OTHER_APP_EXACT = new Set(["/castmirror", "/CastMirror", "/raidcard"]);
+const OTHER_APP_EXACT = new Set(["/castmirror", "/CastMirror", "/castmirror/guild-execution", "/raidcard"]);
 
 function isPublicPath(pathname: string) {
   if (PUBLIC_EXACT.has(pathname)) return true;

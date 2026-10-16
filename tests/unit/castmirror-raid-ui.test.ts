@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { Script } from 'node:vm';
 import { describe, test } from 'vitest';
 import { adaptRaidReview, emitRaidGradeModel } from '../../scripts/castmirror-raid-review.mjs';
-import { gradeRaid } from '../../app/api/castmirror/execution/raid/grade';
+import { assessRaidRanking, gradeRaid } from '../../app/api/castmirror/execution/raid/grade';
 import type { RaidBossReview } from '../../app/api/castmirror/execution/raid/types';
 import { deferred, pageFixture, settlePage } from '../helpers/castmirror-page.mjs';
 
@@ -15,8 +15,8 @@ function review(encounter: number): RaidBossReview {
     identity: { name: 'You', server: 'Test Realm', region: 'us', className: 'Mage' },
     scope: { zone: 53, encounter, difficulty: 5, size: 20, partition: 2, patch: '12.1.5' },
     boss: bosses.find((boss: { id: number }) => boss.id === encounter), status: 'complete', reason: null, availableKills: 1, sampleLimit: 6,
-    fights: [{ code: 'Player0123456789', fightID: 7, actorID: 123, spec: 'Arcane', role: 'dps', kill: true,
-      date: 1_800_000_000_000, durationSec: 300,
+    fights: [{ code: 'Player0123456789', fightID: 7 + bosses.findIndex((boss: {id:number}) => boss.id === encounter), actorID: 123, spec: 'Arcane', role: 'dps', kill: true,
+      date: 1_800_000_000_000, durationSec: 300, scope: { partition: 2, patch: '12.1.5' },
       damage: { complete: true, total: 10000, avoidableHealth: 10, avoidableAbsorbed: 2,
         abilities: [{ abilityID: 1, name: 'Reviewed pool', health: 10, absorbed: 2, hits: 3, clusters: 1, contextual: false }] },
       survival: { complete: true, deaths: [] },
@@ -39,8 +39,46 @@ describe('CastMirror raid execution review UI', () => {
     const reviews = [review(bosses[0].id), review(bosses[1].id)];
     const actual = JSON.parse(page.evaluate(`JSON.stringify(gradeRaid(${JSON.stringify(reviews)},10))`));
     assert.deepEqual(actual, gradeRaid(reviews, 10));
+    const ranking = JSON.parse(page.evaluate(`JSON.stringify(assessRaidRanking(${JSON.stringify(reviews)}))`));
+    assert.deepEqual(ranking, assessRaidRanking(reviews));
     assert.match(page.html, /raid-execution-bosses.*grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
     assert.match(page.html, /max-width: 650px[\s\S]*raid-execution-bosses.*grid-template-columns: minmax\(0, 1fr\)/);
+  });
+
+  test('role and patch filters recompute headline, boss sources and support without any acquisition', async () => {
+    const result = review(bosses[0].id);
+    result.reviewedScopes = [{ partition: 1, patch: '12.1' }, { partition: 2, patch: '12.1.5' }];
+    const tank = structuredClone(result.fights[0]);
+    tank.role = 'tank'; tank.spec = 'Protection'; tank.fightID = 100; tank.scope = { partition: 1, patch: '12.1' };
+    tank.damage.abilities[0].clusters = 3; tank.utility.successfulInterrupts = 7;
+    result.fights.push(tank);
+    const page = await pageFixture(); ready(page);
+    page.evaluate(`raidReviewResults = ${JSON.stringify([result])}; renderRaidReview()`);
+    const before = page.requests.length;
+    page.nodes.get('raidExecutionRole').value = 'tank'; page.nodes.get('raidExecutionPatch').value = '12.1';
+    page.nodes.get('raidExecutionRole').onchange();
+    const root = page.nodes.get('raidExecutionResults'), html = root.htmlTree();
+    assert.match(html, /Evidence-adjusted execution · 85 \/ 100/);
+    assert.match(html, /7 successful interrupts/);
+    assert.match(html, /Legacy overall score/);
+    assert.equal(root.querySelectorAll('a').length, 1);
+    assert.match(root.querySelectorAll('a')[0].textContent, /Protection · tank · Patch 12\.1/);
+    page.nodes.get('raidExecutionPatch').value = 'current'; page.nodes.get('raidExecutionPatch').onchange();
+    assert.match(root.htmlTree(), /Not enough evidence to grade/);
+    assert.equal(root.querySelectorAll('a').length, 0);
+    assert.equal(page.requests.length, before);
+  });
+
+  test('unknown support and limited samples never imply zero contribution or authoritative placement', async () => {
+    const result = review(bosses[0].id);
+    result.fights[0].utility = { complete: false, successfulInterrupts: 0, dispels: 0, raidAbsorbed: 0, absorbAbilities: [], personalCasts: [] };
+    const page = await pageFixture(); ready(page);
+    page.evaluate(`raidReviewResults = ${JSON.stringify([result])}; renderRaidReview()`);
+    const html = page.nodes.get('raidExecutionResults').htmlTree();
+    assert.match(html, /Limited sample/);
+    assert.match(html, /without an authoritative placement/);
+    assert.match(html, /Unverified successful interrupts · Unverified dispels/);
+    assert.match(page.html, /href="\/castmirror\/guild-execution"/);
   });
 
   test('makes raid review available after character lookup without a selected damage log, and waits for an explicit click', async () => {
@@ -317,7 +355,7 @@ describe('CastMirror raid execution review UI', () => {
     const result = review(bosses[0].id);
     result.reviewedScopes = [{ partition: 1, patch: '12.1' }, { partition: 2, patch: '12.1.5' }];
     result.fights[0].scope = { partition: 1, patch: '12.1' };
-    result.fights.push({ ...structuredClone(result.fights[0]), fightID: 8, date: result.fights[0].date + 86_400_000,
+    result.fights.push({ ...structuredClone(result.fights[0]), fightID: 100, date: result.fights[0].date + 86_400_000,
       scope: { partition: 2, patch: '12.1.5' } });
     const page = await pageFixture((_url, options) => ({ review: JSON.parse(String(options.body)).encounter === bosses[0].id
       ? result : review(JSON.parse(String(options.body)).encounter) })); ready(page);

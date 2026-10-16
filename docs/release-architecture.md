@@ -31,6 +31,8 @@ This document is the contract for the release-hardening work. Every page, migrat
 
 ## 3. Routes and layouts
 
+Cast Mirror also publishes `/castmirror/guild-execution` from `app/castmirror/guild-execution/page.tsx`. This server page provides the approved saved public guild snapshot to its sibling client board. It is public, performs no log acquisition, and is separate from the exact `/castmirror` static-page rewrite.
+
 ```
 app/
   layout.tsx                      server: <html data-pokemon-theme>, fonts, metadata template, ThemeProvider
@@ -83,6 +85,7 @@ app/
 - Uses `@supabase/ssr` `createServerClient` with the `getAll` / `setAll` cookie adapter; refreshed cookies and the `Cache-Control` headers from `setAll` are copied onto every response, including redirects.
 - Matcher: `['/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|txt|xml)$).*)']`.
 - Public paths: `/`, `/login`, `/signup`, `/forgot-password`, `/update-password`, `/auth/callback`, `/invite/:code`.
+- The shared Cast Mirror project additionally exposes exact `/castmirror`, `/CastMirror`, `/castmirror/guild-execution`, `/raidcard`, and `/api/castmirror/` routes publicly. The guild page exception does not expose neighboring nested paths.
 - Unauthenticated request to a protected path -> redirect to `/login?next=<pathname+search>`.
 - Authenticated request to `/`, `/login`, `/signup` -> redirect to `/dashboard` (or to `next` if present and relative), but only after `getUser()` confirmed the session with the auth server. A locally verified JWT (asymmetric signing keys) is not proof that GoTrue still accepts the session: the browser client's own `getUser()` may just have failed (auth server unreachable, user deleted or banned) and sent the user to `/login`, and bouncing them back on the strength of the cookie alone would loop until the access token expired. When the auth server cannot vouch for the session the public page renders; the cookies are kept (or cleared when it answers `session_not_found`). Protected paths stay optimistic (`getClaims()` only, no round trip). `tests/unit/proxy.test.ts` and the ES256 cases in `tests/unit/auth-session-real-clients.test.ts` cover this.
 - `next` is only honoured when it starts with a single `/` (no `//`, no scheme).

@@ -177,6 +177,7 @@
   .raid-execution h3 { margin: 0 0 8px; } .raid-execution p { line-height: 1.6; overflow-wrap: anywhere; }
   .raid-execution .hint { color: var(--dim); font-size: 12px; }
   .raid-execution-actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 15px 0 8px; }
+  .raid-execution-filters { display: flex; flex-wrap: wrap; gap: 16px; margin: 16px 0; } .raid-execution-filters label { display: grid; gap: 6px; font-size: 13px; } .raid-execution-filters select { padding: 8px; color: var(--text); background: var(--panel); border: 1px solid var(--line); border-radius: 6px; }
   .raid-execution-actions button { padding: 9px 14px; } .raid-execution-actions button:disabled { cursor: not-allowed; opacity: .65; }
   .raid-execution-overall { border-top: 1px solid var(--line); margin-top: 18px; padding-top: 18px; }
   .raid-execution-grade { display: flex; gap: 18px; align-items: center; } .raid-execution-grade strong { font-size: 48px; line-height: 1.2; color: var(--text); }
@@ -226,6 +227,9 @@
 <section id="raidExecution" class="raid-execution" style="display:none" aria-labelledby="raidExecutionTitle">
   <h3 id="raidExecutionTitle">Raid execution</h3>
   <p class="hint">Review positioning, survival and observed raid support across the raid. Damage output is excluded.</p>
+  <p><a href="/castmirror/guild-execution">Open the saved Nothing But Trouble execution board →</a></p>
+  <div class="raid-execution-filters"><label>Role <select id="raidExecutionRole"><option value="primary">Primary role</option><option value="dps">DPS</option><option value="tank">Tank</option><option value="healer">Healer</option></select></label>
+    <label>Patch <select id="raidExecutionPatch"><option value="all">All reviewed patches</option><option value="current">12.1.5 · current only</option><option value="12.1">12.1 · historical only</option></select></label></div>
   <div class="raid-execution-actions"><button type="button" id="raidExecutionStart">Review raid execution</button><button type="button" id="raidExecutionCancel" style="display:none">Stop review</button></div>
   <p class="hint" id="raidExecutionProgress" role="status" aria-live="polite"></p>
   <div id="raidExecutionResults"></div>
@@ -1826,6 +1830,186 @@ function gradeRaid(reviews, totalBosses = 10) {
         limitations: unique(limitations),
     };
 }
+function rankingIdentity(review) {
+    if (!review || review.version !== "raid-execution-review-1" || !review.identity || !review.scope
+        || !review.boss || !Array.isArray(review.fights) || !Number.isSafeInteger(review.at) || review.at <= 0
+        || typeof review.rulesVersion !== "string" || !review.rulesVersion.trim() || !Number.isSafeInteger(review.boss.id) || review.boss.id <= 0
+        || review.scope.encounter !== review.boss.id || review.scope.zone !== 53 || review.scope.difficulty !== 5 || review.scope.size !== 20
+        || !Number.isSafeInteger(review.scope.partition) || review.scope.partition <= 0 || typeof review.scope.patch !== "string" || !review.scope.patch.trim()
+        || ![review.identity.name, review.identity.server, review.identity.region].every((v) => typeof v === "string" && v.trim()))
+        return null;
+    const normalized = [review.identity.name.trim().normalize("NFKC").toLocaleLowerCase("en-US"),
+        review.identity.server.trim().normalize("NFKC").toLocaleLowerCase("en-US").replace(/[^\p{L}\p{N}]/gu, ""),
+        review.identity.region.trim().toLocaleLowerCase("en-US")];
+    if (!normalized[1] || !["us", "eu", "kr", "tw"].includes(normalized[2]))
+        return null;
+    return JSON.stringify([...normalized, review.scope.zone, review.scope.difficulty, review.scope.size,
+        review.scope.partition, review.scope.patch, review.rulesVersion]);
+}
+function rankingLatest(reviews) {
+    const exclusions = [], latest = new Map();
+    let expected = null;
+    for (const review of reviews) {
+        const identity = rankingIdentity(review);
+        if (identity === null) {
+            exclusions.push("Excluded a review with an invalid identity, raid scope or timestamp.");
+            continue;
+        }
+        expected ??= identity;
+        if (identity !== expected) {
+            exclusions.push("Excluded a different character, raid scope or rule version.");
+            continue;
+        }
+        const prior = latest.get(review.boss.id);
+        if (!prior || review.at > prior.at)
+            latest.set(review.boss.id, review);
+        if (prior)
+            exclusions.push("Earlier or duplicate whole-boss reviews were withheld; their kills were not merged.");
+    }
+    return { reviews: [...latest.values()].sort((a, b) => a.boss.id - b.boss.id), exclusions };
+}
+function rankingPatchReviews(reviews, options) {
+    const latest = rankingLatest(reviews), exclusions = [...latest.exclusions];
+    const requested = options.patch ?? "all";
+    const patch = requested === "current" ? options.currentPatch ?? latest.reviews[0]?.scope.patch ?? "" : requested;
+    const label = requested === "all" ? "All reviewed source patches"
+        : requested === "current" ? patch ? `Current patch · ${patch}` : "Current patch unavailable" : `Patch ${patch}`;
+    if (typeof patch !== "string" || !patch.trim())
+        return { reviews: [], patch: "", patchLabel: label, exclusions: [...exclusions, "No explicit current patch is available; historical evidence was not substituted."] };
+    const candidates = latest.reviews.map((review) => {
+        if (review.reviewedScopes !== undefined && !Array.isArray(review.reviewedScopes)) {
+            exclusions.push(`Boss ${review.boss.id}: invalid reviewed source scopes.`);
+            return { ...review, fights: [] };
+        }
+        const scopes = sourceScopesFor(review);
+        const anchorKnown = scopes.some((s) => s.partition === review.scope.partition && s.patch === review.scope.patch);
+        if (!anchorKnown) {
+            exclusions.push(`Boss ${review.boss.id}: invalid or conflicting reviewed source scopes.`);
+            return { ...review, fights: [] };
+        }
+        const uniqueFights = new Map(), conflicts = new Set();
+        for (const fight of review.fights) {
+            if (!fight || typeof fight.code !== "string" || !/^[A-Za-z0-9]{8,64}$/.test(fight.code)
+                || !Number.isSafeInteger(fight.fightID) || fight.fightID <= 0 || !Number.isSafeInteger(fight.actorID) || fight.actorID <= 0
+                || !ROLE_ORDER.includes(fight.role) || !Number.isSafeInteger(fight.date) || fight.date <= 0 || !fight.scope
+                || !scopes.some((s) => s.partition === fight.scope.partition && s.patch === fight.scope.patch)) {
+                exclusions.push(`Boss ${review.boss.id}: excluded a fight without an exact reviewed source, role or patch binding.`);
+                continue;
+            }
+            const id = `${fight.code}:${fight.fightID}`, prior = uniqueFights.get(id);
+            if (prior && JSON.stringify(prior) !== JSON.stringify(fight))
+                conflicts.add(id);
+            uniqueFights.set(id, fight);
+        }
+        if (conflicts.size)
+            exclusions.push(`Boss ${review.boss.id}: conflicting duplicate source fights were excluded.`);
+        return { ...review, fights: [...uniqueFights].filter(([id, f]) => !conflicts.has(id) && (patch === "all" || f.scope.patch === patch)).map(([, f]) => f) };
+    });
+    const owners = new Map(), conflicts = new Set();
+    for (const review of candidates)
+        for (const f of review.fights) {
+            const id = `${f.code}:${f.fightID}`, owner = owners.get(id);
+            if (owner !== undefined && owner !== review.boss.id)
+                conflicts.add(id);
+            owners.set(id, review.boss.id);
+        }
+    if (conflicts.size)
+        exclusions.push("Sources filed under conflicting bosses were excluded.");
+    const selected = candidates.map((review) => ({ ...review, fights: review.fights.filter((f) => !conflicts.has(`${f.code}:${f.fightID}`)) })).filter((r) => r.fights.length);
+    if (patch !== "all" && !selected.length)
+        exclusions.push(`No verified kills in patch ${patch}; historical evidence was not substituted.`);
+    return { reviews: selected, patch, patchLabel: label, exclusions: unique(exclusions) };
+}
+function selectRaidRankingReviews(reviews, options = {}) {
+    const selected = rankingPatchReviews(reviews, options), totals = ROLE_ORDER.map((role) => ({ role,
+        present: selected.reviews.some((r) => r.fights.some((f) => f.role === role)),
+        kills: selected.reviews.reduce((n, r) => n + gradeBoss({ ...r, fights: r.fights.filter((f) => f.role === role) }).sample.gradedFights, 0) }));
+    const present = totals.filter((v) => v.present), maximum = Math.max(-1, ...present.map((v) => v.kills));
+    const tied = present.filter((v) => v.kills === maximum), primaryRole = tied[0]?.role ?? null;
+    const role = options.role === undefined || options.role === "primary" ? primaryRole : ROLE_ORDER.includes(options.role) ? options.role : null;
+    const exclusions = [...selected.exclusions];
+    if (tied.length > 1)
+        exclusions.push(`Primary role tie (${tied.map((v) => v.role).join(", ")}) uses fixed dps, tank, healer order; select a role explicitly to compare it.`);
+    const filtered = role ? selected.reviews.map((r) => ({ ...r, fights: r.fights.filter((f) => f.role === role) })).filter((r) => r.fights.length) : [];
+    if (role && !filtered.length)
+        exclusions.push(`No verified ${role} evidence in this patch view.`);
+    return { reviews: filtered, role, primaryRole, tiedRoles: tied.map((v) => v.role), primaryRoleAmbiguous: tied.length > 1,
+        patch: selected.patch, patchLabel: selected.patchLabel, exclusions: unique(exclusions) };
+}
+function rankingDates(fights) {
+    const dates = fights.map((f) => f.date);
+    return { firstDate: dates.length ? Math.min(...dates) : null, lastDate: dates.length ? Math.max(...dates) : null };
+}
+function assessRaidRanking(reviews, options = {}) {
+    const selected = selectRaidRankingReviews(reviews, options), identityReview = rankingLatest(reviews).reviews[0];
+    const bosses = selected.reviews.map((review) => {
+        const grade = gradeBoss(review), gradeableKills = grade.sample.gradedFights;
+        return { boss: review.boss, score: grade.score, letter: grade.letter, sampledKills: grade.sample.kills, gradeableKills,
+            weight: grade.score === null ? 0 : Math.min(gradeableKills, 3), sampleSupported: grade.score !== null && gradeableKills >= 3,
+            grade, sourcePatches: unique(review.fights.map((f) => f.scope.patch)).sort(), ...rankingDates(review.fights) };
+    });
+    const weight = bosses.reduce((n, b) => n + b.weight, 0), score = weight ? rounded(bosses.reduce((n, b) => n + (b.score ?? 0) * b.weight, 0) / weight) : null;
+    const fights = selected.reviews.flatMap((r) => r.fights), utility = combineUtility(bosses.map((b) => b.grade.utility));
+    const supportedBosses = bosses.filter((b) => b.sampleSupported).length, broader = supportedBosses >= 4;
+    const rankEligible = broader && !((options.role === undefined || options.role === "primary") && selected.primaryRoleAmbiguous);
+    return { version: "raid-ranking-assessment-1", identity: identityReview ? { name: identityReview.identity.name, server: identityReview.identity.server, region: identityReview.identity.region } : null,
+        role: selected.role, primaryRole: selected.primaryRole, tiedRoles: selected.tiedRoles, primaryRoleAmbiguous: selected.primaryRoleAmbiguous, patch: selected.patch, patchLabel: selected.patchLabel,
+        status: score === null ? "ungraded" : "graded", score, letter: executionLetter(score), sample: broader ? "broader" : "limited", sampleLabel: broader ? "Broader sample" : "Limited sample", rankEligible,
+        sampledKills: bosses.reduce((n, b) => n + b.sampledKills, 0), gradeableKills: bosses.reduce((n, b) => n + b.gradeableKills, 0), gradedBosses: bosses.filter((b) => b.score !== null).length,
+        supportedBosses, bosses, utility, utilityConfidence: !utility.observedFights ? "unavailable" : utility.completeFights === utility.observedFights ? "complete" : "incomplete",
+        sourcePatches: unique(fights.map((f) => f.scope.patch)).sort(), ...rankingDates(fights), exclusions: selected.exclusions, provisional: true,
+        summary: score === null ? "No gradeable evidence in the selected role and patch."
+            : `${broader ? "Broader sample" : "Limited sample"}: ${supportedBosses} bosses have at least three gradeable kills. Boss weight is capped at three. Utility is descriptive and does not affect this score.` };
+}
+function compareSharedRaidRanking(aReviews, bReviews, options = {}) {
+    const aSelected = selectRaidRankingReviews(aReviews, options), bSelected = selectRaidRankingReviews(bReviews, options);
+    const aAnchor = rankingLatest(aReviews).reviews[0], bAnchor = rankingLatest(bReviews).reviews[0];
+    const policy = (r) => r ? JSON.stringify([r.scope.zone, r.scope.difficulty, r.scope.size, r.scope.partition, r.scope.patch, r.rulesVersion]) : null;
+    const character = (r) => r ? JSON.stringify([r.identity.name.trim().normalize("NFKC").toLocaleLowerCase("en-US"),
+        r.identity.server.trim().normalize("NFKC").toLocaleLowerCase("en-US").replace(/[^\p{L}\p{N}]/gu, ""), r.identity.region.trim().toLocaleLowerCase("en-US")]) : null;
+    const sameCharacter = character(aAnchor) !== null && character(aAnchor) === character(bAnchor);
+    const role = aSelected.role === bSelected.role ? aSelected.role : null;
+    const primaryAmbiguous = (options.role === undefined || options.role === "primary") && (aSelected.primaryRoleAmbiguous || bSelected.primaryRoleAmbiguous);
+    const compatible = role !== null && !sameCharacter && !primaryAmbiguous && policy(aAnchor) !== null && policy(aAnchor) === policy(bAnchor);
+    const key = (boss, f) => JSON.stringify([boss, f.code, f.fightID, f.role, f.scope.partition, f.scope.patch]);
+    const bFights = new Map();
+    if (compatible)
+        for (const r of bSelected.reviews)
+            for (const f of r.fights)
+                if (f.kill)
+                    bFights.set(key(r.boss.id, f), f);
+    const sources = [], keys = new Set(), actorExclusions = [];
+    if (compatible)
+        for (const r of aSelected.reviews)
+            for (const f of r.fights) {
+                const id = key(r.boss.id, f), other = bFights.get(id);
+                if (!f.kill || !other)
+                    continue;
+                if (f.actorID === other.actorID) {
+                    actorExclusions.push(`Shared source ${f.code}/${f.fightID} binds both characters to the same actor; it was withheld.`);
+                    continue;
+                }
+                keys.add(id);
+                sources.push({ code: f.code, fightID: f.fightID, bossID: r.boss.id, role: f.role, partition: f.scope.partition, patch: f.scope.patch, actorA: f.actorID, actorB: other.actorID });
+            }
+    const restrict = (selection) => selection.reviews.map((r) => ({ ...r, fights: r.fights.filter((f) => keys.has(key(r.boss.id, f))) })).filter((r) => r.fights.length);
+    const selectedOptions = { ...options, role: role ?? options.role ?? "primary" };
+    const assessment = (selection, anchor) => ({
+        ...assessRaidRanking(restrict(selection), { ...selectedOptions, currentPatch: options.currentPatch ?? selection.patch }),
+        identity: anchor ? { name: anchor.identity.name, server: anchor.identity.server, region: anchor.identity.region } : null,
+        primaryRole: selection.primaryRole, tiedRoles: selection.tiedRoles, primaryRoleAmbiguous: selection.primaryRoleAmbiguous,
+    });
+    const a = assessment(aSelected, aAnchor), b = assessment(bSelected, bAnchor);
+    const compared = sources.length > 0 && a.score !== null && b.score !== null;
+    return { version: "shared-raid-ranking-comparison-1", status: compared ? "compared" : "insufficient-evidence",
+        reason: sameCharacter ? "Choose two distinct raiders for a shared-kill comparison."
+            : !compatible ? "Choose an explicit shared role when primary is ambiguous, with matching raid and rule scope for both raiders."
+                : !sources.length ? "No exact shared report, fight, boss, role and reviewed patch evidence."
+                    : !compared ? "Shared kills exist, but complete gradeable mechanics evidence is insufficient."
+                        : "Scores use paired source kills only. Each raider's gradeable count and death-shortened exposure may differ; no opportunity or assignment denominator is inferred.",
+        role, sharedFights: sources.length, sharedBosses: new Set(sources.map((s) => s.bossID)).size, sources, a, b,
+        exclusions: unique([...aSelected.exclusions, ...bSelected.exclusions, ...actorExclusions]), provisional: true };
+}
 
 function raidReviewForm() {
   return { name: $('name').value.trim(), server: $('server').value.trim(), region: $('region').value,
@@ -1983,11 +2167,16 @@ function raidReviewDateRange(fights) {
   const format = (date) => new Date(date).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
   return 'Sample dates: ' + format(first) + (first === last ? '' : ' – ' + format(last));
 }
+function raidReviewSupportNumber(utility, value) {
+  const complete = utility.observedFights > 0 && utility.completeFights === utility.observedFights;
+  return !complete && !(value > 0) ? 'Unverified' : (complete ? '' : 'Observed ≥ ') + raidReviewNumber(value);
+}
 function raidReviewUtility(utility) {
   const section = document.createElement('div'); section.className = 'raid-execution-utility';
   section.append(textNode('h4', 'Observed raid support'));
-  section.append(textNode('p', raidReviewNumber(utility.successfulInterrupts) + ' successful interrupts · '
-    + raidReviewNumber(utility.dispels) + ' dispels · ' + raidReviewNumber(utility.raidAbsorbed) + ' damage absorbed on teammates'));
+  const observed = (value) => raidReviewSupportNumber(utility, value);
+  section.append(textNode('p', observed(utility.successfulInterrupts) + ' successful interrupts · '
+    + observed(utility.dispels) + ' dispels · ' + observed(utility.raidAbsorbed) + ' damage absorbed on teammates'));
   for (const ability of utility.absorbAbilities || [])
     section.append(textNode('p', ability.name + ': ' + raidReviewNumber(ability.amount) + ' absorbed', 'hint'));
   section.append(textNode('p', 'These are observed contributions. Assignments and opportunities are unknown, so utility totals do not raise or lower the letter grade.', 'hint'));
@@ -2033,7 +2222,7 @@ function raidReviewBoss(boss, grade, review) {
   heading.append(textNode('strong', grade?.letter || 'Ungraded', 'raid-execution-boss-letter'));
   card.append(heading);
   if (!grade) {
-    card.append(textNode('p', raidReviewRunning ? 'Waiting for review.' : 'No evidence reviewed yet.', 'hint')); return card;
+    card.append(textNode('p', raidReviewDone.has(boss.id) ? 'No eligible evidence for this role and patch.' : raidReviewRunning ? 'Waiting for review.' : 'No evidence reviewed yet.', 'hint')); return card;
   }
   card.append(textNode('p', grade.summary));
   const patches = raidReviewPatchLabels(review ? [review] : []);
@@ -2054,8 +2243,8 @@ function raidReviewBoss(boss, grade, review) {
     card.append(textNode('p', role.role + ': ' + (role.letter || 'Ungraded') + (role.provisional ? ' (provisional)' : '')
       + ' · ' + role.sample.kills + ' kills', 'hint'));
   if (grade.utility.observedFights > 0) {
-    card.append(textNode('p', 'Observed support: ' + raidReviewNumber(grade.utility.successfulInterrupts) + ' successful interrupts · '
-      + raidReviewNumber(grade.utility.dispels) + ' dispels · ' + raidReviewNumber(grade.utility.raidAbsorbed) + ' absorbed on teammates', 'hint'));
+    card.append(textNode('p', 'Observed support: ' + raidReviewSupportNumber(grade.utility, grade.utility.successfulInterrupts) + ' successful interrupts · '
+      + raidReviewSupportNumber(grade.utility, grade.utility.dispels) + ' dispels · ' + raidReviewSupportNumber(grade.utility, grade.utility.raidAbsorbed) + ' absorbed on teammates', 'hint'));
     for (const ability of grade.utility.absorbAbilities || [])
       card.append(textNode('p', ability.name + ': ' + raidReviewNumber(ability.amount) + ' absorbed', 'hint'));
   }
@@ -2088,20 +2277,33 @@ function renderRaidReview() {
   $('raidExecutionProgress').textContent = raidReviewMessage;
   const root = $('raidExecutionResults'); root.innerHTML = '';
   if (!raidReviewResults.length) return;
-  const overall = gradeRaid(raidReviewResults, context.bosses.length);
+  const options = { role: $('raidExecutionRole').value || 'primary', patch: $('raidExecutionPatch').value || 'all', currentPatch: RAID_REVIEW_SCOPE.patch };
+  const ranking = assessRaidRanking(raidReviewResults, options);
+  const selected = selectRaidRankingReviews(raidReviewResults, options);
+  const overall = gradeRaid(selected.reviews, context.bosses.length);
+  const legacyOverall = gradeRaid(raidReviewResults, context.bosses.length);
   const assessment = document.createElement('div'); assessment.className = 'raid-execution-overall';
   const title = document.createElement('div'); title.className = 'raid-execution-grade';
-  title.append(textNode('strong', overall.letter || '—'));
-  title.append(textNode('span', overall.status === 'graded' ? 'Provisional non-damage grade' : 'Not enough evidence to grade'));
+  title.append(textNode('strong', ranking.letter || '—'));
+  title.append(textNode('span', ranking.score !== null ? 'Provisional non-damage grade · ' + ranking.role : 'Not enough evidence to grade'));
   assessment.append(title);
+  assessment.append(textNode('p', 'Evidence-adjusted execution · ' + (ranking.score === null ? 'Ungraded' : ranking.score + ' / 100')
+    + ' · ' + ranking.sampleLabel, 'raid-ranking-summary'));
+  assessment.append(textNode('p', ranking.primaryRoleAmbiguous && options.role === 'primary'
+    ? 'Primary role is tied; choose a role explicitly before comparison.' : ranking.rankEligible ? 'Enough repeated boss evidence for a supported comparison.'
+      : 'Limited evidence: score shown for coaching, without an authoritative placement.', 'hint'));
+  assessment.append(textNode('p', ranking.patchLabel + ' · primary role: ' + (ranking.primaryRole || 'unavailable'), 'hint'));
+  for (const exclusion of ranking.exclusions.filter((reason) => options.role === 'primary' || !reason.startsWith('Primary role tie')))
+    assessment.append(textNode('p', exclusion, 'hint'));
   assessment.append(textNode('p', 'An automated coaching rubric, not an official execution percentile.', 'hint'));
   assessment.append(textNode('p', context.name + ' · ' + context.server + ' · ' + context.zoneName + ' ' + (DIFF[context.difficulty] || '')));
-  const compatibleReviews = raidReviewResults.filter((review) => overall.bosses.some((boss) => boss.key === review.key));
+  const compatibleReviews = selected.reviews.filter((review) => overall.bosses.some((boss) => boss.key === review.key));
   const patches = raidReviewPatchLabels(compatibleReviews);
   assessment.append(textNode('p', patches.reviewed, 'hint'), textNode('p', patches.sampled, 'hint'));
   const dates = raidReviewDateRange(compatibleReviews.flatMap((review) => review.fights));
   if (dates) assessment.append(textNode('p', dates, 'hint'));
   assessment.append(textNode('p', overall.summary));
+  assessment.append(textNode('p', ranking.summary, 'hint'));
   assessment.append(textNode('p', overall.gradedBosses + ' of ' + overall.totalBosses + ' bosses graded · '
     + overall.bosses.reduce((sum, boss) => sum + boss.sample.kills, 0) + ' sampled kills', 'hint'));
   assessment.append(textNode('p', overall.bosses.reduce((sum, boss) => sum + boss.survival.confirmedAvoidableDeaths, 0)
@@ -2114,11 +2316,21 @@ function renderRaidReview() {
   root.append(assessment, raidReviewUtility(overall.utility));
   const grid = document.createElement('div'); grid.className = 'raid-execution-bosses';
   for (const boss of context.bosses) grid.append(raidReviewBoss(boss, overall.bosses.find((entry) => entry.boss.id === boss.id),
-    raidReviewResults.find((review) => review.boss.id === boss.id)));
+    selected.reviews.find((review) => review.boss.id === boss.id)));
   root.append(grid);
+  const legacy = document.createElement('details'); legacy.className = 'raid-execution-rubric';
+  legacy.append(textNode('summary', 'Legacy overall score · all reviewed roles and patches'));
+  legacy.append(textNode('p', (legacyOverall.letter || 'Ungraded') + (legacyOverall.score === null ? '' : ' · ' + legacyOverall.score + ' / 100')
+    + ' · equal boss weighting before evidence adjustment'));
+  legacy.append(textNode('p', legacyOverall.gradedBosses + ' of ' + legacyOverall.totalBosses + ' bosses graded · '
+    + legacyOverall.bosses.reduce((sum, boss) => sum + boss.sample.kills, 0) + ' sampled kills', 'hint'));
+  legacy.append(textNode('p', 'This retained score can blend roles. The headline, boss evidence and support above use your selected role and patch.', 'hint'));
+  root.append(legacy);
   const rubric = document.createElement('details'); rubric.className = 'raid-execution-rubric';
   rubric.append(textNode('summary', 'How this grade works and what it cannot measure'));
-  rubric.append(textNode('p', overall.rubric.label + ': ' + overall.rubric.description));
+  rubric.append(textNode('p', 'Headline ranking: one selected role and patch view. Each boss is weighted by its gradeable kill count, capped at three. '
+    + 'A supported comparison needs at least four bosses with three gradeable kills each; this is a sample heuristic, not statistical confidence.'));
+  rubric.append(textNode('p', 'Underlying per-kill penalties and retained legacy aggregation · ' + overall.rubric.label + ': ' + overall.rubric.description));
   rubric.append(textNode('p', 'Grade bands: ' + overall.rubric.thresholds.map((band) => band.letter + ' ≥ ' + band.minimum).join(' · '), 'hint'));
   for (const limit of overall.limitations || []) rubric.append(textNode('p', limit, 'hint'));
   root.append(rubric);
@@ -2126,6 +2338,8 @@ function renderRaidReview() {
 function bindRaidReview() {
   $('raidExecutionStart').onclick = startRaidReview;
   $('raidExecutionCancel').onclick = () => cancelRaidReview();
+  $('raidExecutionRole').onchange = renderRaidReview;
+  $('raidExecutionPatch').onchange = renderRaidReview;
   for (const id of ['name', 'server', 'region', 'zone', 'difficulty']) {
     const input = $(id), previous = input.onchange;
     input.onchange = (event) => { previous?.(event); cancelRaidReview(true); };

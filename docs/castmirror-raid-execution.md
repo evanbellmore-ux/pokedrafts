@@ -17,3 +17,32 @@ Reviewing is explicit. Opening a character does not start the raid acquisition. 
 Each live Warcraft Logs request has up to 60 seconds to finish, including authentication, retries and response delivery. That allowance is shortened when less time remains in the two-minute boss review. A timeout still stops the queue and preserves the attempted boss and any collected evidence; increasing the request timeout does not restart failed attempts or extend the review deadline.
 
 The browser receives the same pure grading functions used by the service through the hosted generator. The vendored upstream snapshot stays immutable. UI regression tests exercise the checked-in generated page, including sequential requests, cancellation, identity matching, unsupported scopes and source-link validation.
+
+## Role and repeated-evidence ranking views
+
+The review headline now uses the additive `assessRaidRanking` model. Existing
+`gradeBoss` and `gradeRaid` scores remain available in a legacy-score disclosure;
+their penalties and encounter rules are unchanged. The new view first selects
+one role and explicit source patches, then weights each boss by its gradeable
+kill count, capped at three. A supported placement requires at least four bosses
+with three gradeable kills each. This is a sample heuristic, not a statistical
+confidence interval or official percentile. Short samples retain their coaching
+score without an authoritative ordinal.
+
+Primary role means the role with the most gradeable kills in the selected patch
+view. Equal counts use a fixed display order (DPS, tank, healer), disclose the
+ambiguity and require an explicit role for supported placement. Current-patch
+selection never substitutes historical kills. Boss cards, source links, dates,
+coaching and observed utility use the same selected role and patch as the
+headline. Utility is descriptive and never adds points; incomplete zero totals
+are labeled unverified rather than asserting no contribution.
+
+`/castmirror/guild-execution` displays the saved public 26-raider Nothing But
+Trouble review from 2026-10-15. The exact `/castmirror` rewrite does not capture
+this nested App Router page. The server imports the sanitized public snapshot
+from `data/castmirror/guild-execution.json`; the page makes no WCL or execution
+requests. Supported placements compare observed mechanics within a role, while
+limited or missing samples remain visible separately. A two-raider view uses
+only exact shared report/fight/boss/role/patch sources through the same pure
+model, retains each source actor and reports insufficient shared evidence
+without fallback. Raid assignments and unreviewed mechanics remain unknown.
