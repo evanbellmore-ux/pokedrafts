@@ -41,8 +41,13 @@ are labeled unverified rather than asserting no contribution.
 Trouble review from 2026-10-15. The exact `/castmirror` rewrite does not capture
 this nested App Router page. The server imports the sanitized public snapshot
 from `data/castmirror/guild-execution.json`; the page makes no WCL or execution
-requests. Supported placements compare observed mechanics within a role, while
-limited or missing samples remain visible separately. A two-raider view uses
+requests. The guild board orders all 26 raiders together by their selected
+mechanics score, including limited samples with an explicit **Provisional**
+badge. Equal scores share a competition placement; missing graded evidence
+stays visible without a placement. Role, patch and sample details remain shown,
+and the broader-sample threshold and underlying score calculation are unchanged.
+This overall ordering does not normalize different raid assignments or utility
+opportunities. A two-raider view uses
 only exact shared report/fight/boss/role/patch sources through the same pure
 model, retains each source actor and reports insufficient shared evidence
 without fallback. Raid assignments and unreviewed mechanics remain unknown.

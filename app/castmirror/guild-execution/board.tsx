@@ -48,11 +48,14 @@ export function guildRows(snapshot: GuildExecutionSnapshot, role: RoleFilter, pa
     const selected = selectRaidRankingReviews(raider.reviews, options);
     return { raider, assessment, reviews: selected.reviews, coaching: guildCoaching(selected.reviews), primaryView: role === "primary", rank: null as number | null };
   });
-  for (const cohort of ["dps", "tank", "healer"] as const) {
-    const eligible = rows.filter(row => row.assessment.role === cohort && row.assessment.rankEligible)
-      .sort((a, b) => (b.assessment.score ?? -1) - (a.assessment.score ?? -1) || a.raider.identity.name.localeCompare(b.raider.identity.name));
-    eligible.forEach((row, index) => { row.rank = index && row.assessment.score === eligible[index - 1].assessment.score ? eligible[index - 1].rank : index + 1; });
-  }
+  rows.sort((a, b) => (b.assessment.score ?? -1) - (a.assessment.score ?? -1)
+    || a.raider.identity.name.localeCompare(b.raider.identity.name)
+    || key(a.raider.identity).localeCompare(key(b.raider.identity)));
+  rows.forEach((row, index) => {
+    if (row.assessment.score !== null) {
+      row.rank = index && row.assessment.score === rows[index - 1].assessment.score ? rows[index - 1].rank : index + 1;
+    }
+  });
   return rows;
 }
 type Row = ReturnType<typeof guildRows>[number];
@@ -80,12 +83,13 @@ function Evidence({ row }: { row: Row }) {
       </li>)}</ul></div>)}
   </details>;
 }
-function Results({ rows, limited }: { rows: Row[]; limited: boolean }) {
+function Results({ rows }: { rows: Row[] }) {
   return <div className={styles.tableWrap}><table><thead><tr><th scope="col">Placement</th><th scope="col">Raider</th><th scope="col">Execution</th><th scope="col">Evidence</th><th scope="col">Main improvement areas</th></tr></thead>
     <tbody>{rows.map(row => { const a = row.assessment; return <tr key={key(row.raider.identity)}>
-      <td>{limited ? "—" : `${ROLE_NAMES[a.role as RaidRole]} #${row.rank}`}</td>
+      <td>{row.rank === null ? "—" : `#${row.rank}`}</td>
       <th scope="row">{row.raider.identity.name}<small>{row.raider.identity.server}</small><small>{a.role ? ROLE_NAMES[a.role as RaidRole] : "No role sample"}</small></th>
-      <td><strong>{a.letter ?? "Ungraded"}</strong>{a.score !== null && <span> {a.score.toFixed(1)}</span>}<small>Provisional</small></td>
+      <td><strong>{a.letter ?? "Ungraded"}</strong>{a.score !== null && <span> {a.score.toFixed(1)}</span>}
+        {a.score !== null && !a.rankEligible && <small className={styles.provisional}>Provisional</small>}</td>
       <td>{a.sampledKills} kills · {a.gradedBosses}/10 bosses<small>{a.supportedBosses} bosses with ≥3 gradeable kills</small><small>{a.sampleLabel}</small>
         <small>{a.sourcePatches.length ? `Patch ${a.sourcePatches.join(" / ")}` : "No matching patch evidence"}</small>
         {row.primaryView && a.primaryRoleAmbiguous && <small>Primary role tied; choose a role explicitly.</small>}
@@ -120,22 +124,19 @@ function SharedKills({ snapshot, patch }: { snapshot: GuildExecutionSnapshot; pa
 export default function GuildExecutionBoard({ snapshot }: { snapshot: GuildExecutionSnapshot }) {
   const [role, setRole] = useState<RoleFilter>("primary"), [patch, setPatch] = useState("all");
   const rows = guildRows(snapshot, role, patch), supported = rows.filter(r => r.assessment.rankEligible), limited = rows.filter(r => !r.assessment.rankEligible);
-  supported.sort((a, b) => String(a.assessment.role).localeCompare(String(b.assessment.role)) || (a.rank ?? 0) - (b.rank ?? 0));
-  limited.sort((a, b) => a.raider.identity.name.localeCompare(b.raider.identity.name));
   return <main className={styles.page}>
     <nav><Link href="/castmirror">← Cast Mirror</Link></nav>
     <header><p className={styles.eyebrow}>Saved Mythic execution review</p><h1>{snapshot.guild.name}</h1>
       <p>The Venomous Abyss · {snapshot.guild.region.toUpperCase()} {snapshot.guild.server}</p>
       <p className={styles.muted}>Snapshot reviewed {date(snapshot.reviewedAt)}. This page reads saved public evidence and makes no new log requests.</p></header>
-    <section className={styles.note}><h2>Compare like with like</h2><p>The headline uses one role and your selected patches. Supported placements are ordered within that role by observed mechanics score. Every score remains provisional.</p>
-      <p>A supported comparison requires at least four bosses with three gradeable kills each. Boss weights stop increasing after three kills. Shorter samples stay visible without a placement.</p>
-      <p>Primary role means the role with the most gradeable kills in this patch selection; equal counts use DPS, then tank, then healer for display and require an explicit role before placement. Support counts never add points.</p></section>
+    <section className={styles.note}><h2>How this ranking works</h2><p>All raiders appear in one ranking, ordered by observed mechanics score across roles. Each score uses one role and your selected patches; roles and sample sizes remain visible.</p>
+      <p>Provisional marks a limited sample or ambiguous primary role. A broader sample requires at least four bosses with three gradeable kills each. Boss weights stop increasing after three kills. Equal scores share a placement; missing graded evidence receives no placement.</p>
+      <p>Primary role means the role with the most gradeable kills in this patch selection; equal counts use DPS, then tank, then healer for display and are marked provisional until you choose a role explicitly. Support counts never add points.</p></section>
     <div className={styles.filters}><label>Role<select value={role} onChange={e => setRole(e.target.value as RoleFilter)}><option value="primary">Primary role for each raider</option><option value="dps">DPS</option><option value="tank">Tank</option><option value="healer">Healer</option></select></label>
       <label>Patch<select value={patch} onChange={e => setPatch(e.target.value)}><option value="all">All reviewed patches</option><option value="current">{snapshot.currentPatch} · current only</option>{snapshot.patches.filter(p => p !== snapshot.currentPatch).map(p => <option key={p} value={p}>{p} · historical only</option>)}</select></label></div>
-    <p aria-live="polite">{supported.length} supported samples · {limited.length} limited or unavailable samples · all {rows.length} reviewed raiders shown. Pawed excluded at the user’s request.</p>
-    <section><h2>Supported comparisons</h2><p className={styles.muted}>Placement describes this selected mechanics sample, not a percentile or complete measure of raid contribution.</p>
-      {supported.length ? <Results rows={supported} limited={false}/> : <p>No one meets the repeated-boss evidence requirement for this selection.</p>}</section>
-    <section><h2>Limited evidence or ambiguous primary role · no placement</h2><p className={styles.muted}>Small samples, missing role/patch evidence and primary-role ties receive no authoritative ordinal. Missing evidence is not a clean score.</p><Results rows={limited} limited/></section>
+    <p aria-live="polite">{supported.length} broader samples · {limited.length} provisional or ungraded samples · all {rows.length} reviewed raiders shown. Pawed excluded at the user’s request.</p>
+    <section><h2>Overall execution ranking</h2><p className={styles.muted}>Placement describes the selected mechanics sample, not a percentile or complete measure of raid contribution. Broader samples also remain automated coaching estimates.</p>
+      <Results rows={rows}/></section>
     <SharedKills snapshot={snapshot} patch={patch}/>
     <section className={styles.note}><h2>What this cannot establish</h2><p>Interrupt, dispel and cooldown assignments are unknown. Incomplete support is an observed lower bound; zero unverified events does not establish zero contribution. Context deaths carry no automatic blame. Historical patches can cover fewer reviewed mechanics.</p>
       {snapshot.limitations.map((limit, i) => <p key={i}>{limit}</p>)}</section>
