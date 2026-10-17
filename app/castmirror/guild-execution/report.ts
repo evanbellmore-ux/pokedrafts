@@ -137,11 +137,11 @@ function deathCards(fights: BoundFight[]): DeathCard[] {
   return fights.flatMap(({ fight: f, source: s }) => f.survival.deaths.map((d): DeathCard => {
     const duration = Number.isFinite(f.durationSec) && f.durationSec > 0 ? f.durationSec : null;
     const at = Number.isFinite(d.at) && d.at >= 0 ? d.at : null;
-    const remaining = duration !== null && at !== null && at <= duration ? rounded(duration - at) : null;
+    const remaining = duration !== null && at !== null && at <= duration ? duration - at : null;
     const reviewed = d.reviewedAvoidable && fatalCause(f, d.causeID);
     const attribution = d.causeID === null ? "unknown-cause" : reviewed ? observed(f) ? "reviewed-avoidable" : "reported-avoidable-incomplete" : "context-or-unproven";
     return { source: s, causeID: d.causeID, causeName: d.causeName, atSeconds: at, fightDurationSec: duration,
-      remainingFightSeconds: remaining, remainingFightPercent: remaining !== null && duration !== null ? rounded(remaining / duration * 100) : null,
+      remainingFightSeconds: remaining !== null ? rounded(remaining) : null, remainingFightPercent: remaining !== null && duration !== null ? rounded(remaining / duration * 100) : null,
       raidDeathOrder: f.survival.complete && Number.isSafeInteger(d.raidDeathOrder) && Number(d.raidDeathOrder) > 0 ? d.raidDeathOrder : null,
       survivalComplete: f.survival.complete, mechanicsComplete: observed(f), attribution,
       explanation: `${attribution === "reviewed-avoidable" ? "Directly attributed to a reviewed avoidable mechanic." : attribution === "reported-avoidable-incomplete" ? "A reviewed cause is reported, but incomplete streams withhold confirmed totals." : "Cause or assignment context does not establish avoidable responsibility."} ${f.survival.complete ? "" : "The survival stream is incomplete; total deaths and raid death order are unverified. "}Remaining fight time is not time dead; resurrection evidence is not collected.` };
