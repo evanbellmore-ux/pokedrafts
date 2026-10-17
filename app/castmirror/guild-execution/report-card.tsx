@@ -21,7 +21,8 @@ const SUPPORT_LIMITS = [
   ["dispels:event-actor-unverified", "Dispel attribution could not be verified for part of the sample."],
   ["interrupts:event-actor-unverified", "Interrupt attribution could not be verified for part of the sample."],
 ] as const;
-const friendlyLimit = (value: string) => SUPPORT_LIMITS.reduce((text,[code,label]) => text.replaceAll(code,label),value);
+const canonicalLimit = (value: string) => value.replace(/\s*:\s*/g,":");
+const friendlyLimit = (value: string) => SUPPORT_LIMITS.reduce((text,[code,label]) => text.replace(new RegExp(code.replace(":","\\s*:\\s*"),"g"),label),value);
 type Source = RaiderReport["deaths"][number]["source"];
 
 function SourceLinks({ sources }: { sources: Source[] }) {
@@ -94,7 +95,7 @@ function Utility({ report }: { report: RaiderReport }) {
         <div className={styles.utilityTile}><strong>{count(u.raidAbsorbed)}</strong><span>Logged teammate absorbs</span></div>
       </div>
       <p>Assignments, available opportunities and correct timing are unknown. These observed counts add no ranking points. Incomplete support is a lower bound; an unverified zero cannot establish zero contribution.</p>
-      {SUPPORT_LIMITS.filter(([code]) => report.limits.some(limit => limit.includes(code))).map(([code,label]) => <p className={styles.muted} key={code}>{label}</p>)}
+      {SUPPORT_LIMITS.filter(([code]) => report.limits.some(limit => canonicalLimit(limit).includes(code))).map(([code,label]) => <p className={styles.muted} key={code}>{label}</p>)}
       {!!u.absorbAbilities.length && <div className={styles.tableWrap}><table aria-label="Observed teammate absorbs"><thead><tr><th scope="col">Teammate absorb ability</th><th scope="col">Observed amount</th></tr></thead>
         <tbody>{u.absorbAbilities.map(ability => <tr key={ability.abilityID}><th scope="row">{ability.name}</th><td>{number(ability.amount)}</td></tr>)}</tbody></table></div>}
     </div>

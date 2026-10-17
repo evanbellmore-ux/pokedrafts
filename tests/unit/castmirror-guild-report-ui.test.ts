@@ -149,4 +149,22 @@ describe("saved raider execution report card", () => {
     assert.match(html,/Inspect source limitation code/);assert.match(html,/<code>[^<]*healing:event-actor-unverified/);
     assert.doesNotMatch(html,/pet attribution|rename caused|network timeout caused/i);
   });
+  test("real saved Unrly limitations with native colon spacing read plainly and preserve the original code", () => {
+    const raider=snapshot.raiders.find(value=>value.identity.name==="Unrlydemonic")!;
+    const {report,html}=render(raider.reviews as RaidBossReview[]);
+    assert(report.limits.some(limit=>limit.includes("healing: event-actor-unverified")),"the regression must exercise the real spaced native code");
+    const support=panel(html,"Observed support").split("<summary>Compare the same pulls")[0],evidence=panel(html,"Evidence limits");
+    assert.match(support,/Teammate shield attribution could not be verified for part of the sample/);
+    assert.match(evidence,/Teammate shield attribution could not be verified for part of the sample/);
+    assert.match(evidence,/Inspect source limitation code/);assert.match(evidence,/<code>[^<]*healing: event-actor-unverified/);
+    assert.doesNotMatch(support,/healing: event-actor-unverified/);
+  });
+  test("whitespace around a known limitation colon is display-only and unknown source wording remains intact", () => {
+    const review=fixture("Whitespace");for(const fight of review.fights){fight.utility.complete=false;fight.limitations=["healing \t : \t missing-event-page","healing : untouched-unknown"];}
+    const {html}=render([review]),support=panel(html,"Observed support").split("<summary>Compare the same pulls")[0],evidence=panel(html,"Evidence limits");
+    assert.match(support,/Teammate shield event coverage is incomplete for part of the sample/);
+    assert.match(evidence,/<code>[^<]*healing \t : \t missing-event-page/);
+    assert.match(evidence,/healing : untouched-unknown/);
+    assert.doesNotMatch(support,/Teammate shield attribution could not be verified/);
+  });
 });

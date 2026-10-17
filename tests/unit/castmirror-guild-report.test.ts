@@ -123,6 +123,11 @@ describe("death cards without inferred downtime", () => {
     expect(cards.find((d) => d.atSeconds === null)?.remainingFightSeconds).toBeNull();
     expect(cards.every((d) => !("deadTime" in d) && !("downtime" in d))).toBe(true);
   });
+  it("calculates remaining fight percentage before rounding the displayed seconds", () => {
+    const f = death(fight(1, 1), 349.414); f.durationSec = 358.183;
+    const card = buildRaiderReport([review([f])], options, []).deaths[0];
+    expect(card).toMatchObject({ remainingFightSeconds: 8.8, remainingFightPercent: 2.4 });
+  });
   it("withholds complete totals and first-death assertions for incomplete survival", () => {
     const f = death(fight(1, 1)); f.survival.complete = false;
     const r = buildRaiderReport([review([f])], options, []);
