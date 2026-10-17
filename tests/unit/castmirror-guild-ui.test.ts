@@ -8,7 +8,7 @@ import { assessRaidRanking } from "../../app/api/castmirror/execution/raid/grade
 import type { RaidRole } from "../../app/api/castmirror/execution/raid/types";
 
 const snapshot = snapshotData as unknown as GuildExecutionSnapshot;
-const renderedRows = (html: string) => [...html.matchAll(/<tbody>([\s\S]*?)<\/tbody>/g)].flatMap(table => [...table[1].matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/g)].map(row => row[1]));
+const renderedRows = (html: string) => [...html.matchAll(/<table aria-label="Overall execution ranking">([\s\S]*?)<\/table>/g)].flatMap(table => [...table[1].matchAll(/<tbody>([\s\S]*?)<\/tbody>/g)].flatMap(body => [...body[1].matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/g)].map(row => row[1])));
 const rowFor = (rows: string[], name: string) => rows.find(row => row.includes(`>${name}<small`))!;
 const provisionalBadge = /<small\b[^>]*>Provisional<\/small>/;
 function fixtureRaider(name: string, role: RaidRole, contacts: number, samples = 1, bosses = 1) {
@@ -49,7 +49,7 @@ describe("saved guild execution board", () => {
     assert.equal(rows.find(r=>r.raider.identity.name === "Bstay")!.assessment.role, "dps");
     const html = renderToStaticMarkup(createElement(GuildExecutionBoard, {snapshot}));
     const displayed=renderedRows(html);
-    assert.equal((html.match(/<table\b/g)??[]).length,1);assert.equal(displayed.length,26);
+    assert.equal((html.match(/<table aria-label="Overall execution ranking">/g)??[]).length,1);assert.equal(displayed.length,26);
     for (const [index,row]of expected.entries()) {
       assert(displayed[index].includes(`>${row.raider.identity.name}<small`));
       const rendered=rowFor(displayed,row.raider.identity.name);
@@ -62,6 +62,8 @@ describe("saved guild execution board", () => {
     assert.match(html, /Compare the same kills/);
     assert.match(html, /Legacy overall score/);
     assert.match(html, /Gradeable exposure:/);
+    assert.match(html, /Raider report card/);
+    assert.equal((html.match(/>View report card<\/button>/g)??[]).length,26);
     assert.match(html, /target="_blank" rel="noopener noreferrer"/);
   });
   test("one overall competition rank crosses roles, includes limited scores and retains unscored rows", () => {

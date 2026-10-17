@@ -1,10 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { assessRaidRanking, compareSharedRaidRanking, selectRaidRankingReviews } from "@/app/api/castmirror/execution/raid/grade";
 import type { RaidBossReview, RaidRole } from "@/app/api/castmirror/execution/raid/types";
 import styles from "./board.module.css";
+import RaiderReportCard from "./report-card";
+import { buildRaiderReport } from "./report";
+import { buildRankingStability } from "./stability";
 
 export interface GuildExecutionSnapshot {
   version: "guild-execution-snapshot-1";
@@ -83,11 +86,12 @@ function Evidence({ row }: { row: Row }) {
       </li>)}</ul></div>)}
   </details>;
 }
-function Results({ rows }: { rows: Row[] }) {
-  return <div className={styles.tableWrap}><table><thead><tr><th scope="col">Placement</th><th scope="col">Raider</th><th scope="col">Execution</th><th scope="col">Evidence</th><th scope="col">Main improvement areas</th></tr></thead>
+function Results({ rows, onReport }: { rows: Row[]; onReport: (identity: GuildExecutionSnapshot["raiders"][number]["identity"]) => void }) {
+  return <div className={styles.tableWrap}><table aria-label="Overall execution ranking"><thead><tr><th scope="col">Placement</th><th scope="col">Raider</th><th scope="col">Execution</th><th scope="col">Evidence</th><th scope="col">Main improvement areas</th></tr></thead>
     <tbody>{rows.map(row => { const a = row.assessment; return <tr key={key(row.raider.identity)}>
       <td>{row.rank === null ? "—" : `#${row.rank}`}</td>
-      <th scope="row">{row.raider.identity.name}<small>{row.raider.identity.server}</small><small>{a.role ? ROLE_NAMES[a.role as RaidRole] : "No role sample"}</small></th>
+      <th scope="row">{row.raider.identity.name}<small>{row.raider.identity.server}</small><small>{a.role ? ROLE_NAMES[a.role as RaidRole] : "No role sample"}</small>
+        <button type="button" className={styles.reportButton} onClick={() => onReport(row.raider.identity)} aria-label={`View ${row.raider.identity.name}'s report card`}>View report card</button></th>
       <td><strong>{a.letter ?? "Ungraded"}</strong>{a.score !== null && <span> {a.score.toFixed(1)}</span>}
         {a.score !== null && !a.rankEligible && <small className={styles.provisional}>Provisional</small>}</td>
       <td>{a.sampledKills} kills · {a.gradedBosses}/10 bosses<small>{a.supportedBosses} bosses with ≥3 gradeable kills</small><small>{a.sampleLabel}</small>
@@ -123,7 +127,20 @@ function SharedKills({ snapshot, patch }: { snapshot: GuildExecutionSnapshot; pa
 
 export default function GuildExecutionBoard({ snapshot }: { snapshot: GuildExecutionSnapshot }) {
   const [role, setRole] = useState<RoleFilter>("primary"), [patch, setPatch] = useState("all");
+  const [reportIdentity, setReportIdentity] = useState(snapshot.raiders[0] ? key(snapshot.raiders[0].identity) : "");
+  const reportSection = useRef<HTMLElement>(null);
   const rows = guildRows(snapshot, role, patch), supported = rows.filter(r => r.assessment.rankEligible), limited = rows.filter(r => !r.assessment.rankEligible);
+  const selectedRaider = snapshot.raiders.find(raider => key(raider.identity) === reportIdentity) ?? snapshot.raiders[0];
+  const diagnostics = useMemo(() => {
+    if (!selectedRaider) return null;
+    const options = { role, patch, currentPatch: snapshot.currentPatch };
+    return { report: buildRaiderReport(selectedRaider.reviews, options, snapshot.raiders),
+      stability: buildRankingStability(selectedRaider.reviews, options, snapshot.raiders) };
+  }, [selectedRaider, role, patch, snapshot]);
+  const showReport = (identity: GuildExecutionSnapshot["raiders"][number]["identity"]) => {
+    setReportIdentity(key(identity));
+    reportSection.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
   return <main className={styles.page}>
     <nav><Link href="/castmirror">← Cast Mirror</Link></nav>
     <header><p className={styles.eyebrow}>Saved Mythic execution review</p><h1>{snapshot.guild.name}</h1>
@@ -135,8 +152,16 @@ export default function GuildExecutionBoard({ snapshot }: { snapshot: GuildExecu
     <div className={styles.filters}><label>Role<select value={role} onChange={e => setRole(e.target.value as RoleFilter)}><option value="primary">Primary role for each raider</option><option value="dps">DPS</option><option value="tank">Tank</option><option value="healer">Healer</option></select></label>
       <label>Patch<select value={patch} onChange={e => setPatch(e.target.value)}><option value="all">All reviewed patches</option><option value="current">{snapshot.currentPatch} · current only</option>{snapshot.patches.filter(p => p !== snapshot.currentPatch).map(p => <option key={p} value={p}>{p} · historical only</option>)}</select></label></div>
     <p aria-live="polite">{supported.length} broader samples · {limited.length} provisional or ungraded samples · all {rows.length} reviewed raiders shown. Pawed excluded at the user’s request.</p>
+    <section ref={reportSection} className={styles.reportSection} aria-labelledby="raider-report-title">
+      <h2 id="raider-report-title">Raider report card</h2>
+      <p className={styles.muted}>Recurring mechanics, death context and shared-kill comparisons from the saved evidence. The role and patch filters above apply throughout.</p>
+      <div className={styles.filters}><label>Report card raider<select value={selectedRaider ? key(selectedRaider.identity) : ""} onChange={event => setReportIdentity(event.target.value)}>
+        {snapshot.raiders.map(raider => <option key={key(raider.identity)} value={key(raider.identity)}>{raider.identity.name} — {raider.identity.server}</option>)}
+      </select></label></div>
+      {diagnostics && selectedRaider && <RaiderReportCard key={`${key(selectedRaider.identity)}:${role}:${patch}`} report={diagnostics.report} stability={diagnostics.stability}/>}
+    </section>
     <section><h2>Overall execution ranking</h2><p className={styles.muted}>Placement describes the selected mechanics sample, not a percentile or complete measure of raid contribution. Broader samples also remain automated coaching estimates.</p>
-      <Results rows={rows}/></section>
+      <Results rows={rows} onReport={showReport}/></section>
     <SharedKills snapshot={snapshot} patch={patch}/>
     <section className={styles.note}><h2>What this cannot establish</h2><p>Interrupt, dispel and cooldown assignments are unknown. Incomplete support is an observed lower bound; zero unverified events does not establish zero contribution. Context deaths carry no automatic blame. Historical patches can cover fewer reviewed mechanics.</p>
       {snapshot.limitations.map((limit, i) => <p key={i}>{limit}</p>)}</section>

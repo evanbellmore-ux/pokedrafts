@@ -51,3 +51,32 @@ opportunities. A two-raider view uses
 only exact shared report/fight/boss/role/patch sources through the same pure
 model, retains each source actor and reports insufficient shared evidence
 without fallback. Raid assignments and unreviewed mechanics remain unknown.
+
+## Saved raider report cards
+
+The guild page keeps one overall ranking and adds a selectable report card for
+each of the same 26 verified raiders. Role and patch filters apply to the card,
+its coaching priorities and its evidence. The card uses the existing saved
+reviews; opening it does not acquire new logs or change grading weights.
+
+Mechanic reliability shows affected sampled kills, contact incidents and
+survived-clean observations. Each boss, patch and mechanic has its own observed
+denominator: incomplete streams and kills without that reviewed ability cannot
+earn clean credit. These denominators are sampled kills, not known mechanic
+opportunities. Historical rules can cover a narrower mechanic list.
+
+Death cards retain cause, time after pull, raid death event order, source kill
+and whether responsibility is established. Fight time remaining at a death is
+shown as context; it is not time spent dead or a measure of contribution lost.
+Resurrection timing and assignments are not present in the saved data. Utility
+remains observed support, with incomplete zeros unverified and no inferred
+cooldown effectiveness or missed assignments.
+
+Peer diagnostics require exact shared boss, fight, role and patch sources with
+complete mechanics and survival and matching reviewed mechanic coverage for
+both raiders. Peers are ordered by overlap size rather than performance. A
+ranking sensitivity check removes each selected kill or boss once and recomputes
+the existing score with the subject's role and other raiders' scores fixed.
+Ungraded variants stay ungraded. The displayed ranges are sample sensitivity,
+not statistical confidence intervals or predictions. Kill-only saved evidence
+cannot establish progression performance.
