@@ -41,7 +41,7 @@ describe("saved raider execution report card", () => {
     assert.match(html,/Avoidable survival<\/dt><dd>20 \/ 40/);
     assert.match(html,/2\/2 gradeable kills contained reviewed contacts/);
     assert.match(html,/aria-label="Execution grade by boss"/);assert.match(html,/2\/2 gradeable kills · weight 2/);
-    assert.match(html,/Weights are coaching choices/);assert.doesNotMatch(html,/72\.5/);
+    assert.match(html,/Weights are coaching choices/);assert.match(html,/Grade bands: A ≥ 95/);assert.doesNotMatch(html,/72\.5/);
   });
   test("real selected evidence renders compact summary, quantified priorities and inspectable source panels", () => {
     const raider=snapshot.raiders.find(value=>value.identity.name==="Bstay")!;
@@ -75,6 +75,7 @@ describe("saved raider execution report card", () => {
   test("empty and fully incomplete mechanics never render a clean performance or zero support claim", () => {
     const empty=render([]);
     assert.match(empty.html,/Ungraded/);assert.match(empty.html,/Complete mechanics evidence unavailable/);
+    assert.match(empty.html,/No gradeable kill evidence for these components/);assert.doesNotMatch(empty.html,/0\/0 gradeable kills contained/);
     assert.match(empty.html,/No complete reviewed mechanic observations/);assert.match(empty.html,/No supported same-pull peer comparison/);
     assert.match(empty.html,/No graded evidence for a ranking sensitivity check/);
     const partial=fixture();partial.status="partial";partial.reason="Incomplete source evidence";

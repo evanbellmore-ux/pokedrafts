@@ -42,6 +42,7 @@ export const EXECUTION_RELIABILITY_RUBRIC: RaidRankingAssessment["rubric"] = {
   label: "Execution reliability v2",
   description: "30 points for mistake-free consistency, 30 for contact control and 40 for avoiding proven fatal mistakes. Per gradeable kill: consistency is 100 without reviewed contacts or a directly attributed avoidable death, otherwise 0; contact control is max(0, 100 − 10 × contact incidents); survival is 100 without a proven avoidable death, otherwise 0. Average each component within a boss, then weight bosses by gradeable kills capped at three. A first contact therefore costs 33 points in that kill, later contacts 3 each until contact control is exhausted, and a proven fatal mistake loses 40 survival points. Death-shortened mechanics credit cannot exceed survived kills with the same boss, role, patch and reviewed ability set; context-only deaths without that baseline remain ungraded. Timing, damage amounts, output, utility totals and peer ranks add no points.",
   weights: { consistency: 30, contactControl: 30, survival: 40 },
+  thresholds: EXECUTION_RUBRIC.thresholds,
 };
 
 const ROLE_ORDER: RaidRole[] = ["dps", "tank", "healer"];

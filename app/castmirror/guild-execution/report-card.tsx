@@ -151,10 +151,12 @@ function GradeBreakdown({ report }: { report: RaiderReport }) {
     <dl className={styles.components}>{b.components.map(component => <div key={component.key}>
       <dt>{component.label}</dt><dd>{component.points === null ? "Ungraded" : `${number(component.points)} / ${component.weight}`}</dd>
       <p>earned points</p></div>)}</dl>
-    <p>{b.affectedKills}/{b.gradeableKills} gradeable kills contained reviewed contacts or a proven fatal mistake; {number(b.contactIncidents)} contact incidents; {b.avoidableFatalKills} kills with a directly attributed avoidable death.</p>
+    {b.gradeableKills ? <p>{b.affectedKills}/{b.gradeableKills} gradeable kills contained reviewed contacts or a proven fatal mistake; {number(b.contactIncidents)} contact incidents; {b.avoidableFatalKills} kills with a directly attributed avoidable death.</p>
+      : <p>No gradeable kill evidence for these components. Missing or unmatched evidence cannot establish clean execution.</p>}
     <p className={styles.muted}>{b.exposureAdjustedKills} shortened kills had mechanics credit capped at matching survived evidence. {b.ungradedContextDeaths} context-death kills lack a matching survived baseline and remain ungraded.</p>
     <details className={styles.sourceToggle}><summary>Inspect scoring policy and boss points</summary>
       <p>{a.rubric.description}</p><p>Weights are coaching choices, not statistically learned from these 26 raiders. Contact incidents describe sampled mistakes, not mechanic opportunities. Historical coverage can be narrower; source patches remain visible. Displayed points are rounded.</p>
+      <p>Grade bands: {a.rubric.thresholds.map(band => `${band.letter} ≥ ${band.minimum}`).join(" · ")}</p>
       <div className={styles.tableWrap}><table aria-label="Execution grade by boss"><thead><tr><th scope="col">Boss</th><th scope="col">Consistency / 30</th><th scope="col">Control / 30</th><th scope="col">Survival / 40</th><th scope="col">Execution</th></tr></thead><tbody>
         {a.bosses.map(boss => <tr key={boss.boss.id}><th scope="row">{boss.boss.name}<small>{boss.gradeableKills}/{boss.sampledKills} gradeable kills · weight {boss.weight}</small><small>Patch {boss.sourcePatches.join(" / ")}</small></th>
           {boss.breakdown.components.map(component => <td key={component.key}>{component.points === null ? "—" : number(component.points)}</td>)}

@@ -223,6 +223,7 @@ export interface RaidRankingAssessment {
     label: string;
     description: string;
     weights: { consistency: number; contactControl: number; survival: number };
+    thresholds: Array<{ letter: ExecutionLetter; minimum: number }>;
   };
   breakdown: RaidExecutionBreakdown;
   identity: { name: string; server: string; region: string } | null;

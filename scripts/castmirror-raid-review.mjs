@@ -214,8 +214,9 @@ function raidReviewBreakdown(breakdown) {
   for (const component of breakdown.components)
     section.append(textNode('p', component.label + ': ' + (component.points === null ? 'Unavailable'
       : component.points.toFixed(1) + ' / ' + component.weight + ' points'), 'hint'));
-  section.append(textNode('p', breakdown.affectedKills + ' of ' + breakdown.gradeableKills + ' gradeable kills affected · '
-    + breakdown.contactIncidents + ' reviewed contact incidents · ' + breakdown.avoidableFatalKills + ' kills with a proven fatal mistake', 'hint'));
+  section.append(textNode('p', breakdown.gradeableKills ? breakdown.affectedKills + ' of ' + breakdown.gradeableKills + ' gradeable kills affected · '
+    + breakdown.contactIncidents + ' reviewed contact incidents · ' + breakdown.avoidableFatalKills + ' kills with a proven fatal mistake'
+    : 'No gradeable kill evidence for these components. Missing or unmatched evidence cannot establish clean execution.', 'hint'));
   if (breakdown.exposureAdjustedKills)
     section.append(textNode('p', breakdown.exposureAdjustedKills + ' death-shortened kills use a matching survived sample to cap mechanics credit.', 'hint'));
   if (breakdown.ungradedContextDeaths)
@@ -347,6 +348,7 @@ function renderRaidReview() {
   rubric.append(textNode('p', ranking.rubric.label + ': ' + ranking.rubric.description));
   rubric.append(textNode('p', ranking.rubric.weights.consistency + '% mistake-free kill consistency · '
     + ranking.rubric.weights.contactControl + '% contact control · ' + ranking.rubric.weights.survival + '% avoidable-fatal survival.', 'hint'));
+  rubric.append(textNode('p', 'Grade bands: ' + ranking.rubric.thresholds.map((band) => band.letter + ' ≥ ' + band.minimum).join(' · '), 'hint'));
   root.append(rubric);
 }
 function bindRaidReview() {
