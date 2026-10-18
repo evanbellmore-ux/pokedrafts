@@ -69,6 +69,18 @@ describe("observed mechanic denominators", () => {
     expect(r.reliability).toMatchObject({ completeObservedKills: 0, survivedCleanKills: 0, incompleteMechanicsKills: 9 });
     expect(r.mechanics).toEqual([]);
   });
+  it("withholds ambiguous duplicate mechanic rows from clean credit and paired comparisons", () => {
+    for (const contacts of [0, 1]) {
+      const f = fight(1, contacts); f.damage.abilities.push(structuredClone(f.damage.abilities[0]));
+      const input = [review([f])], validPeer = other([review([fight(1)])]);
+      const r = buildRaiderReport(input, options, [peer(validPeer)]);
+      expect(r.assessment).toMatchObject({ score: null, gradeableKills: 0 });
+      expect(r.reliability).toMatchObject({ completeObservedKills: 0, survivedCleanKills: 0, incompleteMechanicsKills: 1, contactIncidents: 0 });
+      expect(r.mechanics).toEqual([]); expect(r.bosses).toEqual([]);
+      expect(r.peers[0]).toMatchObject({ sharedKills: 1, pairedKills: 0, withheldKills: 1 });
+      expect(r.priorities.some((p) => p.kind === "evidence")).toBe(true);
+    }
+  });
   it("filters role and source patch before every diagnostic and never fills empty current evidence", () => {
     const historic = { ...fight(1, 4), scope: scopes[0] }, healer = { ...fight(2, 3), role: "healer" as const };
     const input = [review([historic, healer])];
@@ -211,7 +223,7 @@ describe("saved benchmarks and unchanged scoring", () => {
     input[0].fights[0].utility.complete = false;
     const copy = structuredClone(input), r = buildRaiderReport(input, options, []);
     expect(r.utility.confidence).toBe("incomplete"); expect(r.utility.summary).toContain("unverified zero");
-    expect(r.assessment.score).toBe(90); expect(gradeRaid(input).score).toBe(legacy.score); expect(input).toEqual(copy);
+    expect(r.assessment.score).toBe(64); expect(gradeRaid(input).score).toBe(legacy.score); expect(input).toEqual(copy);
     expect(before[0].fights[0].utility.complete).toBe(true);
   });
   it("reports kill-only utility, excludes progression contributions, and preserves actual refusal limitations", () => {

@@ -189,13 +189,42 @@ export interface RaidRankingBossAssessment {
   weight: number;
   sampleSupported: boolean;
   grade: RaidBossGrade;
+  /** Current grading policy; grade above is the retained legacy evidence summary. */
+  breakdown: RaidExecutionBreakdown;
   sourcePatches: string[];
   firstDate: number | null;
   lastDate: number | null;
 }
 
+export interface RaidExecutionComponent {
+  key: "consistency" | "contactControl" | "survival";
+  label: string;
+  /** Maximum contribution to the 100-point grade. */
+  weight: number;
+  score: number | null;
+  /** Unrounded earned points; round for display only. */
+  points: number | null;
+}
+
+export interface RaidExecutionBreakdown {
+  components: RaidExecutionComponent[];
+  gradeableKills: number;
+  affectedKills: number;
+  contactIncidents: number;
+  avoidableFatalKills: number;
+  exposureAdjustedKills: number;
+  ungradedContextDeaths: number;
+}
+
 export interface RaidRankingAssessment {
-  version: "raid-ranking-assessment-1";
+  version: "raid-ranking-assessment-2";
+  rubric: {
+    version: "execution-reliability-rubric-2";
+    label: string;
+    description: string;
+    weights: { consistency: number; contactControl: number; survival: number };
+  };
+  breakdown: RaidExecutionBreakdown;
   identity: { name: string; server: string; region: string } | null;
   role: RaidRole | null;
   primaryRole: RaidRole | null;

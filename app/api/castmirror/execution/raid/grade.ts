@@ -13,6 +13,8 @@ import type {
   RaidRankingSelection,
   RaidRankingAssessment,
   SharedRaidRankingComparison,
+  RaidExecutionBreakdown,
+  RaidExecutionComponent,
 } from "./types";
 
 /** A review rubric, not an official parse, percentile or measure of assigned opportunities. */
@@ -32,6 +34,14 @@ export const EXECUTION_RUBRIC: RaidExecutionGrade["rubric"] = {
     { letter: "D", minimum: 60 },
     { letter: "F", minimum: 0 },
   ],
+};
+
+/** Fixed coaching policy, not weights learned from this guild or an execution percentile. */
+export const EXECUTION_RELIABILITY_RUBRIC: RaidRankingAssessment["rubric"] = {
+  version: "execution-reliability-rubric-2",
+  label: "Execution reliability v2",
+  description: "30 points for mistake-free consistency, 30 for contact control and 40 for avoiding proven fatal mistakes. Per gradeable kill: consistency is 100 without reviewed contacts or a directly attributed avoidable death, otherwise 0; contact control is max(0, 100 − 10 × contact incidents); survival is 100 without a proven avoidable death, otherwise 0. Average each component within a boss, then weight bosses by gradeable kills capped at three. A first contact therefore costs 33 points in that kill, later contacts 3 each until contact control is exhausted, and a proven fatal mistake loses 40 survival points. Death-shortened mechanics credit cannot exceed survived kills with the same boss, role, patch and reviewed ability set; context-only deaths without that baseline remain ungraded. Timing, damage amounts, output, utility totals and peer ranks add no points.",
+  weights: { consistency: 30, contactControl: 30, survival: 40 },
 };
 
 const ROLE_ORDER: RaidRole[] = ["dps", "tank", "healer"];
@@ -441,7 +451,7 @@ function rankingPatchReviews(reviews: RaidBossReview[], options: RaidRankingOpti
 export function selectRaidRankingReviews(reviews: RaidBossReview[], options: RaidRankingOptions = {}): RaidRankingSelection {
   const selected = rankingPatchReviews(reviews, options), totals = ROLE_ORDER.map((role) => ({ role,
     present: selected.reviews.some((r) => r.fights.some((f) => f.role === role)),
-    kills: selected.reviews.reduce((n, r) => n + gradeBoss({ ...r, fights: r.fights.filter((f) => f.role === role) }).sample.gradedFights, 0) }));
+    kills: selected.reviews.reduce((n, r) => n + reliabilityBreakdown(r.fights.filter((f) => f.role === role)).gradeableKills, 0) }));
   const present = totals.filter((v) => v.present), maximum = Math.max(-1, ...present.map((v) => v.kills));
   const tied = present.filter((v) => v.kills === maximum), primaryRole = tied[0]?.role ?? null;
   const role = options.role === undefined || options.role === "primary" ? primaryRole : ROLE_ORDER.includes(options.role) ? options.role : null;
@@ -458,27 +468,90 @@ function rankingDates(fights: RaidFightEvidence[]) {
   return { firstDate: dates.length ? Math.min(...dates) : null, lastDate: dates.length ? Math.max(...dates) : null };
 }
 
-/** Additive ranking model. Existing execution scores and penalties remain unchanged. */
+const COMPONENT_LABELS = { consistency: "Mistake-free consistency", contactControl: "Contact control", survival: "Avoidable survival" };
+
+function componentValues(values: { consistency: number | null; contactControl: number | null; survival: number | null }): RaidExecutionComponent[] {
+  return (["consistency", "contactControl", "survival"] as const).map((key) => ({ key, label: COMPONENT_LABELS[key],
+    weight: EXECUTION_RELIABILITY_RUBRIC.weights[key], score: values[key],
+    points: values[key] === null ? null : values[key] * EXECUTION_RELIABILITY_RUBRIC.weights[key] / 100 }));
+}
+
+/** Only equal reviewed coverage can supply a shortened-exposure ceiling. No opportunity denominator is inferred. */
+function reliabilityBreakdown(rawFights: RaidFightEvidence[]): RaidExecutionBreakdown {
+  const fights = dedupeFights(rawFights).filter((fight) => fight.kill && completeFight(fight)
+    && fight.damage.abilities.every((ability) => Number.isSafeInteger(ability.abilityID) && ability.abilityID > 0)
+    && new Set(fight.damage.abilities.map((ability) => ability.abilityID)).size === fight.damage.abilities.length);
+  const groupKey = (fight: RaidFightEvidence) => JSON.stringify([fight.role, fight.scope?.partition, fight.scope?.patch,
+    [...new Set(fight.damage.abilities.filter((ability) => !isContextual(ability)).map((ability) => ability.abilityID))].sort((a, b) => a - b)]);
+  const values = (fight: RaidFightEvidence) => ({
+    consistency: incidentsFor(fight) || confirmedDeaths(fight) ? 0 : 100,
+    contactControl: Math.max(0, 100 - 10 * incidentsFor(fight)),
+    survival: confirmedDeaths(fight) ? 0 : 100,
+  });
+  const survivors = new Map<string, ReturnType<typeof values>[]>();
+  for (const fight of fights) if (!fight.survival.deaths.length) {
+    const key = groupKey(fight); survivors.set(key, [...survivors.get(key) ?? [], values(fight)]);
+  }
+  let ungradedContextDeaths = 0, exposureAdjustedKills = 0;
+  const graded = fights.flatMap((fight) => {
+    const raw = values(fight), baseline = survivors.get(groupKey(fight));
+    if (!fight.survival.deaths.length) return [{ fight, values: raw }];
+    if (!confirmedDeaths(fight) && !baseline?.length) { ungradedContextDeaths += 1; return []; }
+    if (!baseline?.length) return [{ fight, values: raw }];
+    // Context deaths carry no survival blame; losing exposure cannot improve either mechanics component.
+    const adjusted = { ...raw, consistency: Math.min(raw.consistency, average(baseline.map((v) => v.consistency))!),
+      contactControl: Math.min(raw.contactControl, average(baseline.map((v) => v.contactControl))!) };
+    if (adjusted.consistency < raw.consistency || adjusted.contactControl < raw.contactControl) exposureAdjustedKills += 1;
+    return [{ fight, values: adjusted }];
+  });
+  return { components: componentValues({ consistency: average(graded.map((entry) => entry.values.consistency)),
+    contactControl: average(graded.map((entry) => entry.values.contactControl)), survival: average(graded.map((entry) => entry.values.survival)) }),
+    gradeableKills: graded.length,
+    affectedKills: graded.filter(({ fight }) => incidentsFor(fight) > 0 || confirmedDeaths(fight) > 0).length,
+    contactIncidents: graded.reduce((total, { fight }) => total + incidentsFor(fight), 0),
+    avoidableFatalKills: graded.filter(({ fight }) => confirmedDeaths(fight) > 0).length,
+    exposureAdjustedKills, ungradedContextDeaths };
+}
+
+function breakdownScore(breakdown: RaidExecutionBreakdown): number | null {
+  return breakdown.components.some((component) => component.points === null) ? null
+    : rounded(breakdown.components.reduce((total, component) => total + component.points!, 0));
+}
+
+/** Versioned reliability grades derived from unchanged evidence; legacy graders remain available for audit. */
 export function assessRaidRanking(reviews: RaidBossReview[], options: RaidRankingOptions = {}): RaidRankingAssessment {
   const selected = selectRaidRankingReviews(reviews, options), identityReview = rankingLatest(reviews).reviews[0];
   const bosses = selected.reviews.map((review) => {
-    const grade = gradeBoss(review), gradeableKills = grade.sample.gradedFights;
-    return { boss: review.boss, score: grade.score, letter: grade.letter, sampledKills: grade.sample.kills, gradeableKills,
-      weight: grade.score === null ? 0 : Math.min(gradeableKills, 3), sampleSupported: grade.score !== null && gradeableKills >= 3,
-      grade, sourcePatches: unique(review.fights.map((f) => f.scope!.patch)).sort(), ...rankingDates(review.fights) };
+    const grade = gradeBoss(review), breakdown = reliabilityBreakdown(review.fights), gradeableKills = breakdown.gradeableKills;
+    const score = breakdownScore(breakdown);
+    return { boss: review.boss, score, letter: executionLetter(score), sampledKills: grade.sample.kills, gradeableKills,
+      weight: score === null ? 0 : Math.min(gradeableKills, 3), sampleSupported: score !== null && gradeableKills >= 3,
+      grade, breakdown, sourcePatches: unique(review.fights.map((f) => f.scope!.patch)).sort(), ...rankingDates(review.fights) };
   });
-  const weight = bosses.reduce((n, b) => n + b.weight, 0), score = weight ? rounded(bosses.reduce((n, b) => n + (b.score ?? 0) * b.weight, 0) / weight) : null;
+  const weight = bosses.reduce((n, b) => n + b.weight, 0);
+  const components = componentValues({ consistency: null, contactControl: null, survival: null }).map((component) => {
+    const score = weight ? bosses.reduce((n, boss) => n + (boss.breakdown.components.find((value) => value.key === component.key)!.score ?? 0) * boss.weight, 0) / weight : null;
+    return { ...component, score, points: score === null ? null : score * component.weight / 100 };
+  });
+  const breakdown: RaidExecutionBreakdown = { components, gradeableKills: bosses.reduce((n, boss) => n + boss.gradeableKills, 0),
+    affectedKills: bosses.reduce((n, boss) => n + boss.breakdown.affectedKills, 0),
+    contactIncidents: bosses.reduce((n, boss) => n + boss.breakdown.contactIncidents, 0),
+    avoidableFatalKills: bosses.reduce((n, boss) => n + boss.breakdown.avoidableFatalKills, 0),
+    exposureAdjustedKills: bosses.reduce((n, boss) => n + boss.breakdown.exposureAdjustedKills, 0),
+    ungradedContextDeaths: bosses.reduce((n, boss) => n + boss.breakdown.ungradedContextDeaths, 0) };
+  const score = breakdownScore(breakdown);
   const fights = selected.reviews.flatMap((r) => r.fights), utility = combineUtility(bosses.map((b) => b.grade.utility));
   const supportedBosses = bosses.filter((b) => b.sampleSupported).length, broader = supportedBosses >= 4;
   const rankEligible = broader && !((options.role === undefined || options.role === "primary") && selected.primaryRoleAmbiguous);
-  return { version: "raid-ranking-assessment-1", identity: identityReview ? { name: identityReview.identity.name, server: identityReview.identity.server, region: identityReview.identity.region } : null,
+  return { version: "raid-ranking-assessment-2", rubric: EXECUTION_RELIABILITY_RUBRIC, breakdown,
+    identity: identityReview ? { name: identityReview.identity.name, server: identityReview.identity.server, region: identityReview.identity.region } : null,
     role: selected.role, primaryRole: selected.primaryRole, tiedRoles: selected.tiedRoles, primaryRoleAmbiguous: selected.primaryRoleAmbiguous, patch: selected.patch, patchLabel: selected.patchLabel,
     status: score === null ? "ungraded" : "graded", score, letter: executionLetter(score), sample: broader ? "broader" : "limited", sampleLabel: broader ? "Broader sample" : "Limited sample", rankEligible,
     sampledKills: bosses.reduce((n, b) => n + b.sampledKills, 0), gradeableKills: bosses.reduce((n, b) => n + b.gradeableKills, 0), gradedBosses: bosses.filter((b) => b.score !== null).length,
     supportedBosses, bosses, utility, utilityConfidence: !utility.observedFights ? "unavailable" : utility.completeFights === utility.observedFights ? "complete" : "incomplete",
     sourcePatches: unique(fights.map((f) => f.scope!.patch)).sort(), ...rankingDates(fights), exclusions: selected.exclusions, provisional: true,
     summary: score === null ? "No gradeable evidence in the selected role and patch."
-      : `${broader ? "Broader sample" : "Limited sample"}: ${supportedBosses} bosses have at least three gradeable kills. Boss weight is capped at three. Utility is descriptive and does not affect this score.` };
+      : `${broader ? "Broader sample" : "Limited sample"}: ${supportedBosses} bosses have at least three gradeable kills. Execution reliability v2 weights consistency 30%, contact control 30% and avoidable survival 40%; boss weight is capped at three. ${breakdown.ungradedContextDeaths} context-death kills lack a matching survived baseline and remain ungraded. Utility is descriptive and does not affect this score.` };
 }
 
 /** Pairs exact shared kills. Actor IDs stay separate; no opportunities, assignments or missing sources are invented. */

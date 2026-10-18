@@ -35,13 +35,13 @@ describe("additive role and evidence ranking", () => {
     expect(gradeBoss(input[0]).score).toBe(50);
     expect(gradeRaid(input).score).toBe(75);
     const assessed = assessRaidRanking(input);
-    expect(assessed.score).toBe(87.5);
+    expect(assessed.score).toBe(85);
     expect(assessed.bosses.map((b) => b.weight).sort()).toEqual([1, 3]);
   });
   it("caps stable farm encounters at three without letting six kills dominate three", () => {
     const three = assessRaidRanking([kills(3470, 3), kills(3445, 3, 4)]);
     const six = assessRaidRanking([kills(3470, 6), kills(3445, 3, 4)]);
-    expect(three.score).toBe(90); expect(six.score).toBe(90);
+    expect(three.score).toBe(79); expect(six.score).toBe(79);
     expect(six.bosses.every((b) => b.weight === 3)).toBe(true);
   });
   it("requires four individually supported bosses, rather than twelve kills on one", () => {
@@ -55,13 +55,13 @@ describe("additive role and evidence ranking", () => {
   });
   it("selects primary by gradeable kills, never the best-scoring role", () => {
     const input = [review(3470, [...kills(3470, 5, 5).fights, fight(99, 0, "healer")])];
-    expect(assessRaidRanking(input)).toMatchObject({ role: "dps", primaryRole: "dps", score: 75, sampledKills: 5 });
+    expect(assessRaidRanking(input)).toMatchObject({ role: "dps", primaryRole: "dps", score: 55, sampledKills: 5 });
     expect(assessRaidRanking(input, { role: "healer" })).toMatchObject({ role: "healer", primaryRole: "dps", score: 100, sampledKills: 1 });
   });
   it("exposes primary ties and withholds its ordinal even with a broader sample", () => {
     const tied = broader().map((r) => ({ ...r, fights: [...r.fights.map((f) => ({ ...f, damage: { ...f.damage, abilities: [{ ...f.damage.abilities[0], health: 400, clusters: 4, hits: 4 }] } })),
       ...r.fights.map((f) => ({ ...structuredClone(f), fightID: f.fightID + 10, role: "healer" as const }))] }));
-    expect(assessRaidRanking(tied)).toMatchObject({ role: "dps", score: 80, tiedRoles: ["dps", "healer"], primaryRoleAmbiguous: true, sample: "broader", rankEligible: false });
+    expect(assessRaidRanking(tied)).toMatchObject({ role: "dps", score: 58, tiedRoles: ["dps", "healer"], primaryRoleAmbiguous: true, sample: "broader", rankEligible: false });
     expect(assessRaidRanking(tied, { role: "healer" })).toMatchObject({ score: 100, primaryRoleAmbiguous: true, rankEligible: true });
   });
   it("recomputes context-death baselines after isolating role", () => {
@@ -132,13 +132,13 @@ describe("reviewed patch and latest whole-boss isolation", () => {
       (r: RaidBossReview) => { r.identity.region = "eu"; }, (r: RaidBossReview) => { r.rulesVersion += "different"; },
       (r: RaidBossReview) => { r.scope.difficulty = 4; }, (r: RaidBossReview) => { r.scope.encounter = 3445; },
     ]) { const b = structuredClone(a); b.at++; b.fights = b.fights.map((f) => fight(f.fightID)); mutate(b);
-      expect(assessRaidRanking([a, b])).toMatchObject({ score: 80, sampledKills: 3 }); }
+      expect(assessRaidRanking([a, b])).toMatchObject({ score: 58, sampledKills: 3 }); }
   });
   it("chooses primary within the patch view, without historical-role carryover", () => {
     const historic = kills(3470, 5, 0, "tank").fights.map((f) => ({ ...f, scope: scopes[0] }));
     const input = [review(3470, [...historic, fight(1, 4, "dps")])];
     expect(assessRaidRanking(input).primaryRole).toBe("tank");
-    expect(assessRaidRanking(input, { patch: "current" })).toMatchObject({ primaryRole: "dps", role: "dps", score: 80 });
+    expect(assessRaidRanking(input, { patch: "current" })).toMatchObject({ primaryRole: "dps", role: "dps", score: 58 });
   });
   it("dedupes identical source rows but refuses conflicting actor or role bindings", () => {
     const f = fight(1);
@@ -166,7 +166,7 @@ describe("shared kill comparison", () => {
   it("compares only exact shared kills and retains both actual actor IDs", () => {
     const a = [review(3470, [fight(1, 2), fight(2, 10)])], b = asOther([review(3470, [fight(1), { ...fight(3), code: "OtherReportCode01" }])]);
     const c = compareSharedRaidRanking(a, b);
-    expect(c).toMatchObject({ status: "compared", sharedFights: 1, sharedBosses: 1, a: { score: 90, sampledKills: 1, rankEligible: false }, b: { score: 100, sampledKills: 1 } });
+    expect(c).toMatchObject({ status: "compared", sharedFights: 1, sharedBosses: 1, a: { score: 64, sampledKills: 1, rankEligible: false }, b: { score: 100, sampledKills: 1 } });
     expect(c.sources[0]).toMatchObject({ code: "LJ317qRxH2MXvPkD", fightID: 1, actorA: 101, actorB: 202, role: "dps", patch: "12.1.5", partition: 2 });
   });
   it("does not invent a comparison for different reports, fights, roles, bosses or patches", () => {

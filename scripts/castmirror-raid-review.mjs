@@ -208,21 +208,42 @@ function raidReviewFight(fight, fallbackScope) {
   for (const limitation of fight.limitations || []) item.append(textNode('p', limitation, 'hint'));
   return item;
 }
-function raidReviewBoss(boss, grade, review) {
+function raidReviewBreakdown(breakdown) {
+  const section = document.createElement('div'); section.className = 'raid-execution-breakdown';
+  section.append(textNode('h4', 'Execution reliability components'));
+  for (const component of breakdown.components)
+    section.append(textNode('p', component.label + ': ' + (component.points === null ? 'Unavailable'
+      : component.points.toFixed(1) + ' / ' + component.weight + ' points'), 'hint'));
+  section.append(textNode('p', breakdown.affectedKills + ' of ' + breakdown.gradeableKills + ' gradeable kills affected · '
+    + breakdown.contactIncidents + ' reviewed contact incidents · ' + breakdown.avoidableFatalKills + ' kills with a proven fatal mistake', 'hint'));
+  if (breakdown.exposureAdjustedKills)
+    section.append(textNode('p', breakdown.exposureAdjustedKills + ' death-shortened kills use a matching survived sample to cap mechanics credit.', 'hint'));
+  if (breakdown.ungradedContextDeaths)
+    section.append(textNode('p', breakdown.ungradedContextDeaths + ' context-death kills lack a matching survived sample and remain ungraded.', 'hint'));
+  return section;
+}
+function raidReviewBoss(boss, assessment, review) {
+  const grade = assessment?.grade;
   const card = document.createElement('article'); card.className = 'raid-execution-boss'; card.dataset.boss = boss.id;
   const heading = document.createElement('div'); heading.className = 'raid-execution-boss-heading';
   heading.append(textNode('h4', boss.name));
-  heading.append(textNode('strong', grade?.letter || 'Ungraded', 'raid-execution-boss-letter'));
+  heading.append(textNode('strong', assessment?.letter || 'Ungraded', 'raid-execution-boss-letter'));
   card.append(heading);
-  if (!grade) {
+  if (!assessment || !grade) {
     card.append(textNode('p', raidReviewDone.has(boss.id) ? 'No eligible evidence for this role and patch.' : raidReviewRunning ? 'Waiting for review.' : 'No evidence reviewed yet.', 'hint')); return card;
   }
-  card.append(textNode('p', grade.summary));
+  card.append(textNode('p', assessment.score === null ? 'Insufficient complete kill evidence for an execution grade.'
+    : 'Execution reliability · ' + assessment.score + ' / 100', 'raid-execution-boss-score'));
+  card.append(textNode('p', assessment.score === null ? 'Missing or unmatched kill evidence receives no favorable credit.'
+    : assessment.breakdown.avoidableFatalKills ? 'The gradeable sample includes a directly attributed fatal mistake.'
+      : assessment.breakdown.affectedKills ? 'Reviewed mechanic contacts are an improvement priority.'
+        : 'No reviewed contacts or proven fatal mistakes in the gradeable kill sample.'));
+  card.append(raidReviewBreakdown(assessment.breakdown));
   const patches = raidReviewPatchLabels(review ? [review] : []);
   card.append(textNode('p', patches.reviewed, 'hint'), textNode('p', patches.sampled, 'hint'));
   const dates = raidReviewDateRange(review?.fights || []);
   if (dates) card.append(textNode('p', dates, 'hint'));
-  card.append(textNode('p', grade.sample.kills + ' sampled kills · ' + grade.sample.gradedFights + ' gradeable fights · '
+  card.append(textNode('p', assessment.sampledKills + ' sampled kills · ' + assessment.gradeableKills + ' gradeable fights · '
     + grade.sample.survivedKills + ' kills survived', 'hint'));
   card.append(textNode('p', (grade.provisional ? 'Provisional · ' : '') + grade.survival.confirmedAvoidableDeaths
     + ' reviewed avoidable deaths · ' + grade.survival.contextDeaths + ' deaths needing context', 'hint'));
@@ -230,11 +251,12 @@ function raidReviewBoss(boss, grade, review) {
     .filter((ability) => !ability.contextual).map((ability) => ability.abilityID))).size;
   if (reviewedMechanics) card.append(textNode('p', reviewedMechanics + ' independently reviewed '
     + (reviewedMechanics === 1 ? 'mechanic · narrow coverage' : 'mechanics'), 'hint'));
-  for (const reason of grade.reasons || []) card.append(textNode('p', reason, 'raid-execution-reason'));
+  for (const reason of grade.reasons || [])
+    if (!/\bacross \d+ graded kills?\./.test(reason)) card.append(textNode('p', reason, 'raid-execution-reason'));
   if (review?.reason) card.append(textNode('p', raidReviewFriendlyReason(review.reason), 'hint'));
-  for (const role of grade.roles || [])
-    card.append(textNode('p', role.role + ': ' + (role.letter || 'Ungraded') + (role.provisional ? ' (provisional)' : '')
-      + ' · ' + role.sample.kills + ' kills', 'hint'));
+  const role = review?.fights?.[0]?.role;
+  if (role) card.append(textNode('p', role + ': ' + (assessment.letter || 'Ungraded') + ' (provisional)'
+    + ' · ' + assessment.sampledKills + ' kills', 'hint'));
   if (grade.utility.observedFights > 0) {
     card.append(textNode('p', 'Observed support: ' + raidReviewSupportNumber(grade.utility, grade.utility.successfulInterrupts) + ' successful interrupts · '
       + raidReviewSupportNumber(grade.utility, grade.utility.dispels) + ' dispels · ' + raidReviewSupportNumber(grade.utility, grade.utility.raidAbsorbed) + ' absorbed on teammates', 'hint'));
@@ -290,25 +312,23 @@ function renderRaidReview() {
     assessment.append(textNode('p', exclusion, 'hint'));
   assessment.append(textNode('p', 'An automated coaching rubric, not an official execution percentile.', 'hint'));
   assessment.append(textNode('p', context.name + ' · ' + context.server + ' · ' + context.zoneName + ' ' + (DIFF[context.difficulty] || '')));
-  const compatibleReviews = selected.reviews.filter((review) => overall.bosses.some((boss) => boss.key === review.key));
+  const compatibleReviews = selected.reviews.filter((review) => ranking.bosses.some((boss) => boss.grade.key === review.key));
   const patches = raidReviewPatchLabels(compatibleReviews);
   assessment.append(textNode('p', patches.reviewed, 'hint'), textNode('p', patches.sampled, 'hint'));
   const dates = raidReviewDateRange(compatibleReviews.flatMap((review) => review.fights));
   if (dates) assessment.append(textNode('p', dates, 'hint'));
-  assessment.append(textNode('p', overall.summary));
   assessment.append(textNode('p', ranking.summary, 'hint'));
-  assessment.append(textNode('p', overall.gradedBosses + ' of ' + overall.totalBosses + ' bosses graded · '
-    + overall.bosses.reduce((sum, boss) => sum + boss.sample.kills, 0) + ' sampled kills', 'hint'));
+  assessment.append(raidReviewBreakdown(ranking.breakdown));
+  assessment.append(textNode('p', ranking.gradedBosses + ' of ' + context.bosses.length + ' bosses graded · '
+    + ranking.sampledKills + ' sampled kills', 'hint'));
   assessment.append(textNode('p', overall.bosses.reduce((sum, boss) => sum + boss.survival.confirmedAvoidableDeaths, 0)
     + ' reviewed avoidable deaths · ' + overall.bosses.reduce((sum, boss) => sum + boss.survival.contextDeaths, 0)
     + ' deaths needing context', 'hint'));
-  for (const role of overall.roles || [])
-    assessment.append(textNode('p', role.role + ': ' + (role.letter || 'Ungraded') + (role.provisional ? ' (provisional)' : '')
-      + ' across ' + role.bosses
-      + (role.bosses === 1 ? ' boss' : ' bosses'), 'hint'));
+  if (ranking.role) assessment.append(textNode('p', ranking.role + ': ' + (ranking.letter || 'Ungraded') + ' (provisional)'
+    + ' across ' + ranking.gradedBosses + (ranking.gradedBosses === 1 ? ' boss' : ' bosses'), 'hint'));
   root.append(assessment, raidReviewUtility(overall.utility));
   const grid = document.createElement('div'); grid.className = 'raid-execution-bosses';
-  for (const boss of context.bosses) grid.append(raidReviewBoss(boss, overall.bosses.find((entry) => entry.boss.id === boss.id),
+  for (const boss of context.bosses) grid.append(raidReviewBoss(boss, ranking.bosses.find((entry) => entry.boss.id === boss.id),
     selected.reviews.find((review) => review.boss.id === boss.id)));
   root.append(grid);
   const legacy = document.createElement('details'); legacy.className = 'raid-execution-rubric';
@@ -318,14 +338,15 @@ function renderRaidReview() {
   legacy.append(textNode('p', legacyOverall.gradedBosses + ' of ' + legacyOverall.totalBosses + ' bosses graded · '
     + legacyOverall.bosses.reduce((sum, boss) => sum + boss.sample.kills, 0) + ' sampled kills', 'hint'));
   legacy.append(textNode('p', 'This retained score can blend roles. The headline, boss evidence and support above use your selected role and patch.', 'hint'));
+  for (const limit of legacyOverall.limitations || []) legacy.append(textNode('p', limit, 'hint'));
   root.append(legacy);
   const rubric = document.createElement('details'); rubric.className = 'raid-execution-rubric';
   rubric.append(textNode('summary', 'How this grade works and what it cannot measure'));
   rubric.append(textNode('p', 'Headline ranking: one selected role and patch view. Each boss is weighted by its gradeable kill count, capped at three. '
     + 'A supported comparison needs at least four bosses with three gradeable kills each; this is a sample heuristic, not statistical confidence.'));
-  rubric.append(textNode('p', 'Underlying per-kill penalties and retained legacy aggregation · ' + overall.rubric.label + ': ' + overall.rubric.description));
-  rubric.append(textNode('p', 'Grade bands: ' + overall.rubric.thresholds.map((band) => band.letter + ' ≥ ' + band.minimum).join(' · '), 'hint'));
-  for (const limit of overall.limitations || []) rubric.append(textNode('p', limit, 'hint'));
+  rubric.append(textNode('p', ranking.rubric.label + ': ' + ranking.rubric.description));
+  rubric.append(textNode('p', ranking.rubric.weights.consistency + '% mistake-free kill consistency · '
+    + ranking.rubric.weights.contactControl + '% contact control · ' + ranking.rubric.weights.survival + '% avoidable-fatal survival.', 'hint'));
   root.append(rubric);
 }
 function bindRaidReview() {
@@ -385,7 +406,7 @@ export function adaptRaidReview(html) {
   html = replaceExactlyOnce(html, '    renderKills(data);\n    say', '    renderKills(data);\n    prepareRaidReview(data, raidLookupContext);\n    say', 'character lookup result');
   const helpers = [raidReviewForm, raidReviewKey, raidReviewCurrent, cancelRaidReview, raidReviewCharacterRequest, prepareRaidReview,
     raidReviewFriendlyReason, raidReviewMatches, startRaidReview, raidReviewNumber, raidReviewScopeLabel, raidReviewPatchLabels, raidReviewDateRange,
-    raidReviewSupportNumber, raidReviewUtility, raidReviewSource, raidReviewFight,
+    raidReviewSupportNumber, raidReviewUtility, raidReviewSource, raidReviewFight, raidReviewBreakdown,
     raidReviewBoss, renderRaidReview, bindRaidReview];
   const emitted = '// BEGIN CASTMIRROR RAID REVIEW\nconst RAID_REVIEW_SCOPE = Object.freeze(' + JSON.stringify(scope) + ');\n'
     + 'let raidReviewContext = null, raidReviewGeneration = 0, raidReviewController = null, raidReviewRunning = false;\n'

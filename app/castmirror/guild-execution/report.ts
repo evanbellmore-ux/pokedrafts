@@ -71,6 +71,7 @@ function abilities(f: RaidFightEvidence) {
 function coverage(f: RaidFightEvidence) { return [...new Set(abilities(f).map((a) => a.abilityID))].sort((a, b) => a - b); }
 function observed(f: RaidFightEvidence) {
   return f.damage.complete && f.survival.complete && Number.isFinite(f.durationSec) && f.durationSec > 0 && coverage(f).length > 0
+    && new Set(f.damage.abilities.map((a) => a.abilityID)).size === f.damage.abilities.length
     && f.damage.abilities.every((a) => Number.isSafeInteger(a.abilityID) && a.abilityID > 0
       && [a.health, a.absorbed, a.hits, a.clusters].every((n) => Number.isFinite(n) && n >= 0)
       && Number.isSafeInteger(a.hits) && Number.isSafeInteger(a.clusters)
@@ -202,7 +203,7 @@ function utilityFor(fights: BoundFight[]): ExecutionUtility {
     absorbAbilities: [...abilities.values()].filter((a) => a.amount > 0).sort((a, b) => b.amount - a.amount || a.abilityID - b.abilityID) };
 }
 
-/** Saved evidence only. No acquisition, score changes, alternate-source pooling or opportunity denominators. */
+/** Saved evidence only. The shared assessment owns scoring; diagnostics never pool alternate sources or infer opportunities. */
 export function buildRaiderReport(reviews: RaidBossReview[], options: RaidRankingOptions, peers: Array<{ identity: Identity; reviews: RaidBossReview[] }>): RaiderReport {
   const assessment = assessRaidRanking(reviews, options), selection = selectRaidRankingReviews(reviews, options), fights = bound(selection.reviews), complete = fights.filter(({ fight }) => observed(fight));
   const m = metrics(complete), mechanics = mechanicRows(fights), deaths = deathCards(fights), incomplete = fights.length - complete.length, utility = utilityFor(fights);
