@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import { describe, expect, it, vi } from "vitest";
 import saved from "../../data/castmirror/guild-execution.json";
 import { APPROVED_GUILD_SOURCE_SHA256, buildGuildSnapshot } from "../../scripts/build-castmirror-guild-snapshot.mjs";
-import { assessRaidRanking, compareSharedRaidRanking, gradeBoss, gradeRaid, selectRaidRankingReviews } from "../../app/api/castmirror/execution/raid/grade";
+import { assessRaidRanking, compareSharedRaidRanking, gradeRaid, selectRaidRankingReviews } from "../../app/api/castmirror/execution/raid/grade";
 import type { RaidBossReview, RaidRole } from "../../app/api/castmirror/execution/raid/types";
 
 const snapshot = saved as unknown as ReturnType<typeof buildGuildSnapshot>;
@@ -122,10 +122,10 @@ describe("approved saved guild snapshot", () => {
 });
 
 describe("saved evidence ranking behavior", () => {
-  it("qualifies18 broader all-patch primary samples while keeping8 limited samples visible", () => {
+  it("qualifies17 broader all-patch primary samples while keeping9 limited samples visible after exact exposure matching", () => {
     const assessments = snapshot.raiders.map((entry) => assessRaidRanking(entry.reviews, options("all")));
-    expect(assessments.filter((value) => value.rankEligible)).toHaveLength(18);
-    expect(assessments.filter((value) => !value.rankEligible)).toHaveLength(8);
+    expect(assessments.filter((value) => value.rankEligible)).toHaveLength(17);
+    expect(assessments.filter((value) => !value.rankEligible)).toHaveLength(9);
     for (const result of assessments) {
       expect(result.rankEligible).toBe(result.supportedBosses >= 4); expect(result.provisional).toBe(true);
       expect(result.sample).toBe(result.rankEligible ? "broader" : "limited");
@@ -171,9 +171,10 @@ describe("saved evidence ranking behavior", () => {
     for (const entry of snapshot.raiders) for (const patch of ["all", "12.1", "12.1.5"]) for (const role of roles) {
       const result = assessRaidRanking(entry.reviews, options(patch, role));
       const selected = entry.reviews.map((review) => ({ ...review, fights: review.fights.filter((fight) => fight.role === role && (patch === "all" || fight.scope?.patch === patch)) })).filter((review) => review.fights.length);
-      const grades = selected.map(gradeBoss), weight = grades.reduce((n, grade) => n + Math.min(grade.sample.gradedFights, 3), 0);
-      const mean = weight ? Math.round(grades.reduce((n, grade) => n + (grade.score ?? 0) * Math.min(grade.sample.gradedFights, 3), 0) / weight * 10) / 10 : null;
-      expect(result.score).toBe(mean); expect(result.gradeableKills).toBe(grades.reduce((n, grade) => n + grade.sample.gradedFights, 0));
+      const grades = selected.map(review => assessRaidRanking([review], options(patch, role)));
+      const weight = grades.reduce((n, grade) => n + Math.min(grade.gradeableKills, 3), 0);
+      const mean = weight ? Math.round(grades.reduce((n, grade) => n + grade.breakdown.components.reduce((sum, component) => sum + (component.points ?? 0), 0) * Math.min(grade.gradeableKills, 3), 0) / weight * 10) / 10 : null;
+      expect(result.score).toBe(mean); expect(result.gradeableKills).toBe(grades.reduce((n, grade) => n + grade.gradeableKills, 0));
       const dates = selected.flatMap((review) => review.fights.map((fight) => fight.date));
       expect(result.firstDate).toBe(dates.length ? Math.min(...dates) : null); expect(result.lastDate).toBe(dates.length ? Math.max(...dates) : null);
       const actual = selectRaidRankingReviews(entry.reviews, options(patch, role));

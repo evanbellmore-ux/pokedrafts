@@ -144,6 +144,28 @@ function Stability({ stability }: { stability: RankingStability }) {
   </details>;
 }
 
+function GradeBreakdown({ report }: { report: RaiderReport }) {
+  const a = report.assessment, b = a.breakdown;
+  return <section className={styles.gradeBreakdown} aria-label="Execution grade breakdown">
+    <h3>Why this grade</h3><p>{a.rubric.label} · a fixed coaching policy based on reviewed mistakes, not damage or healing output.</p>
+    <dl className={styles.components}>{b.components.map(component => <div key={component.key}>
+      <dt>{component.label}</dt><dd>{component.points === null ? "Ungraded" : `${number(component.points)} / ${component.weight}`}</dd>
+      <p>earned points</p></div>)}</dl>
+    {b.gradeableKills ? <p>{b.affectedKills}/{b.gradeableKills} gradeable kills contained reviewed contacts or a proven fatal mistake; {number(b.contactIncidents)} contact incidents; {b.avoidableFatalKills} kills with a directly attributed avoidable death.</p>
+      : <p>No gradeable kill evidence for these components. Missing or unmatched evidence cannot establish clean execution.</p>}
+    <p className={styles.muted}>{b.exposureAdjustedKills} shortened kills had mechanics credit capped at matching survived evidence. {b.ungradedContextDeaths} context-death kills lack a matching survived baseline and remain ungraded.</p>
+    <details className={styles.sourceToggle}><summary>Inspect scoring policy and boss points</summary>
+      <p>{a.rubric.description}</p><p>Weights are coaching choices, not statistically learned from these 26 raiders. Contact incidents describe sampled mistakes, not mechanic opportunities. Historical coverage can be narrower; source patches remain visible. Displayed points are rounded.</p>
+      <p>Grade bands: {a.rubric.thresholds.map(band => `${band.letter} ≥ ${band.minimum}`).join(" · ")}</p>
+      <div className={styles.tableWrap}><table aria-label="Execution grade by boss"><thead><tr><th scope="col">Boss</th><th scope="col">Consistency / 30</th><th scope="col">Control / 30</th><th scope="col">Survival / 40</th><th scope="col">Execution</th></tr></thead><tbody>
+        {a.bosses.map(boss => <tr key={boss.boss.id}><th scope="row">{boss.boss.name}<small>{boss.gradeableKills}/{boss.sampledKills} gradeable kills · weight {boss.weight}</small><small>Patch {boss.sourcePatches.join(" / ")}</small></th>
+          {boss.breakdown.components.map(component => <td key={component.key}>{component.points === null ? "—" : number(component.points)}</td>)}
+          <td>{boss.score === null ? "Ungraded" : `${boss.letter} ${number(boss.score)}`}</td></tr>)}
+      </tbody></table></div>
+    </details>
+  </section>;
+}
+
 export default function RaiderReportCard({ report, stability }: { report: RaiderReport; stability: RankingStability }) {
   const a = report.assessment, r = report.reliability;
   const noMechanics = r.completeObservedKills === 0;
@@ -159,7 +181,7 @@ export default function RaiderReportCard({ report, stability }: { report: Raider
       <div className={styles.stat}><dt>Survival</dt><dd>{r.completeSurvivalKills === 0 ? "Unknown" : `${r.confirmedAvoidableDeaths} confirmed fatal mistakes`}</dd><p>{r.completeSurvivalDeaths} death events across {r.completeSurvivalKills} complete survival kills; context and unknown causes unassigned</p></div>
       <div className={styles.stat}><dt>Observed support</dt><dd>{r.utilityCompleteKills}/{r.utilityObservedKills}</dd><p>utility streams complete; assignments unknown</p></div>
       <div className={styles.stat}><dt>Sample coverage</dt><dd>{r.gradeableKills}/{r.sampledKills}</dd><p>gradeable sampled kills · {r.incompleteMechanicsKills} with incomplete mechanics</p></div>
-    </dl><p className={styles.muted}>{r.summary}</p>
+    </dl><p className={styles.muted}>{r.summary}</p><GradeBreakdown report={report}/>
       <div className={styles.priorities}><h3>Main improvement priorities</h3>
         {report.priorities.length ? <ol>{report.priorities.slice(0,3).map((priority,index) => <li key={`${priority.kind}:${priority.bossID}:${priority.abilityID}:${index}`}><div><h4>{priority.title}</h4><p>{priority.detail}</p><SourceLinks sources={priority.sources}/></div></li>)}</ol>
           : <p className={styles.quiet}>{noMechanics ? "Insufficient complete mechanics evidence to identify improvement priorities." : r.contactIncidents || r.affectedKills

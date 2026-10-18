@@ -28,9 +28,9 @@ const peer = (name: string, contacts: number[]) => { const reviews = fixture(nam
 describe("saved ranking deletion sensitivity", () => {
   test("recomputes capped boss weights and competition ranks with other raiders fixed", () => {
     const result = buildRankingStability(fixture("Subject", [0, 4]), { role: "primary", patch: "all" }, [peer("Better", [1]), peer("Lower", [3])]);
-    assert.equal(result.baselineScore, 90); assert.equal(result.baselineRank, 2);
-    assert.deepEqual(result.killRemoval, { cases: 6, ungradedCases: 0, scoreMin: 88, scoreMax: 92, rankMin: 2, rankMax: 2 });
-    assert.deepEqual(result.bossRemoval, { cases: 2, ungradedCases: 0, scoreMin: 80, scoreMax: 100, rankMin: 1, rankMax: 3 });
+    assert.equal(result.baselineScore, 79); assert.equal(result.baselineRank, 1);
+    assert.deepEqual(result.killRemoval, { cases: 6, ungradedCases: 0, scoreMin: 74.8, scoreMax: 83.2, rankMin: 1, rankMax: 1 });
+    assert.deepEqual(result.bossRemoval, { cases: 2, ungradedCases: 0, scoreMin: 58, scoreMax: 100, rankMin: 1, rankMax: 3 });
   });
   test("removing the only evidence cannot manufacture a clean score or ordinal", () => {
     const result = buildRankingStability(fixture("Subject", [2], 1), { patch: "all" }, []);
@@ -42,7 +42,7 @@ describe("saved ranking deletion sensitivity", () => {
     tank.damage.abilities.forEach(ability => { ability.clusters = 0; ability.health = 0; });
     reviews[0].fights.push(tank);
     const result = buildRankingStability(reviews, { role: "primary", patch: "all" }, []);
-    assert.equal(result.baselineScore, 90); assert.equal(result.killRemoval.ungradedCases, 1);
+    assert.equal(result.baselineScore, 64); assert.equal(result.killRemoval.ungradedCases, 1);
     assert.equal(result.killRemoval.scoreMax, null);
   });
   test("missing current evidence and identity-mismatched peers stay ungraded or excluded", () => {
@@ -57,7 +57,7 @@ describe("saved ranking deletion sensitivity", () => {
     const before = JSON.stringify(snapshotData);
     const raider = snapshotData.raiders.find(value => value.identity.name === "Bstay")!;
     const result = buildRankingStability(raider.reviews as RaidBossReview[], { role: "primary", patch: "all", currentPatch: snapshotData.currentPatch }, snapshotData.raiders as unknown as Parameters<typeof buildRankingStability>[2]);
-    assert.equal(result.baselineScore, 84); assert.equal(result.baselineRank, 26);
+    assert.equal(result.baselineScore, 62.9); assert.equal(result.baselineRank, 26);
     assert.equal(result.killRemoval.cases, 23); assert.equal(result.bossRemoval.cases, 5);
     assert.equal(JSON.stringify(snapshotData), before);
     assert.match(result.limitation, /not statistical confidence/);

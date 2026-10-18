@@ -93,7 +93,8 @@ function Results({ rows, onReport }: { rows: Row[]; onReport: (identity: GuildEx
       <th scope="row">{row.raider.identity.name}<small>{row.raider.identity.server}</small><small>{a.role ? ROLE_NAMES[a.role as RaidRole] : "No role sample"}</small>
         <button type="button" className={styles.reportButton} onClick={() => onReport(row.raider.identity)} aria-label={`View ${row.raider.identity.name}'s report card`}>View report card</button></th>
       <td><strong>{a.letter ?? "Ungraded"}</strong>{a.score !== null && <span> {a.score.toFixed(1)}</span>}
-        {a.score !== null && !a.rankEligible && <small className={styles.provisional}>Provisional</small>}</td>
+        {a.score !== null && !a.rankEligible && <small className={styles.provisional}>Provisional</small>}
+        {a.score !== null ? <><small>{a.breakdown.affectedKills}/{a.gradeableKills} graded kills affected</small><small>{a.breakdown.avoidableFatalKills} avoidable fatal kills</small></> : <small>No gradeable mechanics evidence</small>}</td>
       <td>{a.sampledKills} kills · {a.gradedBosses}/10 bosses<small>{a.supportedBosses} bosses with ≥3 gradeable kills</small><small>{a.sampleLabel}</small>
         <small>{a.sourcePatches.length ? `Patch ${a.sourcePatches.join(" / ")}` : "No matching patch evidence"}</small>
         {row.primaryView && a.primaryRoleAmbiguous && <small>Primary role tied; choose a role explicitly.</small>}
@@ -146,7 +147,7 @@ export default function GuildExecutionBoard({ snapshot }: { snapshot: GuildExecu
     <header><p className={styles.eyebrow}>Saved Mythic execution review</p><h1>{snapshot.guild.name}</h1>
       <p>The Venomous Abyss · {snapshot.guild.region.toUpperCase()} {snapshot.guild.server}</p>
       <p className={styles.muted}>Snapshot reviewed {date(snapshot.reviewedAt)}. This page reads saved public evidence and makes no new log requests.</p></header>
-    <section className={styles.note}><h2>How this ranking works</h2><p>All raiders appear in one ranking, ordered by observed mechanics score across roles. Each score uses one role and your selected patches; roles and sample sizes remain visible.</p>
+    <section className={styles.note}><h2>How this ranking works</h2><p>All raiders appear in one ranking using Execution reliability v2: 30% mistake-free consistency, 30% contact control and 40% avoiding proven fatal mistakes. Repeated mistakes across kills now matter more. Each score uses one role and your selected patches; roles and sample sizes remain visible.</p>
       <p>Provisional marks a limited sample or ambiguous primary role. A broader sample requires at least four bosses with three gradeable kills each. Boss weights stop increasing after three kills. Equal scores share a placement; missing graded evidence receives no placement.</p>
       <p>Primary role means the role with the most gradeable kills in this patch selection; equal counts use DPS, then tank, then healer for display and are marked provisional until you choose a role explicitly. Support counts never add points.</p></section>
     <div className={styles.filters}><label>Role<select value={role} onChange={e => setRole(e.target.value as RoleFilter)}><option value="primary">Primary role for each raider</option><option value="dps">DPS</option><option value="tank">Tank</option><option value="healer">Healer</option></select></label>

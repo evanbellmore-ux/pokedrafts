@@ -45,6 +45,69 @@ describe('CastMirror raid execution review UI', () => {
     assert.match(page.html, /max-width: 650px[\s\S]*raid-execution-bosses.*grid-template-columns: minmax\(0, 1fr\)/);
   });
 
+  test('uses the reliability model for headline, boss and role grades while isolating the retained legacy score', async () => {
+    const result = review(bosses[0].id), clean = structuredClone(result.fights[0]);
+    clean.fightID = 100;clean.damage.avoidableHealth = 0;clean.damage.avoidableAbsorbed = 0;
+    for (const ability of clean.damage.abilities) {ability.health = 0;ability.absorbed = 0;ability.hits = 0;ability.clusters = 0;}
+    result.fights.push(clean);result.availableKills = 2;
+    const expected = assessRaidRanking([result], {role:'primary',patch:'all',currentPatch:catalog.scope.patch});
+    const legacy = gradeRaid([result],10);
+    assert.equal(expected.score,83.5);assert.notEqual(expected.score,legacy.score);
+    const page = await pageFixture();ready(page);
+    page.evaluate(`raidReviewResults = ${JSON.stringify([result])}; renderRaidReview()`);
+    const root = page.nodes.get('raidExecutionResults'), headline = root.querySelector('.raid-execution-overall');
+    const card = root.querySelectorAll('article').find((item: {dataset:{boss:number}})=>item.dataset.boss===bosses[0].id);
+    assert.equal(headline.querySelector('strong').textContent,expected.letter);
+    assert(headline.htmlTree().includes('Evidence-adjusted execution · 83.5 / 100'));
+    assert(headline.htmlTree().includes('dps: '+expected.letter+' (provisional)'));
+    assert.equal(card.querySelector('.raid-execution-boss-letter').textContent,expected.bosses[0].letter);
+    assert.equal(card.querySelector('.raid-execution-boss-score').textContent,'Execution reliability · 83.5 / 100');
+    assert(card.htmlTree().includes('dps: '+expected.bosses[0].letter+' (provisional)'));
+    for (const component of expected.breakdown.components)
+      assert(headline.htmlTree().includes(component.label+': '+component.points!.toFixed(1)+' / '+component.weight+' points'));
+    for (const component of expected.bosses[0].breakdown.components)
+      assert(card.htmlTree().includes(component.label+': '+component.points!.toFixed(1)+' / '+component.weight+' points'));
+    const legacyPanel = root.querySelectorAll('details').find((item: {htmlTree:()=>string})=>item.htmlTree().startsWith('Legacy overall score'));
+    assert(legacyPanel.htmlTree().includes(legacy.letter+' · '+legacy.score+' / 100'));
+    const rubric = root.querySelectorAll('details').find((item: {htmlTree:()=>string})=>item.htmlTree().startsWith('How this grade works'));
+    assert(rubric.htmlTree().includes(expected.rubric.label));assert(rubric.htmlTree().includes(expected.rubric.description));
+    assert.match(rubric.htmlTree(),/30% mistake-free kill consistency · 30% contact control · 40% avoidable-fatal survival/);
+    assert.doesNotMatch(rubric.htmlTree(),/Underlying per-kill penalties and retained legacy aggregation/);
+    assert.doesNotMatch(rubric.htmlTree(),/Graded bosses receive equal weight|Coverage is \d+ of \d+ bosses/);
+    assert.equal(raidRequests(page).length,0);
+  });
+
+  test('context-only deaths without a matching survivor remain ungraded in headline, boss and component presentation', async () => {
+    const result=review(bosses[0].id);
+    result.fights[0].damage.abilities[0].health=0;result.fights[0].damage.abilities[0].absorbed=0;result.fights[0].damage.abilities[0].hits=0;result.fights[0].damage.abilities[0].clusters=0;
+    result.fights[0].survival.deaths=[{at:50,causeID:2,causeName:'Unproven context',reviewedAvoidable:false,raidDeathOrder:1}];
+    const page=await pageFixture();ready(page);page.evaluate(`raidReviewResults = ${JSON.stringify([result])}; renderRaidReview()`);
+    const root=page.nodes.get('raidExecutionResults'),headline=root.querySelector('.raid-execution-overall');
+    const card=root.querySelectorAll('article').find((item:{dataset:{boss:number}})=>item.dataset.boss===bosses[0].id);
+    assert.match(headline.htmlTree(),/Not enough evidence to grade/);assert.match(headline.htmlTree(),/0 of 10 bosses graded/);
+    assert.equal(card.querySelector('.raid-execution-boss-letter').textContent,'Ungraded');
+    assert.match(card.htmlTree(),/Insufficient complete kill evidence/);assert.match(card.htmlTree(),/context-death kills lack a matching survived sample and remain ungraded/);
+    assert.match(card.htmlTree(),/Mistake-free consistency: Unavailable/);assert.doesNotMatch(card.htmlTree(),/Execution reliability · 100/);
+    assert.equal(raidRequests(page).length,0);
+  });
+
+  test('boss contact denominators exclude context deaths whose only survived sample is from another patch', async () => {
+    const result=review(bosses[0].id),survived=structuredClone(result.fights[0]);
+    result.reviewedScopes=[{partition:1,patch:'12.1'},{partition:2,patch:'12.1.5'}];result.availableKills=2;
+    const context=result.fights[0];context.scope={partition:1,patch:'12.1'};context.damage.avoidableHealth=0;context.damage.avoidableAbsorbed=0;
+    for(const ability of context.damage.abilities){ability.health=0;ability.absorbed=0;ability.hits=0;ability.clusters=0;}
+    context.survival.deaths=[{at:50,causeID:2,causeName:'Unproven context',reviewedAvoidable:false,raidDeathOrder:1}];
+    survived.fightID=100;result.fights.push(survived);
+    const expected=assessRaidRanking([result]),old=gradeRaid([result],10);
+    assert.equal(expected.gradeableKills,1);assert.equal(old.bosses[0].sample.gradedFights,2);
+    const page=await pageFixture();ready(page);page.evaluate(`raidReviewResults = ${JSON.stringify([result])}; renderRaidReview()`);
+    const card=page.nodes.get('raidExecutionResults').querySelectorAll('article').find((item:{dataset:{boss:number}})=>item.dataset.boss===bosses[0].id),html=card.htmlTree();
+    assert.match(html,/2 sampled kills · 1 gradeable fights/);assert.match(html,/1 of 1 gradeable kills affected/);
+    assert.match(html,/1 context-death kills lack a matching survived sample and remain ungraded/);
+    assert.doesNotMatch(html,/across 2 graded kills/);assert.equal(card.querySelectorAll('a').length,2);
+    assert.equal(raidRequests(page).length,0);
+  });
+
   test('role and patch filters recompute headline, boss sources and support without any acquisition', async () => {
     const result = review(bosses[0].id);
     result.reviewedScopes = [{ partition: 1, patch: '12.1' }, { partition: 2, patch: '12.1.5' }];
@@ -58,7 +121,8 @@ describe('CastMirror raid execution review UI', () => {
     page.nodes.get('raidExecutionRole').value = 'tank'; page.nodes.get('raidExecutionPatch').value = '12.1';
     page.nodes.get('raidExecutionRole').onchange();
     const root = page.nodes.get('raidExecutionResults'), html = root.htmlTree();
-    assert.match(html, /Evidence-adjusted execution · 85 \/ 100/);
+    const selectedGrade = assessRaidRanking([result], {role:'tank',patch:'12.1',currentPatch:catalog.scope.patch});
+    assert(html.includes('Evidence-adjusted execution · ' + selectedGrade.score + ' / 100'));
     assert.match(html, /7 successful interrupts/);
     assert.match(html, /Legacy overall score/);
     assert.equal(root.querySelectorAll('a').length, 1);
@@ -114,7 +178,7 @@ describe('CastMirror raid execution review UI', () => {
     assert.match(html, /utility totals do not raise or lower the letter grade/);
     assert.match(html, /Reviewed pool: 3 hits \/ ticks in 1 contact cluster/);
     assert.match(html, /How this grade works/);
-    assert.match(html, /dps: A \(provisional\)/);
+    assert(html.includes('dps: ' + assessRaidRanking([review(bosses[0].id)]).letter + ' (provisional)'));
     assert.match(html, /1 independently reviewed mechanic · narrow coverage/);
     assert.match(html, /Coverage and limitations/);
     assert.match(html, /Patch 12\.1\.5 · current patch only/);

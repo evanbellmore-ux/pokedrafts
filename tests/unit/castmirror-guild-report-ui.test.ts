@@ -30,6 +30,19 @@ const escaped = (value: string) => value.replaceAll("&","&amp;");
 const panel = (html:string,title:string) => html.slice(html.indexOf(`<summary>${title}`));
 
 describe("saved raider execution report card", () => {
+  test("headline and boss points expose the current reliability policy rather than legacy penalties", () => {
+    const {html,report}=render([fixture()]);
+    assert.equal(report.assessment.score,44);
+    assert.equal(report.assessment.bosses[0].grade.score,72.5);
+    assert.match(html,/F 44\.0/);assert.match(html,/Execution reliability v2/);
+    assert.match(html,/aria-label="Execution grade breakdown"/);assert.match(html,/Why this grade/);
+    assert.match(html,/Mistake-free consistency<\/dt><dd>0 \/ 30/);
+    assert.match(html,/Contact control<\/dt><dd>24 \/ 30/);
+    assert.match(html,/Avoidable survival<\/dt><dd>20 \/ 40/);
+    assert.match(html,/2\/2 gradeable kills contained reviewed contacts/);
+    assert.match(html,/aria-label="Execution grade by boss"/);assert.match(html,/2\/2 gradeable kills · weight 2/);
+    assert.match(html,/Weights are coaching choices/);assert.match(html,/Grade bands: A ≥ 95/);assert.doesNotMatch(html,/72\.5/);
+  });
   test("real selected evidence renders compact summary, quantified priorities and inspectable source panels", () => {
     const raider=snapshot.raiders.find(value=>value.identity.name==="Bstay")!;
     const result=render(raider.reviews as RaidBossReview[],snapshot.raiders as Array<{identity:{name:string;server:string;region:string};reviews:RaidBossReview[]}>);
@@ -62,6 +75,7 @@ describe("saved raider execution report card", () => {
   test("empty and fully incomplete mechanics never render a clean performance or zero support claim", () => {
     const empty=render([]);
     assert.match(empty.html,/Ungraded/);assert.match(empty.html,/Complete mechanics evidence unavailable/);
+    assert.match(empty.html,/No gradeable kill evidence for these components/);assert.doesNotMatch(empty.html,/0\/0 gradeable kills contained/);
     assert.match(empty.html,/No complete reviewed mechanic observations/);assert.match(empty.html,/No supported same-pull peer comparison/);
     assert.match(empty.html,/No graded evidence for a ranking sensitivity check/);
     const partial=fixture();partial.status="partial";partial.reason="Incomplete source evidence";

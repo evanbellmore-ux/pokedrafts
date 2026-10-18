@@ -4,7 +4,7 @@ Find a character's kills in Cast Mirror, then choose **Review raid execution**. 
 
 The review checks each boss in order and collects up to six of the character's latest eligible public kills per boss across the explicitly reviewed patches, currently 12.1 and 12.1.5. Selection uses date, not damage or healing rank. Each kill retains its verified patch and partition; older kills are never relabeled as current evidence. The overall review and each boss show reviewed patch coverage, actual sampled patches and sample dates. Each source kill also shows its patch. A character with no suitable public evidence for a boss remains ungraded on that boss. Coverage is always shown alongside the overall letter.
 
-The grade is a provisional automated coaching rubric, not an official percentile. Complete kills start at 100; each independently avoidable contact incident subtracts 5, and a directly attributed avoidable death subtracts 35, with a floor of zero. Adjacent damaging ticks of one ability within five seconds form one contact cluster. Grades average kills within each boss and weight graded bosses equally. The page shows the exact grade bands and limitations. Incomplete or shortened exposure cannot earn favorable credit. Context-dependent damage and deaths with unproven responsibility do not receive blame.
+The grade is a provisional automated coaching rubric, not an official percentile. The headline and boss cards use Execution reliability v2, described below. The retained legacy calculation starts complete kills at 100, subtracts 5 per independently avoidable contact and 35 per directly attributed avoidable death, and weights bosses equally. It remains available explicitly as legacy evidence for audit. Adjacent damaging ticks of one ability within five seconds form one contact cluster. Incomplete or shortened exposure cannot earn favorable credit. Context-dependent damage and deaths with unproven responsibility do not receive blame.
 
 Successful interrupts, dispels and logged damage absorbed on teammates appear as observed raid support. Unknown assignments and opportunities prevent using those raw totals as bonus or penalty points. Damage output, healing output and personal defensive cast counts do not affect the letter. Tank, healer and damage roles are identified in the evidence and receive separate role summaries when applicable.
 
@@ -20,9 +20,9 @@ The browser receives the same pure grading functions used by the service through
 
 ## Role and repeated-evidence ranking views
 
-The review headline now uses the additive `assessRaidRanking` model. Existing
+The review headline and boss cards use the versioned `assessRaidRanking` model. Existing
 `gradeBoss` and `gradeRaid` scores remain available in a legacy-score disclosure;
-their penalties and encounter rules are unchanged. The new view first selects
+their penalties and encounter rules are unchanged. The view first selects
 one role and explicit source patches, then weights each boss by its gradeable
 kill count, capped at three. A supported placement requires at least four bosses
 with three gradeable kills each. This is a sample heuristic, not a statistical
@@ -45,7 +45,7 @@ requests. The guild board orders all 26 raiders together by their selected
 mechanics score, including limited samples with an explicit **Provisional**
 badge. Equal scores share a competition placement; missing graded evidence
 stays visible without a placement. Role, patch and sample details remain shown,
-and the broader-sample threshold and underlying score calculation are unchanged.
+and the broader-sample threshold stays explicit.
 This overall ordering does not normalize different raid assignments or utility
 opportunities. A two-raider view uses
 only exact shared report/fight/boss/role/patch sources through the same pure
@@ -57,7 +57,8 @@ without fallback. Raid assignments and unreviewed mechanics remain unknown.
 The guild page keeps one overall ranking and adds a selectable report card for
 each of the same 26 verified raiders. Role and patch filters apply to the card,
 its coaching priorities and its evidence. The card uses the existing saved
-reviews; opening it does not acquire new logs or change grading weights.
+reviews; opening it does not acquire new logs. Its score breakdown uses the same
+versioned model as the ranking, shared-kill comparison and deletion sensitivity.
 
 Mechanic reliability shows affected sampled kills, contact incidents and
 survived-clean observations. Each boss, patch and mechanic has its own observed
@@ -80,3 +81,46 @@ the existing score with the subject's role and other raiders' scores fixed.
 Ungraded variants stay ungraded. The displayed ranges are sample sensitivity,
 not statistical confidence intervals or predictions. Kill-only saved evidence
 cannot establish progression performance.
+
+## Execution reliability v2
+
+The saved report-card evidence now changes the actual grades through a fixed
+30/30/40 coaching policy, `execution-reliability-rubric-2`. These weights are
+product judgment, not fitted to the 26 raiders or statistically validated:
+
+- **Consistency (30 points):** each gradeable kill receives 100% if it contains
+  neither reviewed avoidable contact nor a directly attributed avoidable death;
+  otherwise 0%. This distinguishes mistakes spread across kills from an equal
+  volume concentrated in one kill.
+- **Contact control (30 points):** each kill receives `max(0, 100 - 10 * incidents)`.
+  Positive health damage or absorbed contact counts; fully immune zero events
+  and contextual mechanics do not. Contact control bottoms out at ten incidents.
+- **Avoidable survival (40 points):** each kill receives 100% without a proven
+  avoidable death, otherwise 0%. Multiple deaths in one kill do not create extra
+  survival penalties because resurrection opportunities are unknown.
+
+A first contact costs 33 points in that kill, each further contact 3 until control
+is exhausted; a proven fatal mistake also loses 40 survival points. One contact
+every kill scores 67, rather than the legacy 95. Average the unrounded components
+within each boss, then weight bosses by gradeable kills capped at three. Only the
+final score is rounded; component displays can differ by a tenth through rounding.
+The existing letter thresholds remain unchanged. Grades under the two policies
+are not directly interchangeable.
+
+Death-shortened mechanics components cannot exceed the mean of survived kills
+with the same boss, role, source partition/patch and exact reviewed noncontext
+ability set. A context-only death without such a baseline remains ungraded; a
+proven avoidable fatal kill still loses consistency/survival credit. This guard
+can reduce supported sample counts relative to legacy grading. Unknown deaths
+never receive an automatic survival penalty. Invalid/duplicate mechanic IDs or
+incomplete damage/survival evidence cannot earn points. Historical narrower
+review coverage stays visible and is not normalized into equal opportunities.
+
+No second recurrence surcharge or peer percentile is added: affected-kill
+consistency already measures repeated mistakes. Death timing/order, raw damage
+amounts, DPS/HPS, personal cast counts, interrupts, dispels, teammate absorbs and
+descriptive trends do not affect points. They remain inspectable context because
+opportunities, assignments, cooldown timing and resurrection evidence are absent.
+The immutable saved snapshot and legacy `gradeBoss`/`gradeRaid` outputs are
+preserved; the API's `grade` field remains that legacy evidence contract while
+the live browser derives its explicitly versioned current assessment from `review`.
