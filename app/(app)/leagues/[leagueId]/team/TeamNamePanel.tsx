@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useLeague } from "@/app/components/league/LeagueProvider";
-import { Alert, Button, Field, Input, StatusPill } from "@/app/components/ui";
+import TeamAvatar from "@/app/components/TeamAvatar";
+import { Alert, Button, Field, Input } from "@/app/components/ui";
 import { teamNameLabel } from "@/app/lib/league/labels";
 import { rpc } from "@/app/lib/rpc";
 import { LEAGUE_LIMITS } from "@/app/types/league";
@@ -106,10 +107,7 @@ export default function TeamNamePanel({
       aria-labelledby="team-name-heading"
       className={`rounded-xl border border-line bg-panel p-5 ${className}`.trim()}
     >
-      <h2
-        id="team-name-heading"
-        className="text-xs font-semibold uppercase tracking-wide text-muted"
-      >
+      <h2 id="team-name-heading" className="sr-only">
         Team name
       </h2>
 
@@ -117,7 +115,7 @@ export default function TeamNamePanel({
         <form
           onSubmit={handleSubmit}
           noValidate
-          className="mt-3 flex flex-col gap-3"
+          className="flex flex-col gap-3"
         >
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
             <Field
@@ -160,18 +158,22 @@ export default function TeamNamePanel({
           {submitError && <Alert variant="error">{submitError}</Alert>}
         </form>
       ) : (
-        <div className="mt-2 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex min-w-0 flex-wrap items-center gap-2">
-            <p className="truncate text-2xl font-bold text-text">
-              {teamNameLabel(member.team_name)}
-            </p>
-            <StatusPill tone={isCommissioner ? "accent" : "neutral"}>
-              {isCommissioner ? "Commissioner" : "Coach"}
-            </StatusPill>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex min-w-0 items-center gap-3">
+            <TeamAvatar name={member.team_name} mine />
+            <div className="min-w-0">
+              <p className="truncate text-xl font-semibold tracking-tight text-text">
+                {teamNameLabel(member.team_name)}
+              </p>
+              <p className="text-sm text-muted">
+                {isCommissioner ? "Commissioner" : "Coach"}
+              </p>
+            </div>
           </div>
           <Button
             ref={renameButtonRef}
             variant="secondary"
+            size="sm"
             onClick={startEditing}
           >
             Rename

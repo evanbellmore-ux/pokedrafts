@@ -11,7 +11,7 @@ import {
   EmptyState,
   Skeleton,
   SkeletonLines,
-  StatusPill,
+  toneDot,
   type StatusTone,
 } from "@/app/components/ui";
 import { rpc } from "@/app/lib/rpc";
@@ -88,11 +88,11 @@ function MoveTile({
   tone: "success" | "danger";
 }) {
   return (
-    <div className="flex min-w-0 items-center gap-2 rounded-lg border border-line bg-panel px-3 py-2">
-      <PokemonSprite name={name} size="sm" />
+    <div className="flex min-w-0 items-center gap-2 rounded-lg bg-bg/60 px-2.5 py-2">
+      <PokemonSprite name={name} size="sm" bare />
       <div className="min-w-0">
         <p
-          className={`text-xs font-semibold uppercase tracking-wide ${
+          className={`text-xs font-medium ${
             tone === "success" ? "text-success" : "text-danger"
           }`}
         >
@@ -118,16 +118,22 @@ function NewsItem({
   const move = freeAgentMove(item);
 
   return (
-    <li className="rounded-lg border border-line bg-bg p-4">
+    <li className="py-3.5 first:pt-0 last:pb-0">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <StatusPill tone={KIND_TONE[kind]}>{NEWS_LABEL[kind]}</StatusPill>
-        <time dateTime={item.created_at} className="text-xs text-muted">
+        <span className="flex items-center gap-1.5 text-xs font-medium text-muted">
+          <span
+            aria-hidden="true"
+            className={`h-1.5 w-1.5 rounded-full ${toneDot[KIND_TONE[kind]]}`}
+          />
+          {NEWS_LABEL[kind]}
+        </span>
+        <time dateTime={item.created_at} className="text-xs text-faint">
           {formatDateTime(item.created_at)}
         </time>
       </div>
 
       {move && (move.added || move.dropped) && (
-        <div className="mt-3 grid gap-2 sm:grid-cols-2">
+        <div className="mt-2.5 grid gap-2 sm:grid-cols-2">
           {move.added && <MoveTile label="Added" name={move.added} tone="success" />}
           {move.dropped && (
             <MoveTile label="Dropped" name={move.dropped} tone="danger" />
@@ -135,10 +141,10 @@ function NewsItem({
         </div>
       )}
 
-      <p className="mt-3 wrap-anywhere text-sm text-text">{item.message}</p>
+      <p className="mt-1.5 wrap-anywhere text-sm text-text">{item.message}</p>
 
       {canUndo && kind === "free_agent" && (
-        <div className="mt-3 flex justify-end">
+        <div className="mt-2.5 flex justify-end">
           <Button variant="secondary" size="sm" onClick={() => onUndo(item)}>
             <Undo2 className="h-4 w-4" aria-hidden="true" />
             Undo move
@@ -211,18 +217,18 @@ export default function NewsFeed({
       className="flex min-w-0 flex-col rounded-xl border border-line bg-panel p-5"
     >
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 id="news-heading" className="text-lg font-semibold text-text">
+        <h2 id="news-heading" className="text-base font-semibold text-text">
           League news
         </h2>
         <LiveStatusPill status={liveStatus} />
       </div>
 
       {loading ? (
-        <div aria-busy="true" className="mt-4 flex flex-col gap-3">
+        <div aria-busy="true" className="mt-4 divide-y divide-line">
           {Array.from({ length: 3 }, (_, index) => (
-            <div key={index} className="rounded-lg border border-line bg-bg p-4">
-              <Skeleton className="h-5 w-24" />
-              <SkeletonLines lines={2} className="mt-3" />
+            <div key={index} className="py-3.5 first:pt-0">
+              <Skeleton className="h-3 w-24" />
+              <SkeletonLines lines={2} className="mt-2.5" />
             </div>
           ))}
         </div>
@@ -235,7 +241,7 @@ export default function NewsFeed({
         />
       ) : (
         <>
-          <ul className="mt-4 flex flex-col gap-3 lg:max-h-[48rem] lg:overflow-y-auto lg:pr-1">
+          <ul className="mt-4 divide-y divide-line lg:max-h-[48rem] lg:overflow-y-auto lg:pr-1">
             {news.map((item) => (
               <NewsItem
                 key={item.id}

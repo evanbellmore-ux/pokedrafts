@@ -2,12 +2,22 @@ import type { ReactNode } from "react";
 
 export type StatusTone = "neutral" | "accent" | "success" | "warning" | "danger";
 
+/** Soft fills, no outline: a pill labels something, it is not a control. */
 const tones: Record<StatusTone, string> = {
-  neutral: "border-line bg-panel-hover text-muted",
-  accent: "border-accent-border bg-accent-soft text-accent-text",
-  success: "border-success/50 bg-success-soft text-success",
-  warning: "border-warning/50 bg-warning-soft text-warning",
-  danger: "border-danger/50 bg-danger-soft text-danger",
+  neutral: "bg-panel-hover text-muted",
+  accent: "bg-accent-soft text-accent-text",
+  success: "bg-success-soft text-success",
+  warning: "bg-warning-soft text-warning",
+  danger: "bg-danger-soft text-danger",
+};
+
+/** A tone as a small status dot, for "● Label" lines that need no pill. */
+export const toneDot: Record<StatusTone, string> = {
+  neutral: "bg-faint",
+  accent: "bg-accent",
+  success: "bg-success",
+  warning: "bg-warning",
+  danger: "bg-danger",
 };
 
 export type StatusPillProps = {
@@ -23,7 +33,7 @@ export default function StatusPill({
 }: StatusPillProps) {
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-semibold ${tones[tone]} ${className}`.trim()}
+      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${tones[tone]} ${className}`.trim()}
     >
       {children}
     </span>

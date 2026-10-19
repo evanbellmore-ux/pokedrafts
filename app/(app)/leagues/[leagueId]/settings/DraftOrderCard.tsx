@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { ArrowDown, ArrowUp, ListOrdered } from "lucide-react";
+import { ArrowDown, ArrowUp } from "lucide-react";
 import { Alert, Button, StatusPill } from "@/app/components/ui";
 import { pluralize, roleLabel, teamNameLabel } from "@/app/lib/league/labels";
 import { rpc } from "@/app/lib/rpc";
@@ -161,8 +161,7 @@ export default function DraftOrderCard({
 
   const heading = (
     <div className="flex items-center gap-2">
-      <ListOrdered className="h-5 w-5 text-accent-text" aria-hidden="true" />
-      <h2 id="draft-order-heading" className="text-lg font-semibold text-text">
+      <h2 id="draft-order-heading" className="text-base font-semibold text-text">
         Draft order
       </h2>
     </div>

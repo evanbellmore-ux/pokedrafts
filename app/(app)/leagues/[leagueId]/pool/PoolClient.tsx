@@ -452,7 +452,6 @@ export default function PoolClient() {
     <div className="flex flex-col gap-6">
       <PageHeader
         title="Draft pool"
-        description="The point-priced Pokémon this league drafts from. Every coach drafts from the same list."
         actions={
           <>
             <span className="flex items-center">

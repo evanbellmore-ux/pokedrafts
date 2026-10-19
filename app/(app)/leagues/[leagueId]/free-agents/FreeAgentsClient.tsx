@@ -332,7 +332,6 @@ export default function FreeAgentsClient() {
     <div className="flex flex-col gap-6">
       <PageHeader
         title="Free Agents"
-        description="Swap undrafted Pokémon onto your team. Every move uses one of your free agent swaps for the season."
         actions={
           <div className="flex flex-wrap items-center gap-2">
             <LiveStatusPill status={liveStatus} />
@@ -431,7 +430,7 @@ export default function FreeAgentsClient() {
 
       <section aria-labelledby="your-team-heading" className="flex flex-col gap-3">
         <div className="flex flex-wrap items-end justify-between gap-3">
-          <h2 id="your-team-heading" className="text-xl font-bold text-text">
+          <h2 id="your-team-heading" className="text-lg font-semibold tracking-tight text-text">
             Your team
           </h2>
           <p className="min-w-0 truncate text-sm text-muted">
@@ -467,7 +466,7 @@ export default function FreeAgentsClient() {
       >
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h2 id="free-agents-heading" className="text-xl font-bold text-text">
+            <h2 id="free-agents-heading" className="text-lg font-semibold tracking-tight text-text">
               Free agents
             </h2>
             {!failed && (

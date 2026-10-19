@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { Check, Copy, Link2, RefreshCw } from "lucide-react";
+import { Check, Copy, RefreshCw } from "lucide-react";
 import { Alert, Button, Dialog, Field, Input } from "@/app/components/ui";
 import { rpc } from "@/app/lib/rpc";
 import type { League, LeagueInvite } from "@/app/types/league";
@@ -101,8 +101,7 @@ export default function InviteCard({
       className="rounded-xl border border-line bg-panel p-5"
     >
       <div className="flex items-center gap-2">
-        <Link2 className="h-5 w-5 text-accent-text" aria-hidden="true" />
-        <h2 id="invite-heading" className="text-lg font-semibold text-text">
+        <h2 id="invite-heading" className="text-base font-semibold text-text">
           Invite link
         </h2>
       </div>

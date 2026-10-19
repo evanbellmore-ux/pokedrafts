@@ -22,19 +22,16 @@ export default function RosterStats({
   className = "",
 }: RosterStatsProps) {
   return (
+    // One strip split by hairlines (the gap shows the bg-line behind the
+    // cells) rather than a row of separate boxes.
     <dl
-      className={`grid grid-cols-1 gap-3 sm:grid-cols-3 ${className}`.trim()}
+      className={`grid grid-cols-3 gap-px overflow-hidden rounded-xl border border-line bg-line ${className}`.trim()}
       aria-busy={loading || undefined}
     >
       {items.map((item) => (
-        <div
-          key={item.label}
-          className="rounded-xl border border-line bg-panel px-4 py-3"
-        >
-          <dt className="text-xs font-semibold uppercase tracking-wide text-muted">
-            {item.label}
-          </dt>
-          <dd className="mt-1 text-xl font-bold tabular-nums text-text">
+        <div key={item.label} className="min-w-0 bg-panel px-3 py-3 sm:px-4">
+          <dt className="text-xs text-muted">{item.label}</dt>
+          <dd className="mt-1 text-lg font-semibold tabular-nums text-text sm:text-xl">
             {loading ? <Skeleton className="h-7 w-20" /> : item.value}
           </dd>
           {item.hint && !loading && (

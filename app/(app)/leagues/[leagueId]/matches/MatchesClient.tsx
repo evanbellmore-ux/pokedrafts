@@ -284,7 +284,6 @@ export default function MatchesClient() {
     <div className="flex flex-col gap-6">
       <PageHeader
         title="Matches"
-        description="The regular season round by round, then the playoff bracket. The commissioner records who won each match."
         actions={<LiveStatusPill status={liveStatus} />}
       />
 
@@ -349,7 +348,7 @@ export default function MatchesClient() {
       {ready && rounds.length > 0 && (
         <section aria-labelledby="regular-season-heading" className="flex flex-col gap-4">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
-            <h2 id="regular-season-heading" className="text-2xl font-bold tracking-tight text-text">
+            <h2 id="regular-season-heading" className="text-lg font-semibold tracking-tight text-text">
               Regular season
             </h2>
             <p className="text-sm text-muted">
@@ -386,7 +385,7 @@ export default function MatchesClient() {
           className="flex scroll-mt-24 flex-col gap-4 rounded-xl border border-line bg-panel p-5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
         >
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <h2 id="playoffs-heading" className="text-2xl font-bold tracking-tight text-text">
+            <h2 id="playoffs-heading" className="text-lg font-semibold tracking-tight text-text">
               Playoffs
             </h2>
             {hasPlayoffs && (

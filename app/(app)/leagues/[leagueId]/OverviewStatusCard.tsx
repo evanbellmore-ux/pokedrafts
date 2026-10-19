@@ -1,16 +1,9 @@
 "use client";
 
 import type { ReactNode } from "react";
-import {
-  ArrowRight,
-  Check,
-  ListOrdered,
-  Play,
-  Trophy,
-  Users,
-} from "lucide-react";
+import { ArrowRight, Check, Trophy } from "lucide-react";
 import { useLeague } from "@/app/components/league/LeagueProvider";
-import { ButtonLink, StatusPill } from "@/app/components/ui";
+import { ButtonLink, toneDot } from "@/app/components/ui";
 import {
   eliminationRoundName,
   isInBracket,
@@ -43,56 +36,72 @@ export type OverviewStatusCardProps = {
 };
 
 type Step = {
-  icon: typeof Users;
   title: string;
   detail: string;
   done: boolean;
   action: ReactNode;
 };
 
+/** A numbered checklist split by hairlines; finished steps get a check. */
 function SetupSteps({ steps }: { steps: Step[] }) {
   return (
-    <ol className="mt-4 flex flex-col gap-3">
-      {steps.map((step) => {
-        const Icon = step.done ? Check : step.icon;
-        return (
-          <li
-            key={step.title}
-            className="flex flex-col gap-3 rounded-lg border border-line bg-bg p-3 sm:flex-row sm:items-center sm:justify-between"
-          >
-            <div className="flex min-w-0 items-start gap-3">
-              <span
-                aria-hidden="true"
-                className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
-                  step.done
-                    ? "bg-success-soft text-success"
-                    : "bg-accent-soft text-accent-text"
+    <ol className="mt-4 divide-y divide-line border-y border-line">
+      {steps.map((step, index) => (
+        <li
+          key={step.title}
+          className="flex flex-col gap-3 py-3.5 sm:flex-row sm:items-center sm:justify-between"
+        >
+          <div className="flex min-w-0 items-start gap-3">
+            <span
+              aria-hidden="true"
+              className={`mt-px flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-semibold tabular-nums ${
+                step.done
+                  ? "bg-success-soft text-success"
+                  : "border border-line-strong text-muted"
+              }`}
+            >
+              {step.done ? <Check className="h-3.5 w-3.5" /> : index + 1}
+            </span>
+            <div className="min-w-0">
+              <p
+                className={`text-sm font-medium ${
+                  step.done ? "text-muted line-through decoration-line-strong" : "text-text"
                 }`}
               >
-                <Icon className="h-4 w-4" />
-              </span>
-              <div className="min-w-0">
-                <p className="font-semibold text-text">
-                  {step.done && <span className="sr-only">Done: </span>}
-                  {step.title}
-                </p>
-                <p className="text-sm text-muted">{step.detail}</p>
-              </div>
+                {step.done && <span className="sr-only">Done: </span>}
+                {step.title}
+              </p>
+              <p className="text-sm text-muted">{step.detail}</p>
             </div>
-            {step.action && <div className="shrink-0">{step.action}</div>}
-          </li>
-        );
-      })}
+          </div>
+          {step.action && <div className="shrink-0 sm:pl-4">{step.action}</div>}
+        </li>
+      ))}
     </ol>
   );
 }
 
-function Stat({ label, children }: { label: string; children: ReactNode }) {
+/**
+ * One cell of the record / next-match strip: two columns split by a
+ * hairline, the strip itself ruled above and below rather than boxed.
+ */
+function Stat({
+  label,
+  divided = false,
+  children,
+}: {
+  label: string;
+  /** The second cell: ruled off from the first (above on phones, left from sm). */
+  divided?: boolean;
+  children: ReactNode;
+}) {
   return (
-    <div className="min-w-0 rounded-lg border border-line bg-bg p-3">
-      <dt className="text-xs font-semibold uppercase tracking-wide text-muted">
-        {label}
-      </dt>
+    <div
+      className={`min-w-0 py-4 ${
+        divided ? "border-t border-line sm:border-l sm:border-t-0 sm:pl-5" : "sm:pr-5"
+      }`}
+    >
+      <dt className="text-xs font-medium text-muted">{label}</dt>
       <dd className="mt-1 text-text">{children}</dd>
     </div>
   );
@@ -122,7 +131,6 @@ export default function OverviewStatusCard({
     heading = "Get the league ready";
     const steps: Step[] = [
       {
-        icon: Users,
         title: "Invite coaches",
         detail: `${members.length} of ${league.max_coaches} coaches have joined.`,
         done: members.length >= 2,
@@ -133,7 +141,6 @@ export default function OverviewStatusCard({
         ) : null,
       },
       {
-        icon: ListOrdered,
         title: "Set the draft order",
         detail:
           drafting.length > 0
@@ -149,7 +156,6 @@ export default function OverviewStatusCard({
         ) : null,
       },
       {
-        icon: Play,
         title: "Open the draft room",
         detail: isCommissioner
           ? "Start the draft from the draft room once everyone is in."
@@ -174,7 +180,7 @@ export default function OverviewStatusCard({
     body = (
       <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-2xl font-bold text-text">
+          <p className="text-xl font-semibold tabular-nums text-text">
             Pick #{pick}
             {onClock
               ? onClock.id === member.id
@@ -214,7 +220,7 @@ export default function OverviewStatusCard({
     if (complete) {
       situation = (
         <>
-          <span className="wrap-anywhere text-lg font-semibold">Champion: {championName}</span>
+          <span className="wrap-anywhere text-lg font-semibold">{championName}</span>
           <span className="mt-1 block text-sm text-muted">
             {youWon ? "You won the championship!" : "Congratulations to the champion."}
           </span>
@@ -282,11 +288,11 @@ export default function OverviewStatusCard({
 
     body = (
       <>
-        <dl className="mt-4 grid gap-3 sm:grid-cols-2">
+        <dl className="mt-4 grid border-y border-line sm:grid-cols-2">
           <Stat label={seeded ? "Final record" : "Your record"}>
             {mine ? (
               <>
-                <span className="text-2xl font-bold">
+                <span className="text-xl font-semibold tabular-nums">
                   {mine.wins}-{mine.losses}
                 </span>
                 <span className="ml-2 text-sm text-muted">
@@ -303,7 +309,7 @@ export default function OverviewStatusCard({
               </span>
             )}
           </Stat>
-          <Stat label={complete ? "Champion" : playoffs ? "Playoffs" : "Next match"}>
+          <Stat divided label={complete ? "Champion" : playoffs ? "Playoffs" : "Next match"}>
             {situation}
           </Stat>
         </dl>
@@ -339,12 +345,13 @@ export default function OverviewStatusCard({
       aria-labelledby="league-status-heading"
       className="rounded-xl border border-line bg-panel p-5"
     >
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 id="league-status-heading" className="text-lg font-semibold text-text">
-          {heading}
-        </h2>
-        <StatusPill tone={pill.tone}>{pill.label}</StatusPill>
-      </div>
+      <h2
+        id="league-status-heading"
+        className="flex items-center gap-2 text-base font-semibold text-text"
+      >
+        <span aria-hidden="true" className={`h-2 w-2 shrink-0 rounded-full ${toneDot[pill.tone]}`} />
+        {heading}
+      </h2>
       {body}
     </section>
   );

@@ -72,7 +72,7 @@ const DraftOrderStrip = memo(function DraftOrderStrip({
                     : "border-line bg-panel text-muted"
               }`}
             >
-              <span className="text-xs font-bold tabular-nums">{index + 1}</span>
+              <span className="text-xs font-semibold tabular-nums">{index + 1}</span>
               <span className="max-w-[10rem] truncate font-medium">
                 {teamNameLabel(coach.team_name)}
                 {isMe && <span className="font-normal"> (you)</span>}

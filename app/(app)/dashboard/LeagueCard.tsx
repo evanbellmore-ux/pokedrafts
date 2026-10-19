@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { ArrowRight, MoreHorizontal, Settings, Trash2, Trophy } from "lucide-react";
 import PokemonSprite from "@/app/components/PokemonSprite";
+import TeamAvatar from "@/app/components/TeamAvatar";
 import Menu, { MenuItem, MenuLink, MenuSeparator } from "@/app/components/ui/Menu";
 import { pluralize, roleLabel, teamNameLabel } from "@/app/lib/league/labels";
 import {
@@ -13,7 +14,6 @@ import {
   leagueHref,
   leagueStatus,
   rosterSlots,
-  teamInitials,
   type DashboardLeague,
   type LeagueStatus,
 } from "./dashboard";
@@ -218,23 +218,23 @@ function Coaches({ item }: { item: DashboardLeague }) {
   const openSeats = recruiting
     ? Math.max(0, Math.min(league.max_coaches - members.length, MAX_COACH_AVATARS - shown.length))
     : 0;
-  const avatar = "flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold";
-
   return (
     <div className="flex min-w-0 items-center gap-2.5">
       <div aria-hidden="true" className="flex shrink-0 gap-1">
         {shown.map((member) => (
-          <span
+          <TeamAvatar
             key={member.id}
+            name={member.teamName}
+            mine={member.id === item.memberId}
+            size="sm"
             title={teamNameLabel(member.teamName)}
-            className={`${avatar} ${
-              member.id === item.memberId ? "bg-accent text-on-accent" : "bg-panel-hover text-muted"
-            }`}
-          >
-            {teamInitials(member.teamName)}
-          </span>
+          />
         ))}
-        {extra > 0 && <span className={`${avatar} bg-panel-hover text-muted`}>+{extra}</span>}
+        {extra > 0 && (
+          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-panel-hover text-[10px] font-semibold text-muted">
+            +{extra}
+          </span>
+        )}
         {Array.from({ length: openSeats }, (_, index) => (
           <span
             key={`open-${index}`}

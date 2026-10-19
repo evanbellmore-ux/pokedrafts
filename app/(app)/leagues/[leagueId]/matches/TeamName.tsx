@@ -1,5 +1,3 @@
-import { StatusPill } from "@/app/components/ui";
-
 /**
  * A team name that can never widen the page: the name is a flex item, so it
  * needs `min-w-0` to shrink below its longest word, and `wrap-anywhere`
@@ -24,7 +22,7 @@ export default function TeamName({
       >
         {name}
       </span>
-      {isYou && <StatusPill tone="accent">You</StatusPill>}
+      {isYou && <span className="shrink-0 text-xs font-medium text-accent-text">You</span>}
     </span>
   );
 }

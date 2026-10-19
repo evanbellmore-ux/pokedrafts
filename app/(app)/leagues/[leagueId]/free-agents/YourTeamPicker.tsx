@@ -107,7 +107,7 @@ export default function YourTeamPicker({
           >
             <span
               aria-hidden="true"
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-soft text-accent-text"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-panel-hover text-muted"
             >
               <Plus className="h-5 w-5" />
             </span>

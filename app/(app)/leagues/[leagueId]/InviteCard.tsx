@@ -98,7 +98,7 @@ export default function InviteCard({
     >
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
-          <h2 id="invite-heading" className="text-lg font-semibold text-text">
+          <h2 id="invite-heading" className="text-base font-semibold text-text">
             Invite coaches
           </h2>
           <p className="mt-1 text-sm text-muted">

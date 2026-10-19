@@ -178,7 +178,7 @@ const DraftChat = memo(function DraftChat({
       items.push(
         <li
           key={`day-${day}-${message.id}`}
-          className="my-1 flex items-center gap-3 text-xs font-semibold uppercase tracking-wide text-faint"
+          className="my-1 flex items-center gap-3 text-xs font-medium text-faint"
         >
           <span aria-hidden="true" className="h-px flex-1 bg-line" />
           {formatChatDay(message.created_at, todayKey)}
@@ -217,7 +217,7 @@ const DraftChat = memo(function DraftChat({
       aria-labelledby="draft-chat-heading"
       className={`flex flex-col rounded-xl border border-line bg-panel p-4 ${className}`.trim()}
     >
-      <h2 id="draft-chat-heading" className="text-lg font-bold text-text">
+      <h2 id="draft-chat-heading" className="text-base font-semibold text-text">
         Chat
       </h2>
 

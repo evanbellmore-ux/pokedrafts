@@ -29,7 +29,7 @@ const DraftBoard = memo(function DraftBoard({
       aria-labelledby="draft-board-heading"
       className={`flex flex-col rounded-xl border border-line bg-panel p-4 ${className}`.trim()}
     >
-      <h2 id="draft-board-heading" className="text-lg font-bold text-text">
+      <h2 id="draft-board-heading" className="text-base font-semibold text-text">
         Draft board
       </h2>
 
@@ -47,22 +47,29 @@ const DraftBoard = memo(function DraftBoard({
               <section key={round.round} aria-labelledby={`board-round-${round.round}`}>
                 <h3
                   id={`board-round-${round.round}`}
-                  className="text-xs font-semibold uppercase tracking-wide text-muted"
+                  className="text-xs font-medium text-muted"
                 >
                   Round {round.round}
                 </h3>
-                <ol className="mt-2 flex flex-col gap-2">
+                <ol className="mt-1 divide-y divide-line">
                   {round.entries.map((entry) => (
                     <li
                       key={entry.pickNumber}
-                      className="flex items-center gap-3 rounded-lg border border-line bg-bg p-2.5"
+                      className="flex items-center gap-3 py-2.5"
                     >
-                      <span className="w-9 shrink-0 text-xs font-bold tabular-nums text-muted">
+                      <span className="w-8 shrink-0 text-xs font-semibold tabular-nums text-muted">
                         #{entry.pickNumber}
                       </span>
                       {entry.pick ? (
                         <>
-                          <PokemonSprite name={entry.pick.pokemon_name} size="sm" />
+                          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-bg/70 ring-1 ring-line">
+                            <PokemonSprite
+                              name={entry.pick.pokemon_name}
+                              size="fill"
+                              bare
+                              className="scale-110"
+                            />
+                          </span>
                           <div className="min-w-0 flex-1">
                             <p className="truncate text-sm font-semibold text-text">
                               {entry.pick.pokemon_name}

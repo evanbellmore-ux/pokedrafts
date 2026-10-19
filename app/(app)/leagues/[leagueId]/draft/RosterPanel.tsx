@@ -59,7 +59,7 @@ const RosterPanel = memo(function RosterPanel({
     >
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div className="min-w-0">
-          <h2 id="roster-heading" className="truncate text-lg font-bold text-text">
+          <h2 id="roster-heading" className="truncate text-base font-semibold text-text">
             Roster: {teamName}
           </h2>
           {selected && teamBudget && (

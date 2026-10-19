@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Crown, UserMinus, Users } from "lucide-react";
-import { Button, Dialog, StatusPill } from "@/app/components/ui";
+import { Crown, UserMinus } from "lucide-react";
+import TeamAvatar from "@/app/components/TeamAvatar";
+import { Button, Dialog } from "@/app/components/ui";
 import { roleLabel, teamNameLabel } from "@/app/lib/league/labels";
 import { rpc } from "@/app/lib/rpc";
 import type { League } from "@/app/types/league";
@@ -97,12 +98,9 @@ export default function CoachesCard({
       className="rounded-xl border border-line bg-panel p-5"
     >
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <Users className="h-5 w-5 text-accent-text" aria-hidden="true" />
-          <h2 id="coaches-heading" className="text-lg font-semibold text-text">
-            Coaches
-          </h2>
-        </div>
+        <h2 id="coaches-heading" className="text-base font-semibold text-text">
+          Coaches
+        </h2>
         <p className="text-sm text-muted">
           {members.length} of {league.max_coaches}
         </p>
@@ -113,26 +111,30 @@ export default function CoachesCard({
           : "Remove a coach who is not taking part, or hand the league to another coach."}
       </p>
 
-      <ul className="mt-4 flex flex-col gap-2">
+      <ul className="mt-3 divide-y divide-line">
         {sorted.map((member) => {
           const isSelf = member.user_id === currentUserId;
-          const isCommissioner = member.user_id === league.commissioner_id;
           const teamName = teamNameLabel(member.team_name);
           const joined = joinedLabel(member.joined_at);
           return (
             <li
               key={member.id}
-              className="flex flex-col gap-3 rounded-lg border border-line bg-bg p-3 sm:flex-row sm:items-center sm:justify-between"
+              className="flex flex-col gap-3 py-3 sm:flex-row sm:items-center sm:justify-between"
             >
-              <div className="min-w-0">
-                <p className="flex flex-wrap items-center gap-1.5">
-                  <span className="min-w-0 truncate font-semibold text-text">{teamName}</span>
-                  <StatusPill tone={isCommissioner ? "accent" : "neutral"}>
+              <div className="flex min-w-0 items-center gap-3">
+                <TeamAvatar name={member.team_name} mine={isSelf} />
+                <div className="min-w-0">
+                  <p className="flex min-w-0 items-baseline gap-2">
+                    <span className="min-w-0 truncate font-semibold text-text">{teamName}</span>
+                    {isSelf && (
+                      <span className="shrink-0 text-xs font-medium text-accent-text">You</span>
+                    )}
+                  </p>
+                  <p className="mt-0.5 text-xs text-muted">
                     {roleLabel(member.role)}
-                  </StatusPill>
-                  {isSelf && <StatusPill tone="accent">You</StatusPill>}
-                </p>
-                {joined && <p className="text-xs text-muted">Joined {joined}</p>}
+                    {joined && ` · Joined ${joined}`}
+                  </p>
+                </div>
               </div>
               {!isSelf && (
                 <div className="flex flex-wrap gap-2 sm:shrink-0 sm:justify-end">
