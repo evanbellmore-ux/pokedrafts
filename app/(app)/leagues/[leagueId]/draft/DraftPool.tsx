@@ -127,7 +127,7 @@ const DraftPool = memo(function DraftPool({
     >
       <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div>
-          <h2 id="draft-pool-heading" className="text-lg font-bold text-text">
+          <h2 id="draft-pool-heading" className="text-base font-semibold text-text">
             Draft pool
           </h2>
           <p className="mt-0.5 text-sm text-muted">

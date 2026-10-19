@@ -53,7 +53,7 @@ export default function RoundCard({
       className="rounded-xl border border-line bg-panel p-5"
     >
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <h3 id={headingId} className="text-lg font-semibold text-text">
+        <h3 id={headingId} className="text-base font-semibold text-text">
           Round {round.roundNumber}
         </h3>
         <p className="text-sm text-muted">
@@ -61,7 +61,7 @@ export default function RoundCard({
         </p>
       </div>
 
-      <ul className="mt-4 flex flex-col gap-3">
+      <ul className="mt-2 divide-y divide-line">
         {round.matches.map((match) => {
           const sides = participants(match);
           const homeName = memberTeamName(members, match.home_member_id);
@@ -74,10 +74,10 @@ export default function RoundCard({
           return (
             <li
               key={match.id}
-              className="flex flex-col gap-3 rounded-lg border border-line bg-bg p-4 md:flex-row md:items-center md:justify-between"
+              className="flex flex-col gap-3 py-4 last:pb-0 md:flex-row md:items-center md:justify-between"
             >
               <div className="min-w-0 flex-1">
-                <p className="text-xs font-semibold uppercase tracking-wide text-faint">
+                <p className="text-xs font-medium text-faint">
                   Match {match.match_number}
                 </p>
                 <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
@@ -166,7 +166,7 @@ export default function RoundCard({
         {round.byeMemberIds.map((memberId) => (
           <li
             key={`bye-${memberId}`}
-            className="flex flex-wrap items-center gap-2 rounded-lg border border-dashed border-line px-4 py-3 text-sm text-muted"
+            className="flex flex-wrap items-center gap-2 py-3 last:pb-0 text-sm text-muted"
           >
             <span>Bye:</span>
             <TeamName

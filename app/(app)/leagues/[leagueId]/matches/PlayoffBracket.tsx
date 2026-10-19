@@ -34,7 +34,7 @@ type PlayoffBracketProps = {
 
 function SeedBadge({ seed }: { seed: number }) {
   return (
-    <span className="inline-flex h-6 min-w-6 shrink-0 items-center justify-center rounded-full bg-panel-hover px-1.5 text-xs font-bold text-text">
+    <span className="inline-flex h-6 min-w-6 shrink-0 items-center justify-center rounded-full bg-panel-hover px-1.5 text-xs font-semibold text-text">
       <span className="sr-only">Seed </span>
       {seed}
     </span>
@@ -149,7 +149,7 @@ export default function PlayoffBracket({
                     key={match.id}
                     className="flex flex-col gap-3 rounded-lg border border-line bg-bg p-4"
                   >
-                    <p className="text-xs font-semibold uppercase tracking-wide text-faint">
+                    <p className="text-xs font-medium text-faint">
                       {playoffMatchLabel(match, matches)}
                     </p>
                     <div className="flex flex-col gap-2">

@@ -44,7 +44,8 @@ describe("long team names cannot widen a 375px viewport (section 8.5)", () => {
   it("wraps the champion and opponent names on the overview status card", () => {
     const source = read(`${leagueDir}/OverviewStatusCard.tsx`);
     const nameSpans = [
-      ...source.matchAll(/<span className="([^"]*)">\s*(?:Champion: \{championName\}|vs \{opponent\}|\{slot\.kind === "member")/g),
+      // The champion's name sits under a "Champion" label, so it is bare.
+      ...source.matchAll(/<span className="([^"]*)">\s*(?:\{championName\}|vs \{opponent\}|\{slot\.kind === "member")/g),
     ];
     expect(nameSpans.length).toBeGreaterThanOrEqual(3);
     for (const [, className] of nameSpans) {

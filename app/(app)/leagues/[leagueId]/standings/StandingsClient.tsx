@@ -11,8 +11,8 @@ import {
   PageHeader,
   Skeleton,
   SkeletonLines,
-  StatusPill,
   TableWrap,
+  toneDot,
   tableClassName,
   tdClassName,
   thClassName,
@@ -116,7 +116,7 @@ function playoffLineAfter(rows: Row[], size: number): number | null {
 function PlayoffLineRow({ size, columns }: { size: number; columns: number }) {
   return (
     <tr className="border-t-2 border-accent-border">
-      <td colSpan={columns} className="px-4 py-1 text-xs font-semibold uppercase tracking-wide text-accent-text">
+      <td colSpan={columns} className="px-4 py-1 text-xs font-medium text-accent-text">
         Playoff line · top {size} seeds
       </td>
     </tr>
@@ -174,10 +174,10 @@ function StandingsTable({
                     <RankLabel row={row} />
                   </td>
                   <td className={tdClassName}>
-                    <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex flex-wrap items-baseline gap-x-2">
                       <span className="font-semibold text-text">{row.teamName}</span>
-                      {showSeeds && <StatusPill>Seed {row.seed}</StatusPill>}
-                      {mine && <StatusPill tone="accent">You</StatusPill>}
+                      {mine && <span className="text-xs font-medium text-accent-text">You</span>}
+                      {showSeeds && <span className="text-xs text-muted">Seed {row.seed}</span>}
                     </div>
                   </td>
                   <td className={`${tdClassName} text-right tabular-nums`}>{row.wins}</td>
@@ -216,26 +216,29 @@ function StandingsCards({
   playoffLine: number | null;
 }) {
   return (
-    <ul aria-label="League standings" className="flex flex-col gap-3">
+    <ul
+      aria-label="League standings"
+      className="divide-y divide-line overflow-hidden rounded-xl border border-line bg-panel"
+    >
       {rows.map((row) => {
         const mine = row.member_id === myId;
         return (
           <Fragment key={row.member_id}>
             <li
-              className={`flex items-center gap-3 rounded-xl border p-4 ${
-                mine
-                  ? "border-accent-border bg-accent-soft"
-                  : "border-line bg-panel"
-              }`}
+              className={`flex items-center gap-3 px-4 py-3 ${mine ? "bg-accent-soft" : ""}`.trim()}
             >
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-panel-hover text-sm font-bold text-text">
+              <span className="w-8 shrink-0 text-center text-sm font-semibold tabular-nums text-text">
                 <RankLabel row={row} />
               </span>
               <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-2">
+                <div className="flex min-w-0 items-baseline gap-x-2">
                   <p className="truncate font-semibold text-text">{row.teamName}</p>
-                  {showSeeds && <StatusPill>Seed {row.seed}</StatusPill>}
-                  {mine && <StatusPill tone="accent">You</StatusPill>}
+                  {mine && (
+                    <span className="shrink-0 text-xs font-medium text-accent-text">You</span>
+                  )}
+                  {showSeeds && (
+                    <span className="shrink-0 text-xs text-muted">Seed {row.seed}</span>
+                  )}
                 </div>
                 <dl className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted">
                   <div>
@@ -262,7 +265,7 @@ function StandingsCards({
             {playoffLine === row.seed && (
               <li
                 aria-label={`Playoff line: top ${playoffLine} seeds`}
-                className="border-t-2 border-accent-border px-1 pt-1 text-xs font-semibold uppercase tracking-wide text-accent-text"
+                className="border-t-2 border-accent-border px-4 py-1 text-xs font-medium text-accent-text"
               >
                 Playoff line · top {playoffLine} seeds
               </li>
@@ -401,13 +404,12 @@ export default function StandingsClient() {
       <PageHeader
         title="Standings"
         description={
-          <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
-            {pill && <StatusPill tone={pill.tone}>{pill.label}</StatusPill>}
-            <span>
-              Win percentage first, then wins, then the tiebreakers. Tied
-              teams share a rank.
+          pill ? (
+            <span className="flex items-center gap-2">
+              <span aria-hidden="true" className={`h-2 w-2 rounded-full ${toneDot[pill.tone]}`} />
+              {pill.label}
             </span>
-          </span>
+          ) : undefined
         }
         actions={<LiveStatusPill status={liveStatus} />}
       />
@@ -477,8 +479,9 @@ export default function StandingsClient() {
             />
           )}
           <p className="text-sm text-muted">
-            {legend}. Diff is the winner&apos;s Pokémon left standing, added
-            for wins and taken away for losses.
+            Ranked by win percentage, then wins, then the tiebreakers; tied
+            teams share a rank. {legend}. Diff is the winner&apos;s Pokémon
+            left standing, added for wins and taken away for losses.
             {showSeeds
               ? " The regular season is complete; seeds are final."
               : " Seeds are shown once every regular-season match is final."}

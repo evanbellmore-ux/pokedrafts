@@ -303,7 +303,7 @@ export default function NewLeagueClient() {
         className="flex flex-col gap-6 rounded-xl border border-line bg-panel p-5 sm:p-6"
       >
         <section aria-labelledby="basics-heading" className="flex flex-col gap-4">
-          <h2 id="basics-heading" className="text-lg font-semibold text-text">
+          <h2 id="basics-heading" className="text-base font-semibold text-text">
             Basics
           </h2>
 
@@ -340,7 +340,7 @@ export default function NewLeagueClient() {
         </section>
 
         <section aria-labelledby="draft-heading" className="flex flex-col gap-4">
-          <h2 id="draft-heading" className="text-lg font-semibold text-text">
+          <h2 id="draft-heading" className="text-base font-semibold text-text">
             Draft rules
           </h2>
 
@@ -417,7 +417,7 @@ export default function NewLeagueClient() {
         </section>
 
         <section aria-labelledby="season-heading" className="flex flex-col gap-4">
-          <h2 id="season-heading" className="text-lg font-semibold text-text">
+          <h2 id="season-heading" className="text-base font-semibold text-text">
             Season
           </h2>
 

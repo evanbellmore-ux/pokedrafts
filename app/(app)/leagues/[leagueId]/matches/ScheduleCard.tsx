@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { CalendarPlus } from "lucide-react";
+
 import { Alert, Button, Dialog, Field, Select } from "@/app/components/ui";
 import { pluralize, scheduleFormatLabel } from "@/app/lib/league/labels";
 import { rpc } from "@/app/lib/rpc";
@@ -107,8 +107,7 @@ export default function ScheduleCard({
       className="rounded-xl border border-line bg-panel p-5"
     >
       <div className="flex items-center gap-2">
-        <CalendarPlus className="h-5 w-5 text-accent-text" aria-hidden="true" />
-        <h2 id="schedule-heading" className="text-lg font-semibold text-text">
+        <h2 id="schedule-heading" className="text-base font-semibold text-text">
           Schedule
         </h2>
       </div>

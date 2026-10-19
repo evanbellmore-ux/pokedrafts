@@ -4,10 +4,10 @@ import { ButtonLink } from "@/app/components/ui/Button";
 export default function LeaguePageNotFound() {
   return (
     <div className="mx-auto max-w-md rounded-xl border border-line bg-panel p-8 text-center">
-      <p className="text-xs font-semibold uppercase tracking-wide text-accent-text">
+      <p className="text-xs font-medium text-accent-text">
         League
       </p>
-      <h1 className="mt-2 text-2xl font-bold">Nothing here</h1>
+      <h1 className="mt-2 text-2xl font-semibold">Nothing here</h1>
       <p className="mt-2 text-sm text-muted">
         That part of the league could not be found. It may have been removed
         by the commissioner.

@@ -55,40 +55,32 @@ export default function PoolSummary({
   const locked = Boolean(league.draft_started);
 
   return (
-    <section
-      aria-label="Draft pool summary"
-      className="rounded-xl border border-line bg-panel p-5"
-    >
-      <p className="text-sm text-text">{poolSourceText(pool, formatName)}</p>
+    <section aria-label="Draft pool summary">
+      <p className="text-sm text-muted">{poolSourceText(pool, formatName)}</p>
 
-      <dl className="mt-4 grid gap-3 sm:grid-cols-3">
-        <div className="rounded-lg border border-line bg-bg p-3">
-          <dt className="text-xs font-semibold uppercase tracking-wide text-muted">
-            Pokémon
-          </dt>
-          <dd className="mt-1 text-2xl font-bold text-text">{count}</dd>
+      {/* One strip split by hairlines, like the roster numbers. */}
+      <dl className="mt-3 grid grid-cols-3 gap-px overflow-hidden rounded-xl border border-line bg-line">
+        <div className="min-w-0 bg-panel px-3 py-3 sm:px-4">
+          <dt className="text-xs text-muted">Pokémon</dt>
+          <dd className="mt-1 text-lg font-semibold tabular-nums text-text sm:text-xl">{count}</dd>
         </div>
-        <div className="rounded-lg border border-line bg-bg p-3">
-          <dt className="text-xs font-semibold uppercase tracking-wide text-muted">
-            Needed to start
-          </dt>
-          <dd className="mt-1">
-            <span className="text-2xl font-bold text-text">{required}</span>
-            <span className="ml-2 text-xs text-muted">
-              {draftingCoaches > 0
-                ? `${pluralize(seats, "drafting coach", "drafting coaches")} × ${pluralize(picks, "pick")}`
-                : `up to ${pluralize(seats, "coach", "coaches")} × ${pluralize(picks, "pick")}`}
-            </span>
+        <div className="min-w-0 bg-panel px-3 py-3 sm:px-4">
+          <dt className="text-xs text-muted">Needed to start</dt>
+          <dd className="mt-1 text-lg font-semibold tabular-nums text-text sm:text-xl">
+            {required}
+          </dd>
+          <dd className="mt-0.5 text-xs text-muted">
+            {draftingCoaches > 0
+              ? `${pluralize(seats, "drafting coach", "drafting coaches")} × ${pluralize(picks, "pick")}`
+              : `up to ${pluralize(seats, "coach", "coaches")} × ${pluralize(picks, "pick")}`}
           </dd>
         </div>
-        <div className="rounded-lg border border-line bg-bg p-3">
-          <dt className="text-xs font-semibold uppercase tracking-wide text-muted">
-            Point budget
-          </dt>
-          <dd className="mt-1">
-            <span className="text-2xl font-bold text-text">{budget}</span>
-            <span className="ml-2 text-xs text-muted">per team</span>
+        <div className="min-w-0 bg-panel px-3 py-3 sm:px-4">
+          <dt className="text-xs text-muted">Point budget</dt>
+          <dd className="mt-1 text-lg font-semibold tabular-nums text-text sm:text-xl">
+            {budget}
           </dd>
+          <dd className="mt-0.5 text-xs text-muted">per team</dd>
         </div>
       </dl>
 

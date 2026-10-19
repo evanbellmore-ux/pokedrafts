@@ -1,4 +1,4 @@
-import { StatusPill } from "@/app/components/ui";
+import TeamAvatar from "@/app/components/TeamAvatar";
 import {
   playoffFormatLabel,
   pluralize,
@@ -24,11 +24,12 @@ type SettingsSummaryProps = {
   currentUserId: string;
 };
 
+/** A setting as a ruled row: label left, value right (stacked on phones). */
 function Item({ label, value }: { label: string; value: string }) {
   return (
-    <div className="min-w-0 rounded-lg border border-line bg-bg px-4 py-3">
-      <dt className="text-xs font-semibold uppercase tracking-wide text-faint">{label}</dt>
-      <dd className="mt-1 break-words font-semibold text-text">{value}</dd>
+    <div className="flex min-w-0 flex-col gap-0.5 border-t border-line py-3 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
+      <dt className="shrink-0 text-sm text-muted">{label}</dt>
+      <dd className="min-w-0 break-words text-sm font-medium text-text sm:text-right">{value}</dd>
     </div>
   );
 }
@@ -53,10 +54,10 @@ export default function SettingsSummary({
         aria-labelledby="summary-heading"
         className="rounded-xl border border-line bg-panel p-5"
       >
-        <h2 id="summary-heading" className="text-lg font-semibold text-text">
+        <h2 id="summary-heading" className="text-base font-semibold text-text">
           League settings
         </h2>
-        <dl className="mt-4 grid grid-cols-[minmax(0,1fr)] gap-3 sm:grid-cols-2">
+        <dl className="mt-3 grid grid-cols-[minmax(0,1fr)] gap-x-8 sm:grid-cols-2">
           <Item label="League name" value={league.name} />
           <Item
             label="Commissioner"
@@ -97,7 +98,7 @@ export default function SettingsSummary({
         aria-labelledby="order-summary-heading"
         className="rounded-xl border border-line bg-panel p-5"
       >
-        <h2 id="order-summary-heading" className="text-lg font-semibold text-text">
+        <h2 id="order-summary-heading" className="text-base font-semibold text-text">
           Draft order
         </h2>
         {drafting.length === 0 ? (
@@ -105,20 +106,22 @@ export default function SettingsSummary({
             The commissioner has not set the draft order yet.
           </p>
         ) : (
-          <ol className="mt-4 flex flex-col gap-2">
+          <ol className="mt-3 divide-y divide-line border-t border-line">
             {drafting.map((member, index) => (
-              <li
-                key={member.id}
-                className="flex items-center gap-3 rounded-lg border border-line bg-bg px-3 py-2"
-              >
-                <span className="w-8 shrink-0 text-center text-sm font-semibold text-accent-text">
-                  #{index + 1}
+              <li key={member.id} className="flex items-center gap-3 py-2.5">
+                <span className="w-6 shrink-0 text-sm font-semibold tabular-nums text-muted">
+                  {index + 1}
                 </span>
-                <span className="min-w-0 truncate font-semibold text-text">
+                <TeamAvatar
+                  name={member.team_name}
+                  mine={member.user_id === currentUserId}
+                  size="sm"
+                />
+                <span className="min-w-0 truncate font-medium text-text">
                   {teamNameLabel(member.team_name)}
                 </span>
                 {member.user_id === currentUserId && (
-                  <StatusPill tone="accent">You</StatusPill>
+                  <span className="shrink-0 text-xs font-medium text-accent-text">You</span>
                 )}
               </li>
             ))}

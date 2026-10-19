@@ -35,7 +35,7 @@ function MoveCard({
   return (
     <div className="flex min-w-0 flex-col items-center rounded-lg border border-line bg-bg p-3 text-center">
       <p
-        className={`text-xs font-semibold uppercase tracking-wide ${
+        className={`text-xs font-medium ${
           tone === "drop" ? "text-danger" : "text-success"
         }`}
       >
@@ -95,7 +95,7 @@ export default function SwapDialog({
 
           <dl className="mt-4 grid grid-cols-2 gap-3 rounded-lg border border-line bg-panel-hover px-3 py-2 text-sm">
             <div>
-              <dt className="text-xs font-semibold uppercase tracking-wide text-muted">
+              <dt className="text-xs font-medium text-muted">
                 Points after move
               </dt>
               <dd className="mt-0.5 font-semibold tabular-nums text-text">
@@ -103,7 +103,7 @@ export default function SwapDialog({
               </dd>
             </div>
             <div>
-              <dt className="text-xs font-semibold uppercase tracking-wide text-muted">
+              <dt className="text-xs font-medium text-muted">
                 Swaps left after
               </dt>
               <dd className="mt-0.5 font-semibold tabular-nums text-text">

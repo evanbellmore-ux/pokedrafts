@@ -18,17 +18,17 @@ export default function EmptyState({
 }: EmptyStateProps) {
   return (
     <div
-      className={`flex flex-col items-center rounded-xl border border-dashed border-line bg-panel/60 px-6 py-10 text-center ${className}`.trim()}
+      className={`flex flex-col items-center rounded-xl border border-dashed border-line-strong px-6 py-10 text-center ${className}`.trim()}
     >
       {icon && (
         <div
           aria-hidden="true"
-          className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-accent-soft text-accent-text"
+          className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-panel-hover text-muted"
         >
           {icon}
         </div>
       )}
-      <p className="text-base font-semibold text-text">{title}</p>
+      <p className="text-sm font-semibold text-text">{title}</p>
       {description && (
         <p className="mt-1 max-w-md text-sm text-muted">{description}</p>
       )}

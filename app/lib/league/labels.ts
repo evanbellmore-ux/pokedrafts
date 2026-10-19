@@ -98,6 +98,15 @@ export function teamNameLabel(teamName: string | null | undefined): string {
   return trimmed.length > 0 ? trimmed : "Unnamed team";
 }
 
+/** One or two letters for a team's avatar: "Commish Crew" -> "CC", "Evan" -> "EV". */
+export function teamInitials(teamName: string | null | undefined): string {
+  const words = teamNameLabel(teamName).split(/\s+/).filter(Boolean);
+  const first = Array.from(words[0] ?? "?");
+  const letters =
+    words.length > 1 ? [first[0], Array.from(words[1])[0]] : first.slice(0, 2);
+  return letters.join("").toUpperCase();
+}
+
 export function pluralize(count: number, singular: string, plural?: string) {
   return `${count} ${count === 1 ? singular : (plural ?? `${singular}s`)}`;
 }

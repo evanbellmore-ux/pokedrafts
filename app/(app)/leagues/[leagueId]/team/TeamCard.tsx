@@ -1,7 +1,7 @@
 "use client";
 
 import PokemonSprite from "@/app/components/PokemonSprite";
-import { StatusPill } from "@/app/components/ui";
+import TeamAvatar from "@/app/components/TeamAvatar";
 import { pluralize, roleLabel, teamNameLabel } from "@/app/lib/league/labels";
 import RosterTable from "./RosterTable";
 import type { TeamRoster } from "./roster";
@@ -26,30 +26,36 @@ export default function TeamCard({ team, budget }: TeamCardProps) {
       aria-label={name}
       className="rounded-xl border border-line bg-panel p-4 sm:p-5"
     >
-      <div className="min-w-0">
-        <h3 className="flex flex-wrap items-center gap-2 text-lg font-semibold text-text">
-          <span className="min-w-0 truncate">{name}</span>
-          {commissioner && <StatusPill tone="accent">Commissioner</StatusPill>}
-        </h3>
-        <p className="mt-1 text-sm text-muted">
-          {pluralize(team.pokemon.length, "Pokémon", "Pokémon")}
-          {" · "}
-          <span className="tabular-nums">
-            {team.total_points} / {budget}
-          </span>{" "}
-          points
-        </p>
+      <div className="flex min-w-0 items-center gap-3">
+        <TeamAvatar name={team.team_name} />
+        <div className="min-w-0">
+          <h3 className="flex min-w-0 text-base font-semibold text-text">
+            <span className="min-w-0 truncate">{name}</span>
+          </h3>
+          <p className="text-sm text-muted">
+            {commissioner && "Commissioner · "}
+            {pluralize(team.pokemon.length, "Pokémon", "Pokémon")}
+            {" · "}
+            <span className="tabular-nums">
+              {team.total_points} / {budget}
+            </span>{" "}
+            points
+          </p>
+        </div>
       </div>
 
       {team.pokemon.length > 0 ? (
         <>
           <ul
             aria-label={`${name} at a glance`}
-            className="mt-3 flex flex-wrap gap-1.5"
+            className="mt-4 flex flex-wrap gap-1.5"
           >
             {team.pokemon.map((entry, index) => (
-              <li key={`${entry.name}-${index}`}>
-                <PokemonSprite name={entry.name} size="sm" />
+              <li
+                key={`${entry.name}-${index}`}
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-bg/70 ring-1 ring-line"
+              >
+                <PokemonSprite name={entry.name} size="fill" bare className="scale-110" />
               </li>
             ))}
           </ul>

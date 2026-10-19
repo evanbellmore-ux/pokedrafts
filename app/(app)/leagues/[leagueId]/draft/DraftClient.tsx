@@ -65,7 +65,6 @@ export default function DraftClient() {
 
   const header = (
     <PageHeader
-      eyebrow="Draft"
       title="Draft room"
       description={description}
       actions={

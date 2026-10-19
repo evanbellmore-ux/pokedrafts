@@ -9,7 +9,6 @@ import {
   PageHeader,
   Skeleton,
   SkeletonLines,
-  StatusPill,
 } from "@/app/components/ui";
 import { friendlyError } from "@/app/lib/errors";
 import { pluralize } from "@/app/lib/league/labels";
@@ -35,7 +34,6 @@ import {
   type OverviewNews,
 } from "./overview";
 import OverviewStatusCard from "./OverviewStatusCard";
-import { leaguePhase, PHASE_PILL } from "./season";
 import { useLeagueRealtime } from "./useLeagueRealtime";
 
 type OverviewData = {
@@ -273,29 +271,24 @@ export default function LeagueOverviewClient() {
   const pool = readLeaguePool(league);
   const picks = league.picks_per_team ?? 10;
   const budget = league.point_budget ?? 100;
-  // The season / complete split needs the matches, so the pill waits for
-  // them; setup and drafting are known from the league row alone.
-  const phase = leaguePhase(league, ready?.matches ?? []);
-  const showPhase = ready !== null || !league.draft_completed;
-  const pill = PHASE_PILL[phase];
 
   return (
     <div className="flex flex-col gap-6">
+      {/* The phase lives on the status card's title, so the header keeps
+          to the league's facts. */}
       <PageHeader
-        eyebrow="League overview"
         title={league.name}
         description={
           <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
-            {showPhase && <StatusPill tone={pill.tone}>{pill.label}</StatusPill>}
             <span>
               {ready ? `${ready.members.length} of ` : ""}
               {pluralize(league.max_coaches, "coach", "coaches")}
             </span>
-            <span aria-hidden="true">·</span>
+            <span aria-hidden="true" className="text-faint">·</span>
             <span>{pool.pokemon.length} Pokémon in the draft pool</span>
-            <span aria-hidden="true">·</span>
+            <span aria-hidden="true" className="text-faint">·</span>
             <span>{pluralize(picks, "pick")} per team</span>
-            <span aria-hidden="true">·</span>
+            <span aria-hidden="true" className="text-faint">·</span>
             <span>{pluralize(budget, "point")} to spend</span>
           </span>
         }

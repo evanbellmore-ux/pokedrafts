@@ -20,8 +20,7 @@ export default function TableWrap({ children, className = "" }: TableWrapProps) 
 }
 
 export const tableClassName = "w-full min-w-[32rem] text-left text-sm";
-export const theadClassName =
-  "bg-panel-hover text-xs font-semibold uppercase tracking-wide text-muted";
+export const theadClassName = "bg-panel-hover/60 text-xs font-medium text-muted";
 export const thClassName = "px-4 py-3";
 export const tdClassName = "px-4 py-3 align-middle";
 export const trClassName = "border-t border-line";

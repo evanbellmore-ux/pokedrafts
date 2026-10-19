@@ -107,7 +107,6 @@ export default function TeamClient() {
     <div className="flex flex-col gap-6">
       <PageHeader
         title="My Team"
-        description={`Your roster and every other team in ${league.name}.`}
         actions={
           draftCompleted ? (
             <Button
@@ -180,7 +179,7 @@ export default function TeamClient() {
             className="flex flex-col gap-4"
           >
             <div className="flex flex-wrap items-end justify-between gap-3">
-              <h2 id="my-roster-heading" className="text-xl font-bold text-text">
+              <h2 id="my-roster-heading" className="text-lg font-semibold tracking-tight text-text">
                 My roster
               </h2>
               {myTeam && (
@@ -248,7 +247,7 @@ export default function TeamClient() {
             aria-labelledby="all-teams-heading"
             className="flex flex-col gap-4"
           >
-            <h2 id="all-teams-heading" className="text-xl font-bold text-text">
+            <h2 id="all-teams-heading" className="text-lg font-semibold tracking-tight text-text">
               All teams
             </h2>
 

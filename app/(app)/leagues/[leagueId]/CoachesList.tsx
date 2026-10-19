@@ -4,7 +4,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Crown, LogOut, UserMinus } from "lucide-react";
 import { useLeague } from "@/app/components/league/LeagueProvider";
-import { Button, Dialog, StatusPill } from "@/app/components/ui";
+import TeamAvatar from "@/app/components/TeamAvatar";
+import { Button, Dialog } from "@/app/components/ui";
 import { roleLabel, teamNameLabel } from "@/app/lib/league/labels";
 import { rpc } from "@/app/lib/rpc";
 import type { OverviewMember } from "./overview";
@@ -123,7 +124,7 @@ export default function CoachesList({ members, onChanged }: CoachesListProps) {
       className="rounded-xl border border-line bg-panel p-5"
     >
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 id="coaches-heading" className="text-lg font-semibold text-text">
+        <h2 id="coaches-heading" className="text-base font-semibold text-text">
           Coaches
         </h2>
         <p className="text-sm text-muted">
@@ -148,23 +149,25 @@ export default function CoachesList({ members, onChanged }: CoachesListProps) {
               key={row.id}
               className="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between"
             >
-              <div className="min-w-0">
-                <div className="flex flex-wrap items-center gap-2">
-                  <p className="min-w-0 truncate font-semibold text-text">
-                    {name}
-                  </p>
-                  <StatusPill tone={label === "Commissioner" ? "accent" : "neutral"}>
-                    {label}
-                  </StatusPill>
-                  {isMe && <StatusPill tone="success">You</StatusPill>}
-                </div>
-                {orderSet && (
+              <div className="flex min-w-0 items-center gap-3">
+                <TeamAvatar name={row.team_name} mine={isMe} />
+                <div className="min-w-0">
+                  <div className="flex min-w-0 items-baseline gap-2">
+                    <p className="min-w-0 truncate font-semibold text-text">
+                      {name}
+                    </p>
+                    {isMe && (
+                      <span className="shrink-0 text-xs font-medium text-accent-text">You</span>
+                    )}
+                  </div>
                   <p className="mt-0.5 text-xs text-muted">
-                    {row.draft_position != null
-                      ? `Draft slot ${row.draft_position}`
-                      : "Not in the draft order (spectator)"}
+                    {label}
+                    {orderSet &&
+                      (row.draft_position != null
+                        ? ` · Draft slot ${row.draft_position}`
+                        : " · Not in the draft order (spectator)")}
                   </p>
-                )}
+                </div>
               </div>
 
               {preDraft && (

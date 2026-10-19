@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { SlidersHorizontal } from "lucide-react";
+
 import {
   Alert,
   Button,
@@ -155,8 +155,7 @@ export default function SettingsForm({
       className="rounded-xl border border-line bg-panel p-5"
     >
       <div className="flex items-center gap-2">
-        <SlidersHorizontal className="h-5 w-5 text-accent-text" aria-hidden="true" />
-        <h2 id="league-settings-heading" className="text-lg font-semibold text-text">
+        <h2 id="league-settings-heading" className="text-base font-semibold text-text">
           League settings
         </h2>
       </div>

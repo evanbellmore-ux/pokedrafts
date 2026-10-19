@@ -263,14 +263,7 @@ export default function SettingsClient() {
 
   return (
     <div className="flex flex-col gap-6">
-      <PageHeader
-        title="Settings"
-        description={
-          isCommissioner
-            ? "League rules, draft order, coaches and the invite link."
-            : "How this league is set up."
-        }
-      />
+      <PageHeader title="Settings" />
 
       {notice && (
         <Alert variant={notice.variant} onDismiss={() => setNotice(null)}>

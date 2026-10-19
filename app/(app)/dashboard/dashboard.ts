@@ -162,14 +162,8 @@ export function rosterSlots(roster: string[], picksPerTeam: number | null): Rost
 /** Coach avatars before the stack folds into "+N". */
 export const MAX_COACH_AVATARS = 5;
 
-/** One or two letters for a team's avatar: "Commish Crew" -> "CC", "Evan" -> "EV". */
-export function teamInitials(teamName: string | null): string {
-  const words = teamNameLabel(teamName).split(/\s+/).filter(Boolean);
-  const first = Array.from(words[0] ?? "?");
-  const letters =
-    words.length > 1 ? [first[0], Array.from(words[1])[0]] : first.slice(0, 2);
-  return letters.join("").toUpperCase();
-}
+/** Moved to the shared labels so league pages draw the same avatars. */
+export { teamInitials } from "@/app/lib/league/labels";
 
 /** "4 leagues · commissioner of 2 · 1 drafting now"; parts that are zero drop out. */
 export function dashboardSummary(leagues: DashboardLeague[], userId: string): string {

@@ -70,8 +70,15 @@ export function SpectatorPill() {
   );
 }
 
-const CARD = "rounded-xl border border-line bg-panel px-4 py-3";
-const CARD_LABEL = "text-xs font-semibold uppercase tracking-wide text-muted";
+/**
+ * Cells of one strip split by hairlines (the strip's `gap-px` shows its
+ * `bg-line`), so every cell needs an opaque fill; the urgent timer mixes the
+ * danger tint into the panel colour instead of using the translucent soft fill.
+ */
+const CARD = "min-w-0 bg-panel px-4 py-3";
+const URGENT_CARD =
+  "min-w-0 bg-[color-mix(in_srgb,var(--type-danger)_14%,var(--type-panel))] px-4 py-3";
+const CARD_LABEL = "text-xs font-medium text-muted";
 
 export type DraftTimerProps = {
   phase: DraftPhase;
@@ -127,17 +134,11 @@ export const DraftTimer = memo(function DraftTimer({
   }
 
   return (
-    <div
-      className={
-        urgent
-          ? "rounded-xl border border-danger/50 bg-danger-soft px-4 py-3"
-          : CARD
-      }
-    >
+    <div className={urgent ? URGENT_CARD : CARD}>
       <p className={CARD_LABEL}>Pick timer</p>
       <p
         aria-live="off"
-        className={`mt-1 text-3xl font-bold tabular-nums ${
+        className={`mt-1 text-2xl font-semibold tabular-nums ${
           urgent ? "text-danger" : "text-text"
         }`}
       >
@@ -182,13 +183,15 @@ export const DraftHeader = memo(function DraftHeader({
 
   return (
     <div
-      className={`grid grid-cols-2 gap-3 ${
-        myBudget ? "lg:grid-cols-4" : "lg:grid-cols-3"
+      className={`grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-line bg-line [&>:last-child:nth-child(odd)]:col-span-2 ${
+        myBudget
+          ? "lg:grid-cols-4"
+          : "lg:grid-cols-3 lg:[&>:last-child:nth-child(odd)]:col-span-1"
       }`}
     >
       <div className={CARD}>
         <p className={CARD_LABEL}>{showPick ? "On the clock" : "Status"}</p>
-        <p className="mt-1 truncate text-lg font-bold text-text">
+        <p className="mt-1 truncate text-lg font-semibold text-text">
           {phase === "setup"
             ? "Not started"
             : phase === "completed"
@@ -206,7 +209,7 @@ export const DraftHeader = memo(function DraftHeader({
 
       <div className={CARD}>
         <p className={CARD_LABEL}>Picks made</p>
-        <p className="mt-1 text-3xl font-bold tabular-nums text-text">
+        <p className="mt-1 text-2xl font-semibold tabular-nums text-text">
           {picksMade}
           <span className="text-base font-semibold text-muted"> / {totalPicks}</span>
         </p>
@@ -220,7 +223,7 @@ export const DraftHeader = memo(function DraftHeader({
       {myBudget && (
         <div className={CARD}>
           <p className={CARD_LABEL}>Your budget</p>
-          <p className="mt-1 text-3xl font-bold tabular-nums text-text">
+          <p className="mt-1 text-2xl font-semibold tabular-nums text-text">
             {myBudget.remaining}
             <span className="text-base font-semibold text-muted">
               {" "}
@@ -267,7 +270,8 @@ export function DraftStatusBanner({
     className = "border-line bg-panel text-muted";
   } else if (phase === "completed") {
     text = "The draft is complete.";
-    className = "border-success/50 bg-success-soft text-success";
+    // Still announced, but the "Draft complete" card below says it on screen.
+    className = "sr-only";
   } else if (phase === "paused") {
     text = "Draft paused";
     className = "border-warning/50 bg-warning-soft text-warning";
@@ -283,7 +287,11 @@ export function DraftStatusBanner({
     <div
       role="status"
       aria-live="polite"
-      className={`rounded-lg border px-4 py-3 text-sm font-semibold ${className}`}
+      className={
+        className === "sr-only"
+          ? className
+          : `rounded-lg border px-4 py-2.5 text-sm font-medium ${className}`
+      }
     >
       {text}
     </div>

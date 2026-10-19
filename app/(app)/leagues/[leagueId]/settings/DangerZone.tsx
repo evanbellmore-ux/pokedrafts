@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
-import { RotateCcw, Trash2, TriangleAlert } from "lucide-react";
+import { RotateCcw, Trash2 } from "lucide-react";
 import { Button, Dialog } from "@/app/components/ui";
 import { friendlyError } from "@/app/lib/errors";
 import { rpc } from "@/app/lib/rpc";
@@ -101,14 +101,13 @@ export default function DangerZone({ league, onReset }: DangerZoneProps) {
       className="rounded-xl border border-danger/50 bg-panel p-5"
     >
       <div className="flex items-center gap-2">
-        <TriangleAlert className="h-5 w-5 text-danger" aria-hidden="true" />
-        <h2 id="danger-heading" className="text-lg font-semibold text-text">
+        <h2 id="danger-heading" className="text-base font-semibold text-text">
           Danger zone
         </h2>
       </div>
 
-      <div className="mt-4 flex flex-col gap-4">
-        <div className="flex flex-col gap-3 rounded-lg border border-line bg-bg p-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mt-2 divide-y divide-line">
+        <div className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="min-w-0">
             <p className="font-semibold text-text">Reset draft</p>
             <p className="mt-1 text-sm text-muted">
@@ -128,7 +127,7 @@ export default function DangerZone({ league, onReset }: DangerZoneProps) {
           </Button>
         </div>
 
-        <div className="flex flex-col gap-3 rounded-lg border border-line bg-bg p-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-3 pt-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="min-w-0">
             <p className="font-semibold text-text">Delete league</p>
             <p className="mt-1 text-sm text-muted">

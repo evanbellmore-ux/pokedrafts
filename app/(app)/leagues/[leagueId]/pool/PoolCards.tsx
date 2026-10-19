@@ -30,7 +30,7 @@ export default function PoolCards({
             </div>
             {!editing && (
               <div className="shrink-0 text-right">
-                <p className="text-lg font-bold text-text tabular-nums">
+                <p className="text-lg font-semibold text-text tabular-nums">
                   {row.points}
                   <span className="ml-1 text-xs font-normal text-muted">pts</span>
                 </p>
