@@ -207,7 +207,7 @@ export default function DoublesTurn({ runtime, names, cards, turn, blockedReason
 
   return (
     <section data-doubles-turn aria-labelledby={`${id}-heading`} className="min-w-0 border-t border-line bg-accent-soft px-3 py-2 sm:px-4">
-      <h3 id={`${id}-heading`} className="text-xs font-semibold uppercase tracking-wide text-muted">Turn · {rollDescription(rollMode)}</h3>
+      <h3 id={`${id}-heading`} className="text-xs font-medium text-muted">Turn · {rollDescription(rollMode)}</h3>
       <p data-doubles-live aria-live="polite" aria-atomic="true" className="sr-only">{live}</p>
       {body && <div className="mt-1">{body}</div>}
     </section>

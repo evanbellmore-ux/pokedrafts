@@ -10,7 +10,7 @@ export default function LastTurn({ turn, runtime, showRead, board, ownName }: {
   if (!turn) return null;
   return (
     <section data-training-last-turn aria-label={`Last turn · ${turnTitle(turn.turn)}`} className="min-w-0 rounded-xl border border-line bg-panel p-3">
-      <p className="text-xs font-semibold uppercase tracking-wide text-muted">Last turn · {turnTitle(turn.turn)}</p>
+      <p className="text-xs font-medium text-muted">Last turn · {turnTitle(turn.turn)}</p>
       <div className="mt-1"><TurnLines lines={turn.lines} /></div>
       {showRead && <AIReadPanel turn={turn} board={board} runtime={runtime} ownName={ownName} />}
     </section>

@@ -743,9 +743,8 @@ export default function BuilderClient() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        eyebrow="Draft pool"
         title="Pool Builder"
-        description="Build a point-priced list of Pokémon and save it as a draft format to pick when you create a league. A league copies the format, so later edits here never change a league that already has its pool."
+        description="Leagues copy the format they start from, so later edits here never change an existing league."
         actions={
           <>
             <Button
@@ -810,7 +809,7 @@ export default function BuilderClient() {
             <div className="flex flex-wrap items-center gap-2">
               <h2
                 id="format-details-heading"
-                className="text-lg font-semibold text-text"
+                className="text-base font-semibold text-text"
               >
                 Format details
               </h2>
@@ -866,7 +865,7 @@ export default function BuilderClient() {
             aria-labelledby="find-add-heading"
             className="rounded-xl border border-line bg-panel p-5"
           >
-            <h2 id="find-add-heading" className="text-lg font-semibold text-text">
+            <h2 id="find-add-heading" className="text-base font-semibold text-text">
               Find and add Pokémon
             </h2>
             <div className="mt-4 grid gap-4 md:grid-cols-2">
@@ -933,7 +932,7 @@ export default function BuilderClient() {
 
           <section aria-labelledby="pool-list-heading" className="flex flex-col gap-3">
             <div className="flex flex-wrap items-center gap-3">
-              <h2 id="pool-list-heading" className="text-lg font-semibold text-text">
+              <h2 id="pool-list-heading" className="text-lg font-semibold tracking-tight text-text">
                 Pokémon in this pool
               </h2>
               <span className="text-sm text-muted">

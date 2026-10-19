@@ -93,7 +93,7 @@ export default function DoublesSummary(props: DoublesSummaryProps) {
           <span aria-hidden="true" className="text-xs font-semibold text-muted">Damage roll</span>
           <div className="flex flex-wrap gap-1">
             {(["low", "average", "high"] as const).map((mode) => (
-              <label key={mode} htmlFor={`${id}-roll-${mode}`} className={`flex min-h-11 cursor-pointer items-center gap-2 rounded-lg px-2 text-sm font-semibold text-text sm:px-3 ${rollMode === mode ? "bg-accent-soft" : "hover:bg-panel-hover"}`}>
+              <label key={mode} htmlFor={`${id}-roll-${mode}`} className={`flex min-h-11 cursor-pointer items-center gap-2 rounded-lg px-2 text-sm font-semibold text-text sm:px-3 ${rollMode === mode ? "bg-panel-hover" : "hover:bg-panel-hover/60"}`}>
                 <input id={`${id}-roll-${mode}`} type="radio" name={`${id}-damage-roll`} value={mode} checked={rollMode === mode} onChange={() => onRollModeChange(mode)} className="h-4 w-4 shrink-0 accent-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus" />
                 {rollLabels[mode]}
               </label>
@@ -103,7 +103,7 @@ export default function DoublesSummary(props: DoublesSummaryProps) {
       </fieldset>
       {SIDES.map((side) => (
         <div key={side.id} role="group" aria-labelledby={`${id}-${side.id}`} data-doubles-side={side.id} className="border-b border-line">
-          <h3 id={`${id}-${side.id}`} className="px-3 pt-2 text-xs font-semibold uppercase tracking-wide text-muted sm:px-4">{side.label}</h3>
+          <h3 id={`${id}-${side.id}`} className="px-3 pt-2 text-xs font-medium text-muted sm:px-4">{side.label}</h3>
           <div className={styles.doublesSide}>
             {DOUBLES_SLOTS.filter((slot) => slotSide(slot) === side.id).map((slot) => {
               const view = cards[slot];

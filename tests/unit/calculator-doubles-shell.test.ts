@@ -158,7 +158,7 @@ describe("the 1v1 | 2v2 switch", () => {
     expect(count(moves, /Choose a move<\/h2>/g)).toBe(0);
     expect(count(moves, />Moves<\/h2>/g)).toBe(2);
     const twoMoves = moves.slice(moves.indexOf("data-doubles-moves"));
-    expect(twoMoves).toMatch(/<h2 id="[^"]+" class="wrap-anywhere text-xl font-bold text-text">Moves<\/h2>/);
+    expect(twoMoves).toMatch(/<h2 id="[^"]+" class="wrap-anywhere text-lg font-semibold tracking-tight text-text">Moves<\/h2>/);
     expect(moves).toContain("Charizard → Blastoise");
     expect(positionalIn(html)).toEqual([]);
     // Each view's field summary once.

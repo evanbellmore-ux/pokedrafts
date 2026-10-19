@@ -172,26 +172,33 @@ function Checkbox({
 
 function Fieldset({
   legend,
+  hideLegend = false,
   help,
   children,
   className = "",
 }: {
   legend: ReactNode;
+  /** Keep the legend for assistive technology only (a heading above already names it). */
+  hideLegend?: boolean;
   help?: ReactNode;
   children: ReactNode;
   className?: string;
 }) {
   return (
     <fieldset className={`min-w-0 ${className}`.trim()}>
-      <legend className="text-sm font-medium text-text">{legend}</legend>
+      <legend className={hideLegend ? "sr-only" : "text-sm font-medium text-text"}>
+        {legend}
+      </legend>
       {help && <p className="mt-1 text-xs text-muted">{help}</p>}
-      <div className="mt-2 flex flex-wrap gap-x-4 gap-y-2">{children}</div>
+      <div className={`${hideLegend ? "" : "mt-2 "}flex flex-wrap gap-x-4 gap-y-2`}>
+        {children}
+      </div>
     </fieldset>
   );
 }
 
 function SectionHeading({ children }: { children: ReactNode }) {
-  return <h3 className="text-sm font-semibold uppercase tracking-wide text-muted">{children}</h3>;
+  return <h3 className="text-sm font-semibold text-text">{children}</h3>;
 }
 
 function PresetDescription({ preset }: { preset: Preset }) {
@@ -315,7 +322,7 @@ function PreviewCards({ entries, rules }: { entries: PokemonEntry[]; rules: Form
           <dl className="mt-3 grid grid-cols-6 gap-1 text-center">
             {STAT_KEYS.map((stat) => (
               <div key={stat}>
-                <dt className="text-[10px] font-semibold uppercase tracking-wide text-muted">
+                <dt className="text-[11px] font-medium text-muted">
                   <abbr title={STAT_LABELS[stat]} className="no-underline">
                     {STAT_SHORT_LABELS[stat]}
                   </abbr>
@@ -578,8 +585,7 @@ export default function RuleBuilder({
       className="rounded-xl border border-line bg-panel p-5"
     >
       <div className="flex flex-wrap items-center gap-2">
-        <WandSparkles className="h-5 w-5 text-accent-text" aria-hidden="true" />
-        <h2 id="rule-builder-heading" className="text-lg font-semibold text-text">
+        <h2 id="rule-builder-heading" className="text-base font-semibold text-text">
           Build from rules
         </h2>
         {builtByHand && <StatusPill>This format was built by hand</StatusPill>}
@@ -653,7 +659,7 @@ export default function RuleBuilder({
               <div className="grid gap-6 lg:grid-cols-2">
                 <div className="flex flex-col gap-4">
                   <SectionHeading>Start from</SectionHeading>
-                  <Fieldset legend="Start from">
+                  <Fieldset legend="Start from" hideLegend>
                     <Checkbox
                       type="radio"
                       name="rule-source"
@@ -696,6 +702,7 @@ export default function RuleBuilder({
                   <SectionHeading>Regulation</SectionHeading>
                   <Field
                     label="Regulation"
+                    hideLabel
                     help={
                       preset ? undefined : "A regulation set narrows the source before your filters."
                     }

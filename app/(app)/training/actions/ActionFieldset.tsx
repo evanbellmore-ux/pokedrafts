@@ -61,7 +61,7 @@ export default function ActionFieldset({ options, selection, names, megaBlocked,
   const megaReason = megaBlocked ?? (choice?.kind === "switch" ? "Switching" : null);
   return (
     <fieldset data-training-action={slot} className="min-w-0 space-y-2 p-2 sm:p-3">
-      <legend className="wrap-anywhere text-xs font-semibold uppercase tracking-wide text-muted">{options.name}</legend>
+      <legend className="wrap-anywhere text-xs font-medium text-muted">{options.name}</legend>
       {options.mega.map((mechanic) => (
         <label key={mechanic} htmlFor={`${id}-${mechanic}`} className="flex min-h-11 cursor-pointer items-center gap-2 text-sm text-text has-disabled:cursor-not-allowed has-disabled:opacity-60">
           <input id={`${id}-${mechanic}`} type="checkbox" data-training-mechanic={mechanic} checked={selection.mega === mechanic}

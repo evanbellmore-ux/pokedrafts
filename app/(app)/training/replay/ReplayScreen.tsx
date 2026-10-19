@@ -121,7 +121,7 @@ function ReplayBoard({ runtime, replay, boards }: { runtime: BattleRuntime; repl
         <BenchStrip board={board} />
         {shownTurn && (
           <section data-training-replay-turn aria-label={turnTitle(shownTurn.turn)} className="min-w-0 rounded-xl border border-line bg-panel p-3">
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted">{turnTitle(shownTurn.turn)}</p>
+            <p className="text-xs font-medium text-muted">{turnTitle(shownTurn.turn)}</p>
             <div className="mt-1"><TurnLines lines={shownTurn.lines} /></div>
             {replay.setup.showRead && <AIReadPanel turn={shownTurn} board={readBoard} decisionBoard={decisionBoard} runtime={runtime} ownName={(key) => ownNames.get(key) ?? null} />}
           </section>

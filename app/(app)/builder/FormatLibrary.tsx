@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Copy, FolderOpen, Library, Pencil, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import Alert, { type AlertVariant } from "@/app/components/ui/Alert";
 import Button from "@/app/components/ui/Button";
 import Dialog from "@/app/components/ui/Dialog";
@@ -142,20 +142,17 @@ export default function FormatLibrary({
       aria-labelledby="format-library-heading"
       className="flex min-w-0 flex-col gap-3 lg:sticky lg:top-20 lg:order-first lg:max-h-[calc(100vh-6rem)] lg:self-start lg:overflow-y-auto"
     >
-      <div className="flex items-center gap-2">
-        <Library className="h-5 w-5 text-accent-text" aria-hidden="true" />
+      <div>
         <h2
           id="format-library-heading"
-          className="text-lg font-semibold text-text"
+          className="text-base font-semibold text-text"
         >
           My formats
         </h2>
+        <p className="mt-0.5 text-sm text-muted">
+          Yours and the shared ones can be picked for a new league.
+        </p>
       </div>
-      <p className="text-sm text-muted">
-        Your formats and the shared ones can be picked when you create a
-        league. Formats from other coaches&apos; leagues can be loaded and
-        duplicated.
-      </p>
 
       {notice && (
         <Alert variant={notice.variant} onDismiss={onDismissNotice}>
@@ -164,15 +161,15 @@ export default function FormatLibrary({
       )}
 
       {state.status === "loading" && (
-        <div aria-busy="true" className="flex flex-col gap-3">
+        <div
+          aria-busy="true"
+          className="divide-y divide-line rounded-xl border border-line bg-panel"
+        >
           {Array.from({ length: 3 }, (_, index) => (
-            <div
-              key={index}
-              className="rounded-xl border border-line bg-panel p-4"
-            >
+            <div key={index} className="px-4 py-3">
               <Skeleton className="h-4 w-2/3" />
               <Skeleton className="mt-2 h-3 w-1/2" />
-              <Skeleton className="mt-3 h-8 w-full" />
+              <Skeleton className="mt-3 h-7 w-32" />
             </div>
           ))}
         </div>
@@ -199,7 +196,7 @@ export default function FormatLibrary({
       )}
 
       {state.status === "ready" && state.formats.length > 0 && (
-        <ul className="flex flex-col gap-3">
+        <ul className="divide-y divide-line overflow-hidden rounded-xl border border-line bg-panel">
           {state.formats.map((format) => {
             const owned =
               state.userId !== null && format.created_by === state.userId;
@@ -213,9 +210,7 @@ export default function FormatLibrary({
             return (
               <li
                 key={format.id}
-                className={`rounded-xl border bg-panel p-4 ${
-                  loaded ? "border-accent-border" : "border-line"
-                }`}
+                className={`px-4 py-3 ${loaded ? "bg-accent-soft" : ""}`.trim()}
               >
                 <div className="flex flex-wrap items-center gap-2">
                   <h3 className="min-w-0 flex-1 truncate text-sm font-semibold text-text">
@@ -235,27 +230,15 @@ export default function FormatLibrary({
                   {count} Pokémon
                   {saved ? ` · Saved ${saved}` : ""}
                 </p>
-                <div className="mt-3 flex flex-wrap gap-2">
+                <div className="mt-2.5 flex flex-wrap items-center gap-1">
                   <Button
                     size="sm"
                     variant="secondary"
                     onClick={() => onLoad(format)}
                     aria-label={`Load ${format.name}`}
                   >
-                    <FolderOpen className="h-4 w-4" aria-hidden="true" />
                     Load
                   </Button>
-                  {owned && (
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => openRename(format)}
-                      aria-label={`Rename ${format.name}`}
-                    >
-                      <Pencil className="h-4 w-4" aria-hidden="true" />
-                      Rename
-                    </Button>
-                  )}
                   <Button
                     size="sm"
                     variant="ghost"
@@ -265,18 +248,28 @@ export default function FormatLibrary({
                     disabled={duplicatingId !== null}
                     aria-label={`Duplicate ${format.name}`}
                   >
-                    <Copy className="h-4 w-4" aria-hidden="true" />
                     Duplicate
                   </Button>
                   {owned && (
                     <Button
                       size="sm"
-                      variant="danger"
+                      variant="ghost"
+                      onClick={() => openRename(format)}
+                      aria-label={`Rename ${format.name}`}
+                    >
+                      Rename
+                    </Button>
+                  )}
+                  {owned && (
+                    <Button
+                      size="icon"
+                      variant="ghost-danger"
+                      className="ml-auto"
                       onClick={() => openDelete(format)}
                       aria-label={`Delete ${format.name}`}
+                      title="Delete"
                     >
                       <Trash2 className="h-4 w-4" aria-hidden="true" />
-                      Delete
                     </Button>
                   )}
                 </div>

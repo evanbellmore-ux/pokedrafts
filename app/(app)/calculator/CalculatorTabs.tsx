@@ -76,7 +76,7 @@ export default function CalculatorTabs({ prefix, activeTab, onSelect }: {
               onSelect(next);
               document.getElementById(calculatorTabIds(prefix, next).tabId)?.focus({ preventScroll: true });
             }}
-            className={`${styles.tab} min-h-11 rounded-lg border px-3 py-2 text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus ${selected ? "border-accent-border bg-accent-soft text-accent-text" : "border-line bg-panel text-text hover:bg-panel-hover"}`}
+            className={`${styles.tab} min-h-11 rounded-lg px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus ${selected ? "bg-panel-hover text-text" : "text-muted hover:bg-panel-hover/60 hover:text-text"}`}
           >
             {label}
           </button>

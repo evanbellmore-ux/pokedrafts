@@ -4,8 +4,8 @@ import Link from "next/link";
 import type { ButtonHTMLAttributes, ComponentProps, ReactNode, Ref } from "react";
 import { LoaderCircle } from "lucide-react";
 
-export type ButtonVariant = "primary" | "secondary" | "danger" | "ghost";
-export type ButtonSize = "sm" | "md" | "lg";
+export type ButtonVariant = "primary" | "secondary" | "danger" | "ghost" | "ghost-danger";
+export type ButtonSize = "sm" | "md" | "lg" | "icon";
 
 const base =
   "inline-flex items-center justify-center gap-2 rounded-lg font-semibold whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:cursor-not-allowed disabled:opacity-60";
@@ -14,6 +14,8 @@ const sizes: Record<ButtonSize, string> = {
   sm: "px-3 py-1.5 text-sm",
   md: "px-4 py-2.5 text-sm",
   lg: "px-6 py-3 text-base",
+  // Square icon-only button; give it an aria-label.
+  icon: "h-8 w-8 p-0",
 };
 
 const variants: Record<ButtonVariant, string> = {
@@ -24,6 +26,9 @@ const variants: Record<ButtonVariant, string> = {
   // text on dark panels only and fails AA as a button fill.
   danger: "bg-danger-strong text-on-danger hover:bg-danger-strong-hover",
   ghost: "text-muted hover:bg-panel-hover hover:text-text",
+  // A destructive action repeated on list rows: quiet until hovered, so the
+  // list is not a column of red buttons; its confirm dialog carries the warning.
+  "ghost-danger": "text-muted hover:bg-danger-soft hover:text-danger",
 };
 
 export function buttonClassName({
