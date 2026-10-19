@@ -283,7 +283,7 @@ describe("2v2 summary (DoublesSummary)", () => {
     const html = summary(doubleTarget(), { rollMode: mode as DamageRollMode });
     const blastoise = card(html, "opponent-left");
     expect(blastoise).toContain(`After the moves · ${label}`);
-    expect(blastoise).toMatch(new RegExp(`<span class="text-xl font-bold text-text">${shown}</span><span class="text-sm text-muted"> / 154 HP</span>`));
+    expect(blastoise).toMatch(new RegExp(`<span class="text-xl font-semibold text-text">${shown}</span><span class="text-sm text-muted"> / 154 HP</span>`));
     expect(blastoise).toMatch(new RegExp(`role="meter" aria-label="Blastoise projected HP" aria-valuemin="0" aria-valuemax="154" aria-valuenow="${shown}" aria-valuetext="${shown} of 154 HP after the moves, ${label} \\(0–4\\). KO chance: 75%. Turn start HP: 60."`));
     expect(blastoise).toMatch(/data-hp-range="true" aria-hidden="true" class="absolute inset-y-0 bg-text\/25" style="left:0%;width:2.59740259740259\d*%"/);
     expect(text(blastoise)).toContain("Turn start: 60 / 154 · KO chance: 75%");

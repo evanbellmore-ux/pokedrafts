@@ -199,17 +199,18 @@
   display: none;
 }
 
-/* The 1v1 | 2v2 switch: two equal buttons, then side by side at their own width from 40rem. */
+/* The 1v1 | 2v2 switch: a segmented control, two equal halves, then only as wide as its buttons from 40rem. */
 .modes {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.5rem;
+  gap: 0.25rem;
   padding: 0.25rem;
 }
 
 @media (min-width: 40rem) {
   .modes {
     display: flex;
+    width: fit-content;
   }
 }
 

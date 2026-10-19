@@ -57,7 +57,7 @@ function SpriteCell({ lookupName }: { lookupName: string }) {
     <div
       role="img"
       aria-label="No Pokémon name yet"
-      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-panel-hover text-sm font-bold text-muted"
+      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-panel-hover text-sm font-semibold text-muted"
     >
       ?
     </div>

@@ -115,7 +115,7 @@ function SummaryCombatant({ slot, side, label, issues, projected, moveName, roll
     <div data-summary-combatant={side} className="flex min-w-0 flex-col px-3 py-2 sm:px-4">
       {slot.source && <p className="wrap-anywhere text-xs font-semibold text-muted">{ownership}{slot.source.name !== species?.name ? ` · ${slot.source.name}` : ""}</p>}
       <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
-        <h3 className="min-w-0 wrap-anywhere text-base font-bold leading-snug text-text sm:text-lg">{label}</h3>
+        <h3 className="min-w-0 wrap-anywhere text-base font-semibold leading-snug text-text sm:text-lg">{label}</h3>
         {megaOptions.length > 0 && (
           <div role="group" aria-label={`${label} ${megaOptions.every((option) => option.label.startsWith("Mega")) ? "Mega forms" : "battle forms"}`} className="flex min-w-0 flex-wrap gap-1">
             {megaOptions.map((option) => {
@@ -148,7 +148,7 @@ function SummaryCombatant({ slot, side, label, issues, projected, moveName, roll
       {health ? (
         <>
           <p className="mt-1 wrap-anywhere text-xs font-semibold text-muted">{hpLabel}</p>
-          <p className="tabular-nums"><span className="text-xl font-bold text-text">{displayedHP}</span><span className="text-sm text-muted"> / {health.maximum} HP</span></p>
+          <p className="tabular-nums"><span className="text-xl font-semibold text-text">{displayedHP}</span><span className="text-sm text-muted"> / {health.maximum} HP</span></p>
           <div role="meter" aria-label={`${label} ${projected ? "projected" : "current"} HP`} aria-valuemin={0} aria-valuemax={health.maximum} aria-valuenow={displayedHP} aria-valuetext={hpText} title={hpText} className="relative mt-1 h-2 overflow-hidden rounded-full bg-panel-hover">
             <div className={`h-full rounded-full ${fraction > 0.5 ? "bg-success" : fraction > 0.2 ? "bg-warning" : "bg-danger"}`} style={{ width: `${fraction * 100}%` }} />
             {/* The least to the most HP left, over the selected roll's fill. */}
@@ -272,7 +272,7 @@ export default function MatchupSummary({ attacker, defender, issues, attack, rep
           <span aria-hidden="true" className="text-xs font-semibold text-muted">Damage roll</span>
           <div className="flex flex-wrap gap-1">
             {(["low", "average", "high"] as const).map((mode) => (
-              <label key={mode} htmlFor={`${id}-roll-${mode}`} className={`flex min-h-11 cursor-pointer items-center gap-2 rounded-lg px-2 text-sm font-semibold text-text sm:px-3 ${rollMode === mode ? "bg-accent-soft" : "hover:bg-panel-hover"}`}>
+              <label key={mode} htmlFor={`${id}-roll-${mode}`} className={`flex min-h-11 cursor-pointer items-center gap-2 rounded-lg px-2 text-sm font-semibold text-text sm:px-3 ${rollMode === mode ? "bg-panel-hover" : "hover:bg-panel-hover/60"}`}>
                 <input id={`${id}-roll-${mode}`} type="radio" name={`${id}-damage-roll`} value={mode} checked={rollMode === mode} onChange={() => onRollModeChange(mode)} className="h-4 w-4 shrink-0 accent-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus" />
                 {rollLabels[mode]}
               </label>
@@ -315,7 +315,7 @@ export default function MatchupSummary({ attacker, defender, issues, attack, rep
             ) : (
               <>
                 <p className="wrap-anywhere text-xs font-semibold text-muted">{sourceName ?? "—"} → {receiverName}</p>
-                <p className="mt-1 wrap-anywhere text-sm font-bold text-text">{moveName}</p>
+                <p className="mt-1 wrap-anywhere text-sm font-semibold text-text">{moveName}</p>
                 {row?.effectiveName && move && row.effectiveName !== move.name && <p className="mt-1 wrap-anywhere text-xs text-muted">From {move.name} · {row.effectiveType} · {row.effectiveCategory} · Power {row.effectivePower ?? "—"}</p>}
                 {blockedReason ? <p className="mt-1 text-sm text-muted">{blockedReason}</p> : (
                   <>

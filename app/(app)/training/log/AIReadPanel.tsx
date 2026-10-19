@@ -26,7 +26,7 @@ export default function AIReadPanel({ turn, board, decisionBoard = null, runtime
   const weighed = chosen ? report.strategy.filter((_, index) => index !== report.chosen) : report.strategy;
   return (
     <div data-training-read className="mt-2 rounded-lg border border-line bg-bg p-2">
-      <p className="text-xs font-semibold uppercase tracking-wide text-muted">AI&apos;s read</p>
+      <p className="text-xs font-medium text-muted">AI&apos;s read</p>
       <dl className="mt-1 grid grid-cols-[auto_minmax(0,1fr)] gap-x-2 gap-y-1 text-xs tabular-nums">
         {report.turn === 0 ? (
           <>

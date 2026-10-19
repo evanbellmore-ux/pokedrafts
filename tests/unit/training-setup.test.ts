@@ -574,7 +574,7 @@ describe("Training setup", () => {
     expect(opponent).toContain('>League</dt><dd class="wrap-anywhere font-medium text-text">Alpha</dd>');
     expect(html.match(/<label[^>]*>(?:My team|Opponent)<\/label>/g)).toHaveLength(2);
     // Below 40rem each side's League team | PokéPaste is two equal buttons across the panel.
-    expect(html.match(/role="group" aria-label="(?:Your team|Opponent) source" class="grid w-full grid-cols-2 gap-1.5 sm:flex sm:w-auto sm:flex-wrap"/g)).toHaveLength(2);
+    expect(html.match(/role="group" aria-label="(?:Your team|Opponent) source" class="grid w-full grid-cols-2 gap-1 rounded-lg border border-line bg-bg\/40 p-1 sm:flex sm:w-auto"/g)).toHaveLength(2);
     // Signed out: the alert and its Log in again link once.
     const out = render(snapshotWith(), session(), { ...rosterState(OWN_ROSTER, OPPONENT_ROSTER), status: "signed-out", leagues: [], selectedLeagueId: "", opponentId: "", data: null, teamsStatus: "idle" }).html;
     expect(out.split("Log in again").length - 1).toBe(1);

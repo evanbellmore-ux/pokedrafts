@@ -11,7 +11,12 @@ export type CalculatorMode = typeof CALCULATOR_MODES[number];
  */
 export default function CalculatorModeSwitch({ mode, onChange }: { mode: CalculatorMode; onChange: (mode: CalculatorMode) => void }) {
   return (
-    <div role="group" aria-label="Matchup" data-calculator-mode-switch className={styles.modes}>
+    <div
+      role="group"
+      aria-label="Matchup"
+      data-calculator-mode-switch
+      className={`${styles.modes} rounded-lg border border-line bg-bg/40`}
+    >
       {CALCULATOR_MODES.map((entry) => {
         const pressed = entry === mode;
         return (
@@ -21,7 +26,7 @@ export default function CalculatorModeSwitch({ mode, onChange }: { mode: Calcula
             data-calculator-mode={entry}
             aria-pressed={pressed}
             onClick={() => onChange(entry)}
-            className={`min-h-11 rounded-lg border px-3 py-2 text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus ${pressed ? "border-accent-border bg-accent-soft text-accent-text" : "border-line bg-panel text-text hover:bg-panel-hover"}`}
+            className={`min-h-11 rounded-md px-5 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus ${pressed ? "bg-panel-hover text-text shadow-sm" : "text-muted hover:text-text"}`}
           >
             {entry}
           </button>

@@ -471,7 +471,7 @@ export default function MoveResults({ rows, moveIds, ownerId, selectedMoveId, on
     }}>
       <div className={`flex flex-wrap items-start justify-between gap-3 ${replacement ? "rounded-xl border border-accent-border bg-accent-soft p-4" : ""}`}>
         <div className="min-w-0 flex-1">
-          <h2 id={`${prefix}-heading`} className="wrap-anywhere text-xl font-bold text-text">{replacement ? `Replace ${attackerName}’s move ${replacement.slotIndex + 1} — ${currentMoveId ? runtime.movesById.get(currentMoveId)?.name ?? currentMoveId : "No move"}` : heading ?? "Moves"}</h2>
+          <h2 id={`${prefix}-heading`} className="wrap-anywhere text-lg font-semibold tracking-tight text-text">{replacement ? `Replace ${attackerName}’s move ${replacement.slotIndex + 1} — ${currentMoveId ? runtime.movesById.get(currentMoveId)?.name ?? currentMoveId : "No move"}` : heading ?? "Moves"}</h2>
           <p className="mt-1 wrap-anywhere text-sm text-muted">{attackerName} → {defenderName}{defenderHP !== null && ` (${defenderHP} current HP)`}. {runtime.profile.label} rules.</p>
         </div>
         {replacement && <Button size="sm" variant="secondary" aria-label="Done replacing move" onClick={replacement.onDone}>Done</Button>}

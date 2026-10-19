@@ -82,7 +82,7 @@ export default function SetEditor({ member, label, runtime, moveOptions, takenIt
   return (
     <div role="group" aria-label={`${label} set`} data-training-set-editor={member.key} className="mt-2 space-y-3 border-t border-line pt-3">
       <fieldset className="min-w-0 space-y-2">
-        <legend className="text-xs font-semibold uppercase tracking-wide text-muted">Moves<span className="sr-only normal-case"> · {label}</span></legend>
+        <legend className="text-xs font-medium text-muted">Moves<span className="sr-only"> · {label}</span></legend>
         <Field id={`${id}-search`} label="Search moves">
           <Input type="search" autoComplete="off" spellCheck={false} value={query} onChange={(event) => setQuery(event.target.value)} className="min-h-11" />
         </Field>
@@ -140,8 +140,8 @@ export default function SetEditor({ member, label, runtime, moveOptions, takenIt
 
       {points && (
         <fieldset className="min-w-0">
-          <legend className="flex w-full flex-wrap justify-between gap-2 text-xs font-semibold uppercase tracking-wide text-muted">
-            <span>Stat Points<span className="sr-only normal-case"> · {label}</span></span>
+          <legend className="flex w-full flex-wrap justify-between gap-2 text-xs font-medium text-muted">
+            <span>Stat Points<span className="sr-only"> · {label}</span></span>
             <span className={`tabular-nums normal-case ${total > TOTAL_STAT_POINTS ? "text-danger" : ""}`}>{total} / {TOTAL_STAT_POINTS}</span>
           </legend>
           <div className="mt-1.5 grid grid-cols-3 gap-2 sm:grid-cols-6">

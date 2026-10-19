@@ -120,12 +120,12 @@ describe("set editor", () => {
   it("is named by its Pokémon, as are its Moves and Stat Points and Reset set (with its team in a mirror)", () => {
     const { html } = render({ canReset: true });
     expect(html).toMatch(/^<div role="group" aria-label="Garchomp set" data-training-set-editor="own-garchomp"/);
-    expect(html).toContain('<legend class="text-xs font-semibold uppercase tracking-wide text-muted">Moves<span class="sr-only normal-case"> · Garchomp</span></legend>');
-    expect(html).toContain('<span>Stat Points<span class="sr-only normal-case"> · Garchomp</span></span>');
+    expect(html).toContain('<legend class="text-xs font-medium text-muted">Moves<span class="sr-only"> · Garchomp</span></legend>');
+    expect(html).toContain('<span>Stat Points<span class="sr-only"> · Garchomp</span></span>');
     expect(html).toMatch(/>Reset set<span class="sr-only"> · Garchomp<\/span><\/button>/);
     const mirror = render({ label: "Garchomp (opponent's)", canReset: true }).html;
     expect(mirror).toMatch(/^<div role="group" aria-label="Garchomp \(opponent&#x27;s\) set"/);
-    expect(mirror).toContain("Moves<span class=\"sr-only normal-case\"> · Garchomp (opponent&#x27;s)</span>");
+    expect(mirror).toContain("Moves<span class=\"sr-only\"> · Garchomp (opponent&#x27;s)</span>");
     expect(mirror).toContain("Reset set<span class=\"sr-only\"> · Garchomp (opponent&#x27;s)</span>");
   });
 

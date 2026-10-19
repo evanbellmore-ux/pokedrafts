@@ -214,7 +214,7 @@ describe("the fainted card and the other cards", () => {
     const html = summary(faintedView({ "own-left": { moveId: "rockslide", target: null } }));
     const pikachu = card(html, "opponent-right");
     expect(pikachu).toContain(`data-doubles-fainted="opponent-right" class="mt-1 text-xs font-semibold text-danger">${FAINTED}</p>`);
-    expect(pikachu).toContain('<span class="text-xl font-bold text-text">0</span><span class="text-sm text-muted"> / 110 HP</span>');
+    expect(pikachu).toContain('<span class="text-xl font-semibold text-text">0</span><span class="text-sm text-muted"> / 110 HP</span>');
     expect(pikachu).toMatch(/role="meter" aria-label="Pikachu current HP" aria-valuemin="0" aria-valuemax="110" aria-valuenow="0" aria-valuetext="Fainted: 0 of 110 HP"/);
     expect(pikachu).not.toMatch(/data-move-slot|data-doubles-no-move|data-doubles-all-moves|data-doubles-target|data-doubles-action|type="radio"/);
     expect(pikachu).not.toContain("Current HP must");

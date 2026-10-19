@@ -22,7 +22,7 @@ export default function BattleLog({ log, runtime, showRead, board, decisionBoard
       <ol data-training-log className="mt-2 space-y-3">
         {log.filter((turn) => turn.lines.length || turn.read).map((turn) => (
           <li key={turn.turn} data-training-log-turn={turn.turn} className="min-w-0">
-            <h3 className="text-xs font-semibold uppercase tracking-wide text-muted">{turnTitle(turn.turn)}</h3>
+            <h3 className="text-xs font-medium text-muted">{turnTitle(turn.turn)}</h3>
             <TurnLines lines={turn.lines} />
             {showRead && <AIReadPanel turn={turn} board={board} decisionBoard={decisionBoards?.[turn.turn] ?? null} runtime={runtime} ownName={ownName} />}
           </li>

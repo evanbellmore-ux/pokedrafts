@@ -46,7 +46,9 @@ export const TRAINING_PICKER_TEXT = {
   removeDescription: "This removes the team and its set edits from Setup.",
 } as const;
 
-const sourceButton ="min-h-11 rounded-lg border px-3 py-1.5 text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus";
+/** One half of the League team | PokéPaste segmented control (as the calculator's 1v1 | 2v2 switch). */
+const sourceButton =
+  "min-h-11 rounded-md px-3 py-1.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus";
 
 export default function TeamSourcePanel({ role, team, source, ownMode, rosters, runtime, visibility, problems, moveOptions, shared, reveal, quick, onSource, onRetrySuggest, onLoadMoves }: TeamSourcePanelProps) {
   const id = useId();
@@ -114,10 +116,10 @@ export default function TeamSourcePanel({ role, team, source, ownMode, rosters, 
         <h2 id={`${id}-heading`} tabIndex={-1} data-training-team-heading={role}
           className={`${styles.sideHeading} rounded text-lg font-semibold text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus`}>{title}</h2>
         {/* Below 40rem two equal buttons across the panel (as the calculator's 1v1 | 2v2 switch). */}
-        <div role="group" aria-label={`${title} source`} className="grid w-full grid-cols-2 gap-1.5 sm:flex sm:w-auto sm:flex-wrap">
+        <div role="group" aria-label={`${title} source`} className="grid w-full grid-cols-2 gap-1 rounded-lg border border-line bg-bg/40 p-1 sm:flex sm:w-auto">
           {(["league", "paste"] as const).map((mode) => (
             <button key={mode} type="button" aria-pressed={source.mode === mode} onClick={() => setMode(mode)}
-              className={`${sourceButton} ${source.mode === mode ? "border-accent-border bg-accent-soft text-accent-text" : "border-line bg-bg text-text hover:bg-panel-hover"}`}>
+              className={`${sourceButton} ${source.mode === mode ? "bg-panel-hover text-text shadow-sm" : "text-muted hover:text-text"}`}>
               {mode === "league" ? "League team" : "PokéPaste"}
             </button>
           ))}

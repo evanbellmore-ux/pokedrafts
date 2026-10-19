@@ -119,7 +119,7 @@ function SwitchesBlock({ slotId, label, switches, rollMode, afterTurn }: { slotI
             {hp && (
               <>
                 <p className="wrap-anywhere text-xs font-semibold text-muted">{cardHPLabel(true, rollMode, undefined, afterTurn)}</p>
-                <p className="tabular-nums"><span className="text-base font-bold text-text">{shown}</span><span className="text-sm text-muted"> / {hp.maximum} HP</span></p>
+                <p className="tabular-nums"><span className="text-base font-semibold text-text">{shown}</span><span className="text-sm text-muted"> / {hp.maximum} HP</span></p>
                 <div role="meter" aria-label={`${entry.name} projected HP in place of ${label}`} aria-valuemin={0} aria-valuemax={hp.maximum} aria-valuenow={shown} aria-valuetext={text} title={text} className="relative mt-1 h-2 overflow-hidden rounded-full bg-panel-hover">
                   <div className={`h-full rounded-full ${fraction > 0.5 ? "bg-success" : fraction > 0.2 ? "bg-warning" : "bg-danger"}`} style={{ width: `${fraction * 100}%` }} />
                   {range && <div data-hp-range aria-hidden="true" className="absolute inset-y-0 bg-text/25" style={{ left: `${hp.min / hp.maximum * 100}%`, width: `${(hp.max - hp.min) / hp.maximum * 100}%` }} />}
@@ -184,7 +184,7 @@ export default function DoublesCard({ view, names, nameParts, runtime, rollMode,
     <>
       {slot.source && slot.source.name !== species?.name && <p className="wrap-anywhere text-xs font-semibold text-muted">{slot.source.name}</p>}
       <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
-        <h4 className="min-w-0 wrap-anywhere text-base font-bold leading-snug text-text sm:text-lg"><PokemonName parts={nameParts} /></h4>
+        <h4 className="min-w-0 wrap-anywhere text-base font-semibold leading-snug text-text sm:text-lg"><PokemonName parts={nameParts} /></h4>
         {megaOptions.length > 0 && (
           <div role="group" aria-label={`${label} ${megaOptions.every((option) => option.label.startsWith("Mega")) ? "Mega forms" : "battle forms"}`} className="flex min-w-0 flex-wrap gap-1">
             {megaOptions.map((option) => {
@@ -219,7 +219,7 @@ export default function DoublesCard({ view, names, nameParts, runtime, rollMode,
           <p data-doubles-fainted={slotId} className="mt-1 text-xs font-semibold text-danger">{FAINTED}</p>
           {faintedMaximum !== null ? (
             <>
-              <p className="tabular-nums"><span className="text-xl font-bold text-text">0</span><span className="text-sm text-muted"> / {faintedMaximum} HP</span></p>
+              <p className="tabular-nums"><span className="text-xl font-semibold text-text">0</span><span className="text-sm text-muted"> / {faintedMaximum} HP</span></p>
               <div role="meter" aria-label={`${label} current HP`} aria-valuemin={0} aria-valuemax={faintedMaximum} aria-valuenow={0} aria-valuetext={`${FAINTED}: 0 of ${faintedMaximum} HP`} title={`${FAINTED}: 0 of ${faintedMaximum} HP`} className="mt-1 h-2 rounded-full bg-panel-hover" />
             </>
           ) : <p className="mt-1 wrap-anywhere text-sm font-semibold text-danger">{unavailable}</p>}
@@ -227,7 +227,7 @@ export default function DoublesCard({ view, names, nameParts, runtime, rollMode,
       ) : hp || health ? (
         <>
           <p className="mt-1 wrap-anywhere text-xs font-semibold text-muted">{cardHPLabel(!!hp, rollMode, slot.build.mechanic, afterTurn)}</p>
-          <p className="tabular-nums"><span className="text-xl font-bold text-text">{shown}</span><span className="text-sm text-muted"> / {maximum} HP</span></p>
+          <p className="tabular-nums"><span className="text-xl font-semibold text-text">{shown}</span><span className="text-sm text-muted"> / {maximum} HP</span></p>
           <div role="meter" aria-label={`${label} ${hp ? "projected" : "current"} HP`} aria-valuemin={0} aria-valuemax={maximum} aria-valuenow={shown} aria-valuetext={hpText} title={hpText} className="relative mt-1 h-2 overflow-hidden rounded-full bg-panel-hover">
             <div className={`h-full rounded-full ${fraction > 0.5 ? "bg-success" : fraction > 0.2 ? "bg-warning" : "bg-danger"}`} style={{ width: `${fraction * 100}%` }} />
             {/* The least to the most HP left over the turn's outcomes, over the selected roll's fill. */}

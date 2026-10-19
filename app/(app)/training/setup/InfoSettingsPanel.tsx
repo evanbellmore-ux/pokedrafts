@@ -36,7 +36,7 @@ function toggled(view: InfoView, toggle: Toggle, value: boolean): InfoView {
   return { ...view, open: { ...view.open, [toggle]: value } };
 }
 
-const presetButton = "min-h-11 rounded-lg border px-3 py-1.5 text-left text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus";
+const presetButton = "min-h-11 rounded-lg border px-3 py-1.5 text-left text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus";
 
 /** A direction is Custom (no preset matches) or a test extra is on: the category table shows by itself. */
 function needsTable(info: InfoSettings) {

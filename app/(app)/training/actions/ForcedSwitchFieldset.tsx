@@ -22,7 +22,7 @@ export default function ForcedSwitchFieldset({ replace, midTurn, pick, otherPick
   const id = useId();
   return (
     <fieldset data-training-replace={replace.slot} className="min-w-0 space-y-2 p-2 sm:p-3">
-      <legend data-training-replace-legend className="wrap-anywhere text-xs font-semibold uppercase tracking-wide text-muted">{replaceLegend(replace.name, midTurn)}</legend>
+      <legend data-training-replace-legend className="wrap-anywhere text-xs font-medium text-muted">{replaceLegend(replace.name, midTurn)}</legend>
       {exhausted ? <p className="text-sm text-muted">No Pokémon left</p> : (
         <div className={styles.switches}>
           {replace.options.map((option, index) => {
