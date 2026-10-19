@@ -8,13 +8,15 @@ import {
   normalizePokemonName,
 } from "@/app/lib/pokemon";
 
-export type SpriteSize = "sm" | "md" | "lg";
+export type SpriteSize = "sm" | "md" | "lg" | "fill";
 
-const SIZE_PX: Record<SpriteSize, number> = { sm: 32, md: 40, lg: 64 };
+const SIZE_PX: Record<SpriteSize, number> = { sm: 32, md: 40, lg: 64, fill: 48 };
 const SIZE_CLASS: Record<SpriteSize, string> = {
   sm: "h-8 w-8",
   md: "h-10 w-10",
   lg: "h-16 w-16",
+  // Fills a sized parent, e.g. a roster slot.
+  fill: "h-full w-full",
 };
 
 /** normalized name -> url, or null when every source failed (negative cache). */
@@ -73,6 +75,8 @@ export type PokemonSpriteProps = {
   name: string;
   size?: SpriteSize;
   className?: string;
+  /** No tile behind the sprite: the parent draws the frame (roster slots). */
+  bare?: boolean;
 };
 
 /**
@@ -84,6 +88,7 @@ export default function PokemonSprite({
   name,
   size = "md",
   className = "",
+  bare = false,
 }: PokemonSpriteProps) {
   const key = normalizePokemonName(name);
   const [state, setState] = useState<SpriteState>(() => initialState(name));
@@ -108,7 +113,7 @@ export default function PokemonSprite({
   }, [key, name, state.status]);
 
   const px = SIZE_PX[size];
-  const box = `${SIZE_CLASS[size]} shrink-0 rounded-md ${className}`.trim();
+  const box = `${SIZE_CLASS[size]} shrink-0 ${bare ? "rounded-full" : "rounded-md"} ${className}`.trim();
 
   if (state.status === "loading") {
     return (
@@ -125,7 +130,7 @@ export default function PokemonSprite({
         role="img"
         aria-label={`${name} (no sprite available)`}
         title={name}
-        className={`${box} flex items-center justify-center bg-panel-hover text-sm font-bold uppercase text-muted`}
+        className={`${box} flex items-center justify-center ${bare ? "text-xs" : "bg-panel-hover text-sm"} font-bold uppercase text-muted`}
       >
         {name.trim().charAt(0) || "?"}
       </div>
@@ -146,7 +151,7 @@ export default function PokemonSprite({
         spriteCache.set(key, null);
         setState({ key, status: "failed" });
       }}
-      className={`${box} bg-panel-hover object-contain p-1`}
+      className={`${box} object-contain ${bare ? "" : "bg-panel-hover p-1"}`.trim()}
     />
   );
 }

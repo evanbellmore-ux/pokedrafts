@@ -50,6 +50,14 @@
   --type-warning-soft: rgba(251, 191, 36, 0.14);
   --type-success: #4ade80;
   --type-success-soft: rgba(74, 222, 128, 0.14);
+
+  /*
+   * Neutral hairlines shared by every palette: quiet card edges and dividers
+   * that do not take the accent's hue. Decorative only, like --type-border;
+   * form controls keep --type-control-border.
+   */
+  --type-hairline: rgba(255, 255, 255, 0.08);
+  --type-hairline-strong: rgba(255, 255, 255, 0.15);
 }
 
 [data-pokemon-theme="normal"] {
@@ -361,6 +369,8 @@
   --color-panel-hover: var(--type-panel-hover);
   --color-line: var(--type-border);
   --color-line-strong: var(--type-border-strong);
+  --color-hairline: var(--type-hairline);
+  --color-hairline-strong: var(--type-hairline-strong);
   --color-control-border: var(--type-control-border);
   --color-accent: var(--type-accent);
   --color-accent-hover: var(--type-accent-hover);
@@ -413,7 +423,8 @@ dialog::backdrop {
 
 @media (prefers-reduced-motion: reduce) {
   .animate-pulse,
-  .animate-spin {
+  .animate-spin,
+  .animate-ping {
     animation: none;
   }
 }
