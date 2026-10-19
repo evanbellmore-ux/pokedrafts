@@ -42,21 +42,45 @@ afterEach(() => { vi.unstubAllGlobals(); });
 describe("wrapping app navigation", () => {
   it("keeps the calculator link accessible and active", () => {
     const html = renderToStaticMarkup(createElement(AppNav));
-    expect(html).toMatch(/<a href="\/calculator" aria-current="page" aria-label="Calculator"/);
+    // Text tabs: the visible label is the accessible name.
+    expect(html).toMatch(/<a href="\/calculator" aria-current="page"[^>]*>Calculator</);
     expect(html).toContain('aria-label="Primary"');
-    expect(html).toContain("flex w-full max-w-full flex-wrap");
+    // Below sm the tabs get their own row, which scrolls instead of overflowing.
+    expect(html).toContain("order-last -mx-4 flex w-[calc(100%+2rem)] overflow-x-auto");
     expect(html).toContain("Skip to content");
   });
 
   it("links Training after Calculator and marks it active on /training", () => {
     const html = renderToStaticMarkup(createElement(AppNav));
-    expect(html).toMatch(/<a href="\/training" aria-label="Training" title="Training"/);
+    expect(html).toMatch(/<a href="\/training"[^>]*>Training</);
     expect(html.indexOf('href="/calculator"')).toBeLessThan(html.indexOf('href="/training"'));
-    expect(html).toContain("lucide-swords");
     navigation.pathname = "/training";
     const active = renderToStaticMarkup(createElement(AppNav));
-    expect(active).toMatch(/<a href="\/training" aria-current="page" aria-label="Training"/);
+    expect(active).toMatch(/<a href="\/training" aria-current="page"[^>]*>Training</);
     expect(active).not.toMatch(/<a href="\/calculator" aria-current="page"/);
+  });
+
+  it("marks Dashboard as the current section on league pages, not as the page", () => {
+    navigation.pathname = "/leagues/abc/standings";
+    const html = renderToStaticMarkup(createElement(AppNav));
+    expect(html).toMatch(/<a href="\/dashboard" aria-current="true"[^>]*>Dashboard</);
+    expect(html).not.toContain('aria-current="page"');
+    navigation.pathname = "/dashboard";
+    expect(renderToStaticMarkup(createElement(AppNav))).toMatch(
+      /<a href="\/dashboard" aria-current="page"[^>]*>Dashboard</
+    );
+  });
+
+  it("keeps Sign out and the theme picker in a collapsed account menu", () => {
+    const html = renderToStaticMarkup(createElement(AppNav));
+    const trigger = html.match(/<button[^>]*aria-label="Account"[^>]*>/)?.[0] ?? "";
+    expect(trigger).toContain('aria-expanded="false"');
+    const panelId = trigger.match(/aria-controls="([^"]+)"/)?.[1];
+    expect(panelId).toBeTruthy();
+    const panel = html.slice(html.indexOf(`id="${panelId}"`));
+    expect(panel).toMatch(/^id="[^"]+" data-menu-panel="" hidden=""/);
+    expect(panel).toContain("Signed in as");
+    expect(panel).toMatch(/<button type="button"[^>]*>.*Sign out<\/button>/);
   });
 
   it("measures the header, follows resizes and removes its observer on unmount", () => {

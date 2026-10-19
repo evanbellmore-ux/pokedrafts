@@ -27,3 +27,5 @@ export {
 } from "./TableWrap";
 export { default as StatusPill } from "./StatusPill";
 export type { StatusPillProps, StatusTone } from "./StatusPill";
+export { default as Menu, MenuItem, MenuLink, MenuSeparator } from "./Menu";
+export type { MenuProps, MenuItemProps } from "./Menu";

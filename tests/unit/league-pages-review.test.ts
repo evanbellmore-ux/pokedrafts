@@ -105,11 +105,13 @@ type ButtonElement = { attrs: string; inner: string; line: number };
 
 /**
  * Every `<Button ...>...</Button>` in a source file (not `<ButtonLink>`),
- * skipping `>` inside `{...}` attribute expressions such as arrow functions.
+ * or every element of another button component (`MenuItem`), skipping `>`
+ * inside `{...}` attribute expressions such as arrow functions.
  */
-function buttonElements(source: string): ButtonElement[] {
+function buttonElements(source: string, component = "Button"): ButtonElement[] {
   const found: ButtonElement[] = [];
-  const tag = "<Button";
+  const tag = `<${component}`;
+  const closing = `</${component}>`;
   let from = 0;
   for (;;) {
     const start = source.indexOf(tag, from);
@@ -135,10 +137,10 @@ function buttonElements(source: string): ButtonElement[] {
       from = i + 1;
       continue;
     }
-    const close = source.indexOf("</Button>", i);
-    if (close < 0) throw new Error(`Unclosed <Button> at line ${line}`);
+    const close = source.indexOf(closing, i);
+    if (close < 0) throw new Error(`Unclosed ${tag}> at line ${line}`);
     found.push({ attrs, inner: source.slice(i + 1, close), line });
-    from = close + "</Button>".length;
+    from = close + closing.length;
   }
   return found;
 }
@@ -170,8 +172,13 @@ function ariaLabelLiteral(attrs: string): string | null {
   return literal ? literal[1] : null;
 }
 
-const ROW_BUTTON_FILES: Array<{ file: string; labelled: string[] }> = [
-  { file: "app/(app)/dashboard/DashboardClient.tsx", labelled: ["Delete"] },
+const ROW_BUTTON_FILES: Array<{ file: string; labelled: string[]; component?: string }> = [
+  // The dashboard's delete sits in each league card's options menu.
+  {
+    file: "app/(app)/dashboard/LeagueCard.tsx",
+    labelled: ["Delete league"],
+    component: "MenuItem",
+  },
   {
     file: `${leagueDir}/CoachesList.tsx`,
     labelled: ["Make commissioner", "Remove", "Leave league"],
@@ -186,8 +193,8 @@ const ROW_BUTTON_FILES: Array<{ file: string; labelled: string[] }> = [
 ];
 
 describe("per-row buttons keep the visible text in the accessible name (WCAG 2.5.3)", () => {
-  describe.each(ROW_BUTTON_FILES)("$file", ({ file, labelled }) => {
-    const buttons = buttonElements(read(file));
+  describe.each(ROW_BUTTON_FILES)("$file", ({ file, labelled, component }) => {
+    const buttons = buttonElements(read(file), component);
 
     it("finds buttons", () => {
       expect(buttons.length).toBeGreaterThan(0);
@@ -281,7 +288,9 @@ describe("copy consistency (docs section 2)", () => {
     expect(read("app/(app)/leagues/new/NewLeagueClient.tsx")).toMatch(/>\s*Create League\s*</);
     expect(read("app/(app)/leagues/new/NewLeagueClient.tsx")).not.toMatch(/>\s*Create league\s*</);
     expect(read("app/(app)/leagues/new/page.tsx")).toMatch(/title: "Create League"/);
-    expect(read("app/(app)/dashboard/DashboardClient.tsx")).not.toMatch(/Create league\b/);
+    for (const file of ["DashboardClient.tsx", "LeagueCard.tsx", "DashboardSidebar.tsx"]) {
+      expect(read(`app/(app)/dashboard/${file}`), file).not.toMatch(/Create league\b/);
+    }
   });
 
   it("spells 'Free agent' without a hyphen in labels", () => {
@@ -419,15 +428,16 @@ describe("standings tiebreakers and playoffs (docs section 12.6)", () => {
     expect(create).toMatch(/CREATE_LEAGUE_DEFAULTS\.playoffFormat/);
   });
 
-  it("gives season news its own pill and the dashboard its champion pill", () => {
+  it("gives season news its own pill and the dashboard its champion status", () => {
     expect(read(`${leagueDir}/NewsFeed.tsx`)).toMatch(/season: "warning"/);
     expect(read(`${leagueDir}/overview.ts`)).toMatch(/season: "Season"/);
-    const dashboard = read("app/(app)/dashboard/DashboardClient.tsx");
-    expect(dashboard).toMatch(
-      /label: `Champion: \$\{item\.championTeamName \?\? "Unknown team"\}`/
+    // The status line itself is unit-tested in tests/unit/dashboard.test.ts.
+    expect(read("app/(app)/dashboard/DashboardClient.tsx")).toMatch(
+      /playoff_format, champion_member_id\)/
     );
-    expect(dashboard).toMatch(/label: "Playoffs"/);
-    expect(dashboard).toMatch(/playoff_format, champion_member_id\)/);
+    const card = read("app/(app)/dashboard/LeagueCard.tsx");
+    expect(card).toMatch(/Champion <span className="text-muted">\{status\.teamName\}<\/span>/);
+    expect(card).toMatch(/Top \{status\.playoffTeams\} make the playoffs/);
   });
 });
 
@@ -440,7 +450,10 @@ describe("long names cannot widen a 375px viewport", () => {
     // which applies wrap-anywhere to both.
     expect(read("app/components/ui/PageHeader.tsx")).toMatch(/<h1 className="[^"]*wrap-anywhere/);
     expect(read("app/components/ui/PageHeader.tsx")).toMatch(/<p className="[^"]*wrap-anywhere/);
-    expect(read("app/(app)/dashboard/DashboardClient.tsx")).toMatch(/<h3 className="wrap-anywhere/);
-    expect(read("app/(app)/dashboard/DashboardClient.tsx")).toMatch(/<dd className="wrap-anywhere">/);
+    const card = read("app/(app)/dashboard/LeagueCard.tsx");
+    expect(card).toMatch(/<h3 className="wrap-anywhere/);
+    expect(card).toMatch(/<dd className="wrap-anywhere">/);
+    // A champion's team name in the status line wraps too.
+    expect(card).toMatch(/<span className="wrap-anywhere">\s*Champion/);
   });
 });
