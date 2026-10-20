@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { parseCallbackFailure } from "@/app/lib/auth/callback";
 import { sanitizeNextPath } from "@/app/lib/auth/next-path";
+import { signInProviders } from "@/app/lib/auth/providers";
 import { firstParam, type SearchParams } from "@/app/lib/search-params";
 import LoginForm from "./LoginForm";
 
@@ -17,6 +18,7 @@ export default async function LoginPage({
   const next = sanitizeNextPath(firstParam(params.next));
   // Written by app/auth/callback/route.ts; `next` survives the failure.
   const linkError = parseCallbackFailure(firstParam(params.error));
+  const { discord } = await signInProviders();
 
-  return <LoginForm next={next} linkError={linkError} />;
+  return <LoginForm next={next} linkError={linkError} discord={discord} />;
 }

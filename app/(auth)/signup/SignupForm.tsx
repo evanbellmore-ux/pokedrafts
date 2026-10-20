@@ -11,6 +11,7 @@ import { withNextParam } from "@/app/lib/auth/next-path";
 import { friendlyError } from "@/app/lib/errors";
 import { createClient } from "@/app/lib/supabase/client";
 import { linkClassName } from "@/app/lib/theme";
+import DiscordSignIn from "../DiscordSignIn";
 
 export const MIN_PASSWORD_LENGTH = 8;
 
@@ -18,7 +19,8 @@ function callbackUrl(next: string) {
   return `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`;
 }
 
-export default function SignupForm({ next }: { next: string }) {
+/** `discord`: the Supabase project has Discord on, so Continue with Discord shows above the form. */
+export default function SignupForm({ next, discord = false }: { next: string; discord?: boolean }) {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -149,6 +151,8 @@ export default function SignupForm({ next }: { next: string }) {
       <p className="mt-1 text-sm text-muted">
         One account lets you run leagues and coach in others.
       </p>
+
+      {discord && <DiscordSignIn next={next} />}
 
       <form onSubmit={handleSubmit} noValidate className="mt-6 flex flex-col gap-4">
         <Field label="Email" required>

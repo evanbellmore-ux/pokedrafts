@@ -3,6 +3,8 @@ import {
   classifyCallbackError,
   isPkceVerifierMissing,
   parseCallbackFailure,
+  PROVIDER_PARAM,
+  providerCallbackUrl,
 } from "@/app/lib/auth/callback";
 import {
   DEFAULT_NEXT_PATH,
@@ -128,6 +130,20 @@ describe("callback failure classification", () => {
     const plain = failureUrl("auth", DEFAULT_NEXT_PATH);
     expect(plain.search).toBe("?error=auth");
     expect(parseCallbackFailure(plain.searchParams.get("error"))).toBe("invalid");
+
+    // A Discord sign-in that did not finish.
+    const discord = failureUrl("auth-provider", "/invite/ABC123");
+    expect(parseCallbackFailure(discord.searchParams.get("error"))).toBe("provider");
+    expect(discord.searchParams.get("next")).toBe("/invite/ABC123");
+  });
+
+  it("sends Discord back to /auth/callback with next and the provider marker", () => {
+    const url = new URL(providerCallbackUrl(ORIGIN, "/invite/ABC123?x=1"));
+    expect(url.origin).toBe(ORIGIN);
+    expect(url.pathname).toBe("/auth/callback");
+    expect(url.searchParams.get("next")).toBe("/invite/ABC123?x=1");
+    expect(url.searchParams.get(PROVIDER_PARAM)).toBe("discord");
+    expect(resolveCallbackNext(url.searchParams.get("next"))).toBe("/invite/ABC123?x=1");
   });
 
   it("ignores unknown error values on the login page", () => {

@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { providerCallbackUrl } from "@/app/lib/auth/callback";
 
 /**
  * Exercises app/auth/callback/route.ts end to end with a stand-in server
@@ -126,6 +127,30 @@ describe("auth callback route", () => {
     const url = location(response);
     expect(url.searchParams.get("error")).toBe("auth");
     expect(url.searchParams.get("next")).toBe("/invite/ABC");
+  });
+
+  it("signs in a Discord return like an email link, and words its failures as a Discord sign-in", async () => {
+    // providerCallbackUrl's redirect, with the code Supabase appends.
+    const back = new URL(providerCallbackUrl(ORIGIN, "/invite/ABC"));
+    expect(back.pathname).toBe("/auth/callback");
+    expect(back.searchParams.get("next")).toBe("/invite/ABC");
+    expect(back.searchParams.get("provider")).toBe("discord");
+    back.searchParams.set("code", "abc");
+    const success = await get(`${back.pathname}${back.search}`);
+    expect(behaviour.calls.exchange).toEqual(["abc"]);
+    expect(success.headers.get("location")).toBe(`${ORIGIN}/invite/ABC`);
+    // The user cancelled on Discord: Supabase sends back an error.
+    const cancelled = location(await get("/auth/callback?error=access_denied&error_description=The+resource+owner+denied+the+request&provider=discord&next=%2Finvite%2FABC"));
+    expect(cancelled.pathname).toBe("/login");
+    expect(cancelled.searchParams.get("error")).toBe("auth-provider");
+    expect(cancelled.searchParams.get("next")).toBe("/invite/ABC");
+    // A failed exchange, even a missing verifier, is the Discord sign-in's, not an email link opened elsewhere.
+    behaviour.exchange = { error: { name: "AuthPKCECodeVerifierMissingError", code: "pkce_code_verifier_not_found" } };
+    const failed = location(await get("/auth/callback?code=abc&provider=discord"));
+    expect(failed.searchParams.get("error")).toBe("auth-provider");
+    expect(failed.searchParams.get("next")).toBeNull();
+    // Another provider value is not the marker.
+    expect(location(await get("/auth/callback?error=access_denied&provider=github")).searchParams.get("error")).toBe("auth");
   });
 
   it.each([

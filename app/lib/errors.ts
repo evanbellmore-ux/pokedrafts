@@ -28,6 +28,19 @@ export const SESSION_EXPIRED_ERROR = "Your session has expired. Log in again.";
 export const ACCOUNT_UNAVAILABLE_ERROR = "This account is no longer available.";
 export const FEATURE_UNAVAILABLE_ERROR =
   "This feature is not available yet, please try again later.";
+export const EMAIL_UNAVAILABLE_ERROR =
+  "We can't send email right now, please try again later.";
+
+/**
+ * GoTrue could not send an auth email (sign-up confirmation, resend,
+ * password reset): its email sending limit, an address its built-in sender
+ * refuses (it only sends to the project's team), or a failed SMTP send
+ * ("Error sending confirmation email"). Not the user's own attempts, so
+ * not TOO_MANY_REQUESTS_ERROR.
+ */
+const EMAIL_SEND_CODES = new Set(["over_email_send_rate_limit", "email_address_not_authorized"]);
+const EMAIL_SEND_PATTERNS =
+  /email rate limit|error sending .*email|cannot be used as it is not authorized/i;
 
 const AUTH_MESSAGES: Array<[RegExp, string]> = [
   [/invalid login credentials/i, "Incorrect email or password."],
@@ -118,6 +131,13 @@ function isAuthError(error: unknown): boolean {
   );
 }
 
+/** True when GoTrue could not send an auth email (EMAIL_SEND_CODES, EMAIL_SEND_PATTERNS). */
+export function isEmailSendFailure(error: unknown): boolean {
+  const like = asErrorLike(error);
+  if (typeof like.code === "string" && EMAIL_SEND_CODES.has(like.code)) return true;
+  return isAuthError(error) && EMAIL_SEND_PATTERNS.test(like.message ?? "");
+}
+
 export function friendlyError(error: unknown): string {
   if (error == null) return GENERIC_ERROR;
 
@@ -130,6 +150,9 @@ export function friendlyError(error: unknown): string {
   const message = like.message?.trim() ?? "";
 
   if (isNetworkError(error)) return CONNECTION_ERROR;
+
+  // Before the 429 rule: the email limit is the project's, not the user's attempts.
+  if (isEmailSendFailure(error)) return EMAIL_UNAVAILABLE_ERROR;
 
   if (like.status === 429) return TOO_MANY_REQUESTS_ERROR;
 

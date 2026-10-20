@@ -10,25 +10,41 @@
  * missing, which happens when a confirmation email is opened in a different
  * browser or device than the one that signed up. Supabase has already
  * confirmed the email in that case, so the user only needs to log in.
+ * `auth-provider`: a sign-in through Discord did not finish: Discord or
+ * Supabase sent back an `error` (the user cancelled, or the provider is
+ * off), or its `?code` could not be exchanged.
  */
-export type CallbackFailure = "auth" | "auth-device";
+export type CallbackFailure = "auth" | "auth-device" | "auth-provider";
 
 /** What the login form renders for a callback failure. */
-export type LinkError = "invalid" | "other-device";
+export type LinkError = "invalid" | "other-device" | "provider";
 
 const FAILURE_TO_LINK_ERROR: Record<CallbackFailure, LinkError> = {
   auth: "invalid",
   "auth-device": "other-device",
+  "auth-provider": "provider",
 };
 
 /** Maps a raw `/login?error=` value to a LinkError, or null for anything else. */
 export function parseCallbackFailure(
   value: string | null | undefined
 ): LinkError | null {
-  if (value === "auth" || value === "auth-device") {
+  if (value === "auth" || value === "auth-device" || value === "auth-provider") {
     return FAILURE_TO_LINK_ERROR[value];
   }
   return null;
+}
+
+/**
+ * The query parameter a Discord sign-in adds to its `/auth/callback` URL
+ * (`provider=discord`), so the route can tell a provider's return from an
+ * email link's when it fails.
+ */
+export const PROVIDER_PARAM = "provider";
+
+/** Where Discord sends the user back: `/auth/callback` with `next` and the provider marker. */
+export function providerCallbackUrl(origin: string, next: string): string {
+  return `${origin}/auth/callback?next=${encodeURIComponent(next)}&${PROVIDER_PARAM}=discord`;
 }
 
 /** Error code GoTrue uses when the PKCE verifier is not in storage. */
