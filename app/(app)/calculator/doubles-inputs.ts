@@ -233,12 +233,13 @@ export const NO_TURN_EARLIER: DoublesTurnEarlier = {};
  * status2 R-U (IN §5.7, ADDENDUM2 §5.3): one Pokémon on a side's bench, from the roster its side's Pokémon come from. Its
  * build is its roster entry's as prepared when it was added (the shared cache's session build, else the imported set or the
  * default build: roster-prep selectRosterPokemon, followed when the cache changes: doubles-prep followShared), with the
- * row's HP and status.
+ * row's HP and status. A side with no roster adds any Pokémon of the game by name instead (doubles-prep addChosenDoublesBench):
+ * no source, and the build a Pokémon chosen by name gets in a slot.
  */
 export type DoublesBenchEntry = {
-  /** Its roster entry's source key: its id in the turn's input (DoublesBenchPokemon.id). */
+  /** Its roster entry's source key (`chosen:{side}:{species}` for one chosen by name): its id in the turn's input (DoublesBenchPokemon.id). */
   key: string;
-  source: RosterSource;
+  source: RosterSource | null;
   /** Its build as prepared, before the row's HP and status (benchBuild). */
   base: BattleBuild;
   /** Its quick moves in move-slot order (DoublesBenchPokemon.moves: Assist's party). */
@@ -307,6 +308,9 @@ export function benchNamesOf(doubles: Pick<DoublesMatchup, "slots" | "runtime" |
   const pokemon = Object.fromEntries(DOUBLES_SLOTS.map((slot) => [slot, isFaintedBuild(doubles.slots[slot].build) ? null : { build: doubles.slots[slot].build }])) as Record<DoublesSlotId, { build: BattleBuild } | null>;
   return doublesBenchNames(pokemon, inputBench(bench), doubles.runtime);
 }
+
+/** A bench Pokémon's own name: its roster entry's, else its species'. */
+const entryName = (entry: DoublesBenchEntry, runtime: BattleRuntime) => entry.source?.name ?? runtime.speciesById.get(entry.base.speciesId)?.name ?? entry.base.speciesId;
 
 /**
  * The move and item tables the controls read (pinned Showdown c23d2e94 data/moves.ts, data/items.ts, data/abilities.ts),
@@ -866,7 +870,7 @@ export function earlierSlotControls(doubles: DoublesMatchup, slot: DoublesSlotId
   const pick = bench.picks[slot];
   if (ownBench.length || pick !== undefined) {
     select("replacement", "replacement", ownBench.length > 0 && choosesSwitch(view, slot), "Replacement", pick ?? "",
-      [{ value: "", label: "Next on the bench" }, ...ownBench.map((entry) => ({ value: entry.key, label: benchNames[entry.key] ?? entry.source.name }))],
+      [{ value: "", label: "Next on the bench" }, ...ownBench.map((entry) => ({ value: entry.key, label: benchNames[entry.key] ?? entryName(entry, runtime) }))],
       (value) => setBenchPick(slot, value || undefined), pick !== undefined, false);
   }
   // Review 2 (R6-5): a Pokémon that switched in this turn carries nothing a switch clears (switchDoublesIn): only its
@@ -1146,10 +1150,15 @@ export type BenchRow = { key: string; name: string; controls: EarlierControl[]; 
 
 /** One side's Bench (BenchFields; IN §5.7). */
 export type BenchView = {
-  /** The Bench shows: its roster has Pokémon beyond the two in play and one of its Pokémon can come in this turn (benchRead), or it is set. */
+  /**
+   * The Bench shows: its roster has Pokémon beyond the two in play, or it has no roster (`choose`), and one of its Pokémon can
+   * come in this turn (benchRead); or it is set.
+   */
   shown: boolean;
   /** Add to bench: the roster entries of the side not in play and not benched, by name, in roster order (offered while it holds fewer than four). */
   add: EarlierChoice[];
+  /** The side has no roster (no team chosen or imported): Add to bench finds any Pokémon of the game (BenchFields; doubles-prep addChosenDoublesBench). */
+  choose: boolean;
   /** It holds four (A bench holds at most four Pokémon.). */
   full: boolean;
   rows: BenchRow[];
@@ -1158,8 +1167,8 @@ export type BenchView = {
 };
 
 /**
- * One side's Bench (IN §5.7, ADDENDUM2 §5.3): `roster`, the side's roster panel's choices (the team its Pokémon come from);
- * `issues`, the turn's field issues (`bench.{side}` and `bench.{side}.{index}`, the index of the turn's bench, which is the
+ * One side's Bench (IN §5.7, ADDENDUM2 §5.3): `roster`, the side's roster panel's choices (the team its Pokémon come from;
+ * none: the side has no roster, so any Pokémon of the game can be added); `issues`, the turn's field issues (`bench.{side}` and `bench.{side}.{index}`, the index of the turn's bench, which is the
  * rows' order). Each row: HP (1 to its maximum), Status, and while they apply Turns lost to sleep with Rest sleep (Asleep),
  * Turns lost to freeze (Champions, Frozen) and `{Ability} used` (generation 9's Intrepid Sword, Dauntless Shield, Supersweet
  * Syrup), each label with the bench Pokémon's name for screen readers.
@@ -1183,7 +1192,7 @@ export function benchSideView(doubles: DoublesMatchup, side: DoublesSideId, rost
   }
   const rows = entries.map((entry, index): BenchRow => {
     const build = benchBuild(entry);
-    const name = names[entry.key] ?? entry.source.name;
+    const name = names[entry.key] ?? entryName(entry, runtime);
     const max = getBuildStats(build, runtime)?.hp;
     const attrValue = `${side}-${index}`;
     const set = (patch: Partial<Pick<DoublesBenchEntry, "hp" | "status" | "carried">>) => setBenchEntry(side, entry.key, patch);
@@ -1215,11 +1224,21 @@ export function benchSideView(doubles: DoublesMatchup, side: DoublesSideId, rost
     }
     return { key: entry.key, name, controls, issue: texts[String(index)], remove: removeBenchEntry(side, entry.key) };
   });
+  const choose = roster.length === 0;
   return {
-    shown: entries.length > 0 || (available.length > 0 && benchRead(view, side)),
+    shown: entries.length > 0 || ((available.length > 0 || choose) && benchRead(view, side)),
     add: available.map((choice) => ({ value: choice.source!.key, label: choice.name })),
-    full, rows, issue: texts[""],
+    choose, full, rows, issue: texts[""],
   };
+}
+
+/**
+ * The turn reads `side`'s bench and nothing answers it (the turn panel's Set bench): one of its Pokémon can come in this turn
+ * (benchRead), its bench is empty and No Pokémon left to switch in is not ticked. A Pokémon switching out with no Pokémon
+ * named to come in leaves the turn, or its end, not estimated (REASONS.switchesOut).
+ */
+export function benchNeeded(doubles: DoublesMatchup, side: DoublesSideId): boolean {
+  return !benchOf(doubles)[side].length && !doubles.turnEarlier.noneLeft?.[side] && benchRead(viewOf(doubles), side);
 }
 
 /**

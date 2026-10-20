@@ -92,14 +92,20 @@ function pairSide(slot: DoublesSlotId) {
   return slotSide(slot) === "own" ? "attacker" as const : "defender" as const;
 }
 
+/** A Pokémon chosen by name, as a slot gets it: its usual ability, its quick moves for the format and their Hidden Power IVs. */
+function freshPokemon(speciesId: string, gameType: BattleConditions["gameType"], runtime: BattleRuntime) {
+  const moves = createMoveSlots(speciesId, gameType, runtime);
+  const build = withHiddenPowerIVs(withUsualAbility(createBuild(speciesId, runtime), usualAbility(speciesId, gameType, runtime)), moves, runtime);
+  return { build: withPreparedMoves(build, moves), moves };
+}
+
 export function createDoubles(revision = 0, runtime: BattleRuntime = championsRuntime): DoublesMatchup {
   const field: BattleConditions = { ...createConditions(), gameType: "Doubles" };
   const fallback = runtime.catalog.species.find((entry) => !entry.battleForm && !entry.unsupported.length)?.id ?? "";
   const slots = perSlot((slot, index): Combatant => {
     const id = runtime.speciesById.has(DEFAULT_SPECIES[slot]) ? DEFAULT_SPECIES[slot] : fallback;
-    const moves = createMoveSlots(id, field.gameType, runtime);
-    const build = withHiddenPowerIVs(withUsualAbility(createBuild(id, runtime), usualAbility(id, field.gameType, runtime)), moves, runtime);
-    return { key: revision * 4 + index, editorRevision: 0, role: slotSide(slot), build: withPreparedMoves(build, moves),
+    const { build, moves } = freshPokemon(id, field.gameType, runtime);
+    return { key: revision * 4 + index, editorRevision: 0, role: slotSide(slot), build,
       hpInput: "", source: null, moves, megaBase: null, contexts: {}, moveEpoch: 0 };
   });
   return {
@@ -401,6 +407,19 @@ export function addDoublesBench(state: CalculatorState, side: DoublesSideId, cho
     moves: prepared.attacker.moves.flatMap((move) => move.moveId ? [move.moveId] : []),
   };
   return applyDoublesEarlier(state, addBenchEntry(side, entry, roster.flatMap((each) => each.source ? [each.source.key] : [])));
+}
+
+/**
+ * Adds a Pokémon chosen by name to `side`'s Bench (BenchFields' search, for a side with no roster): after the ones there, with
+ * the build a Pokémon chosen by name gets in a slot (freshPokemon), keyed `chosen:{side}:{species}`. The same state when the
+ * game has no such Pokémon, it is on the bench already or the bench holds four.
+ */
+export function addChosenDoublesBench(state: CalculatorState, side: DoublesSideId, speciesId: string): CalculatorState {
+  const { runtime, field } = state.doubles;
+  if (!runtime.speciesById.has(speciesId)) return state;
+  const { build, moves } = freshPokemon(speciesId, field.gameType, runtime);
+  const entry: DoublesBenchEntry = { key: `chosen:${side}:${speciesId}`, source: null, base: build, moves: moves.flatMap((move) => move.moveId ? [move.moveId] : []) };
+  return applyDoublesEarlier(state, addBenchEntry(side, entry, []));
 }
 
 export function updateDoublesBuild(state: CalculatorState, key: number, build: BattleBuild): CalculatorState {
@@ -899,7 +918,9 @@ export function reconcileDoublesRosters(doubles: DoublesMatchup, matchup: Prepar
     };
   }
   // status2 R-U (IN §5.4): the bench Pokémon whose roster entry is no longer offered leave the bench; a renamed one keeps its place.
+  // One chosen by name has no roster entry, so it stays (as a slot's hand-picked Pokémon does).
   return mapBenchEntries(next, (entry, side) => {
+    if (!entry.source) return entry;
     const probe: Combatant = { ...next.slots[side === "own" ? "own-left" : "opponent-left"], role: side, source: entry.source };
     const reconciled = reconcileRosterSlot(probe, matchup.teams[side], selection, snapshot ?? UNCHECKED);
     return !reconciled.source ? null : reconciled.source === entry.source ? entry : { ...entry, source: reconciled.source };

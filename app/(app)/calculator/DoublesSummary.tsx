@@ -27,6 +27,8 @@ export type DoublesSummaryProps = DoublesCardHandlers & {
   defaultAiming?: DoublesSlotId | null;
   /** status2 R-U: the bench Pokémon's names by id (doubles-types turnBenchNames), for the turn's hits, residuals and switches on a newcomer. */
   benchNames?: Readonly<Record<string, string>>;
+  /** A side whose bench the turn reads with none set, and Set bench's handler (DoublesTurn). */
+  benchSide?: DoublesSideId | null; onSetBench?: (side: DoublesSideId) => void;
 };
 
 const rollLabels: Record<DamageRollMode, string> = { low: "Low", average: "Average", high: "High" };
@@ -126,7 +128,7 @@ export default function DoublesSummary(props: DoublesSummaryProps) {
           </div>
         </div>
       ))}
-      <DoublesTurn runtime={runtime} names={names} cards={cards} turn={turn} blockedReason={blockedReason} rollMode={rollMode} movesControl={movesControl} magicRoom={props.magicRoom} benchNames={props.benchNames} onShowStep={onShowStep} onFixSettings={onFixSettings} />
+      <DoublesTurn runtime={runtime} names={names} cards={cards} turn={turn} blockedReason={blockedReason} rollMode={rollMode} movesControl={movesControl} magicRoom={props.magicRoom} benchNames={props.benchNames} benchSide={props.benchSide} onShowStep={onShowStep} onFixSettings={onFixSettings} onSetBench={props.onSetBench} />
     </section>
   );
 }
