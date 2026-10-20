@@ -106,7 +106,7 @@ export default function SignupForm({ next }: { next: string }) {
   if (sentTo) {
     return (
       <>
-        <h1 className="text-2xl font-bold sm:text-3xl">Check your email</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Check your email</h1>
         <Alert variant="success" title="Confirmation link sent" className="mt-5">
           We sent a link to <span className="font-semibold text-text">{sentTo}</span>.
           Open it to confirm your account; it brings you straight back here.
@@ -145,7 +145,7 @@ export default function SignupForm({ next }: { next: string }) {
 
   return (
     <>
-      <h1 className="text-2xl font-bold sm:text-3xl">Create your account</h1>
+      <h1 className="text-2xl font-semibold tracking-tight">Create your account</h1>
       <p className="mt-1 text-sm text-muted">
         One account lets you run leagues and coach in others.
       </p>

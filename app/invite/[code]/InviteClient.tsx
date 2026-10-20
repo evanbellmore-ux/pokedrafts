@@ -120,7 +120,7 @@ export default function InviteClient({ code }: { code: string }) {
   if (state.status === "error") {
     return (
       <>
-        <h1 className="text-2xl font-bold sm:text-3xl">League invite</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">League invite</h1>
         <Alert
           variant="error"
           className="mt-5"
@@ -141,7 +141,7 @@ export default function InviteClient({ code }: { code: string }) {
   if (!preview.invite_valid || !preview.league_id) {
     return (
       <>
-        <h1 className="text-2xl font-bold sm:text-3xl">League invite</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">League invite</h1>
         <EmptyState
           className="mt-5"
           icon={<Users className="h-5 w-5" />}
@@ -168,10 +168,10 @@ export default function InviteClient({ code }: { code: string }) {
 
   return (
     <>
-      <p className="text-xs font-semibold uppercase tracking-wide text-accent-text">
+      <p className="text-sm text-muted">
         You are invited to coach in
       </p>
-      <h1 className="mt-1 text-2xl font-bold sm:text-3xl">
+      <h1 className="mt-1 text-2xl font-semibold tracking-tight">
         {preview.league_name ?? "a league"}
       </h1>
       <div className="mt-3 flex flex-wrap items-center gap-2 text-sm text-muted">

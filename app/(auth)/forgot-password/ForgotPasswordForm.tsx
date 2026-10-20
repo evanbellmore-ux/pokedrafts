@@ -60,7 +60,7 @@ export default function ForgotPasswordForm({ next }: { next: string }) {
 
   return (
     <>
-      <h1 className="text-2xl font-bold sm:text-3xl">Reset your password</h1>
+      <h1 className="text-2xl font-semibold tracking-tight">Reset your password</h1>
       <p className="mt-1 text-sm text-muted">
         Enter your email and we will send you a link to choose a new password.
       </p>

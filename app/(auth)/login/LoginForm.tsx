@@ -63,7 +63,7 @@ export default function LoginForm({
 
   return (
     <>
-      <h1 className="text-2xl font-bold sm:text-3xl">Log in</h1>
+      <h1 className="text-2xl font-semibold tracking-tight">Log in</h1>
       <p className="mt-1 text-sm text-muted">
         Welcome back, coach. Log in to get to your leagues.
       </p>
