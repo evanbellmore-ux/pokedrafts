@@ -233,18 +233,25 @@ describe("2v2 summary (DoublesSummary)", () => {
   it("lays out two sides of two cards with their quick moves, No move and All moves", () => {
     const view = fixture();
     const html = summary(view);
-    expect([...html.matchAll(/data-doubles-slot="([^"]+)"/g)].map((match) => match[1])).toEqual(DOUBLES_SLOTS);
-    expect([...html.matchAll(/data-doubles-side="([^"]+)"[^>]*>\s*<h3[^>]*>([^<]+)<\/h3>/g)].map((match) => [match[1], match[2]]))
-      .toEqual([["own", "Your side"], ["opponent", "Opponent&#x27;s side"]]);
+    // The opponent's row on top and yours below, as the game and Training's board show them; each left card faces the one across.
+    expect([...html.matchAll(/data-doubles-slot="([^"]+)"/g)].map((match) => match[1])).toEqual(["opponent-left", "opponent-right", "own-left", "own-right"]);
+    // Each side's cards share its hue: a wash under the row and a dot by its name.
+    expect([...html.matchAll(/data-doubles-side="([^"]+)" class="([^"]+)">\s*<h3[^>]*>\s*<span aria-hidden="true" class="([^"]+)"><\/span>([^<]+)<\/h3>/g)]
+      .map((match) => [match[1], match[2], match[3].split(" ").at(-1), match[4]]))
+      .toEqual([
+        ["opponent", "border-b border-line bg-side-opponent/12", "bg-side-opponent", "Opponent&#x27;s side"],
+        ["own", "border-b border-line bg-side-own/12", "bg-side-own", "Your side"],
+      ]);
     const quick = [...html.matchAll(/<button[^>]*data-move-owner="([^"]+)"[^>]*aria-label="([^"]+)"/g)];
     expect(quick).toHaveLength(16);
     expect(new Set(quick.map((match) => match[2])).size).toBe(16);
-    expect(quick[0][2]).toBe("Charizard move 1: Heat Wave");
-    expect(quick.slice(12).every((match) => match[1] === `${view.cards["opponent-right"].slot.key}:0`)).toBe(true);
+    expect(quick.slice(0, 4).every((match) => match[1] === `${view.cards["opponent-left"].slot.key}:0`)).toBe(true);
+    expect(quick[8][2]).toBe("Charizard move 1: Heat Wave");
+    expect(quick.slice(12).every((match) => match[1] === `${view.cards["own-right"].slot.key}:0`)).toBe(true);
     expect(html.match(/data-doubles-no-move="[^"]+"[^>]*aria-pressed="true"/g)).toHaveLength(4);
     expect(html).toMatch(/aria-label="Venusaur: all moves" aria-controls="moves-list"/);
     // Each heading is the Pokémon's name (PokemonName), with no line above it naming a place.
-    expect([...html.matchAll(/<h4[^>]*>([\s\S]*?)<\/h4>/g)].map((match) => match[1])).toEqual(["Charizard", "Venusaur", "Blastoise", "Pikachu"]);
+    expect([...html.matchAll(/<h4[^>]*>([\s\S]*?)<\/h4>/g)].map((match) => match[1])).toEqual(["Blastoise", "Pikachu", "Charizard", "Venusaur"]);
     expect(positionalIn(html)).toEqual([]);
     expect(html).not.toContain("<fieldset class=\"min-w-0\"><legend");
     expect(html).not.toContain("data-doubles-target");
@@ -329,8 +336,8 @@ describe("2v2 summary (DoublesSummary)", () => {
   it("numbers two of one species on one side, with the team for screen readers only in their headings", () => {
     const html = summary(fixture({ species: { "own-left": "garchomp", "own-right": "garchomp", "opponent-left": "garchomp" } }));
     expect([...html.matchAll(/<h4[^>]*>([\s\S]*?)<\/h4>/g)].map((match) => match[1])).toEqual([
-      'Garchomp (<span class="sr-only">yours, </span>1)', 'Garchomp (<span class="sr-only">yours, </span>2)',
       'Garchomp<span class="sr-only"> (opponent&#x27;s)</span>', "Pikachu",
+      'Garchomp (<span class="sr-only">yours, </span>1)', 'Garchomp (<span class="sr-only">yours, </span>2)',
     ]);
     expect(html).toContain('aria-label="Garchomp (yours, 1) move 1: Dragon Claw"');
     expect(html).toContain('aria-label="Garchomp (yours, 2) move 1: Dragon Claw"');
@@ -466,8 +473,8 @@ describe("2v2 summary callbacks", () => {
     const props = summaryProps(view, { defaultAiming: "own-left" });
     const { html, buttons } = capture(() => renderToStaticMarkup(createElement(DoublesSummary, props)));
     const picks = buttons.filter((button) => button["data-doubles-card-pick"]);
-    // Weather Ball from your left: both foes and the ally; the picked one is the left foe.
-    expect(picks.map((button) => button["data-doubles-card-pick"])).toEqual(["own-right", "opponent-left", "opponent-right"]);
+    // Weather Ball from your left: both foes (the row on top) and the ally; the picked one is the left foe.
+    expect(picks.map((button) => button["data-doubles-card-pick"])).toEqual(["opponent-left", "opponent-right", "own-right"]);
     const left = picks.find((button) => button["data-doubles-card-pick"] === "opponent-left")!;
     expect(left["aria-pressed"]).toBe(true);
     expect(left["aria-label"]).toBe(`Target ${view.names["opponent-left"]} with ${view.names["own-left"]}'s Weather Ball`);

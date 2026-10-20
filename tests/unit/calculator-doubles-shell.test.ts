@@ -128,7 +128,8 @@ describe("the 1v1 | 2v2 switch", () => {
     const twoOnly = [...html.matchAll(/<div\b[^>]*data-calculator-mode-only="2v2"[^>]*>/g)].map(([element]) => element);
     expect(twoOnly).toHaveLength(3);
     for (const element of twoOnly) expect(element).not.toContain('hidden=""');
-    expect([...html.matchAll(/data-doubles-slot="([^"]+)"/g)].map((match) => match[1])).toEqual(["own-left", "own-right", "opponent-left", "opponent-right"]);
+    // The opponent's row on top, yours below.
+    expect([...html.matchAll(/data-doubles-slot="([^"]+)"/g)].map((match) => match[1])).toEqual(["opponent-left", "opponent-right", "own-left", "own-right"]);
     const toggles = [...html.matchAll(/<button\b[^>]*data-(build|field)-toggle="([^"]+)"[^>]*aria-expanded="(\w+)"/g)].map(([, kind, value, expanded]) => [kind, value, expanded]);
     expect(toggles).toEqual([
       ["build", "attacker", "false"], ["build", "defender", "false"], ["field", "true", "false"],
@@ -204,7 +205,8 @@ describe("the 1v1 | 2v2 switch", () => {
     const radios = [...card.matchAll(/<input\b[^>]*type="radio"[^>]*>/g)].map(([input]) => [input.match(/value="([^"]+)"/)![1], input.includes('checked=""')]);
     expect(radios).toEqual([["opponent-left", true], ["opponent-right", false], ["own-right", false]]);
     expect(card).toContain('data-doubles-action="own-left"');
-    const other = html.slice(html.indexOf('data-doubles-slot="own-right"'), html.indexOf('data-doubles-slot="opponent-left"'));
+    // Your right card is the last one, before the turn (the opponent's row comes first).
+    const other = html.slice(html.indexOf('data-doubles-slot="own-right"'), html.indexOf("data-doubles-turn"));
     expect(other).toMatch(/data-doubles-no-move="own-right"[^>]*aria-pressed="true"/);
     expect(html.slice(html.indexOf("data-doubles-turn"))).toContain("HP preview paused while the calculator loads.");
     assertReferences(html);

@@ -177,7 +177,30 @@ describe("theme palettes", () => {
       ).toBeGreaterThanOrEqual(AA_TEXT);
     }
   });
+
+  // The 2v2 calculator washes each side's row with its hue at 12%
+  // (DoublesSummary: bg-side-own/12, bg-side-opponent/12) under the cards'
+  // text, and marks the side's name with a solid dot of the hue.
+  it.each(pokemonThemes)(
+    "%s: card text over each side's 12%% wash meets WCAG AA (4.5:1), and its dot 3:1",
+    (theme) => {
+      const vars = palette(theme);
+      for (const side of ["type-side-own", "type-side-opponent"]) {
+        const wash = mix(vars["type-panel"], vars[side], 0.12);
+        for (const text of ["type-text", "type-muted", "type-accent-text", "type-danger"]) {
+          expect(contrastRatio(vars[text], wash), `${text} over the ${side} wash`).toBeGreaterThanOrEqual(AA_TEXT);
+        }
+        expect(contrastRatio(vars[side], wash), `${side} dot over its wash`).toBeGreaterThanOrEqual(AA_NON_TEXT);
+      }
+    }
+  );
 });
+
+/** `hue` over `base` at `share` opacity (a Tailwind /12 fill composited over the panel). */
+function mix(base: string, hue: string, share: number) {
+  const [b, h] = [hexToRgb(base), hexToRgb(hue)];
+  return `#${b.map((c, i) => Math.round(c * (1 - share) + h[i] * share).toString(16).padStart(2, "0")).join("")}`;
+}
 
 describe("Pokémon type badge colours", () => {
   it.each(pokemonThemes)("%s: badge text meets WCAG AA on its fill", (type) => {
@@ -223,6 +246,8 @@ describe("@theme inline tokens", () => {
     "warning-soft",
     "success",
     "success-soft",
+    "side-own",
+    "side-opponent",
   ];
 
   const themeBlock = css.match(/@theme inline\s*\{([^}]*)\}/)?.[1] ?? "";
