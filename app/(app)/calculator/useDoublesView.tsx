@@ -10,7 +10,7 @@ import { mimicryState } from "@/app/lib/battle/mimicry";
 import { fieldItemChoice, roomItemChoice, validateConditions } from "@/app/lib/battle/model";
 import type { BattleBuild, BattleConditions, BattleMechanic } from "@/app/lib/battle/types";
 import { DoublesCarriedContext, type CarriedControl } from "./BattleConditions";
-import { applyDoublesEarlier } from "./doubles-inputs";
+import { applyDoublesEarlier, benchNeeded } from "./doubles-inputs";
 import { EarlierTurnContext } from "./EarlierTurnFields";
 import type { BuildSettings } from "./BuildSettings";
 import type { CalculatorTab } from "./CalculatorTabs";
@@ -231,6 +231,17 @@ export function useDoublesView({ prefix, calc, setCalc, active, mounted, rosterP
     });
   }
 
+  // status2 R-U: a side whose bench the turn reads with none set (a switch-out with no Pokémon named to come in). Set bench
+  // opens Field conditions at its Add to bench, else at its No Pokémon left to switch in.
+  const benchSide = (["own", "opponent"] as const).find((side) => benchNeeded(doubles, side)) ?? null;
+  function setBench(side: DoublesSideId) {
+    visitSection(fieldKey, () => {
+      const panel = document.getElementById(ids.field);
+      const element = panel?.querySelector<HTMLElement>(`[data-doubles-bench-add="${side}"]`) ?? panel?.querySelector<HTMLElement>(`[data-doubles-no-bench="${side}"]`);
+      if (element) reveal(element);
+    });
+  }
+
   /** Focus returns to the slot's quick move once it has rendered (a replaced or equipped move). */
   function revealQuickMove(owner: MoveOwner, slotIndex: number, session?: number) {
     const selector = `[data-move-owner="${owner.key}:${owner.epoch}"][data-move-slot="${slotIndex}"]${session === undefined ? "" : `[data-move-session="${session}"]`}`;
@@ -403,6 +414,8 @@ export function useDoublesView({ prefix, calc, setCalc, active, mounted, rosterP
           cards={summaryCards()}
           names={names}
           benchNames={benchNames}
+          benchSide={benchSide}
+          onSetBench={setBench}
           turn={turn}
           blockedReason={blockedReason}
           rollMode={rollMode}

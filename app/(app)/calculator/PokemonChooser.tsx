@@ -43,6 +43,11 @@ type Props = {
    * ("Change Charizard") and its controls need no name.
    */
   label?: string;
+  /**
+   * Adding a Pokémon rather than changing `build`'s (a side's Bench: BenchFields): the dialog's title and the sentence announced
+   * once one is picked. No Pokémon shows as selected, and picking any calls onChange.
+   */
+  adding?: { title: string; announce: (name: string) => string };
 };
 
 /** A hand-picked Pokémon's fresh build, with its usual ability for the format (move-defaults usualAbility). */
@@ -50,9 +55,10 @@ export function chosenBuild(speciesId: string, runtime: BattleRuntime, gameType:
   return withUsualAbility(createBuild(speciesId, runtime), usualAbility(speciesId, gameType, runtime));
 }
 
-export default function PokemonChooser({ build, open, onClose, onChange, onReturnFocus, roster, runtime = championsRuntime, gameType = "Doubles", label }: Props) {
+export default function PokemonChooser({ build, open, onClose, onChange, onReturnFocus, roster, runtime = championsRuntime, gameType = "Doubles", label, adding }: Props) {
   const id = useId();
   const current = runtime.speciesById.get(build.speciesId)?.name ?? build.speciesId;
+  const selected = adding ? null : build.speciesId;
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(0);
   const [teamMode, setTeamMode] = useState(false);
@@ -72,15 +78,16 @@ export default function PokemonChooser({ build, open, onClose, onChange, onRetur
 
   function selectSpecies(speciesId: string) {
     onClose();
-    if (speciesId === build.speciesId && build.game === runtime.profile.id) return;
+    if (speciesId === selected && build.game === runtime.profile.id) return;
     onChange(chosenBuild(speciesId, runtime, gameType));
-    setNotice(`${label ?? current} changed to ${runtime.speciesById.get(speciesId)?.name}. Build settings reset for ${runtime.profile.label}; any required item is selected.`);
+    const name = runtime.speciesById.get(speciesId)?.name ?? speciesId;
+    setNotice(adding ? adding.announce(name) : `${label ?? current} changed to ${name}. Build settings reset for ${runtime.profile.label}; any required item is selected.`);
   }
 
   return (
     <div onKeyDown={wrapPickerFocus}>
       <p role="status" className="sr-only">{notice}</p>
-      <Dialog open={open} onClose={onClose} onReturnFocus={onReturnFocus} title={`Change ${current}`}>
+      <Dialog open={open} onClose={onClose} onReturnFocus={onReturnFocus} title={adding?.title ?? `Change ${current}`}>
         {roster && (
           <div role="group" aria-label="Pokémon source" className="mb-3 flex flex-wrap gap-2">
             <Button size="sm" variant="secondary" className="min-h-11" aria-pressed={!showTeam} onClick={() => setTeamMode(false)}>All Pokémon</Button>
@@ -100,12 +107,12 @@ export default function PokemonChooser({ build, open, onClose, onChange, onRetur
                 <li key={entry.id}>
                   <button
                     type="button"
-                    aria-pressed={entry.id === build.speciesId}
+                    aria-pressed={entry.id === selected}
                     onClick={() => selectSpecies(entry.id)}
-                    className={`flex min-h-11 w-full flex-wrap items-center justify-between gap-x-2 rounded-lg border px-3 py-2 text-left text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus ${entry.id === build.speciesId ? "border-accent-border bg-accent-soft text-accent-text" : "border-line text-text hover:bg-panel-hover"}`}
+                    className={`flex min-h-11 w-full flex-wrap items-center justify-between gap-x-2 rounded-lg border px-3 py-2 text-left text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus ${entry.id === selected ? "border-accent-border bg-accent-soft text-accent-text" : "border-line text-text hover:bg-panel-hover"}`}
                   >
                     <span className="wrap-anywhere font-medium">{entry.name}</span>
-                    <span className="text-xs">{entry.unsupported.length > 0 ? "Coverage not verified" : entry.id === build.speciesId ? "Selected" : ""}</span>
+                    <span className="text-xs">{entry.unsupported.length > 0 ? "Coverage not verified" : entry.id === selected ? "Selected" : ""}</span>
                   </button>
                 </li>
               ))}

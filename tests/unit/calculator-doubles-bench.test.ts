@@ -5,17 +5,18 @@ import { combatant, EMPTY_PANEL } from "../fixtures/doubles-turn";
 import { positionalIn } from "../fixtures/naming";
 import BenchFields from "@/app/(app)/calculator/BenchFields";
 import DoublesSummary from "@/app/(app)/calculator/DoublesSummary";
+import DoublesTurn from "@/app/(app)/calculator/DoublesTurn";
 import EarlierTurnFields, { EarlierTurnContext, type CarriedControl, type EarlierTurnState } from "@/app/(app)/calculator/EarlierTurnFields";
 import type { DoublesCardView } from "@/app/(app)/calculator/DoublesCard";
 import styles from "@/app/(app)/calculator/calculator.module.css";
 import {
-  addBenchEntry, benchBuild, benchNamesOf, benchSideView, clearSlotEarlier, EARLIER_TABLES, earlierSideControls, earlierSlotControls, earlierTurnToggles,
+  addBenchEntry, benchBuild, benchNamesOf, benchNeeded, benchSideView, clearSlotEarlier, EARLIER_TABLES, earlierSideControls, earlierSlotControls, earlierTurnToggles,
   hazardControls, NO_BENCH, NO_CARRIED_OPTIONS, removeBenchEntry, setBenchEntry, setBenchHazards, setBenchPick, withBench,
   type DoublesBenchEntry, type EarlierChange, type EarlierControl,
 } from "@/app/(app)/calculator/doubles-inputs";
 import { actionTargets, idName, leaverText, namesFor, recordOf, residualLine, slotSwitches, stepHeading, stepNames, turnSummary } from "@/app/(app)/calculator/doubles-format";
 import {
-  addDoublesBench, chooseDoublesMove, createDoubles, followShared, getDoublesTurnInput, resetDoubles, selectDoublesRoster, type CalculatorState, type DoublesMatchup,
+  addChosenDoublesBench, addDoublesBench, chooseDoublesMove, createDoubles, followShared, getDoublesTurnInput, resetDoubles, selectDoublesRoster, type CalculatorState, type DoublesMatchup,
 } from "@/app/(app)/calculator/doubles-prep";
 import type { CalculatorRosterState } from "@/app/(app)/calculator/roster-data";
 import {
@@ -31,7 +32,7 @@ import {
 } from "@/app/lib/battle/doubles-types";
 import { loadBattleRuntime } from "@/app/lib/battle/load-runtime";
 import { createBuild, createConditions, getBuildStats, STATUSES } from "@/app/lib/battle/model";
-import type { MoveSlots } from "@/app/lib/battle/move-defaults";
+import { createMoveSlots, usualAbility, type MoveSlots } from "@/app/lib/battle/move-defaults";
 import { championsRuntime, type BattleRuntime } from "@/app/lib/battle/runtime";
 import type { BattleBuild, BattleGame, ChampionsSpecies, MoveDamageResult } from "@/app/lib/battle/types";
 
@@ -116,9 +117,10 @@ describe("the Bench: when it shows (IN §5.7)", () => {
       const roster = [choiceOf(sourceOf(runtime, "own", 0, "snorlax"))];
       const doubles = matchup(runtime, { "own-left": uturner(runtime) });
       expect(benchSideView(doubles, "own", roster).shown, game).toBe(true);
-      expect(benchSideView(doubles, "own", roster).add).toEqual([{ value: roster[0].source!.key, label: "Snorlax" }]);
-      // No Pokémon beyond the two in play.
-      expect(benchSideView(doubles, "own", []).shown).toBe(false);
+      expect(benchSideView(doubles, "own", roster)).toMatchObject({ add: [{ value: roster[0].source!.key, label: "Snorlax" }], choose: false });
+      // No roster at all (no team chosen or imported): any Pokémon of the game can be added (the Pokémon search).
+      expect(benchSideView(doubles, "own", [])).toMatchObject({ shown: true, add: [], choose: true });
+      expect(benchSideView(doubles, "opponent", [])).toMatchObject({ shown: false, choose: true });
       // A choice with no source (a duplicate roster name) is not offered.
       expect(benchSideView(doubles, "own", [{ ...roster[0], source: null }]).shown).toBe(false);
       // No Pokémon of the other side can come in: a foe's U-turn is not its own.
@@ -127,9 +129,9 @@ describe("the Bench: when it shows (IN §5.7)", () => {
       const idle = matchup(runtime);
       expect(benchSideView(idle, "own", roster).shown).toBe(false);
       expect(benchSideView(benched(idle, "own", entryOf(runtime, "own", 0, "snorlax")), "own").shown).toBe(true);
-      // A roster entry in play on its side is not offered.
+      // A roster entry in play on its side is not offered: no Pokémon beyond the two in play.
       const playing = { ...doubles, slots: { ...doubles.slots, "own-right": { ...doubles.slots["own-right"], source: roster[0].source } } };
-      expect(benchSideView(playing, "own", roster).shown).toBe(false);
+      expect(benchSideView(playing, "own", roster)).toMatchObject({ shown: false, choose: false });
     }
   });
 
@@ -624,7 +626,7 @@ describe("the Bench's state rules (IN §5.4, §5.7)", () => {
     state = add(state, "own", "Snorlax");
     state = add(state, "own", "Garchomp");
     expect(state.matchup.cache).toBe(cache);
-    expect(state.doubles.bench.own.map((entry) => entry.source.name)).toEqual(["Garchomp", "Snorlax"]);
+    expect(state.doubles.bench.own.map((entry) => entry.source?.name)).toEqual(["Garchomp", "Snorlax"]);
     expect(state.doubles.bench.own[0].base.nature).toBe("Adamant");
     // Snorlax's default build and its Doubles quick moves (Assist's party).
     expect(state.doubles.bench.own[1].base.speciesId).toBe("snorlax");
@@ -679,6 +681,105 @@ describe("the Bench's state rules (IN §5.4, §5.7)", () => {
     expect(on1v1(state, (matchup) => changeBattleGame(matchup, sv)).doubles.bench).toBe(NO_BENCH);
     const account = loaded({ userId: "another-account" });
     expect(on1v1(state, (matchup) => reconcileRosters(matchup, account), account).doubles.bench).toBe(NO_BENCH);
+  });
+});
+
+// ---------- a side with no roster: Volt Switch with no opponent chosen ----------
+
+describe("a side with no roster names the Pokémon that comes in (Volt Switch with no opponent chosen)", () => {
+  const noOpponent = () => loaded({ opponentId: "" });
+  /** The default matchup with no opponent chosen: the opponent's Pikachu uses Volt Switch, the other three no move. */
+  function voltSwitch(): CalculatorState {
+    const state = start(noOpponent());
+    const pikachu = state.doubles.slots["opponent-right"];
+    expect(pikachu.build.speciesId).toBe("pikachu");
+    return chooseDoublesMove(state, getMoveOwner(pikachu), "voltswitch");
+  }
+  const turnOf = (state: CalculatorState) => calculateDoublesTurn(getDoublesTurnInput(state.doubles));
+
+  it("reproduces the report: the opponent has no roster to bench from, so Pikachu's replacement could never be named", () => {
+    const state = voltSwitch();
+    expect(panel(state, "opponent", noOpponent())).toEqual([]);
+    expect(turnOf(state)).toMatchObject({ status: "not-estimated", reason: "Pikachu switches out: the replacement is not known." });
+    // Its Bench now shows, adding any Pokémon of the game; your side, which no Pokémon leaves, needs none.
+    expect(benchSideView(state.doubles, "opponent", [])).toMatchObject({ shown: true, choose: true, add: [], rows: [] });
+    expect(benchNeeded(state.doubles, "opponent")).toBe(true);
+    expect(benchNeeded(state.doubles, "own")).toBe(false);
+    // No Pokémon left to switch in answers it too: Pikachu stays in.
+    const none = { ...state, doubles: apply(state.doubles, earlierSideControls(state.doubles, "opponent").find((entry) => entry.key === "noBench"), true) };
+    expect(benchNeeded(none.doubles, "opponent")).toBe(false);
+    expect(turnOf(none).status).toBe("ready");
+  });
+
+  it("adds a Pokémon chosen by name with a hand-picked Pokémon's build, and the turn is estimated with it coming in", () => {
+    const state = voltSwitch();
+    const next = addChosenDoublesBench(state, "opponent", "garchomp");
+    const [entry] = next.doubles.bench.opponent;
+    expect(entry).toMatchObject({ key: "chosen:opponent:garchomp", source: null });
+    // The build Change Pokémon gives Garchomp in a slot: its usual Doubles ability and its Doubles quick moves.
+    expect(entry.base).toMatchObject({ speciesId: "garchomp", abilityId: usualAbility("garchomp", "Doubles", championsRuntime) });
+    expect(entry.moves).toEqual(createMoveSlots("garchomp", "Doubles", championsRuntime).flatMap((move) => move.moveId ? [move.moveId] : []));
+    expect(entry.moves.length).toBeGreaterThan(0);
+    expect(benchNeeded(next.doubles, "opponent")).toBe(false);
+    expect(benchSideView(next.doubles, "opponent", []).rows.map((row) => row.name)).toEqual(["Garchomp"]);
+    expect(slotControl(next.doubles, "replacement", "opponent-right")).toMatchObject({ choices: [{ value: "", label: "Next on the bench" }, { value: "chosen:opponent:garchomp", label: "Garchomp" }] });
+    const turn = turnOf(next);
+    expect(turn.status).toBe("ready");
+    if (turn.status !== "ready") return;
+    expect(turn.facts).toContain("Assumes Garchomp comes in for Pikachu.");
+    expect(turn.replaced?.["opponent-right"]?.entered).toEqual([{ id: "chosen:opponent:garchomp", chance: 1 }]);
+    expect(turnSummary(turn, namesOf(next.doubles), "average", benchNamesOf(next.doubles))).toMatch(/Pikachu switches out at 110 HP\. Garchomp comes in\. Garchomp HP remaining: \d+ \/ \d+\./);
+  });
+
+  it("adds each Pokémon once, at most four, only of the game, and keeps them through a roster change", () => {
+    const state = voltSwitch();
+    let next = addChosenDoublesBench(state, "opponent", "garchomp");
+    expect(addChosenDoublesBench(next, "opponent", "garchomp")).toBe(next);
+    expect(addChosenDoublesBench(next, "opponent", "not-a-pokemon")).toBe(next);
+    for (const species of ["snorlax", "gyarados", "corviknight"]) next = addChosenDoublesBench(next, "opponent", species);
+    expect(next.doubles.bench.opponent.map((each) => each.key)).toEqual(["chosen:opponent:garchomp", "chosen:opponent:snorlax", "chosen:opponent:gyarados", "chosen:opponent:corviknight"]);
+    expect(addChosenDoublesBench(next, "opponent", "alakazam")).toBe(next);
+    expect(benchSideView(next.doubles, "opponent", [])).toMatchObject({ full: true, choose: true });
+    // Choosing an opponent later keeps them, as a slot keeps a Pokémon chosen by name.
+    const rosters = loaded();
+    const chosen = on1v1(next, (matchup) => reconcileRosters(matchup, rosters), rosters);
+    expect(chosen.doubles.bench.opponent).toBe(next.doubles.bench.opponent);
+    // A Pokémon on the bench ends No Pokémon left to switch in, as a roster one does.
+    const none = { ...state, doubles: apply(state.doubles, earlierSideControls(state.doubles, "opponent").find((entry) => entry.key === "noBench"), true) };
+    expect(addChosenDoublesBench(none, "opponent", "garchomp").doubles.turnEarlier.noneLeft).toBeUndefined();
+  });
+
+  it("puts Add to bench (the Pokémon search) on a side with no roster, and Set bench beside the turn that is not estimated", () => {
+    const state = voltSwitch();
+    const html = renderToStaticMarkup(createElement(EarlierTurnContext.Provider, { value: { doubles: state.doubles, issues: null, apply: () => undefined, rosters: { own: [], opponent: [] }, update: () => undefined } },
+      createElement(BenchFields, { id: "b", side: "opponent" })));
+    expect(html).toMatch(/<button[^>]*data-doubles-bench-add="opponent"/);
+    expect(text(html)).toContain("Add to bench: the opponent's side");
+    expect(html).not.toMatch(/<select[^>]*data-doubles-bench-add/);
+    // Without a way to change the state (update), nothing to add with.
+    expect(renderToStaticMarkup(createElement(EarlierTurnContext.Provider, { value: { doubles: state.doubles, issues: null, apply: () => undefined } },
+      createElement(BenchFields, { id: "b", side: "opponent" })))).not.toMatch(/data-doubles-bench-add/);
+    // The turn panel: Set bench beside the reason, for the side named.
+    const doubles = state.doubles;
+    const cards = {} as Record<DoublesSlotId, DoublesCardView>;
+    for (const slot of DOUBLES_SLOTS) {
+      cards[slot] = {
+        id: slot, slot: doubles.slots[slot], action: doubles.actions[slot], rule: null, hp: null, afterTurn: false, reached: true,
+        issues: [], mimicry: null, rosterPanel: EMPTY_PANEL, rosterDisabled: () => null, switches: null,
+      };
+    }
+    const turn = turnOf(state);
+    const props = { runtime: championsRuntime, names: namesOf(doubles), cards, turn, rollMode: "average" as const, movesControl: "moves", onShowStep: vi.fn(), onFixSettings: vi.fn() };
+    const panelHtml = renderToStaticMarkup(createElement(DoublesTurn, { ...props, benchSide: "opponent", onSetBench: vi.fn() }));
+    expect(text(panelHtml)).toContain("Turn not estimated: Pikachu switches out: the replacement is not known.");
+    expect(panelHtml).toMatch(/<button[^>]*data-doubles-set-bench="opponent"/);
+    expect(text(panelHtml)).toContain("Set bench: the opponent's side");
+    expect(renderToStaticMarkup(createElement(DoublesTurn, props))).not.toMatch(/data-doubles-set-bench/);
+    // Beside an end of turn that is not estimated too (Pikachu moving last: its moves are estimated).
+    const ready = switchTurn();
+    const endOnly: DoublesTurnResult = { ...ready, endOfTurn: { status: "not-estimated", reason: "Pikachu switches out: the replacement is not known." } };
+    const endHtml = renderToStaticMarkup(createElement(DoublesTurn, { ...props, turn: endOnly, benchSide: "opponent", onSetBench: vi.fn() }));
+    expect(endHtml).toMatch(/data-doubles-end-not-estimated[\s\S]*data-doubles-set-bench="opponent"/);
   });
 });
 
