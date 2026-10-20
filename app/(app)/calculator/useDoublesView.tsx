@@ -10,7 +10,7 @@ import { mimicryState } from "@/app/lib/battle/mimicry";
 import { fieldItemChoice, roomItemChoice, validateConditions } from "@/app/lib/battle/model";
 import type { BattleBuild, BattleConditions, BattleMechanic } from "@/app/lib/battle/types";
 import { DoublesCarriedContext, type CarriedControl } from "./BattleConditions";
-import { applyDoublesEarlier, benchNeeded } from "./doubles-inputs";
+import { applyDoublesEarlier, asksSwitchIn, switchInOf, switchInOptions } from "./doubles-inputs";
 import { EarlierTurnContext } from "./EarlierTurnFields";
 import type { BuildSettings } from "./BuildSettings";
 import type { CalculatorTab } from "./CalculatorTabs";
@@ -19,7 +19,7 @@ import DoublesMoves from "./DoublesMoves";
 import DoublesSettings from "./DoublesSettings";
 import DoublesSummary from "./DoublesSummary";
 import {
-  activateDoublesMoveSlot, applyDoublesCommander, applyDoublesIntimidate, carriedAbilityOn, carriedIssueTexts, carriedOptions, chooseDoublesMove, commanderAlly,
+  activateDoublesMoveSlot, applyDoublesCommander, applyDoublesIntimidate, carriedAbilityOn, carriedIssueTexts, carriedOptions, chooseDoublesMove, chooseDoublesSwitchIn, commanderAlly,
   dismissDoublesReplacement, doublesBuildIssues, doublesFainted, doublesIntimidateResult, doublesRosterDisabled, doublesTurnAction, equipDoublesRequiredMove,
   focusDoublesMoves, getDoublesTurnInput, intimidateFoes, NO_CARRIED_OPTIONS, replaceDoublesMove, selectDoublesRoster, setDoublesCarried, setDoublesCharged, setDoublesSwitchedIn,
   setDoublesField, setDoublesMovesInto, setDoublesTarget, switchedInOptions, toggleDoublesMechanic, toggleDoublesMega, traceCopiesIntimidate, updateDoublesBuild,
@@ -32,6 +32,7 @@ import { RosterPicker } from "./LeagueMatchupPicker";
 import MoveResults, { type MoveResultsHandle } from "./MoveResults";
 import PokemonPanel from "./PokemonPanel";
 import ResultsFeedback, { hasResultsFeedback, previewBlockedReason } from "./results-feedback";
+import SwitchInChooser, { type SwitchInPick } from "./SwitchInChooser";
 import { getMoveOwner, sameMoveOwner, type Combatant, type MoveOwner, type MoveReplacement, type RosterChoice, type RosterPanel, type RosterRole } from "./roster-prep";
 import { buildSectionKey, fieldSectionKey, NO_SETTINGS_SECTIONS, setSectionOpen, trackSectionIssues } from "./settings-sections";
 import { doublesIdentity, useDoublesCalculation, type DoublesEngine } from "./useDoublesCalculation";
@@ -117,6 +118,9 @@ export function useDoublesView({ prefix, calc, setCalc, active, mounted, rosterP
   const [engineState, setEngineState] = useState<EngineState>({ status: "loading" });
   const [attempt, setAttempt] = useState(0);
   const [sections, setSections] = useState(NO_SETTINGS_SECTIONS);
+  // The switch-in pop-up (SwitchInChooser): the Pokémon it asks about, open or closing (it closes in place, so focus returns to
+  // what opened it), and a key that gives each opening a fresh search.
+  const [switchIn, setSwitchIn] = useState<{ slot: DoublesSlotId; open: boolean; key: number } | null>(null);
   const ids = {
     moves: `${prefix}-2v2-moves`,
     field: `${prefix}-2v2-field`,
@@ -231,15 +235,29 @@ export function useDoublesView({ prefix, calc, setCalc, active, mounted, rosterP
     });
   }
 
-  // status2 R-U: a side whose bench the turn reads with none set (a switch-out with no Pokémon named to come in). Set bench
-  // opens Field conditions at its Add to bench, else at its No Pokémon left to switch in.
-  const benchSide = (["own", "opponent"] as const).find((side) => benchNeeded(doubles, side)) ?? null;
-  function setBench(side: DoublesSideId) {
-    visitSection(fieldKey, () => {
-      const panel = document.getElementById(ids.field);
-      const element = panel?.querySelector<HTMLElement>(`[data-doubles-bench-add="${side}"]`) ?? panel?.querySelector<HTMLElement>(`[data-doubles-no-bench="${side}"]`);
-      if (element) reveal(element);
-    });
+  const openSwitchIn = (slot: DoublesSlotId) => setSwitchIn((current) => ({ slot, open: true, key: (current?.key ?? 0) + 1 }));
+
+  /**
+   * The switch-in pop-up (SwitchInChooser) opens for a switching move with nothing naming its switch-in yet (doubles-inputs
+   * asksSwitchIn): once its target is picked, or at once when the move has no target to pick.
+   */
+  function askSwitchIn(owner: MoveOwner, moveId: string | null, targetPicked: boolean) {
+    const slot = slotOf(doubles, owner);
+    if (!slot || !moveId || !asksSwitchIn(doubles, slot, moveId)) return;
+    const rule = doublesTargetRule(input, slot, moveId);
+    if (!targetPicked && rule.kind === "choose" && rule.options.length > 1) return;
+    openSwitchIn(slot);
+  }
+
+  /** The pop-up's pick for `slot`: a team Pokémon is its roster choice, the others go as they are (doubles-prep chooseDoublesSwitchIn). */
+  function pickSwitchIn(slot: DoublesSlotId, pick: SwitchInPick) {
+    const roster = rosterPanels[slotSide(slot)].choices;
+    if (pick.kind === "team") {
+      const choice = roster.find((each) => each.source?.key === pick.key);
+      if (choice) update((state) => chooseDoublesSwitchIn(state, slot, { kind: "team", choice, roster }));
+      return;
+    }
+    update((state) => chooseDoublesSwitchIn(state, slot, pick));
   }
 
   /** Focus returns to the slot's quick move once it has rendered (a replaced or equipped move). */
@@ -398,6 +416,8 @@ export function useDoublesView({ prefix, calc, setCalc, active, mounted, rosterP
         switchedIn: !!doubles.history[slot].switchedIn,
         // status2 R-U: who left this slot and who came in (its card shows them below its own HP).
         switches: ready && !fainted[slot] ? slotSwitches(ready, slot, names, benchNames) : null,
+        // The Pokémon it switches to, while it can switch out by its player's choice (the switch-in pop-up changes it).
+        switchIn: fainted[slot] ? null : switchInOf(doubles, slot),
         issues: issues[slot],
         mimicry: mimicryState(combatant.build, otherBuild(slot), { terrain: field.terrain, magicRoom: field.magicRoom }),
         rosterPanel: rosterPanels[combatant.role],
@@ -414,8 +434,6 @@ export function useDoublesView({ prefix, calc, setCalc, active, mounted, rosterP
           cards={summaryCards()}
           names={names}
           benchNames={benchNames}
-          benchSide={benchSide}
-          onSetBench={setBench}
           turn={turn}
           blockedReason={blockedReason}
           rollMode={rollMode}
@@ -430,16 +448,40 @@ export function useDoublesView({ prefix, calc, setCalc, active, mounted, rosterP
           onToggleMega={(owner: MoveOwner, formId: string) => update((state) => toggleDoublesMega(state, owner, formId))}
           onToggleMechanic={(owner: MoveOwner, mechanic: BattleMechanic) => update((state) => toggleDoublesMechanic(state, owner, mechanic))}
           onActivateMove={(owner: MoveOwner, slotIndex: number) => {
+            const slot = slotOf(doubles, owner);
             update((state) => activateDoublesMoveSlot(state, owner, slotIndex));
             selectTab("moves");
+            askSwitchIn(owner, slot ? doubles.slots[slot].moves[slotIndex]?.moveId ?? null : null, false);
           }}
-          onChooseMove={(owner: MoveOwner, moveId: string | null) => update((state) => chooseDoublesMove(state, owner, moveId))}
+          onChooseMove={(owner: MoveOwner, moveId: string | null) => {
+            update((state) => chooseDoublesMove(state, owner, moveId));
+            askSwitchIn(owner, moveId, false);
+          }}
           onSwitchedIn={(key: number, on: boolean) => update((state) => setDoublesSwitchedIn(state, key, on))}
           onShowMoves={showMoves}
-          onTargetChange={(owner: MoveOwner, target: DoublesSlotId) => update((state) => setDoublesTarget(state, owner, target))}
+          onTargetChange={(owner: MoveOwner, target: DoublesSlotId) => {
+            const slot = slotOf(doubles, owner);
+            update((state) => setDoublesTarget(state, owner, target));
+            askSwitchIn(owner, slot ? doubles.actions[slot].moveId : null, true);
+          }}
+          onChooseSwitchIn={(owner: MoveOwner) => {
+            const slot = slotOf(doubles, owner);
+            if (slot) openSwitchIn(slot);
+          }}
           onShowStep={showStep}
           onFixSettings={fixSettings}
         />
+        {switchIn && (
+          <SwitchInChooser
+            key={switchIn.key}
+            open={switchIn.open}
+            onClose={() => setSwitchIn((current) => current && { ...current, open: false })}
+            name={names[switchIn.slot]}
+            runtime={runtime}
+            options={switchInOptions(doubles, switchIn.slot, rosterPanels[slotSide(switchIn.slot)].choices)}
+            onPick={(pick) => pickSwitchIn(switchIn.slot, pick)}
+          />
+        )}
       </div>
     );
   }
@@ -531,7 +573,10 @@ export function useDoublesView({ prefix, calc, setCalc, active, mounted, rosterP
             moveIds={moveSpecies?.moves ?? []}
             ownerId={`${sourceOwner.key}:${sourceOwner.epoch}`}
             selectedMoveId={doubles.actions[paneSlot].moveId}
-            onSelectMove={(moveId) => update((state) => chooseDoublesMove(state, sourceOwner, moveId))}
+            onSelectMove={(moveId) => {
+              update((state) => chooseDoublesMove(state, sourceOwner, moveId));
+              askSwitchIn(sourceOwner, moveId, false);
+            }}
             contexts={source.contexts}
             onContextChange={(moveId, context) => update((state) => updateDoublesMoveContext(state, sourceOwner, moveId, context))}
             replacement={replacement ? {

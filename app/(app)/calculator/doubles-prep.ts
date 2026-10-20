@@ -11,7 +11,7 @@ import { createMoveSlots, usualAbility, withHiddenPowerIVs } from "@/app/lib/bat
 import type { BattleBuild, BattleConditions, BattleMechanic, BuildIssue, CombatStat, MoveContext } from "@/app/lib/battle/types";
 import {
   addBenchEntry, afterDoublesAction, aimedAt, applyDoublesEarlier, benchOf, carriedAbilityOn, clearSlotEarlier, isFaintedBuild, NO_BENCH, NO_CARRIED, NO_HISTORY, NO_TURN_EARLIER,
-  mapBenchEntries, reconcileCarried, reconcileEarlier, removeBenchEntry, withBench, withSlotHistory, withTurnEarlier,
+  mapBenchEntries, reconcileCarried, reconcileEarlier, removeBenchEntry, setBenchPick, setNoneLeft, withBench, withSlotHistory, withTurnEarlier,
   type DoublesBench, type DoublesBenchEntry, type DoublesSlotHistory, type DoublesTurnEarlier,
 } from "./doubles-inputs";
 import type { CalculatorRosterState } from "./roster-data";
@@ -420,6 +420,28 @@ export function addChosenDoublesBench(state: CalculatorState, side: DoublesSideI
   const { build, moves } = freshPokemon(speciesId, field.gameType, runtime);
   const entry: DoublesBenchEntry = { key: `chosen:${side}:${speciesId}`, source: null, base: build, moves: moves.flatMap((move) => move.moveId ? [move.moveId] : []) };
   return applyDoublesEarlier(state, addBenchEntry(side, entry, []));
+}
+
+/** The switch-in pop-up's answer (SwitchInChooser): a bench Pokémon, a team Pokémon, any Pokémon of the game, or none left. */
+export type SwitchInChoice =
+  | { kind: "bench"; key: string }
+  | { kind: "team"; choice: RosterChoice; roster: readonly RosterChoice[] }
+  | { kind: "species"; speciesId: string }
+  | { kind: "none" };
+
+/**
+ * The Pokémon `slot` switches to (the switch-in pop-up): a team Pokémon or any Pokémon of the game joins its side's bench
+ * first (addDoublesBench, addChosenDoublesBench), then becomes its Replacement pick; none left ticks No Pokémon left to switch
+ * in for its side, so it stays in. The same state when the Pokémon cannot join the bench (it holds four).
+ */
+export function chooseDoublesSwitchIn(state: CalculatorState, slot: DoublesSlotId, choice: SwitchInChoice): CalculatorState {
+  const side = slotSide(slot);
+  if (choice.kind === "none") return applyDoublesEarlier(state, setNoneLeft(side, true));
+  const added = choice.kind === "team" ? addDoublesBench(state, side, choice.choice, choice.roster)
+    : choice.kind === "species" ? addChosenDoublesBench(state, side, choice.speciesId) : state;
+  const key = choice.kind === "bench" ? choice.key : choice.kind === "team" ? choice.choice.source?.key : `chosen:${side}:${choice.speciesId}`;
+  if (!key || !benchOf(added.doubles)[side].some((entry) => entry.key === key)) return state;
+  return applyDoublesEarlier(added, setBenchPick(slot, key));
 }
 
 export function updateDoublesBuild(state: CalculatorState, key: number, build: BattleBuild): CalculatorState {

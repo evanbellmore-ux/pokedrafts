@@ -8,6 +8,8 @@ import {
 } from "../fixtures/doubles-turn";
 import { positionalIn } from "../fixtures/naming";
 import DoublesSummary from "@/app/(app)/calculator/DoublesSummary";
+import { switchInText } from "@/app/(app)/calculator/DoublesCard";
+import SwitchInChooser from "@/app/(app)/calculator/SwitchInChooser";
 import DoublesSettings from "@/app/(app)/calculator/DoublesSettings";
 import DoublesMoves from "@/app/(app)/calculator/DoublesMoves";
 import BattleConditions, { DoublesCarriedContext, describeDoublesConditions, type CarriedControl } from "@/app/(app)/calculator/BattleConditions";
@@ -2024,5 +2026,74 @@ describe("status2 wave 1b: the hit fact of a minimize-flag move into a minimized
     const hit = turn.steps[0].hits[0];
     expect([hit.min, hit.max]).toEqual([416, 492]);
     expect(hit.facts).toContainEqual({ text: "Minimize: double damage.", chance: 1 });
+  });
+});
+
+describe("the switch-in on the card and its pop-up", () => {
+  it("states each switching Pokémon's switch-in on its card, with Choose or Change opening the pop-up", () => {
+    const view = fixture();
+    const cards = {
+      ...view.cards,
+      "opponent-right": { ...view.cards["opponent-right"], switchIn: { state: "unknown" as const } },
+      "own-left": { ...view.cards["own-left"], switchIn: { state: "picked" as const, key: "chosen:own:garchomp", name: "Garchomp" } },
+    };
+    const onChooseSwitchIn = vi.fn();
+    const { html, buttons } = capture(() => renderToStaticMarkup(createElement(DoublesSummary, summaryProps({ ...view, cards }, { onChooseSwitchIn }))));
+    expect(visibleText(card(html, "opponent-right"))).toContain("Switch-in: not chosen Choose");
+    expect(visibleText(card(html, "own-left"))).toContain("Switch-in: Garchomp Change");
+    // A Pokémon that does not switch out has no Switch-in.
+    expect(card(html, "own-right")).not.toContain("data-doubles-switch-in");
+    const choose = buttons.find((button) => button["data-doubles-switch-in-choose"] === "opponent-right")!;
+    expect(text(card(html, "opponent-right"))).toContain("Choose Pikachu's switch-in");
+    click(choose);
+    expect(onChooseSwitchIn).toHaveBeenCalledWith(getMoveOwner(view.cards["opponent-right"].slot));
+    // Without the pop-up's handler the line stays, with no button.
+    const plain = summary({ ...view, cards });
+    expect(plain).toContain('data-doubles-switch-in="opponent-right"');
+    expect(plain).not.toContain("data-doubles-switch-in-choose");
+    expect(positionalIn(html)).toEqual([]);
+  });
+
+  it("words the switch-in as a fact", () => {
+    expect(switchInText({ state: "picked", key: "k", name: "Garchomp" })).toBe("Switch-in: Garchomp");
+    expect(switchInText({ state: "next", key: "k", name: "Garchomp" })).toBe("Switch-in: Garchomp (next on the bench)");
+    expect(switchInText({ state: "none" })).toBe("Switch-in: none (no Pokémon left)");
+    expect(switchInText({ state: "unknown" })).toBe("Switch-in: not chosen");
+  });
+
+  it("lists the bench, the team, Find Pokémon and No Pokémon left in the pop-up, and returns the pick", () => {
+    const onPick = vi.fn(), onClose = vi.fn();
+    const options = { bench: [{ key: "b1", name: "Garchomp", detail: "90 / 183 HP · Burned" }], current: "b1", team: [{ key: "t1", name: "Snorlax" }], full: false, noneLeft: false };
+    const props = { open: false, onClose, name: "Pikachu", runtime: championsRuntime, options, onPick };
+    const { html, buttons } = capture(() => renderToStaticMarkup(createElement(SwitchInChooser, props)));
+    expect(text(html)).toContain("Switch in for Pikachu");
+    expect(html).toMatch(/data-switch-in-bench="b1" aria-pressed="true"/);
+    expect(text(html)).toContain("On the bench");
+    expect(text(html)).toContain("90 / 183 HP · Burned");
+    expect(html).toMatch(/data-switch-in-team="t1" aria-pressed="false"/);
+    expect(text(html)).toContain("Find Pokémon");
+    // A bench and a team to pick from: the whole game's Pokémon wait for a search; the bench is not empty, so no None left.
+    expect(html).not.toContain("data-switch-in-species");
+    expect(html).not.toContain("data-switch-in-none");
+    click(buttons.find((button) => button["data-switch-in-team"] === "t1")!);
+    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(onPick).toHaveBeenLastCalledWith({ kind: "team", key: "t1" });
+    click(buttons.find((button) => button["data-switch-in-bench"] === "b1")!);
+    expect(onPick).toHaveBeenLastCalledWith({ kind: "bench", key: "b1" });
+    // No bench or team: the game's Pokémon listed at once, a page at a time, and No Pokémon left.
+    const empty = capture(() => renderToStaticMarkup(createElement(SwitchInChooser, { ...props, options: { bench: [], current: null, team: [], full: false, noneLeft: true } })));
+    expect(empty.html.match(/data-switch-in-species=/g)).toHaveLength(8);
+    expect(text(empty.html)).toContain("No Pokémon left");
+    expect(text(empty.html)).toContain("Pikachu stays in");
+    click(empty.buttons.find((button) => button["data-switch-in-none"])!);
+    expect(onPick).toHaveBeenLastCalledWith({ kind: "none" });
+    const first = empty.buttons.find((button) => button["data-switch-in-species"])!;
+    click(first);
+    expect(onPick).toHaveBeenLastCalledWith({ kind: "species", speciesId: first["data-switch-in-species"] });
+    // A full bench: the cap, and only the bench to pick from.
+    const full = renderToStaticMarkup(createElement(SwitchInChooser, { ...props, options: { ...options, full: true } }));
+    expect(text(full)).toContain("A bench holds at most four Pokémon.");
+    expect(full).not.toMatch(/data-switch-in-team|Find Pokémon/);
+    expect(positionalIn(html + empty.html)).toEqual([]);
   });
 });

@@ -1232,13 +1232,78 @@ export function benchSideView(doubles: DoublesMatchup, side: DoublesSideId, rost
   };
 }
 
+/** No Pokémon left to switch in for `side` (its Field conditions checkbox, the switch-in pop-up's None left): its switching Pokémon stay in. */
+export function setNoneLeft(side: DoublesSideId, on: boolean): EarlierChange {
+  return changeEarlier((current) => ({ noneLeft: sideRecord(current.noneLeft, side, on ? true : undefined) }));
+}
+
 /**
- * The turn reads `side`'s bench and nothing answers it (the turn panel's Set bench): one of its Pokémon can come in this turn
- * (benchRead), its bench is empty and No Pokémon left to switch in is not ticked. A Pokémon switching out with no Pokémon
- * named to come in leaves the turn, or its end, not estimated (REASONS.switchesOut).
+ * The Pokémon `slot` switches to (its card's Switch-in), while it can switch out by its player's choice this turn
+ * (choosesSwitch; null otherwise). "picked": its Replacement pick; "next": with none, the turn's default, the first bench
+ * Pokémon; "none": its side has No Pokémon left to switch in, so it stays in; "unknown": nothing names one, so the turn is not
+ * estimated (REASONS.switchesOut).
  */
-export function benchNeeded(doubles: DoublesMatchup, side: DoublesSideId): boolean {
-  return !benchOf(doubles)[side].length && !doubles.turnEarlier.noneLeft?.[side] && benchRead(viewOf(doubles), side);
+export type SwitchIn = { state: "picked" | "next"; key: string; name: string } | { state: "none" | "unknown" };
+
+export function switchInOf(doubles: DoublesMatchup, slot: DoublesSlotId): SwitchIn | null {
+  const view = viewOf(doubles);
+  if (!choosesSwitch(view, slot)) return null;
+  const bench = benchOf(doubles);
+  const entries = bench[slotSide(slot)];
+  const named = (entry: DoublesBenchEntry) => benchNamesOf(doubles)[entry.key] ?? entryName(entry, view.runtime);
+  const picked = entries.find((entry) => entry.key === bench.picks[slot]);
+  if (picked) return { state: "picked", key: picked.key, name: named(picked) };
+  if (entries.length) return { state: "next", key: entries[0].key, name: named(entries[0]) };
+  return { state: doubles.turnEarlier.noneLeft?.[slotSide(slot)] ? "none" : "unknown" };
+}
+
+/**
+ * `slot`'s move `moveId` switches it out by its player's choice and nothing names its switch-in yet (no Replacement pick, No
+ * Pokémon left to switch in not ticked): the switch-in pop-up opens once the move's target is picked (useDoublesView). A
+ * switching move (Teleport not in Ultra Sun/Ultra Moon), not as a Max Move nor a damaging one as a Z-Move (choosesSwitch).
+ */
+export function asksSwitchIn(doubles: DoublesMatchup, slot: DoublesSlotId, moveId: string | null): boolean {
+  const view = viewOf(doubles);
+  if (!moveId || !view.present(slot) || isMaxActive(view.build(slot))) return false;
+  if (!EARLIER_TABLES.chosenSwitch.has(moveId) || (moveId === "teleport" && view.runtime.profile.id === "ultra_sun_ultra_moon")) return false;
+  if (doubles.slots[slot].contexts[moveId]?.useZ && view.runtime.movesById.get(moveId)?.category !== "Status") return false;
+  return benchOf(doubles).picks[slot] === undefined && !doubles.turnEarlier.noneLeft?.[slotSide(slot)];
+}
+
+/** What the switch-in pop-up offers `slot` (SwitchInChooser). */
+export type SwitchInOptions = {
+  /** Its side's bench Pokémon in order: key, name, and "183 / 183 HP" with a status ("· Burned"). */
+  bench: { key: string; name: string; detail: string }[];
+  /** The bench Pokémon it switches to now (SwitchIn "picked" or "next"). */
+  current: string | null;
+  /** Its side's team Pokémon not in play and not on the bench, in roster order (benchSideView's Add to bench). */
+  team: { key: string; name: string }[];
+  /** The bench holds four, so no other Pokémon can be added. */
+  full: boolean;
+  /** No Pokémon left can be picked: its side's bench is empty. */
+  noneLeft: boolean;
+};
+
+/** The switch-in pop-up's options for `slot`; `roster`, its side's roster panel's choices. */
+export function switchInOptions(doubles: DoublesMatchup, slot: DoublesSlotId, roster: readonly RosterChoice[] = []): SwitchInOptions {
+  const side = slotSide(slot);
+  const { runtime } = doubles;
+  const entries = benchOf(doubles)[side];
+  const view = benchSideView(doubles, side, roster);
+  const now = switchInOf(doubles, slot);
+  return {
+    bench: entries.map((entry, index) => {
+      const build = benchBuild(entry);
+      const max = getBuildStats(build, runtime)?.hp;
+      const status = build.status ? STATUSES.find((each) => each.value === build.status)?.label : undefined;
+      const detail = [max === undefined ? "" : `${build.currentHP ?? max} / ${max} HP`, status ?? ""].filter(Boolean).join(" · ");
+      return { key: entry.key, name: view.rows[index]?.name ?? entryName(entry, runtime), detail };
+    }),
+    current: now && (now.state === "picked" || now.state === "next") ? now.key : null,
+    team: view.add.map((choice) => ({ key: choice.value, name: choice.label })),
+    full: view.full,
+    noneLeft: entries.length === 0,
+  };
 }
 
 /**
@@ -1397,7 +1462,7 @@ export function earlierSideControls(doubles: DoublesMatchup, side: DoublesSideId
   // status2 R-U (IN §5.7): the side's Bench replaces it once it holds a Pokémon (an empty bench with it ticked: canSwitch false).
   if (!benchOf(doubles)[side].length) {
     out.push({ kind: "check", key: "noBench", label: "No Pokémon left to switch in", attr: "data-doubles-no-bench", attrValue: side, checked: !!earlier.noneLeft?.[side],
-      toggle: !!earlier.noneLeft?.[side], set: (on) => changeEarlier((current) => ({ noneLeft: sideRecord(current.noneLeft, side, on ? true : undefined) })) });
+      toggle: !!earlier.noneLeft?.[side], set: (on) => setNoneLeft(side, on) });
   }
   const fainted = earlier.faintedLastTurn?.[side];
   if (DOUBLES_SLOTS.some((slot) => slotSide(slot) === side && view.present(slot) && view.action(slot) === "retaliate") || fainted !== undefined) {
