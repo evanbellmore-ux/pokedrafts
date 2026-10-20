@@ -293,8 +293,23 @@ In the Supabase dashboard under **Authentication**:
   leads to `/update-password`. `{{ .SiteURL }}` is the Site URL above, so set
   that first.
 - **Providers > Email**: keep **Confirm email** enabled; the sign-up page shows
-  a "Check your email" message and the callback route completes the login. Only
-  the email/password provider is used in this release.
+  a "Check your email" message and the callback route completes the login.
+- **Emails > SMTP Settings**: Supabase's built-in sender only delivers to the
+  members of your Supabase team, a couple of emails an hour, so real users
+  never get their confirmation or password-reset emails. Turn on custom SMTP
+  with a provider such as Resend, Postmark or Amazon SES, sending from a domain
+  you own (the provider gives you its DNS records to add), then raise the email
+  limit under **Rate Limits**. While Supabase cannot send, the sign-up,
+  resend and password-reset forms say "We can't send email right now, please
+  try again later." (`app/lib/errors.ts`).
+- **Providers > Discord** (optional, no email needed): in the Discord Developer
+  Portal create an application, and under **OAuth2** add the redirect
+  `https://<project-ref>.supabase.co/auth/v1/callback`; copy its client ID and
+  client secret into this provider and turn it on. Within five minutes the
+  login and sign-up pages show **Continue with Discord** (they read the
+  project's public auth settings: `app/lib/auth/providers.ts`). It signs the
+  user in, creating the account on the first visit, and returns through
+  `/auth/callback` like the email links, so the Redirect URLs above cover it.
 
 ## Seeding Pokémon data
 

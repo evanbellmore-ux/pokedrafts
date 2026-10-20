@@ -12,10 +12,12 @@ import { withNextParam } from "@/app/lib/auth/next-path";
 import { friendlyError } from "@/app/lib/errors";
 import { createClient } from "@/app/lib/supabase/client";
 import { linkClassName } from "@/app/lib/theme";
+import DiscordSignIn from "../DiscordSignIn";
 
 export default function LoginForm({
   next,
   linkError = null,
+  discord = false,
 }: {
   next: string;
   /**
@@ -24,8 +26,11 @@ export default function LoginForm({
    * link was opened in a different browser or device than the one that
    * signed up, so the PKCE verifier cookie was missing; the email is
    * confirmed and a password login finishes the job (`next` is preserved).
+   * `provider`: a Discord sign-in did not finish.
    */
   linkError?: LinkError | null;
+  /** The Supabase project has Discord on: Continue with Discord shows above the form. */
+  discord?: boolean;
 }) {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -95,6 +100,15 @@ export default function LoginForm({
           .
         </Alert>
       )}
+
+      {linkError === "provider" && (
+        <Alert variant="warning" className="mt-5">
+          Discord did not finish signing you in. Try again, or log in with
+          your email and password.
+        </Alert>
+      )}
+
+      {discord && <DiscordSignIn next={next} />}
 
       <form onSubmit={handleSubmit} noValidate className="mt-6 flex flex-col gap-4">
         <Field label="Email" required>

@@ -2,6 +2,7 @@ import type { EmailOtpType } from "@supabase/supabase-js";
 import { NextResponse, type NextRequest } from "next/server";
 import {
   classifyCallbackError,
+  PROVIDER_PARAM,
   type CallbackFailure,
 } from "@/app/lib/auth/callback";
 import {
@@ -20,7 +21,8 @@ const OTP_TYPES = new Set<string>([
 ]);
 
 /**
- * Lands every Supabase email link (confirmation, recovery, magic link).
+ * Lands every Supabase email link (confirmation, recovery, magic link) and
+ * the return from a Discord sign-in (`?code&provider=discord`).
  * PKCE links carry `?code`; token-hash links carry `?token_hash&type`.
  * On success the session cookies are written and we redirect to the
  * validated `next` path. On failure we send the user to `/login?error=...`
@@ -34,6 +36,7 @@ export async function GET(request: NextRequest) {
   const tokenHash = searchParams.get("token_hash");
   const type = searchParams.get("type");
   const next = resolveCallbackNext(searchParams.get("next"));
+  const viaProvider = searchParams.get(PROVIDER_PARAM) === "discord";
 
   // Behind a load balancer the public host differs from the origin Next sees.
   const forwardedHost = request.headers.get("x-forwarded-host");
@@ -53,14 +56,14 @@ export async function GET(request: NextRequest) {
   }
 
   if (searchParams.get("error")) {
-    return failure("auth");
+    return failure(viaProvider ? "auth-provider" : "auth");
   }
 
   const supabase = await createServerSupabase();
 
   if (code) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (error) return failure(classifyCallbackError(error));
+    if (error) return failure(viaProvider ? "auth-provider" : classifyCallbackError(error));
     return NextResponse.redirect(new URL(next, base));
   }
 
