@@ -1,7 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
   <!-- The BrandMark (app/components/BrandMark.tsx) in the default Normal
-       palette: accent tile #a8a77a, on-accent glyph #171717. -->
+       palette: accent tile #a8a77a, on-accent letters #171717. The d is
+       the p turned half a circle about the centre, so it sits lower. -->
   <rect width="32" height="32" rx="9" fill="#a8a77a"/>
-  <rect x="8.5" y="7" width="4.5" height="18" rx="2.25" fill="#171717"/>
-  <circle cx="17.25" cy="13.25" r="5" fill="none" stroke="#171717" stroke-width="4.5"/>
+  <g fill="#171717" stroke="#171717">
+    <rect x="5.8" y="4.4" width="3.5" height="18" rx="1.75" stroke="none"/>
+    <circle cx="11.8" cy="10.4" r="4.25" fill="none" stroke-width="3.5"/>
+  </g>
+  <g transform="rotate(180 16 16)" fill="#171717" stroke="#171717">
+    <rect x="5.8" y="4.4" width="3.5" height="18" rx="1.75" stroke="none"/>
+    <circle cx="11.8" cy="10.4" r="4.25" fill="none" stroke-width="3.5"/>
+  </g>
 </svg>
