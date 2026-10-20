@@ -77,6 +77,11 @@ export type PokemonSpriteProps = {
   className?: string;
   /** No tile behind the sprite: the parent draws the frame (roster slots). */
   bare?: boolean;
+  /**
+   * A known image URL, used as is: no dex lookup and no PokéAPI fallback.
+   * For signed-out pages (the landing preview), where the dex is not readable.
+   */
+  src?: string;
 };
 
 /**
@@ -89,17 +94,20 @@ export default function PokemonSprite({
   size = "md",
   className = "",
   bare = false,
+  src,
 }: PokemonSpriteProps) {
   const key = normalizePokemonName(name);
-  const [state, setState] = useState<SpriteState>(() => initialState(name));
+  const start = (): SpriteState =>
+    src ? { key, status: "ready", url: src } : initialState(name);
+  const [state, setState] = useState<SpriteState>(start);
 
   // Reset when the name changes (derived state during render, not an effect).
   if (state.key !== key) {
-    setState(initialState(name));
+    setState(start());
   }
 
   useEffect(() => {
-    if (state.status !== "loading") return;
+    if (src || state.status !== "loading") return;
     let active = true;
 
     void resolveSprite(name).then((url) => {
@@ -110,7 +118,7 @@ export default function PokemonSprite({
     return () => {
       active = false;
     };
-  }, [key, name, state.status]);
+  }, [key, name, src, state.status]);
 
   const px = SIZE_PX[size];
   const box = `${SIZE_CLASS[size]} shrink-0 ${bare ? "rounded-full" : "rounded-md"} ${className}`.trim();
@@ -148,7 +156,8 @@ export default function PokemonSprite({
       loading="lazy"
       decoding="async"
       onError={() => {
-        spriteCache.set(key, null);
+        // A given src is not the dex's answer, so it never poisons the cache.
+        if (!src) spriteCache.set(key, null);
         setState({ key, status: "failed" });
       }}
       className={`${box} object-contain ${bare ? "" : "bg-panel-hover p-1"}`.trim()}

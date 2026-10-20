@@ -29,10 +29,13 @@ export default function LeagueCard({
   item,
   canDelete,
   onDelete,
+  spriteSrc,
 }: {
   item: DashboardLeague;
   canDelete: boolean;
   onDelete: (item: DashboardLeague) => void;
+  /** Known sprite URLs by Pokémon name, for the signed-out landing preview. */
+  spriteSrc?: (name: string) => string | undefined;
 }) {
   const { league } = item;
   const status = leagueStatus(item);
@@ -85,7 +88,7 @@ export default function LeagueCard({
         </div>
       )}
 
-      <Roster item={item} />
+      <Roster item={item} spriteSrc={spriteSrc} />
 
       <div className="mt-4 flex items-center justify-between gap-3 border-t border-hairline pt-3.5">
         <Coaches item={item} />
@@ -162,7 +165,13 @@ function StatusLine({ status }: { status: LeagueStatus }) {
  * decorative (names are on the sprites' titles for pointer users); the
  * sentence before it is what assistive technology reads.
  */
-function Roster({ item }: { item: DashboardLeague }) {
+function Roster({
+  item,
+  spriteSrc,
+}: {
+  item: DashboardLeague;
+  spriteSrc?: (name: string) => string | undefined;
+}) {
   if (isSpectating(item)) {
     return <p className="mt-4 text-sm text-muted">You are not drafting in this league.</p>;
   }
@@ -190,7 +199,13 @@ function Roster({ item }: { item: DashboardLeague }) {
               key={`${index}-${name}`}
               className="flex aspect-square items-center justify-center rounded-full bg-bg/70 ring-1 ring-hairline"
             >
-              <PokemonSprite name={name} size="fill" bare className="scale-110" />
+              <PokemonSprite
+                name={name}
+                size="fill"
+                bare
+                className="scale-110"
+                src={spriteSrc?.(name)}
+              />
             </li>
           ) : (
             <li

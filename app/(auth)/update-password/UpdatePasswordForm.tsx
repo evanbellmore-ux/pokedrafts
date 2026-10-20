@@ -111,7 +111,7 @@ export default function UpdatePasswordForm({ next }: { next: string }) {
 
   return (
     <>
-      <h1 className="text-2xl font-bold sm:text-3xl">Choose a new password</h1>
+      <h1 className="text-2xl font-semibold tracking-tight">Choose a new password</h1>
       <p className="mt-1 text-sm text-muted">
         Pick something you have not used here before.
       </p>

@@ -30,7 +30,8 @@ function linkTags(source: string) {
 }
 
 const authLinkFiles = [
-  "app/(auth)/layout.tsx",
+  // The brand link of the auth pages and the invite page.
+  "app/components/PublicShell.tsx",
   "app/(auth)/login/LoginForm.tsx",
   "app/(auth)/signup/SignupForm.tsx",
   "app/(auth)/forgot-password/ForgotPasswordForm.tsx",
