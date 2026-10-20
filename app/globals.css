@@ -60,6 +60,15 @@
    */
   --type-hairline: rgba(255, 255, 255, 0.08);
   --type-hairline-strong: rgba(255, 255, 255, 0.15);
+
+  /*
+   * Side hues: a 2v2 battle's two teams (the calculator's 2v2 cards), your
+   * side blue and the opponent's rose, shared by every palette like the
+   * hairlines. As a 12% wash under the cards, text, muted, accent text and
+   * danger keep >= 4.5:1 on every palette's panel (theme-contrast.test.ts).
+   */
+  --type-side-own: #60a5fa;
+  --type-side-opponent: #fb7185;
 }
 
 [data-pokemon-theme="normal"] {
@@ -357,6 +366,8 @@
   --color-warning-soft: var(--type-warning-soft);
   --color-success: var(--type-success);
   --color-success-soft: var(--type-success-soft);
+  --color-side-own: var(--type-side-own);
+  --color-side-opponent: var(--type-side-opponent);
 }
 
 html {

@@ -205,8 +205,9 @@ function faintedView(actions: Partial<Record<DoublesSlotId, { moveId: string; ta
 
 const card = (html: string, slot: DoublesSlotId) => {
   const at = html.indexOf(`data-doubles-slot="${slot}"`);
-  const next = DOUBLES_SLOTS.slice(DOUBLES_SLOTS.indexOf(slot) + 1).map((each) => html.indexOf(`data-doubles-slot="${each}"`)).find((index) => index > at);
-  return html.slice(at, next ?? html.indexOf("data-doubles-turn"));
+  // Up to the next card on the page, whichever it is (the opponent's row comes first), else the turn.
+  const next = DOUBLES_SLOTS.filter((each) => each !== slot).map((each) => html.indexOf(`data-doubles-slot="${each}"`)).filter((index) => index > at);
+  return html.slice(at, next.length ? Math.min(...next) : html.indexOf("data-doubles-turn"));
 };
 
 describe("the fainted card and the other cards", () => {
@@ -302,7 +303,7 @@ describe("the 2v2 page with a fainted Pokémon", () => {
     const html = renderToStaticMarkup(createElement(CalculatorClient, { initialMode: "2v2" }));
     expect(html).not.toContain("Current HP must");
     expect(html).toContain('data-doubles-fainted="opponent-right"');
-    const pikachu = html.slice(html.indexOf('data-doubles-slot="opponent-right"'), html.indexOf("data-doubles-turn"));
+    const pikachu = card(html, "opponent-right");
     expect(pikachu).not.toContain("data-move-slot");
     expect(html).toContain('data-build-region="opponent-right"');
     expect(html).not.toMatch(/data-build-toggle="opponent-right"[^>]*>[^<]*<[^>]*>\d+ issue/);

@@ -32,7 +32,14 @@ export type DoublesSummaryProps = DoublesCardHandlers & {
 };
 
 const rollLabels: Record<DamageRollMode, string> = { low: "Low", average: "Average", high: "High" };
-const SIDES: { id: DoublesSideId; label: string }[] = [{ id: "own", label: "Your side" }, { id: "opponent", label: "Opponent's side" }];
+/**
+ * The opponent's row on top and yours below, as the game (and Training's board) shows them; each left card faces the one
+ * across from it. Each side's cards share its hue (globals.css --type-side-*): a wash under the row and a dot by its name.
+ */
+const SIDES: { id: DoublesSideId; label: string; wash: string; dot: string }[] = [
+  { id: "opponent", label: "Opponent's side", wash: "bg-side-opponent/12", dot: "bg-side-opponent" },
+  { id: "own", label: "Your side", wash: "bg-side-own/12", dot: "bg-side-own" },
+];
 
 /**
  * The move the turn used for a slot's action when it differs (Z-Move, Max Move), from the turn or its start rows, and the
@@ -104,8 +111,10 @@ export default function DoublesSummary(props: DoublesSummaryProps) {
         </div>
       </fieldset>
       {SIDES.map((side) => (
-        <div key={side.id} role="group" aria-labelledby={`${id}-${side.id}`} data-doubles-side={side.id} className="border-b border-line">
-          <h3 id={`${id}-${side.id}`} className="px-3 pt-2 text-xs font-medium text-muted sm:px-4">{side.label}</h3>
+        <div key={side.id} role="group" aria-labelledby={`${id}-${side.id}`} data-doubles-side={side.id} className={`border-b border-line ${side.wash}`}>
+          <h3 id={`${id}-${side.id}`} className="flex items-center gap-1.5 px-3 pt-2 text-xs font-medium text-muted sm:px-4">
+            <span aria-hidden="true" className={`h-2 w-2 shrink-0 rounded-full ${side.dot}`} />{side.label}
+          </h3>
           <div className={styles.doublesSide}>
             {DOUBLES_SLOTS.filter((slot) => slotSide(slot) === side.id).map((slot) => {
               const view = cards[slot];
