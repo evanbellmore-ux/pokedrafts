@@ -18,6 +18,7 @@ import PokemonName from "./PokemonName";
 import {
   actionFact, ARROW, cardHPLabel, conditionsLine, factLine, FAINTED, leaverText, rollDescription, shownHP, targetName, type DoublesNames, type SlotSwitches,
 } from "./doubles-format";
+import type { SwitchIn } from "./doubles-inputs";
 import { getBuildHealth, settledText, type DamageRollMode } from "./hp-preview";
 import { getMoveOwner, type Combatant, type MoveOwner, type MoveReplacement, type RosterChoice, type RosterPanel } from "./roster-prep";
 import styles from "./calculator.module.css";
@@ -42,6 +43,8 @@ export type DoublesCardView = {
    * line and each newcomer's HP below its own. Null or absent: no switch.
    */
   switches?: SlotSwitches | null;
+  /** The Pokémon it switches to while it can switch out by its player's choice (doubles-inputs switchInOf); null or absent: it cannot. */
+  switchIn?: SwitchIn | null;
   issues: BuildIssue[]; mimicry: MimicryState | null;
   rosterPanel: RosterPanel; rosterDisabled: (choice: RosterChoice) => string | null;
 };
@@ -58,6 +61,8 @@ export type DoublesCardHandlers = {
   onSwitchedIn?: (key: number, on: boolean) => void;
   onShowMoves: (owner: MoveOwner) => void;
   onTargetChange: (owner: MoveOwner, target: DoublesSlotId) => void;
+  /** Opens the switch-in pop-up for the Pokémon (SwitchInChooser); absent: its Switch-in has no Choose or Change. */
+  onChooseSwitchIn?: (owner: MoveOwner) => void;
 };
 
 type Props = DoublesCardHandlers & {
@@ -84,6 +89,13 @@ export function PointedText({ text }: { text: string }) {
 }
 
 const linkButton = "min-h-11 rounded text-xs font-semibold text-accent-text underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus";
+
+/** "Switch-in: Garchomp", "Switch-in: Garchomp (next on the bench)", "Switch-in: none (no Pokémon left)", "Switch-in: not chosen". */
+export function switchInText(switchIn: SwitchIn): string {
+  if (switchIn.state === "picked") return `Switch-in: ${switchIn.name}`;
+  if (switchIn.state === "next") return `Switch-in: ${switchIn.name} (next on the bench)`;
+  return switchIn.state === "none" ? "Switch-in: none (no Pokémon left)" : "Switch-in: not chosen";
+}
 
 /** The move being aimed can hit this card's Pokémon: clicking the card picks it (the Target radios stay for the keyboard). */
 export type DoublesCardTarget = {
@@ -140,9 +152,9 @@ function SwitchesBlock({ slotId, label, switches, rollMode, afterTurn }: { slotI
  * A 2v2 card: the Pokémon, its HP after the turn (or after the moves when the end of turn is not estimated) with its
  * statuses and other conditions then, its move and its target (data-doubles-slot).
  */
-export default function DoublesCard({ view, names, nameParts, runtime, rollMode, replacement, movesControl, effective, target, onBuildChange, onHPChange, onRosterSelect, onToggleMega, onToggleMechanic, onActivateMove, onChooseMove, onSwitchedIn, onShowMoves, onTargetChange }: Props) {
+export default function DoublesCard({ view, names, nameParts, runtime, rollMode, replacement, movesControl, effective, target, onBuildChange, onHPChange, onRosterSelect, onToggleMega, onToggleMechanic, onActivateMove, onChooseMove, onSwitchedIn, onShowMoves, onTargetChange, onChooseSwitchIn }: Props) {
   const id = useId();
-  const { id: slotId, slot, action, rule, hp, reached, issues, mimicry, rosterPanel, rosterDisabled, fainted = false, afterTurn = false, switchedIn = false, switches = null } = view;
+  const { id: slotId, slot, action, rule, hp, reached, issues, mimicry, rosterPanel, rosterDisabled, fainted = false, afterTurn = false, switchedIn = false, switches = null, switchIn = null } = view;
   // The full name in every label ("Garchomp (yours, 1)"); the heading shows it as PokemonName does.
   const label = names[slotId];
   const owner = getMoveOwner(slot);
@@ -331,6 +343,17 @@ export default function DoublesCard({ view, names, nameParts, runtime, rollMode,
               <PointedText text={actionFact(moveName, names, slotId, rule, action.target)} />
             </p>
           </div>
+        )}
+        {/* The Pokémon it switches to (a switching move, Eject Button, Emergency Exit...), with the switch-in pop-up to change it. */}
+        {switchIn && (
+          <p data-doubles-switch-in={slotId} className="mt-1 flex min-w-0 flex-wrap items-center gap-x-2 text-xs text-muted">
+            <span className="wrap-anywhere">{switchInText(switchIn)}</span>
+            {onChooseSwitchIn && (
+              <button type="button" data-doubles-switch-in-choose={slotId} onClick={() => onChooseSwitchIn(owner)} className={linkButton}>
+                {switchIn.state === "unknown" ? "Choose" : "Change"}<span className="sr-only">{` ${label}'s switch-in`}</span>
+              </button>
+            )}
+          </p>
         )}
       </div>}
       <PokemonChooser

@@ -27,8 +27,6 @@ export type DoublesSummaryProps = DoublesCardHandlers & {
   defaultAiming?: DoublesSlotId | null;
   /** status2 R-U: the bench Pokémon's names by id (doubles-types turnBenchNames), for the turn's hits, residuals and switches on a newcomer. */
   benchNames?: Readonly<Record<string, string>>;
-  /** A side whose bench the turn reads with none set, and Set bench's handler (DoublesTurn). */
-  benchSide?: DoublesSideId | null; onSetBench?: (side: DoublesSideId) => void;
 };
 
 const rollLabels: Record<DamageRollMode, string> = { low: "Low", average: "Average", high: "High" };
@@ -65,7 +63,7 @@ export default function DoublesSummary(props: DoublesSummaryProps) {
   const noMoves = DOUBLES_SLOTS.every((slot) => cards[slot].action.moveId === null) && !actsWithoutMoves(turn);
   // The cards show the turn's HP only for a ready turn with a move, or with an end of turn that acts; otherwise their current HP.
   const projected = !blockedReason && !noMoves && turn?.status === "ready";
-  const { onBuildChange, onHPChange, onRosterSelect, onToggleMega, onToggleMechanic, onActivateMove, onChooseMove, onSwitchedIn, onShowMoves, onTargetChange } = props;
+  const { onBuildChange, onHPChange, onRosterSelect, onToggleMega, onToggleMechanic, onActivateMove, onChooseMove, onSwitchedIn, onShowMoves, onTargetChange, onChooseSwitchIn } = props;
   // The card frames aim the move of the slot last given a move, a Moves pane or a target.
   const [aiming, setAiming] = useState<DoublesSlotId | null>(props.defaultAiming ?? null);
   const aim = (owner: MoveOwner) => setAiming(DOUBLES_SLOTS.find((slot) => cards[slot].slot.key === owner.key) ?? null);
@@ -76,6 +74,7 @@ export default function DoublesSummary(props: DoublesSummaryProps) {
     ...(onSwitchedIn ? { onSwitchedIn } : {}),
     onShowMoves: (owner) => { aim(owner); onShowMoves(owner); },
     onTargetChange: (owner, target) => { aim(owner); onTargetChange(owner, target); },
+    ...(onChooseSwitchIn ? { onChooseSwitchIn } : {}),
   };
   const aimer = aiming ? cards[aiming] : null;
   // The same rule as the card's Target radios: a move with two or more Pokémon to pick from.
@@ -137,7 +136,7 @@ export default function DoublesSummary(props: DoublesSummaryProps) {
           </div>
         </div>
       ))}
-      <DoublesTurn runtime={runtime} names={names} cards={cards} turn={turn} blockedReason={blockedReason} rollMode={rollMode} movesControl={movesControl} magicRoom={props.magicRoom} benchNames={props.benchNames} benchSide={props.benchSide} onShowStep={onShowStep} onFixSettings={onFixSettings} onSetBench={props.onSetBench} />
+      <DoublesTurn runtime={runtime} names={names} cards={cards} turn={turn} blockedReason={blockedReason} rollMode={rollMode} movesControl={movesControl} magicRoom={props.magicRoom} benchNames={props.benchNames} onShowStep={onShowStep} onFixSettings={onFixSettings} />
     </section>
   );
 }

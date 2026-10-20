@@ -2,7 +2,7 @@
 
 import { useId, type ReactNode } from "react";
 import { Button } from "@/app/components/ui";
-import { DOUBLES_SLOTS, type DoublesSideId, type DoublesSlotId, type DoublesStep, type DoublesTurnResult } from "@/app/lib/battle/doubles-types";
+import { DOUBLES_SLOTS, type DoublesSlotId, type DoublesStep, type DoublesTurnResult } from "@/app/lib/battle/doubles-types";
 import type { BattleRuntime } from "@/app/lib/battle/runtime";
 import type { MoveDamageResult } from "@/app/lib/battle/types";
 import { PointedText, type DoublesCardView } from "./DoublesCard";
@@ -26,19 +26,12 @@ type Props = {
   magicRoom?: boolean;
   /** status2 R-U: the bench Pokémon's names by id (doubles-types turnBenchNames), for hits, residuals and switches on a newcomer. */
   benchNames?: Readonly<Record<string, string>>;
-  /** A side whose bench the turn reads with none set (doubles-inputs benchNeeded): Set bench beside a turn, or its end, not estimated. */
-  benchSide?: DoublesSideId | null;
   onShowStep: (owner: MoveOwner, moveId: string) => void;
   onFixSettings: () => void;
-  /** Opens Field conditions at the side's Bench. */
-  onSetBench?: (side: DoublesSideId) => void;
 };
 
 /** No bench Pokémon (a turn without a bench). */
 const NO_NAMES: Readonly<Record<string, string>> = {};
-
-/** Set bench's screen-reader suffix: the side whose Bench it opens. */
-const BENCH_SIDE_WORDS: Record<DoublesSideId, string> = { own: "your side", opponent: "the opponent's side" };
 
 /**
  * The step's targets from its slot's action, while the action is still the step's move. A copied step (a Dancer's copy, an
@@ -73,14 +66,8 @@ function chosenHits(runtime: BattleRuntime, cards: Record<DoublesSlotId, Doubles
 }
 
 /** The 2v2 turn (data-doubles-turn): each move in Showdown order with each Pokémon it reaches, or why it is not shown. */
-export default function DoublesTurn({ runtime, names, cards, turn, blockedReason, rollMode, movesControl, magicRoom = false, benchNames = NO_NAMES, benchSide = null, onShowStep, onFixSettings, onSetBench }: Props) {
+export default function DoublesTurn({ runtime, names, cards, turn, blockedReason, rollMode, movesControl, magicRoom = false, benchNames = NO_NAMES, onShowStep, onFixSettings }: Props) {
   const id = useId();
-  // status2 R-U: a Pokémon switching out with no Pokémon named to come in leaves the turn, or its end, not estimated.
-  const setBench = benchSide && onSetBench ? (
-    <Button size="sm" variant="secondary" className="min-h-11" data-doubles-set-bench={benchSide} onClick={() => onSetBench(benchSide)}>
-      Set bench<span className="sr-only">: {BENCH_SIDE_WORDS[benchSide]}</span>
-    </Button>
-  ) : null;
   // No moves chosen and nothing happens without them (no end of turn to show, no self-hit): nothing to list.
   const noMoves = DOUBLES_SLOTS.every((slot) => cards[slot].action.moveId === null) && !actsWithoutMoves(turn);
   const live = blockedReason ?? (turn?.status !== "issues" && noMoves ? "No moves chosen." : turnSummary(turn, names, rollMode, benchNames));
@@ -99,7 +86,6 @@ export default function DoublesTurn({ runtime, names, cards, turn, blockedReason
     body = (
       <div className="space-y-2">
         <p data-doubles-not-estimated className="wrap-anywhere text-sm font-semibold text-text">Turn not estimated: {turn.reason}</p>
-        {setBench}
         {turn.startRows.length > 0 && (
           <div>
             <h4 id={`${id}-start`} className="text-xs font-semibold text-muted">At the start of the turn</h4>
@@ -190,14 +176,9 @@ export default function DoublesTurn({ runtime, names, cards, turn, blockedReason
             {losses.map(({ slot, loss }, index) => <li key={index} data-doubles-loss={slot} className="wrap-anywhere">{factLine(loss)}</li>)}
           </ul>
         )}
-        {end.status === "not-estimated" ? (setBench ? (
-          <div className={`space-y-2 ${divided}`}>
-            <p data-doubles-end-not-estimated className="wrap-anywhere text-xs font-semibold text-text">{endNotEstimatedText(end.reason)}</p>
-            {setBench}
-          </div>
-        ) : (
+        {end.status === "not-estimated" ? (
           <p data-doubles-end-not-estimated className={`wrap-anywhere text-xs font-semibold text-text ${divided}`}>{endNotEstimatedText(end.reason)}</p>
-        )) : (end.residuals.length > 0 || end.facts.length > 0 || endSwitches.length > 0) && (
+        ) : (end.residuals.length > 0 || end.facts.length > 0 || endSwitches.length > 0) && (
           <div data-doubles-end className={divided}>
             <h4 id={`${id}-end`} className="text-xs font-semibold text-muted">End of turn</h4>
             {end.residuals.length > 0 && (
