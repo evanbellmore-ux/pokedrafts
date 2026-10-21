@@ -7,6 +7,8 @@ import LoginForm from "./LoginForm";
 
 export const metadata: Metadata = {
   title: "Log in",
+  description: "Log in to PokeDrafts to run your Pokémon draft leagues.",
+  alternates: { canonical: "/login" },
 };
 
 export default async function LoginPage({

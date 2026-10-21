@@ -1,6 +1,8 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { sanitizeNextPath } from "@/app/lib/auth/next-path";
+import { contentSecurityPolicy } from "@/app/lib/content-security-policy";
+import { SIGNED_IN_SECTIONS, isInSection } from "@/app/lib/site";
 
 /**
  * Auth gate (docs/release-architecture.md section 3.1).
@@ -8,9 +10,13 @@ import { sanitizeNextPath } from "@/app/lib/auth/next-path";
  * - Refreshes the Supabase session cookies on every matched request and
  *   copies the refreshed cookies (plus the Cache-Control headers Supabase
  *   asks for) onto every response, including redirects.
- * - Unauthenticated requests to protected paths go to /login?next=...
+ * - Unauthenticated requests anywhere in a signed-in section go to
+ *   /login?next=... Any other path that is not public passes through, so a
+ *   URL with no page renders app/not-found.tsx with a 404.
  * - Authenticated requests to /, /login and /signup go to /dashboard (or to a
  *   validated ?next), but only after the auth server confirmed the session.
+ * - Every page it lets through carries the Content-Security-Policy, with a
+ *   fresh nonce per request (app/lib/content-security-policy.ts).
  */
 
 const PUBLIC_EXACT = new Set([
@@ -36,6 +42,24 @@ function isPublicPath(pathname: string) {
   return false;
 }
 
+/**
+ * Paths that are not public and send a signed-out visitor to /login whether
+ * or not a page matches them: the signed-in sections, plus the other
+ * project's /castmirror area, which keeps the earlier rule that anything not
+ * listed above needs a session.
+ */
+function needsSession(pathname: string) {
+  if (SIGNED_IN_SECTIONS.some((section) => isInSection(pathname, section))) return true;
+  return isInSection(pathname, "/castmirror");
+}
+
+/** The other project's pages, API and static files keep no PokeDrafts CSP. */
+function isOtherAppPath(pathname: string) {
+  if (OTHER_APP_EXACT.has(pathname)) return true;
+  if (isInSection(pathname, "/castmirror") || pathname.startsWith("/api/castmirror/")) return true;
+  return pathname === "/castmirror.html" || pathname === "/raidcard.html";
+}
+
 const COPIED_HEADERS = ["cache-control", "expires", "pragma"];
 
 export async function proxy(request: NextRequest) {
@@ -47,6 +71,20 @@ export async function proxy(request: NextRequest) {
       "Supabase is not configured: set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY."
     );
   }
+
+  const { pathname, search, searchParams } = request.nextUrl;
+
+  // Set on the request before any NextResponse.next({ request }) copies its
+  // headers: Next reads the nonce from this header while rendering.
+  const policy = isOtherAppPath(pathname)
+    ? null
+    : contentSecurityPolicy({
+        nonce: Buffer.from(crypto.randomUUID()).toString("base64"),
+        supabaseUrl,
+        development: process.env.NODE_ENV === "development",
+        https: request.nextUrl.protocol === "https:",
+      });
+  if (policy) request.headers.set("content-security-policy", policy);
 
   let supabaseResponse = NextResponse.next({ request });
 
@@ -75,7 +113,11 @@ export async function proxy(request: NextRequest) {
   const { data } = await supabase.auth.getClaims();
   const userId = data?.claims?.sub ?? null;
 
-  const { pathname, search, searchParams } = request.nextUrl;
+  /** Lets the request through to the page, under the policy. */
+  function render() {
+    if (policy) supabaseResponse.headers.set("content-security-policy", policy);
+    return supabaseResponse;
+  }
 
   function redirectTo(path: string) {
     const response = NextResponse.redirect(new URL(path, request.url));
@@ -89,7 +131,7 @@ export async function proxy(request: NextRequest) {
     return response;
   }
 
-  if (!userId && !isPublicPath(pathname)) {
+  if (!userId && !isPublicPath(pathname) && needsSession(pathname)) {
     const next = sanitizeNextPath(`${pathname}${search}`, "");
     return redirectTo(
       next ? `/login?next=${encodeURIComponent(next)}` : "/login"
@@ -108,12 +150,12 @@ export async function proxy(request: NextRequest) {
     // clearing Set-Cookie headers as well.
     const { data: userData, error: userError } = await supabase.auth.getUser();
     if (userError || !userData.user) {
-      return supabaseResponse;
+      return render();
     }
     return redirectTo(sanitizeNextPath(searchParams.get("next")));
   }
 
-  return supabaseResponse;
+  return render();
 }
 
 export const config = {
