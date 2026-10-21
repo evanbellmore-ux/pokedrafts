@@ -112,9 +112,11 @@ function SummaryCombatant({ slot, side, label, issues, projected, moveName, roll
   }
 
   return (
-    <div data-summary-combatant={side} className="flex min-w-0 flex-col px-3 py-2 sm:px-4">
-      {slot.source && <p className="wrap-anywhere text-xs font-semibold text-muted">{ownership}{slot.source.name !== species?.name ? ` · ${slot.source.name}` : ""}</p>}
-      <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
+    // Each part in its row of the two cards' shared rows (calculator.module.css .summaryCard).
+    <div data-summary-combatant={side} className={`${styles.summaryCard} min-w-0 px-3 py-2 sm:px-4`}>
+      <div aria-hidden="true" className={styles.cardStart} />
+      {slot.source && <p className={`${styles.cardOwner} wrap-anywhere text-xs font-semibold text-muted`}>{ownership}{slot.source.name !== species?.name ? ` · ${slot.source.name}` : ""}</p>}
+      <div className={`${styles.cardName} flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1`}>
         <h3 className="min-w-0 wrap-anywhere text-base font-semibold leading-snug text-text sm:text-lg">{label}</h3>
         {megaOptions.length > 0 && (
           <div role="group" aria-label={`${label} ${megaOptions.every((option) => option.label.startsWith("Mega")) ? "Mega forms" : "battle forms"}`} className="flex min-w-0 flex-wrap gap-1">
@@ -138,33 +140,34 @@ function SummaryCombatant({ slot, side, label, issues, projected, moveName, roll
           </div>
         )}
       </div>
-      <p className="mt-1 text-xs text-muted sm:hidden">{types?.join(" / ")}{teraType && ` · Tera ${teraType}`}</p>
-      <div className="mt-1 hidden flex-wrap gap-1 sm:flex">{types?.map((type) => <TypeBadge key={type} type={type} />)}{teraType && <span className="text-xs font-semibold text-accent-text">Tera {teraType}</span>}</div>
-      {teraType && teraType !== "Stellar" && <p className="mt-1 text-xs text-muted">Original types: {species?.types.join(" / ")}</p>}
-      {mimicry && species && <p className="mt-1 text-xs text-muted">{mimicryNote(mimicry, species.types)}</p>}
-      <MechanicControls build={slot.build} label={label} runtime={runtime} onToggle={onToggleMechanic ? (mechanic) => onToggleMechanic(owner, mechanic) : undefined} />
-      {runtime.profile.tera && <div className="mt-2"><TeraTypeField id={`${id}-tera-type`} build={slot.build} issues={issues} onChange={(build) => onBuildChange(slot.key, build)} runtime={runtime} /></div>}
-      <RetainedConfiguration build={slot.build} runtime={runtime} />
+      {/* One of the two shows at each width. */}
+      <p className={`${styles.cardTypes} mt-1 text-xs text-muted sm:hidden`}>{types?.join(" / ")}{teraType && ` · Tera ${teraType}`}</p>
+      <div className={`${styles.cardTypes} mt-1 hidden flex-wrap gap-1 sm:flex`}>{types?.map((type) => <TypeBadge key={type} type={type} />)}{teraType && <span className="text-xs font-semibold text-accent-text">Tera {teraType}</span>}</div>
+      {teraType && teraType !== "Stellar" && <p className={`${styles.cardOriginal} mt-1 text-xs text-muted`}>Original types: {species?.types.join(" / ")}</p>}
+      {mimicry && species && <p className={`${styles.cardMimicry} mt-1 text-xs text-muted`}>{mimicryNote(mimicry, species.types)}</p>}
+      <div className={styles.cardMechanics}><MechanicControls build={slot.build} label={label} runtime={runtime} onToggle={onToggleMechanic ? (mechanic) => onToggleMechanic(owner, mechanic) : undefined} /></div>
+      {runtime.profile.tera && <div className={`${styles.cardTera} mt-2`}><TeraTypeField id={`${id}-tera-type`} build={slot.build} issues={issues} onChange={(build) => onBuildChange(slot.key, build)} runtime={runtime} /></div>}
+      <div className={styles.cardRetained}><RetainedConfiguration build={slot.build} runtime={runtime} /></div>
       {health ? (
         <>
-          <p className="mt-1 wrap-anywhere text-xs font-semibold text-muted">{hpLabel}</p>
-          <p className="tabular-nums"><span className="text-xl font-semibold text-text">{displayedHP}</span><span className="text-sm text-muted"> / {health.maximum} HP</span></p>
-          <div role="meter" aria-label={`${label} ${projected ? "projected" : "current"} HP`} aria-valuemin={0} aria-valuemax={health.maximum} aria-valuenow={displayedHP} aria-valuetext={hpText} title={hpText} className="relative mt-1 h-2 overflow-hidden rounded-full bg-panel-hover">
+          <p className={`${styles.cardHPLabel} mt-1 wrap-anywhere text-xs font-semibold text-muted`}>{hpLabel}</p>
+          <p className={`${styles.cardHPValue} tabular-nums`}><span className="text-xl font-semibold text-text">{displayedHP}</span><span className="text-sm text-muted"> / {health.maximum} HP</span></p>
+          <div role="meter" aria-label={`${label} ${projected ? "projected" : "current"} HP`} aria-valuemin={0} aria-valuemax={health.maximum} aria-valuenow={displayedHP} aria-valuetext={hpText} title={hpText} className={`${styles.cardHPMeter} relative mt-1 h-2 overflow-hidden rounded-full bg-panel-hover`}>
             <div className={`h-full rounded-full ${fraction > 0.5 ? "bg-success" : fraction > 0.2 ? "bg-warning" : "bg-danger"}`} style={{ width: `${fraction * 100}%` }} />
             {/* The least to the most HP left, over the selected roll's fill. */}
             {projected && range && <div data-hp-range aria-hidden="true" className="absolute inset-y-0 bg-text/25" style={{ left: `${projected.min / health.maximum * 100}%`, width: `${(projected.max - projected.min) / health.maximum * 100}%` }} />}
           </div>
-          {settledFact ? <p className="mt-1 wrap-anywhere text-xs tabular-nums text-muted">{settledFact}</p>
-            : projected && <p className="mt-1 text-xs tabular-nums text-muted">Current HP: {health.current} / {health.maximum}</p>}
+          {settledFact ? <p className={`${styles.cardHPFact} mt-1 wrap-anywhere text-xs tabular-nums text-muted`}>{settledFact}</p>
+            : projected && <p className={`${styles.cardHPFact} mt-1 text-xs tabular-nums text-muted`}>Current HP: {health.current} / {health.maximum}</p>}
         </>
-      ) : <p className="mt-2 text-sm font-semibold text-danger">{issues.some((issue) => issue.field === "currentHP") ? "Edit HP to fix the current value"
+      ) : <p className={`${styles.cardHPLabel} mt-2 text-sm font-semibold text-danger`}>{issues.some((issue) => issue.field === "currentHP") ? "Edit HP to fix the current value"
         : issues.length === 1 && issues[0].field === "preparedMoves" ? issues[0].message.replace(/ A learnset is not proof.*$/, "")
         : "Check build settings to show HP"}</p>}
-      <div className="mt-1 flex flex-wrap gap-x-3">
+      <div className={`${styles.cardActions} mt-1 flex flex-wrap gap-x-3`}>
         <button type="button" aria-label={`Change ${label}`} aria-haspopup="dialog" onClick={() => setPickerOpen(true)} className="min-h-11 rounded text-xs font-semibold text-accent-text underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus">Change<span className="sr-only sm:not-sr-only"> Pokémon</span></button>
         <button ref={editRef} type="button" aria-label={`Edit ${label} HP`} aria-expanded={editingHP} aria-controls={`${id}-hp-editor`} onClick={() => editingHP ? finishHP() : setEditingHP(true)} className="min-h-11 rounded text-xs font-semibold text-accent-text underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus">Edit HP</button>
       </div>
-      <div id={`${id}-hp-editor`} hidden={!editingHP}>
+      <div id={`${id}-hp-editor`} hidden={!editingHP} className={styles.cardEditor}>
         {editingHP && (
           <div className="mt-2 space-y-2 border-t border-line pt-3">
             <CurrentHPField
@@ -187,8 +190,8 @@ function SummaryCombatant({ slot, side, label, issues, projected, moveName, roll
           </div>
         )}
       </div>
-      {/* At the card's foot, level with the other card's quick moves and the Build settings below them. */}
-      <div role="group" aria-label={`${label} quick moves`} className="mt-auto border-t border-line pt-2">
+      {/* At the card's foot, in a row of its own: level with the other card's quick moves and the Build settings below them. */}
+      <div role="group" aria-label={`${label} quick moves`} className={`${styles.cardMoves} border-t border-line pt-2`}>
         <div className={styles.quickMoves}>
           {slot.moves.map((prepared, index) => {
             const move = prepared.moveId ? runtime.movesById.get(prepared.moveId) : undefined;
@@ -219,15 +222,18 @@ function SummaryCombatant({ slot, side, label, issues, projected, moveName, roll
           })}
         </div>
       </div>
-      <PokemonChooser
-        build={slot.build}
-        runtime={runtime}
-        gameType={gameType}
-        open={pickerOpen}
-        onClose={() => setPickerOpen(false)}
-        onChange={(build) => onBuildChange(slot.key, build)}
-        roster={hasRoster && <RosterPicker panel={rosterPanel} role={slot.role} side={side} occupant={label} activeSource={slot.source} runtime={runtime} onSelect={(choice) => { onRosterSelect(slot.key, choice); setPickerOpen(false); }} />}
-      />
+      {/* The last row, no taller than its padding: the chooser's dialog opens in the top layer. */}
+      <div className={styles.cardEnd}>
+        <PokemonChooser
+          build={slot.build}
+          runtime={runtime}
+          gameType={gameType}
+          open={pickerOpen}
+          onClose={() => setPickerOpen(false)}
+          onChange={(build) => onBuildChange(slot.key, build)}
+          roster={hasRoster && <RosterPicker panel={rosterPanel} role={slot.role} side={side} occupant={label} activeSource={slot.source} runtime={runtime} onSelect={(choice) => { onRosterSelect(slot.key, choice); setPickerOpen(false); }} />}
+        />
+      </div>
     </div>
   );
 }

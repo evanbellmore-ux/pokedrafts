@@ -964,7 +964,9 @@ describe("league matchup UI", () => {
     const html = renderToStaticMarkup(createElement(RosterPicker, props));
     expect(html).toBe(renderToStaticMarkup(createElement(RosterPicker, { ...props, variant: "inline" })));
     expect(html).toContain('class="mt-4 rounded-lg border border-line bg-bg p-3"');
-    expect(html).toContain('<ul aria-label="Your team roster for Charizard" class="mt-3 grid gap-2 sm:grid-cols-2">');
+    expect(html).toContain('<ul data-roster-row="list" aria-label="Your team roster for Charizard" class="mt-3 grid gap-2 sm:grid-cols-2">');
+    // The end row is the desktop rails' only (calculator.module.css .withRosters).
+    expect(html).not.toContain('data-roster-row="end"');
     expect(html).toMatch(/<button\b[^>]*><span class="flex flex-wrap items-baseline justify-between gap-1">/);
     expect(html).not.toContain("h-10 w-10");
     assertLabels(html);
@@ -1002,7 +1004,10 @@ describe("league matchup UI", () => {
     const html = renderToStaticMarkup(createElement(RosterPicker, { state, role: "own", side: "attacker", occupant: "Charizard", activeSource: choices(state).own[0].source, onSelect: () => undefined, variant: "rail" }));
     expect(html).toContain('class="min-w-0 rounded-lg border border-line bg-bg p-3"');
     expect(html).not.toContain("mt-4");
-    expect(html).toContain('<ul aria-label="Your team roster for Charizard" class="mt-3 grid grid-cols-1 gap-2">');
+    expect(html).toContain('<ul data-roster-row="list" aria-label="Your team roster for Charizard" class="mt-3 grid grid-cols-1 gap-2">');
+    // The rail's parts in the two rails' shared rows: its heading, the list, the end that holds its bottom padding.
+    expect([...html.matchAll(/data-roster-row="([^"]+)"/g)].map((match) => match[1])).toEqual(["header", "list", "end"]);
+    expect(html).toMatch(/<div aria-hidden="true" data-roster-row="end"><\/div><\/div>$/);
     expect(html).not.toContain("sm:grid-cols-2");
     expect(html).toContain(`<span class="max-w-full wrap-anywhere text-xs text-muted">${teamName}</span>`);
     expect(html).toContain(`<span class="wrap-anywhere font-medium">${rosterName}</span>`);

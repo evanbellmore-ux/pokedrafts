@@ -32,21 +32,23 @@ function MoveCard({
   tone: "drop" | "add";
   entry: DraftPokemon;
 }) {
+  // The two cards share their five rows (subgrid), so the label, sprite, name, types and points sit level across them
+  // whichever name wraps; each part names its row (a Pokémon without known types leaves its row empty).
   return (
-    <div className="flex min-w-0 flex-col items-center rounded-lg border border-line bg-bg p-3 text-center">
+    <div className="row-span-5 grid min-w-0 grid-rows-subgrid justify-items-center rounded-lg border border-line bg-bg p-3 text-center">
       <p
-        className={`text-xs font-medium ${
+        className={`row-start-1 text-xs font-medium ${
           tone === "drop" ? "text-danger" : "text-success"
         }`}
       >
         {label}
       </p>
-      <PokemonSprite name={entry.name} size="lg" className="mt-2" />
-      <p className="mt-2 w-full break-words text-sm font-semibold text-text">
+      <PokemonSprite name={entry.name} size="lg" className="row-start-2 mt-2" />
+      <p className="row-start-3 mt-2 w-full break-words text-sm font-semibold text-text">
         {entry.name}
       </p>
-      <PokemonTypes name={entry.name} className="mt-1 justify-center" />
-      <p className="mt-1 text-xs text-muted">
+      <PokemonTypes name={entry.name} className="row-start-4 mt-1 justify-center" />
+      <p className="row-start-5 mt-1 text-xs text-muted">
         {entry.points} pts · Tier {entry.tier}
       </p>
     </div>
@@ -86,8 +88,9 @@ export default function SwapDialog({
     >
       {move && (
         <>
+          {/* No row gap: the cards' rows are spaced by their parts' margins. */}
           <div
-            className={`grid gap-3 ${move.drop ? "grid-cols-2" : "grid-cols-1"}`}
+            className={`grid gap-x-3 ${move.drop ? "grid-cols-2" : "grid-cols-1"}`}
           >
             {move.drop && <MoveCard label="Drop" tone="drop" entry={move.drop} />}
             <MoveCard label="Add" tone="add" entry={move.add} />

@@ -3,6 +3,7 @@ import { Children, createElement, type ChangeEvent, type ComponentProps, type Ke
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, describe, expect, expectTypeOf, it, vi } from "vitest";
 import { positionalIn } from "../fixtures/naming";
+import { childClasses, SUMMARY_CARD_ROWS } from "../fixtures/shared-rows";
 import { unsupportedSpeciesRuntime } from "../fixtures/unsupported-species-runtime";
 import CalculatorClient, { createMatchup, swapMatchup } from "@/app/(app)/calculator/CalculatorClient";
 import BattleConditions, { describeConditions } from "@/app/(app)/calculator/BattleConditions";
@@ -12,6 +13,7 @@ import CurrentHPField from "@/app/(app)/calculator/CurrentHPField";
 import { formatHPInput, parseBuildInput } from "@/app/(app)/calculator/build-input";
 import MoveResults, { filterMoveResults, MoveDetails } from "@/app/(app)/calculator/MoveResults";
 import MatchupSummary from "@/app/(app)/calculator/MatchupSummary";
+import calculatorStyles from "@/app/(app)/calculator/calculator.module.css";
 import type { DamageRollMode } from "@/app/(app)/calculator/hp-preview";
 import { createRosterState, type CalculatorRosterState } from "@/app/(app)/calculator/roster-data";
 import { activateMoveSlot, dismissMoveReplacement, getAttackView, getMoveOwner, mirrorTeams, replaceMatchupMove, selectMatchupMove, toggleMatchupMega, updateMatchupBuild, updateMatchupMoveContext, type BattleSide, type MoveOwner } from "@/app/(app)/calculator/roster-prep";
@@ -269,6 +271,9 @@ describe("Champions calculator UI", () => {
     expect([...html.matchAll(/data-calculator-roster="/g)]).toHaveLength(2);
     expect([...html.matchAll(/data-roster-choice="/g)]).toHaveLength(3);
     expect([...html.matchAll(/data-calculator-roster-rail="/g)]).toHaveLength(desktop ? 2 : 0);
+    // The rails share their rows: the heading, a message, the longer roster's two choices and the end.
+    if (desktop) expect(html).toContain(`<div data-calculator-workspace="true" class="${calculatorStyles.withRosters}" data-calculator-mode="1v1" style="--rail-rows:5">`);
+    else expect(html).not.toContain("--rail-rows");
     expect([...html.matchAll(/data-calculator-hp="true"/g)]).toHaveLength(2);
     expect(html).not.toMatch(/<main\b/);
     expect(html).not.toMatch(/<button[^>]*data-roster-choice="[^"]*"[^>]*aria-pressed="true"/); // Loading a roster is not activation.
@@ -279,7 +284,7 @@ describe("Champions calculator UI", () => {
       expect(change).not.toContain("aria-controls=");
       const hp = controlTarget(html, `Edit ${DEFAULT_NAMES[side]} HP`);
       expect(hp).not.toContain("-build-");
-      expect(html).toContain(`<div id="${hp}" hidden="">`);
+      expect(html).toContain(`<div id="${hp}" hidden="" class="${calculatorStyles.cardEditor}">`);
       const build = buildRegion(html, side);
       expect(build).toContain('data-calculator-hp="true"');
       if (desktop) {
@@ -316,7 +321,7 @@ describe("Champions calculator UI", () => {
       expect(card).toContain(">Find Pokémon</label>");
       expect(card?.includes(">Team Pokémon</button>")).toBe(available);
       const hp = controlTarget(card!, `Edit ${DEFAULT_NAMES[side]} HP`);
-      expect(card).toContain(`<div id="${hp}" hidden="">`);
+      expect(card).toContain(`<div id="${hp}" hidden="" class="${calculatorStyles.cardEditor}">`);
       expect(card).not.toContain("data-roster-choice="); // Team controls mount only when used in the open chooser.
     }
   });
@@ -1256,7 +1261,7 @@ describe("active matchup and selected-move summary", () => {
     for (const side of ["attacker", "defender"] as const) {
       expect(html).toContain(`aria-label="Change ${DEFAULT_NAMES[side]}" aria-haspopup="dialog"`);
       expect(html).toContain(`aria-label="Edit ${DEFAULT_NAMES[side]} HP" aria-expanded="false"`);
-      expect(html).toContain(`<div id="${controlTarget(html, `Edit ${DEFAULT_NAMES[side]} HP`)}" hidden="">`);
+      expect(html).toContain(`<div id="${controlTarget(html, `Edit ${DEFAULT_NAMES[side]} HP`)}" hidden="" class="${calculatorStyles.cardEditor}">`);
     }
     expect([...html.matchAll(/<fieldset\b/g)]).toHaveLength(1);
     expect(html).toContain('>Damage roll</legend>');
@@ -1421,17 +1426,31 @@ describe("active matchup and selected-move summary", () => {
     matchup.defender.source = { kind: "league", key: "opponent", runtimeIdentity: matchup.runtime.identity, leagueId: "league", memberId: "opponent", rosterId: "other-roster", name: "Blastoise", speciesId: "blastoise" };
     const html = summaryHTML(swapMatchup(matchup)).replace(/&#x27;/g, "'");
     const card = (side: BattleSide) => html.match(new RegExp(`<div data-summary-combatant="${side}"[^>]*>([\\s\\S]*?)<h3`))![1];
-    // Only roster Pokémon show their team, without a position label.
-    expect(card("attacker")).toMatch(/^<p\b[^>]*>Opponent's team<\/p>/);
-    expect(card("defender")).toMatch(/^<p\b[^>]*>Your team<\/p>/);
+    // Only roster Pokémon show their team, without a position label (after the card's first shared row, its padding).
+    expect(card("attacker")).toMatch(/^<div aria-hidden="true" class="[^"]+"><\/div><p\b[^>]*>Opponent's team<\/p>/);
+    expect(card("defender")).toMatch(/^<div aria-hidden="true" class="[^"]+"><\/div><p\b[^>]*>Your team<\/p>/);
     expect(visibleText(html)).not.toMatch(/Left Pokémon ·|Right Pokémon ·|Manual/);
     expect(positionalIn(html)).toEqual([]);
     expect(html).toContain('aria-label="Blastoise current HP"');
     expect(html).toContain('aria-label="Charizard current HP"');
+    // The cards share their rows (calculator.module.css .summaryCard): every part is placed in its row, in row order, so
+    // with only one card showing its team the names, HP and quick moves still sit level.
+    const single = createMatchup();
+    single.attacker.source = matchup.attacker.source;
+    const singleHTML = summaryHTML(single);
+    const placed = (side: BattleSide) => childClasses(singleHTML, `data-summary-combatant="${side}"`)
+      .map((classes) => SUMMARY_CARD_ROWS.find((name) => classes.includes(calculatorStyles[name])) ?? null);
+    for (const side of ["attacker", "defender"] as const) {
+      expect(placed(side)).not.toContain(null);
+      const order = placed(side).map((name) => SUMMARY_CARD_ROWS.indexOf(name!));
+      expect(order).toEqual([...order].sort((a, b) => a - b));
+    }
+    expect(placed("attacker")).toEqual(["cardStart", "cardOwner", "cardName", "cardTypes", "cardTypes", "cardMechanics", "cardRetained", "cardHPLabel", "cardHPValue", "cardHPMeter", "cardActions", "cardEditor", "cardMoves", "cardEnd"]);
+    expect(placed("defender")).toEqual(placed("attacker").filter((name) => name !== "cardOwner"));
     // A roster entry under another name keeps that name next to its team.
     matchup.defender.source = { ...matchup.defender.source, name: "Shellshock" };
-    expect(summaryHTML(matchup).replace(/&#x27;/g, "'")).toMatch(/<div data-summary-combatant="defender"[^>]*><p\b[^>]*>Opponent's team · Shellshock<\/p>/);
+    expect(summaryHTML(matchup).replace(/&#x27;/g, "'")).toMatch(/<div data-summary-combatant="defender"[^>]*><div aria-hidden="true" class="[^"]+"><\/div><p\b[^>]*>Opponent's team · Shellshock<\/p>/);
     const manual = summaryHTML(createMatchup());
-    for (const side of ["attacker", "defender"] as const) expect(manual).toMatch(new RegExp(`<div data-summary-combatant="${side}"[^>]*><div\\b[^>]*><h3`));
+    for (const side of ["attacker", "defender"] as const) expect(manual).toMatch(new RegExp(`<div data-summary-combatant="${side}"[^>]*><div aria-hidden="true" class="[^"]+"></div><div\\b[^>]*><h3`));
   });
 });
