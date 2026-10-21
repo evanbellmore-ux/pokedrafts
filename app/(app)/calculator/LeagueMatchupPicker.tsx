@@ -95,6 +95,8 @@ export function MyTeamPicker({ state, onLeagueChange, onRefresh, loginNext, head
   const league = state.leagues.find((entry) => entry.id === state.selectedLeagueId);
   const fields = (
     <>
+      {/* Embedded (Training): the League above the select, as the Opponent picker states it, so the two sides line up. */}
+      {embedded && league && <dl className="grid gap-3 text-sm sm:grid-cols-2"><LeagueFact name={league.name} /></dl>}
       <LeagueSelector state={state} onLeagueChange={onLeagueChange} />
       {ready && !!state.leagues.length && !league && <p role={embedded ? undefined : "status"} className="text-sm text-muted">No team chosen.</p>}
     </>
@@ -112,7 +114,29 @@ export function MyTeamPicker({ state, onLeagueChange, onRefresh, loginNext, head
   );
 }
 
-/** A group of one-press opponent picks above the Opponent select (Training's "Next match", "Recent"): coaches by member id. */
+/** The selected league's name ("League"), as both of Training's team panels state it above their select. */
+function LeagueFact({ name }: { name: string }) {
+  return <div><dt className="text-muted">League</dt><dd className="wrap-anywhere font-medium text-text">{name}</dd></div>;
+}
+
+/**
+ * The selected league (your membership in it), whether its teams are loaded, its other coaches by team name, and each one's
+ * name as the Opponent select says it (with "(team 2)" when two teams share a name).
+ */
+function opponentChoices(state: CalculatorRosterState) {
+  const league = state.leagues.find((entry) => entry.id === state.selectedLeagueId);
+  const teamsReady = state.status === "ready" && !!league && state.teamsStatus === "ready" && state.data?.leagueId === league.id;
+  const opponents = teamsReady ? [...(state.data?.members ?? [])].filter((member) => member.id !== league.memberId)
+    .sort((a, b) => teamNameLabel(a.team_name).localeCompare(teamNameLabel(b.team_name), "en") || a.id.localeCompare(b.id, "en")) : [];
+  const names = new Map(opponents.map((member, index) => {
+    const name = teamNameLabel(member.team_name);
+    const duplicate = opponents.filter((entry) => teamNameLabel(entry.team_name).toLowerCase() === name.toLowerCase()).length > 1;
+    return [member.id, `${name}${duplicate ? ` (team ${index + 1})` : ""}`];
+  }));
+  return { league, teamsReady, opponents, names };
+}
+
+/** A group of one-press opponent picks (Training's "Next match", "Recent"; OpponentQuickPicks): coaches by member id. */
 export type OpponentQuickGroup = {
   heading: string;
   /** `fact`: after the team's name ("Round 3"). A coach who is not one of the league's other loaded members is left out. */
@@ -121,27 +145,50 @@ export type OpponentQuickGroup = {
 
 const quickButton = "min-h-11 max-w-full rounded-lg border px-3 py-1.5 text-left text-sm font-semibold wrap-anywhere focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus";
 
-export function OpponentPicker({ state, onOpponentChange, onRefresh, onLeagueChange, loginNext, embedded = false, quick }: SourcePickerProps & {
+/**
+ * Groups of opponents one press selects, as the Opponent select does (it keeps every coach): each group's heading, then its
+ * buttons. Training shows them in the Opponent panel's header row, beside its heading. Nothing when no group has a coach.
+ */
+export function OpponentQuickPicks({ state, quick, onOpponentChange }: {
+  state: CalculatorRosterState;
+  quick: readonly OpponentQuickGroup[];
+  onOpponentChange: (id: string) => void;
+}) {
+  const id = useId();
+  const { names } = opponentChoices(state);
+  const groups = quick.map((group) => ({ heading: group.heading, options: group.options.filter((option) => names.has(option.id)) }))
+    .filter((group) => group.options.length > 0);
+  if (!groups.length) return null;
+  return (
+    <div data-opponent-quick className="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-2">
+      {groups.map((group, groupIndex) => (
+        <div key={group.heading} role="group" aria-labelledby={`${id}-quick-${groupIndex}`} className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+          <p id={`${id}-quick-${groupIndex}`} className="text-xs font-medium text-muted">{group.heading}</p>
+          <div className="flex min-w-0 flex-wrap gap-1.5">
+            {group.options.map((option) => {
+              const selected = state.opponentId === option.id;
+              return (
+                <button key={option.id} type="button" data-opponent-quick-pick={option.id} aria-pressed={selected} onClick={() => onOpponentChange(option.id)}
+                  className={`${quickButton} ${selected ? "border-accent-border bg-accent-soft text-accent-text" : "border-line bg-bg text-text hover:bg-panel-hover"}`}>
+                  {`${names.get(option.id)}${option.fact ? ` · ${option.fact}` : ""}`}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export function OpponentPicker({ state, onOpponentChange, onRefresh, onLeagueChange, loginNext, embedded = false }: SourcePickerProps & {
   onOpponentChange: (id: string) => void;
   /** Its own league selector (your team is a paste): the opponents are that league's. */
   onLeagueChange?: (id: string) => void;
-  /** Groups of opponents one press selects (as the select does), above it; the select keeps every coach. Default: none. */
-  quick?: readonly OpponentQuickGroup[];
 }) {
   const id = useId();
-  const league = state.leagues.find((entry) => entry.id === state.selectedLeagueId);
+  const { league, teamsReady, opponents, names } = opponentChoices(state);
   const ready = state.status === "ready";
-  const teamsReady = ready && !!league && state.teamsStatus === "ready" && state.data?.leagueId === league.id;
-  const opponents = teamsReady ? [...(state.data?.members ?? [])].filter((member) => member.id !== league.memberId)
-    .sort((a, b) => teamNameLabel(a.team_name).localeCompare(teamNameLabel(b.team_name), "en") || a.id.localeCompare(b.id, "en")) : [];
-  /** Each coach's name as its option says it (with "(team 2)" when two teams share a name). */
-  const names = new Map(opponents.map((member, index) => {
-    const name = teamNameLabel(member.team_name);
-    const duplicate = opponents.filter((entry) => teamNameLabel(entry.team_name).toLowerCase() === name.toLowerCase()).length > 1;
-    return [member.id, `${name}${duplicate ? ` (team ${index + 1})` : ""}`];
-  }));
-  const quickGroups = (quick ?? []).map((group) => ({ heading: group.heading, options: group.options.filter((option) => names.has(option.id)) }))
-    .filter((group) => group.options.length > 0);
   // Embedded beside your own league team's picker, whose select already names your team: the League only.
   const ownTeamShown = !embedded || !!onLeagueChange;
   const fields = (
@@ -150,28 +197,8 @@ export function OpponentPicker({ state, onOpponentChange, onRefresh, onLeagueCha
       {league && (
         <dl className="grid gap-3 text-sm sm:grid-cols-2">
           {ownTeamShown && <div><dt className="text-muted">{onLeagueChange ? "Your league membership" : "Your team"}</dt><dd className="wrap-anywhere font-medium text-text">{teamNameLabel(league.teamName)}</dd></div>}
-          <div><dt className="text-muted">League</dt><dd className="wrap-anywhere font-medium text-text">{league.name}</dd></div>
+          <LeagueFact name={league.name} />
         </dl>
-      )}
-      {quickGroups.length > 0 && (
-        <div data-opponent-quick className="flex min-w-0 flex-wrap gap-x-4 gap-y-2">
-          {quickGroups.map((group, groupIndex) => (
-            <div key={group.heading} role="group" aria-labelledby={`${id}-quick-${groupIndex}`} className="min-w-0 space-y-1">
-              <p id={`${id}-quick-${groupIndex}`} className="text-xs font-medium text-muted">{group.heading}</p>
-              <div className="flex min-w-0 flex-wrap gap-1.5">
-                {group.options.map((option) => {
-                  const selected = state.opponentId === option.id;
-                  return (
-                    <button key={option.id} type="button" data-opponent-quick-pick={option.id} aria-pressed={selected} onClick={() => onOpponentChange(option.id)}
-                      className={`${quickButton} ${selected ? "border-accent-border bg-accent-soft text-accent-text" : "border-line bg-bg text-text hover:bg-panel-hover"}`}>
-                      {`${names.get(option.id)}${option.fact ? ` · ${option.fact}` : ""}`}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          ))}
-        </div>
       )}
       <Field id={`${id}-opponent`} label="Opponent">
         <Select data-opponent-selector value={opponents.some((member) => member.id === state.opponentId) ? state.opponentId : ""} disabled={!teamsReady || !opponents.length} onChange={(event) => onOpponentChange(event.target.value)}>

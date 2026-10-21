@@ -15,6 +15,66 @@
   display: none;
 }
 
+/* A panel's header: its heading, the opponent's quick picks ("Next match", "Recent") and the League team | PokéPaste switch.
+   Below 40rem the picks sit beside the heading and the switch takes a row of its own across the panel. From 40rem the heading
+   and the switch share the top line; the picks sit between them where the header is wide enough, else on a row of their own
+   under them (never squeezed into a narrow column). A row without picks adds no height. */
+.teamHeader {
+  container: team-header / inline-size;
+}
+
+.headerRow {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas: "heading picks" "switch switch";
+  align-items: start;
+  column-gap: 0.75rem;
+}
+
+.headerHeading {
+  grid-area: heading;
+}
+
+.headerPicks {
+  grid-area: picks;
+  align-self: center;
+}
+
+.headerSwitch {
+  grid-area: switch;
+  margin-block-start: 0.5rem;
+}
+
+@media (min-width: 40rem) {
+  .headerRow {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "heading switch" "picks picks";
+  }
+
+  .headerPicks {
+    align-self: start;
+    margin-block-start: 0.5rem;
+  }
+
+  .headerSwitch {
+    margin-block-start: 0;
+  }
+}
+
+@container team-header (min-width: 34rem) {
+  @media (min-width: 40rem) {
+    .headerRow {
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      grid-template-areas: "heading picks switch";
+    }
+
+    .headerPicks {
+      align-self: center;
+      margin-block-start: 0;
+    }
+  }
+}
+
 .battleFields {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
