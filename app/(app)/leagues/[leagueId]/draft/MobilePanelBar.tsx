@@ -10,6 +10,14 @@ export type MobilePanelBarProps = {
 };
 
 /**
+ * The room keeps only the newest CHAT_LIMIT (100) messages, so a count of
+ * 100 may stand for more: from there the button says 99+.
+ */
+function unreadLabel(count: number): string {
+  return count > 99 ? "99+" : String(count);
+}
+
+/**
  * Roster / Pool / Board / Chat switcher for small screens. Sticky under the
  * app header (docs section 8.5; AppNav publishes its measured height) and
  * hidden from `lg` up, where every panel is visible at once. The buttons are
@@ -43,9 +51,9 @@ export default function MobilePanelBar({
               {panel.label}
               {panel.id === "chat" && unreadChat > 0 && (
                 <span className="ml-1 text-xs font-normal">
-                  <span aria-hidden="true">({unreadChat})</span>
+                  <span aria-hidden="true">({unreadLabel(unreadChat)})</span>
                   <span className="sr-only">
-                    , {unreadChat} new {unreadChat === 1 ? "message" : "messages"}
+                    , {unreadLabel(unreadChat)} new {unreadChat === 1 ? "message" : "messages"}
                   </span>
                 </span>
               )}

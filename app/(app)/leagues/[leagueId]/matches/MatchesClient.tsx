@@ -146,8 +146,8 @@ export default function MatchesClient() {
     leagueId,
     name: "matches",
     tables: ["league_matches", "leagues"],
-    onChange: (table) => {
-      if (table === "leagues" || table === null) void refresh();
+    onChange: (tables) => {
+      if (!tables || tables.has("leagues")) void refresh();
       void reload();
     },
   });

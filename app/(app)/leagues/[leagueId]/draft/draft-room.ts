@@ -300,6 +300,18 @@ export function mergeChat(
     .slice(-CHAT_LIMIT);
 }
 
+/**
+ * Messages in `chat` that are not in `seen` (the ids counted as read). The
+ * room keeps only the newest CHAT_LIMIT messages, so its length stops
+ * growing at 100 and a count by length would stop with it.
+ */
+export function countUnreadChat(
+  chat: readonly Pick<DraftChatMessage, "id">[],
+  seen: ReadonlySet<string>
+): number {
+  return chat.filter((message) => !seen.has(message.id)).length;
+}
+
 /** Calendar-day key used to insert date separators between messages. */
 export function chatDayKey(iso: string): string {
   const date = new Date(iso);
