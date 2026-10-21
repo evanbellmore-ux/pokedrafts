@@ -170,6 +170,36 @@ describe("league lifecycle RPCs", () => {
       expect(rows[0].used_count).toBe(1);
     });
 
+    it("adds a coach who joins after the draft order is set to the end of it, so they draft", async () => {
+      // The commissioner and two coaches hold positions 1..3 (buildLeague sets the order after the joins).
+      const league = await buildLeague(db, { coaches: 2, maxCoaches: 6 });
+      const late = await createUser(db);
+      await rpcAs(db, late, "join_league", { p_code: league.inviteCode, p_team_name: "Late" });
+      expect((await memberFor(db, league.leagueId, late)).draft_position).toBe(4);
+      const later = await createUser(db);
+      await rpcAs(db, later, "join_league", { p_code: league.inviteCode, p_team_name: "Later" });
+      expect((await memberFor(db, league.leagueId, later)).draft_position).toBe(5);
+      const { rows } = await db.query("select coalesce(array_length(public._positioned_members($1), 1), 0) as n", [league.leagueId]);
+      expect(rows[0].n).toBe(5);
+
+      // A coach the commissioner leaves out of the order stays out; the next joiner still goes to the end.
+      const partial = await buildLeague(db, { coaches: 2, maxCoaches: 6, setOrder: false });
+      await rpcAs(db, partial.commissioner.userId, "set_draft_order", {
+        p_league_id: partial.leagueId,
+        p_member_ids: [partial.commissioner.memberId, partial.coaches[0].memberId],
+      });
+      const next = await createUser(db);
+      await rpcAs(db, next, "join_league", { p_code: partial.inviteCode, p_team_name: "Next" });
+      expect((await memberFor(db, partial.leagueId, next)).draft_position).toBe(3);
+      expect((await memberFor(db, partial.leagueId, partial.coaches[1].userId)).draft_position).toBeNull();
+
+      // Before any order exists a new coach waits for the commissioner's order, as before.
+      const fresh = await buildLeague(db, { coaches: 1, maxCoaches: 4, setOrder: false });
+      const early = await createUser(db);
+      await rpcAs(db, early, "join_league", { p_code: fresh.inviteCode, p_team_name: "Early" });
+      expect((await memberFor(db, fresh.leagueId, early)).draft_position).toBeNull();
+    });
+
     it("returns the league id for an existing member without inserting again", async () => {
       const league = await buildLeague(db, { coaches: 1, maxCoaches: 4 });
       const again = await rpcAs<string>(db, league.coaches[0].userId, "join_league", { p_code: league.inviteCode, p_team_name: "" });

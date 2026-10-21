@@ -137,10 +137,20 @@ describe("client boundaries", () => {
     }
   });
 
-  it("error.tsx is a client component using unstable_retry", () => {
+  // The prop the installed Next.js passes to error boundaries. A renamed prop
+  // leaves "Try again" calling undefined, as `unstable_retry` did once Next
+  // 16.3 made it `retry`.
+  it("passes `retry` to error boundaries in the installed Next.js", () => {
+    const boundary = read(join(root, "node_modules", "next", "dist", "client", "components", "error-boundary.js"));
+    expect(boundary).toMatch(/\bretry: this\.retry\b/);
+  });
+
+  it("error.tsx is a client component calling retry", () => {
     const source = read(join(appDir, "error.tsx"));
     expect(isClientModule(source)).toBe(true);
-    expect(source).toMatch(/unstable_retry\(\)/);
+    expect(source).toMatch(/\{\s*error,\s*retry,\s*\}/);
+    expect(source).toMatch(/\bretry\(\)/);
+    expect(source).not.toMatch(/unstable_retry/);
   });
 
   it("global-error.tsx is a client component that renders <html> and <body>", () => {
@@ -148,7 +158,9 @@ describe("client boundaries", () => {
     expect(isClientModule(source)).toBe(true);
     expect(source).toMatch(/<html[\s>]/);
     expect(source).toMatch(/<body[\s>]/);
-    expect(source).toMatch(/unstable_retry\(\)/);
+    expect(source).toMatch(/\{\s*error,\s*retry,\s*\}/);
+    expect(source).toMatch(/\bretry\(\)/);
+    expect(source).not.toMatch(/unstable_retry/);
   });
 
   it("uses next/link, not <a>, for internal navigation outside global-error", () => {

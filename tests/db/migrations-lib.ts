@@ -17,6 +17,8 @@ export const EXECUTION_MIGRATION = "20261013120000_castmirror_execution_private.
 export const EXECUTION_RULES_MIGRATION = "20261014224500_castmirror_raid_rules_pool_versions.sql";
 export const RAID_REVIEW_MIGRATION = "20261015120000_castmirror_raid_reviews.sql";
 export const EXECUTION_TIMEOUT_MIGRATION = "20261015143000_castmirror_request_timeout.sql";
+export const JOIN_DRAFT_ORDER_MIGRATION = "20261020120000_join_league_draft_order.sql";
+export const SMALL_SPRITES_MIGRATION = "20261020121000_small_pokemon_sprites.sql";
 export const BASE_MIGRATION = "00000000000000_base_schema.sql";
 
 export type MigrationFile = { name: string; sql: string };

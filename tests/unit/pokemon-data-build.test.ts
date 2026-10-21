@@ -602,15 +602,24 @@ describe("rows", () => {
       tags: [],
       games: expect.arrayContaining(["champions", "x_y", "oras"]),
       dex_numbers: expect.objectContaining({ national: 6, champions: 6 }),
-      sprite_url: pokemon("charizard-mega-x").sprites.official_artwork,
+      // The small game sprite, not the 120-200 KB official artwork.
+      sprite_url: pokemon("charizard-mega-x").sprites.front_default,
     });
+    expect(pokemon("charizard-mega-x").sprites.front_default).toBeTruthy();
     expect(validateRow(row)).toEqual([]);
+  });
+
+  it("uses a form's own artwork when it has no game sprite, before the species' images", () => {
+    const artOnly = { ...pokemon("rotom-wash"), sprites: { front_default: null, official_artwork: "rotom-wash-art.png" } };
+    const row = buildRow({ catalog, species: species("rotom"), pokemon: artOnly, kind: "other", curated: FIXTURE_OVERRIDES.tags });
+    expect(row.sprite_url).toBe("rotom-wash-art.png");
   });
 
   it("falls back to the species sprite when a form has none", () => {
     const bare = { ...pokemon("rotom-wash"), sprites: { front_default: null, official_artwork: null } };
     const row = buildRow({ catalog, species: species("rotom"), pokemon: bare, kind: "other", curated: FIXTURE_OVERRIDES.tags });
-    expect(row.sprite_url).toBe(pokemon("rotom").sprites.official_artwork);
+    expect(row.sprite_url).toBe(pokemon("rotom").sprites.front_default);
+    expect(row.sprite_url).toBeTruthy();
   });
 
   it("unions games and tags from an override and replaces other columns", () => {

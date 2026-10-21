@@ -145,6 +145,11 @@ export default function PokemonSprite({
     );
   }
 
+  // Game sprites carry wide transparent margins, so they fill a tile without
+  // padding; the official artwork (used when a form has no game sprite) runs
+  // edge to edge and keeps it.
+  const tile = state.url.includes("/official-artwork/") ? "bg-panel-hover p-1" : "bg-panel-hover";
+
   return (
     // eslint-disable-next-line @next/next/no-img-element -- sprites come from Supabase storage / PokeAPI and are tiny; the image optimizer adds nothing.
     <img
@@ -160,7 +165,7 @@ export default function PokemonSprite({
         if (!src) spriteCache.set(key, null);
         setState({ key, status: "failed" });
       }}
-      className={`${box} object-contain ${bare ? "" : "bg-panel-hover p-1"}`.trim()}
+      className={`${box} object-contain ${bare ? "" : tile}`.trim()}
     />
   );
 }
