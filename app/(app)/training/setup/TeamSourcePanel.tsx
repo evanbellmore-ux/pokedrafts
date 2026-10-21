@@ -5,7 +5,7 @@ import { ChevronDown } from "lucide-react";
 import PokemonSprite from "@/app/components/PokemonSprite";
 import { Alert, Button } from "@/app/components/ui";
 import PokePasteImporter from "@/app/(app)/calculator/PokePasteImporter";
-import { MyTeamPicker, OpponentPicker, type OpponentQuickGroup } from "@/app/(app)/calculator/LeagueMatchupPicker";
+import { MyTeamPicker, OpponentPicker, OpponentQuickPicks, type OpponentQuickGroup } from "@/app/(app)/calculator/LeagueMatchupPicker";
 import type useCalculatorRosters from "@/app/(app)/calculator/useCalculatorRosters";
 import type { PasteImport, TeamSourceOwner } from "@/app/(app)/calculator/roster-prep";
 import type { DoublesSideId } from "@/app/lib/battle/doubles-types";
@@ -34,7 +34,7 @@ export type TeamSourcePanelProps = {
   shared: ReadonlySet<string>;
   /** Bumped by the Start bar's fact for this side: the Choose 6 list opens. */
   reveal: number;
-  /** The opponent's league picker: its quick picks ("Next match", "Recent"; next-opponent.ts opponentQuickPicks). */
+  /** The opponent's quick picks ("Next match", "Recent"; next-opponent.ts opponentQuickPicks): its header row, in league mode. */
   quick?: readonly OpponentQuickGroup[];
   onSource(update: (source: TeamSourceDraft) => TeamSourceDraft): void;
   onRetrySuggest(): void;
@@ -120,18 +120,29 @@ export default function TeamSourcePanel({ role, team, source, ownMode, rosters, 
 
   return (
     <section ref={panel} data-training-team={role} aria-labelledby={`${id}-heading`} className={`${styles.team} min-w-0 rounded-xl border border-line bg-panel p-3 sm:p-4`}>
-      <div className={`${styles.teamHeader} flex flex-wrap items-center justify-between gap-2`}>
-        {/* Takes the keyboard focus from the Start bar's fact and after Change teams. */}
-        <h2 id={`${id}-heading`} tabIndex={-1} data-training-team-heading={role}
-          className={`${styles.sideHeading} rounded text-lg font-semibold text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus`}>{title}</h2>
-        {/* Below 40rem two equal buttons across the panel (as the calculator's 1v1 | 2v2 switch). */}
-        <div role="group" aria-label={`${title} source`} className="grid w-full grid-cols-2 gap-1 rounded-lg border border-line bg-bg/40 p-1 sm:flex sm:w-auto">
-          {(["league", "paste"] as const).map((mode) => (
-            <button key={mode} type="button" aria-pressed={source.mode === mode} onClick={() => setMode(mode)}
-              className={`${sourceButton} ${source.mode === mode ? "bg-panel-hover text-text shadow-sm" : "text-muted hover:text-text"}`}>
-              {mode === "league" ? "League team" : "PokéPaste"}
-            </button>
-          ))}
+      {/* The heading, the opponent's quick picks and the switch (setup.module.css .headerRow); the heading and the switch top
+          the row, level with the other panel's (from 40rem the heading's line is as tall as the switch, so their middles meet). */}
+      <div className={styles.teamHeader}>
+        <div className={styles.headerRow}>
+          {/* Takes the keyboard focus from the Start bar's fact and after Change teams. */}
+          <h2 id={`${id}-heading`} tabIndex={-1} data-training-team-heading={role}
+            className={`${styles.sideHeading} ${styles.headerHeading} rounded text-lg font-semibold text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus sm:leading-[3.375rem]`}>{title}</h2>
+          {/* The opponent's quick picks ("Next match", "Recent"): below, both panels state the League and then their select,
+              level with each other. */}
+          {role === "opponent" && source.mode === "league" && !!quick?.length && (
+            <div className={`${styles.headerPicks} min-w-0`}>
+              <OpponentQuickPicks state={rosters.state} quick={quick} onOpponentChange={rosters.selectOpponent} />
+            </div>
+          )}
+          {/* Below 40rem two equal buttons across the panel (as the calculator's 1v1 | 2v2 switch). */}
+          <div role="group" aria-label={`${title} source`} className={`${styles.headerSwitch} grid w-full grid-cols-2 gap-1 rounded-lg border border-line bg-bg/40 p-1 sm:flex sm:w-auto`}>
+            {(["league", "paste"] as const).map((mode) => (
+              <button key={mode} type="button" aria-pressed={source.mode === mode} onClick={() => setMode(mode)}
+                className={`${sourceButton} ${source.mode === mode ? "bg-panel-hover text-text shadow-sm" : "text-muted hover:text-text"}`}>
+                {mode === "league" ? "League team" : "PokéPaste"}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -142,7 +153,7 @@ export default function TeamSourcePanel({ role, team, source, ownMode, rosters, 
           role === "own"
             ? <MyTeamPicker embedded state={rosters.state} onLeagueChange={rosters.selectLeague} onRefresh={rosters.refresh} loginNext="/training" />
             : <OpponentPicker embedded state={rosters.state} onOpponentChange={rosters.selectOpponent} onRefresh={rosters.refresh} loginNext="/training"
-              onLeagueChange={ownMode === "paste" ? rosters.selectLeague : undefined} quick={quick} />
+              onLeagueChange={ownMode === "paste" ? rosters.selectLeague : undefined} />
         ) : (
           <PokePasteImporter embedded role={role} owner={owner} applied={source.paste} runtime={runtime} onApply={apply} onRemove={removePaste}
             removeDescription={TRAINING_PICKER_TEXT.removeDescription}

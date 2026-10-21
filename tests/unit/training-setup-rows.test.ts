@@ -57,6 +57,29 @@ describe("Training setup's shared rows", () => {
     expect(sharedRows([{ candidates: [] }, { candidates: [] }])).toBe(PANEL_ROWS + 1);
   });
 
+  it("tops each header with its heading and switch; the opponent's quick picks between them where they fit, else under them", () => {
+    expect(declarations(css, ".teamHeader")).toEqual({ container: "team-header / inline-size" });
+    const phone = css.slice(0, css.indexOf("@media (min-width: 40rem) {"));
+    expect(declarations(phone, ".headerRow")).toMatchObject({ display: "grid", "grid-template-areas": '"heading picks" "switch switch"', "align-items": "start" });
+    expect(declarations(cssBlock(css, "@media (min-width: 40rem)"), ".headerRow")).toEqual({
+      "grid-template-columns": "minmax(0, 1fr) auto", "grid-template-areas": '"heading switch" "picks picks"',
+    });
+    const roomy = cssBlock(cssBlock(css, "@container team-header (min-width: 34rem)"), "@media (min-width: 40rem)");
+    expect(declarations(roomy, ".headerRow")).toEqual({ "grid-template-columns": "auto minmax(0, 1fr) auto", "grid-template-areas": '"heading picks switch"' });
+    // The switch's own Tailwind display (two equal buttons below 40rem, a row from 40rem) is never overridden.
+    expect(css).not.toMatch(/\.headerSwitch\s*\{[^}]*display/);
+    const state = rosterState(OWN_ROSTER, OPPONENT_ROSTER);
+    const session = { updateDraft: vi.fn(), validate: vi.fn(), suggest: vi.fn(), loadMoveOptions: vi.fn(), start: vi.fn(), clearHabits: vi.fn(), setTrendsOpen: vi.fn(), retryEngine: vi.fn() };
+    const picks = { userId: "user-1", leagueId: "league-a", opponents: {}, recent: { "league-a": ["member-other"] } };
+    const html = renderToStaticMarkup(createElement(TeamSetup, {
+      runtime, rosters: { state, selectLeague: vi.fn(), selectOpponent: vi.fn(), refresh: vi.fn() }, snapshot: snapshotWith({ picks }, createSetupDraft(), state), session,
+    } satisfies TeamSetupProps));
+    const header = (role: "own" | "opponent") => childClasses(html.slice(html.indexOf(`data-training-team="${role}"`)), `class="${styles.headerRow}"`)
+      .map((classes) => ["headerHeading", "headerPicks", "headerSwitch"].find((name) => classes.includes(styles[name])) ?? null);
+    expect(header("own")).toEqual(["headerHeading", "headerSwitch"]);
+    expect(header("opponent")).toEqual(["headerHeading", "headerPicks", "headerSwitch"]);
+  });
+
   it("gives both panels the rows of the longer list, and every part of each panel a shared row", () => {
     const html = render();
     expect(html).toContain(`<div class="${styles.teams}" style="--team-rows:${PANEL_ROWS + OWN_ROSTER.length}">`);

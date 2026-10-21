@@ -1,7 +1,7 @@
 import { createElement, type ComponentProps } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
-import { MyTeamPicker, OpponentPicker } from "@/app/(app)/calculator/LeagueMatchupPicker";
+import { MyTeamPicker, OpponentPicker, OpponentQuickPicks } from "@/app/(app)/calculator/LeagueMatchupPicker";
 import PokePasteImporter from "@/app/(app)/calculator/PokePasteImporter";
 import TeamSetup, { type TeamSetupProps } from "@/app/(app)/training/setup/TeamSetup";
 import { FORMAT_FACTS } from "@/app/(app)/training/model/format-facts";
@@ -569,13 +569,14 @@ describe("Training setup", () => {
     expect(rostersRow(html)).toMatch(/^<div data-training-rosters="true" class="flex flex-wrap items-start gap-2"><div class="min-w-0 flex-1 space-y-2 empty:hidden max-sm:basis-full"><\/div><button type="button" class="[^"]*min-h-11 ml-auto shrink-0"[^>]*>[^]*Refresh teams<\/button><\/div>/);
     (buttons.find((button) => text(button).includes("Refresh teams"))!.onClick as () => void)();
     expect(value.refresh).toHaveBeenCalledOnce();
-    // Your league team's select names your team: the opponent's picker states the League only.
+    // Your league team's select names your team: both pickers state the League only, above their select.
     const opponent = panelOf(html, "opponent");
     expect(opponent).not.toContain(">Your team</dt>");
-    expect(opponent).toContain('>League</dt><dd class="wrap-anywhere font-medium text-text">Alpha</dd>');
+    for (const panel of [panelOf(html, "own"), opponent]) expect(panel).toContain('>League</dt><dd class="wrap-anywhere font-medium text-text">Alpha</dd>');
     expect(html.match(/<label[^>]*>(?:My team|Opponent)<\/label>/g)).toHaveLength(2);
-    // Below 40rem each side's League team | PokéPaste is two equal buttons across the panel.
-    expect(html.match(/role="group" aria-label="(?:Your team|Opponent) source" class="grid w-full grid-cols-2 gap-1 rounded-lg border border-line bg-bg\/40 p-1 sm:flex sm:w-auto"/g)).toHaveLength(2);
+    // Below 40rem each side's League team | PokéPaste is two equal buttons across the panel; from 40rem it ends the header's
+    // top line (setup.module.css .headerRow).
+    expect(html.match(new RegExp(`role="group" aria-label="(?:Your team|Opponent) source" class="${setupStyles.headerSwitch} grid w-full grid-cols-2 gap-1 rounded-lg border border-line bg-bg/40 p-1 sm:flex sm:w-auto"`, "g"))).toHaveLength(2);
     // Signed out: the alert and its Log in again link once.
     const out = render(snapshotWith(), session(), { ...rosterState(OWN_ROSTER, OPPONENT_ROSTER), status: "signed-out", leagues: [], selectedLeagueId: "", opponentId: "", data: null, teamsStatus: "idle" }).html;
     expect(out.split("Log in again").length - 1).toBe(1);
@@ -615,6 +616,8 @@ describe("Training setup", () => {
     const html = cards(state);
     expect(html.match(/<section\b/g)).toHaveLength(3);
     for (const fact of [">My team</h2>", ">Opponent</h2>", ">My team · PokéPaste</h2>", "Target game:", ">Your team</dt>"]) expect(html).toContain(fact);
+    // The League fact above My team's select is Training's (embedded) only: the calculator's Opponent card states it once.
+    expect(html.split(">League</dt>").length - 1).toBe(1);
     expect(html.split("Refresh teams").length - 1).toBe(2);
     expect(cards({ ...state, teamsStatus: "error", data: null }).split("League teams unavailable").length - 1).toBe(2);
   });
@@ -623,17 +626,17 @@ describe("Training setup", () => {
 describe("opponent quick picks (package 4)", () => {
   const THIRD = { id: "member-third", role: "coach", team_name: "Third", draft_position: 3 };
   const crowded = (state = rosterState(OWN_ROSTER, OPPONENT_ROSTER)) => ({ ...state, data: state.data && { ...state.data, members: [...state.data.members, THIRD] } });
-  /** The quick picks' markup: from their row to the Opponent select's label. */
-  const quickPart = (html: string) => html.slice(html.indexOf("<div data-opponent-quick"), html.lastIndexOf("<label", html.indexOf("data-opponent-selector")));
+  /** The quick picks' markup in the Opponent panel: from their block to the League team | PokéPaste switch after them. */
+  const quickPart = (html: string) => html.slice(html.indexOf("<div data-opponent-quick"), html.indexOf('<div role="group" aria-label="Opponent source"'));
 
-  it("OpponentPicker puts groups of one-press picks above the select, named as its options, pressed when chosen", () => {
+  it("OpponentQuickPicks: groups of one-press picks, each heading before its buttons, named as the select's options, pressed when chosen", () => {
     const onOpponentChange = vi.fn();
     host.buttons = [];
     host.capture = true;
-    let html: string;
+    let quick: string;
     try {
-      html = renderToStaticMarkup(createElement(OpponentPicker, {
-        state: crowded(), onOpponentChange, onRefresh: vi.fn(), embedded: true,
+      quick = renderToStaticMarkup(createElement(OpponentQuickPicks, {
+        state: crowded(), onOpponentChange,
         quick: [
           { heading: "Next match", options: [{ id: "member-other", fact: "Round 3" }] },
           { heading: "Recent", options: [{ id: "member-third" }, { id: "member-gone" }] },
@@ -643,27 +646,25 @@ describe("opponent quick picks (package 4)", () => {
     } finally {
       host.capture = false;
     }
-    const quick = quickPart(html);
-    expect(html.indexOf("data-opponent-quick")).toBeLessThan(html.indexOf("data-opponent-selector"));
     expect([...quick.matchAll(/<p id="([^"]+)"[^>]*>([^<]*)<\/p>/g)].map((group) => group[2])).toEqual(["Next match", "Recent"]);
-    expect(quick.match(/role="group" aria-labelledby="[^"]+"/g)).toHaveLength(2);
+    // One line each (a header row's): the heading, then the buttons.
+    expect(quick.match(/<div role="group" aria-labelledby="[^"]+" class="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1"><p /g)).toHaveLength(2);
     expect(quick).toMatch(/<button type="button" data-opponent-quick-pick="member-other" aria-pressed="true"[^>]*>Away · Round 3<\/button>/);
     expect(quick).toMatch(/<button type="button" data-opponent-quick-pick="member-third" aria-pressed="false"[^>]*>Third<\/button>/);
-    // A coach who is not one of the league's other members has no button; the select keeps every coach.
+    // A coach who is not one of the league's other members has no button.
     expect(quick).not.toContain("member-gone");
     expect(quick).not.toContain("member-own");
-    expect(html).toContain('<option value="member-third">Third</option>');
     (host.buttons.find((button) => button["data-opponent-quick-pick"] === "member-third")!.onClick as () => void)();
     expect(onOpponentChange).toHaveBeenCalledExactlyOnceWith("member-third");
-    // None while the league's teams load, and none without the prop (the calculator's picker is unchanged).
-    const loading = renderToStaticMarkup(createElement(OpponentPicker, { state: { ...crowded(), teamsStatus: "loading", data: null }, onOpponentChange, onRefresh: vi.fn(), quick: [{ heading: "Recent", options: [{ id: "member-third" }] }] }));
-    expect(loading).not.toContain("data-opponent-quick");
-    const calculator = renderToStaticMarkup(createElement(OpponentPicker, { state: crowded(), onOpponentChange, onRefresh: vi.fn() }));
-    expect(calculator).not.toContain("data-opponent-quick");
-    expect(renderToStaticMarkup(createElement(OpponentPicker, { state: crowded(), onOpponentChange, onRefresh: vi.fn(), quick: [] }))).toBe(calculator);
+    // Nothing while the league's teams load or without a coach to offer; the Opponent select keeps every coach and has none.
+    expect(renderToStaticMarkup(createElement(OpponentQuickPicks, { state: { ...crowded(), teamsStatus: "loading", data: null }, onOpponentChange, quick: [{ heading: "Recent", options: [{ id: "member-third" }] }] }))).toBe("");
+    expect(renderToStaticMarkup(createElement(OpponentQuickPicks, { state: crowded(), onOpponentChange, quick: [{ heading: "Recent", options: [{ id: "member-gone" }] }] }))).toBe("");
+    const picker = renderToStaticMarkup(createElement(OpponentPicker, { state: crowded(), onOpponentChange, onRefresh: vi.fn(), embedded: true }));
+    expect(picker).not.toContain("data-opponent-quick");
+    expect(picker).toContain('<option value="member-third">Third</option>');
   });
 
-  it("Training's Opponent panel offers your next match and the opponents of your last starts in the league; a press is your pick", () => {
+  it("Training's Opponent panel offers your next match and the opponents of your last starts in its header row; a press is your pick", () => {
     const state = crowded();
     const picks = { userId: "user-1", leagueId: "league-a", opponents: {}, recent: { "league-a": ["member-other", "member-third"], "league-b": ["member-x"] } };
     const value = { ...rosters(state), nextMatch: { opponentId: "member-other", name: "Round 3" } };
@@ -678,6 +679,18 @@ describe("opponent quick picks (package 4)", () => {
     const opponent = panelOf(html, "opponent");
     expect(plain(quickPart(opponent))).toBe("Next matchAway · Round 3RecentThird");
     expect(panelOf(html, "own")).not.toContain("data-opponent-quick");
+    // Beside the Opponent heading, before the League team | PokéPaste switch: below them both panels state the League, then
+    // their select, so the two sides' League and selects line up.
+    const at = (marker: string) => opponent.indexOf(marker);
+    expect(at(">Opponent</h2>")).toBeLessThan(at("data-opponent-quick"));
+    expect(at("data-opponent-quick")).toBeLessThan(at('aria-label="Opponent source"'));
+    for (const [role, select] of [["own", "data-league-selector"], ["opponent", "data-opponent-selector"]] as const) {
+      const panel = panelOf(html, role);
+      const source = panel.slice(panel.indexOf(`class="${setupStyles.teamSource}"`));
+      expect(source.indexOf('<dt class="text-muted">League</dt><dd class="wrap-anywhere font-medium text-text">Alpha</dd>')).toBe(source.indexOf("<dt"));
+      expect(source.indexOf(">League</dt>")).toBeLessThan(source.indexOf(select));
+      expect(source.slice(0, source.indexOf(select))).not.toContain("data-opponent-quick");
+    }
     (host.buttons.find((button) => button["data-opponent-quick-pick"] === "member-third")!.onClick as () => void)();
     expect(value.selectOpponent).toHaveBeenCalledExactlyOnceWith("member-third");
     // Another account's picks, or no schedule: no Recent, no Next match.
