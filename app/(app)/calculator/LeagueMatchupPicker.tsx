@@ -245,13 +245,13 @@ export function RosterPicker({ state, panel: providedPanel, role, side, activeSo
   if (slots) return <SlotRosterPicker id={id} panel={panel} ownership={ownership} side={side} slots={slots} pickerId={pickerId} rail={rail} runtime={runtime} />;
   return (
     <div id={pickerId} data-calculator-roster={side} aria-labelledby={`${id}-heading`} aria-busy={panel.status === "loading" || undefined} className={`${rail ? "min-w-0" : "mt-4"} rounded-lg border border-line bg-bg p-3`}>
-      <div className={rail ? "flex min-w-0 flex-col items-start gap-1" : "flex flex-wrap items-baseline justify-between gap-2"}>
+      <div data-roster-row="header" className={rail ? "flex min-w-0 flex-col items-start gap-1" : "flex flex-wrap items-baseline justify-between gap-2"}>
         <h3 id={`${id}-heading`} className={rail ? "wrap-anywhere text-sm font-semibold text-text" : "text-sm font-semibold text-text"}>{ownership}<span className="sr-only"> · {occupant}</span></h3>
         {panel.teamName && <span className={rail ? "max-w-full wrap-anywhere text-xs text-muted" : "wrap-anywhere text-xs text-muted"}>{panel.teamName}</span>}
       </div>
-      {panel.message && <p role={panel.status === "loading" ? "status" : undefined} className="mt-2 text-sm text-muted">{panel.message}</p>}
+      {panel.message && <p data-roster-row="message" role={panel.status === "loading" ? "status" : undefined} className="mt-2 text-sm text-muted">{panel.message}</p>}
       {panel.status === "ready" && (
-        <ul aria-label={`${ownership} roster for ${occupant}`} className={rail ? "mt-3 grid grid-cols-1 gap-2" : "mt-3 grid gap-2 sm:grid-cols-2"}>
+        <ul data-roster-row="list" aria-label={`${ownership} roster for ${occupant}`} className={rail ? "mt-3 grid grid-cols-1 gap-2" : "mt-3 grid gap-2 sm:grid-cols-2"}>
           {panel.choices.map((choice, index) => {
             const species = choice.speciesId ? runtime.speciesById.get(choice.speciesId) : null;
             const spriteName = rosterSpriteName(choice, species, runtime);
@@ -292,8 +292,22 @@ export function RosterPicker({ state, panel: providedPanel, role, side, activeSo
           })}
         </ul>
       )}
+      {rail && <RailEnd />}
     </div>
   );
+}
+
+/**
+ * The rows the two desktop rails share (calculator.module.css .withRosters): the heading with the team's name, a message,
+ * one per choice of the longer roster (at least one) and the end.
+ */
+export function railRows(panels: readonly Pick<RosterPanel, "choices">[]) {
+  return 3 + Math.max(1, ...panels.map((panel) => panel.choices.length));
+}
+
+/** A rail's last shared row: it holds the rail's bottom padding level on both sides. */
+function RailEnd() {
+  return <div aria-hidden="true" data-roster-row="end" />;
 }
 
 // League rosters store Pool Builder display names, which is what the sprite dex is keyed by.
@@ -333,13 +347,13 @@ function SlotRosterPicker({ id, panel, ownership, side, slots, pickerId, rail, r
 }) {
   return (
     <div id={pickerId} data-calculator-roster={side} aria-labelledby={`${id}-heading`} aria-busy={panel.status === "loading" || undefined} className={`${rail ? "min-w-0" : "mt-4"} rounded-lg border border-line bg-bg p-3`}>
-      <div className="flex min-w-0 flex-col items-start gap-1">
+      <div data-roster-row="header" className="flex min-w-0 flex-col items-start gap-1">
         <h3 id={`${id}-heading`} className="wrap-anywhere text-sm font-semibold text-text">{ownership}</h3>
         {panel.teamName && <span className="max-w-full wrap-anywhere text-xs text-muted">{panel.teamName}</span>}
       </div>
-      {panel.message && <p role={panel.status === "loading" ? "status" : undefined} className="mt-2 text-sm text-muted">{panel.message}</p>}
+      {panel.message && <p data-roster-row="message" role={panel.status === "loading" ? "status" : undefined} className="mt-2 text-sm text-muted">{panel.message}</p>}
       {panel.status === "ready" && (
-        <ul aria-label={`${ownership} roster`} className={rail ? "mt-3 grid grid-cols-1 gap-2" : "mt-3 grid gap-2 sm:grid-cols-2"}>
+        <ul data-roster-row="list" aria-label={`${ownership} roster`} className={rail ? "mt-3 grid grid-cols-1 gap-2" : "mt-3 grid gap-2 sm:grid-cols-2"}>
           {panel.choices.map((choice, index) => {
             const species = choice.speciesId ? runtime.speciesById.get(choice.speciesId) : null;
             const spriteName = rosterSpriteName(choice, species, runtime);
@@ -383,6 +397,7 @@ function SlotRosterPicker({ id, panel, ownership, side, slots, pickerId, rail, r
           })}
         </ul>
       )}
+      {rail && <RailEnd />}
     </div>
   );
 }

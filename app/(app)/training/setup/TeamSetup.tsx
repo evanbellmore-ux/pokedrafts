@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useId, useMemo, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useState, type CSSProperties } from "react";
 import { Alert, Button } from "@/app/components/ui";
 import { RefreshTeamsButton, SourceFeedback } from "@/app/(app)/calculator/LeagueMatchupPicker";
 import type useCalculatorRosters from "@/app/(app)/calculator/useCalculatorRosters";
@@ -16,7 +16,7 @@ import InfoSettingsPanel from "./InfoSettingsPanel";
 import { opponentQuickPicks, type NextMatch } from "./next-opponent";
 import { pendingSets, resolveSetup, sharedNames, untouched, withMode, type ResolvedTeam } from "./team-draft";
 import { problemCount, problemsFact } from "./TeamMemberRow";
-import TeamSourcePanel from "./TeamSourcePanel";
+import TeamSourcePanel, { sharedRows } from "./TeamSourcePanel";
 import styles from "./setup.module.css";
 
 export type TeamSetupProps = {
@@ -172,7 +172,8 @@ export default function TeamSetup({ runtime, rosters, snapshot, session }: TeamS
           <RefreshTeamsButton state={rosters.state} onRefresh={rosters.refresh} className="ml-auto shrink-0" />
         </div>
       )}
-      <div className={styles.teams}>
+      {/* From 64rem the two panels share their rows, so each part sits level with the other side's (setup.module.css .team). */}
+      <div className={styles.teams} style={{ "--team-rows": sharedRows([own, opponent]) } as CSSProperties}>
         <TeamSourcePanel role="own" team={own} source={draft.own} ownMode={draft.own.mode} rosters={rosters} runtime={runtime} visibility={null}
           problems={problems?.own ?? null} moveOptions={moveOptions} shared={shared} reveal={reveal.own} onSource={onSource("own")} onLoadMoves={loadMoves}
           onRetrySuggest={() => own.suggestKey && session.suggest("own", own.suggestKey, own.suggestMembers, true)} />

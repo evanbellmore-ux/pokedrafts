@@ -9,6 +9,7 @@ import { emptyHabits } from "@/app/(app)/training/model/habits-data";
 import { CLOSED_TEAM_SHEETS, DEFAULT_INFO, PERFECT_INFORMATION } from "@/app/(app)/training/model/info";
 import type { SetupDraft, TrainingSnapshot } from "@/app/(app)/training/model/view-types";
 import { createSetupDraft, resolveSetup } from "@/app/(app)/training/setup/team-draft";
+import setupStyles from "@/app/(app)/training/setup/setup.module.css";
 import { MIRROR_ROSTER, OPPONENT_ROSTER, OWN_ROSTER, rosterState, runtime, snapshotWith, suggestionsFor } from "../fixtures/training";
 import { positionalIn } from "../fixtures/naming";
 
@@ -475,10 +476,10 @@ describe("Training setup", () => {
     expect(alakazam).toMatch(/<label [^>]*class="[^"]*cursor-not-allowed"/);
     expect(alakazam).toContain('<span class="min-w-0 wrap-anywhere font-semibold text-muted">Alakazam</span>');
     expect(alakazam).not.toContain("Edit set");
-    // The Choose 6 fieldset is named by its side and its fact: "Your team Choose 6 · 6 of 7 chosen".
+    // The Choose 6 group is named by its side and its fact: "Your team Choose 6 · 6 of 7 chosen".
     for (const role of ["own", "opponent"] as const) {
       const panel = panelOf(html, role);
-      const [, heading, fact] = /<fieldset aria-labelledby="([^" ]+) ([^" ]+)"/.exec(panel)!;
+      const [, heading, fact] = /<div role="group" aria-labelledby="([^" ]+) ([^" ]+)"/.exec(panel)!;
       expect(panel).toMatch(new RegExp(`<h2 id="${heading}" tabindex="-1" data-training-team-heading="${role}"[^>]*>${role === "own" ? "Your team" : "Opponent"}</h2>`));
       expect(panel).toContain(`<span id="${fact}" class="block text-sm font-semibold text-text max-lg:hidden">Choose 6 · 6 of ${role === "own" ? 7 : 6} chosen</span>`);
     }
@@ -504,17 +505,17 @@ describe("Training setup", () => {
       const toggle = /<button type="button" data-training-choose-toggle="(?:own|opponent)" aria-expanded="(true|false)" aria-controls="([^"]+)"[^>]*>([^]*?)<\/button>/.exec(panel)!;
       expect(toggle[1]).toBe("false");
       expect(plain(toggle[3])).toBe(`Choose 6 · 6 of ${role === "own" ? 7 : 6} chosen · ${role === "own" ? "Your team" : "Opponent"}`);
-      // The toggle below 64rem only (in a heading inside the legend); from 64rem the fact and the whole list, as before.
-      expect(panel).toMatch(/<legend tabindex="-1" data-training-choose="true" class="w-full [^"]*"><span id="[^"]+" class="[^"]*max-lg:hidden">[^<]+<\/span><h3 class="text-sm font-semibold text-text lg:hidden"><button/);
-      expect(panel).toContain(`<ul id="${toggle[2]}" class="mt-2 grid gap-2 max-lg:hidden">`);
+      // The toggle below 64rem only (in a heading inside the fact); from 64rem the fact and the whole list, as before.
+      expect(panel).toMatch(/<div tabindex="-1" data-training-choose="true" class="[^"]*"><span id="[^"]+" class="[^"]*max-lg:hidden">[^<]+<\/span><h3 class="text-sm font-semibold text-text lg:hidden"><button/);
+      expect(panel).toContain(`<ul id="${toggle[2]}" class="${setupStyles.members} mt-2 grid gap-2 max-lg:hidden">`);
       expect(panel.split("<li data-training-member=").length - 1).toBe(role === "own" ? 7 : 6);
     }
     const chosen = /<div data-training-chosen="own" class="mt-1 space-y-1 lg:hidden">([^]*?)<\/div><ul/.exec(html)!;
     expect(plain(chosen[1])).toBe("Garchomp · Gyarados · Incineroar · Aerodactyl · Aegislash · Aggron");
     expect(chosen[1]).not.toContain("Showdown rules");
     expect(plain(/<div data-training-chosen="opponent"[^>]*>([^]*?)<\/div><ul/.exec(html)![1])).toBe("Absol · Altaria · Ampharos · Annihilape · Appletun · Araquanid");
-    // Edit as PokéPaste ends the list: folded with it.
-    expect(panelOf(html, "own")).toMatch(/<div class="max-lg:hidden"><button[^>]*>Edit as PokéPaste<\/button><\/div><\/section>/);
+    // Edit as PokéPaste ends the list: folded with it (the panel's end row shows from 64rem only).
+    expect(panelOf(html, "own")).toMatch(new RegExp(`<div class="${setupStyles.teamEdit} max-lg:hidden"><button[^>]*>Edit as PokéPaste</button></div><div aria-hidden="true" class="${setupStyles.teamEnd}"></div></section>`));
     // Sets still loading: folded too (the names are known; the line beside Start says the sets are coming).
     const loading = render(snapshotWith({ suggestions: { own: { status: "idle" }, opponent: { status: "idle" } } })).html;
     expect(loading.match(/data-training-choose-toggle="(?:own|opponent)" aria-expanded="false"/g)).toHaveLength(2);
@@ -528,7 +529,7 @@ describe("Training setup", () => {
       const open = /data-training-choose-toggle="(?:own|opponent)" aria-expanded="(true|false)"/.exec(panel)![1] === "true";
       // Open: no folded line, and the list shows at every width.
       expect(panel.includes("data-training-chosen=")).toBe(!open);
-      expect(/<ul id="[^"]+"(?: aria-busy="true")? class="mt-2 grid gap-2 max-lg:hidden">/.test(panel)).toBe(!open);
+      expect(new RegExp(`<ul id="[^"]+"(?: aria-busy="true")? class="${setupStyles.members} mt-2 grid gap-2 max-lg:hidden">`).test(panel)).toBe(!open);
       return open;
     };
     const short = rosterState(OWN_ROSTER.slice(0, 5), OPPONENT_ROSTER);
@@ -555,7 +556,7 @@ describe("Training setup", () => {
     expect(html).toContain('Edit set<span class="sr-only"> · Garchomp (yours)</span>');
     expect(html).toContain('Edit set<span class="sr-only"> · Garchomp (opponent&#x27;s)</span>');
     expect(html).toContain('Edit set<span class="sr-only"> · Gyarados</span>');
-    // Each box sits in its side's named Choose 6 fieldset.
+    // Each box sits in its side's named Choose 6 group.
     expect(html.match(/font-semibold text-text">Garchomp<\/span><\/label>/g)).toHaveLength(2);
     expect(positionalIn(html)).toEqual([]);
   });

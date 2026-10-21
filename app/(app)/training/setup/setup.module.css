@@ -5,6 +5,16 @@
   gap: 1rem;
 }
 
+/* A team panel's parts are 0.75rem apart, as margins: from 64rem a shared row that neither side uses stays 0 tall. */
+.team > * + * {
+  margin-block-start: 0.75rem;
+}
+
+/* The panel's last shared row from 64rem (it holds the bottom padding on both sides); nothing below. */
+.teamEnd {
+  display: none;
+}
+
 .battleFields {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -12,9 +22,57 @@
 }
 
 @media (min-width: 64rem) {
+  /* Side by side, the two panels share one set of rows (subgrid; TeamSourcePanel.tsx sharedRows): the header, the source
+     controls, a note, the Choose 6 fact, the team's name, one row per Pokémon of the longer list, the suggested-set error,
+     the team's problems, Edit as PokéPaste and the end. Each row is as tall as its taller side, so every part sits level
+     with its partner and both lists start at the same height. */
   .teams {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    align-items: start;
+    row-gap: 0;
+  }
+
+  .team {
+    display: grid;
+    grid-row: 1 / span var(--team-rows);
+    grid-template-rows: subgrid;
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 0;
+  }
+
+  .teamHeader { grid-row: 1; }
+  .teamSource { grid-row: 2; }
+  .teamNote { grid-row: 3; }
+
+  .choose {
+    display: grid;
+    grid-row: 4 / -5;
+    grid-template-rows: subgrid;
+    row-gap: 0;
+  }
+
+  .chooseFact { grid-row: 1; }
+  .chooseLabel { grid-row: 2; }
+
+  /* Its Choose 6 rows 0.5rem apart as margins too (below 64rem the list's own gap, and its fold hides it). */
+  .members {
+    display: grid;
+    grid-row: 3 / -1;
+    grid-template-rows: subgrid;
+    row-gap: 0;
+  }
+
+  .members > * + * {
+    margin-block-start: 0.5rem;
+  }
+
+  .suggestError { grid-row: -5; }
+  .teamProblems { grid-row: -4; }
+  .teamEdit { grid-row: -3; }
+
+  .team > .teamEnd {
+    display: block;
+    grid-row: -2;
+    margin: 0;
   }
 
   .battleFields {

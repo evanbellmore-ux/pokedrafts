@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useId, useMemo, useRef, useState, type SetStateAction } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState, type CSSProperties, type SetStateAction } from "react";
 import { ArrowLeftRight, RotateCcw } from "lucide-react";
 import { Button, Field, PageHeader, Select } from "@/app/components/ui";
 import { BATTLE_GAMES, BATTLE_PROFILES, isBattleGame } from "@/app/lib/battle/profiles";
@@ -25,7 +25,7 @@ import MatchupSummary from "./MatchupSummary";
 import MoveResults, { type MoveResultsHandle } from "./MoveResults";
 import PokemonPanel from "./PokemonPanel";
 import PokePasteImporter from "./PokePasteImporter";
-import { MyTeamPicker, OpponentPicker, RosterPicker } from "./LeagueMatchupPicker";
+import { MyTeamPicker, OpponentPicker, RosterPicker, railRows } from "./LeagueMatchupPicker";
 import useCalculatorRosters from "./useCalculatorRosters";
 import { useDesktopRosterLayout } from "./useDesktopRosterLayout";
 import { errorMessage, useMatchupCalculation, type CalculateMatchup } from "./useMatchupCalculation";
@@ -573,7 +573,9 @@ export default function CalculatorClient({ initialMode = "1v1" }: { initialMode?
       </section>
       <CalculatorTabs prefix={prefix} activeTab={navigation.tab} onSelect={selectTab} />
       {mode === "1v1" ? <p key="1v1" role="status" className="sr-only">{matchup.notice}</p> : doubles.notice}
-      <div data-calculator-workspace className={desktopRosters ? styles.withRosters : undefined} data-calculator-mode={mode}>
+      {/* With the desktop rails, the two rails share their rows (calculator.module.css .withRosters). */}
+      <div data-calculator-workspace className={desktopRosters ? styles.withRosters : undefined} data-calculator-mode={mode}
+        style={desktopRosters ? { "--rail-rows": railRows([rosterPanels.own, rosterPanels.opponent]) } as CSSProperties : undefined}>
         <div data-calculator-center className={`${styles.center} space-y-5`}>
           <KeepWhileHidden active={mode === "1v1"} render={() => (
             <div ref={summaryRef} className={styles.summary} data-calculator-mode-only="1v1" hidden={mode !== "1v1"}>

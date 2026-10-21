@@ -46,6 +46,15 @@ export const TRAINING_PICKER_TEXT = {
   removeDescription: "This removes the team and its set edits from Setup.",
 } as const;
 
+/** A panel's shared rows from 64rem besides its Pokémon rows (setup.module.css .team): header, source, note, the Choose 6 fact,
+ * the team's name, the suggested-set error, problems, Edit as PokéPaste, the end. */
+export const PANEL_ROWS = 9;
+
+/** The rows both panels span from 64rem: the fixed ones and one per Pokémon of the longer Choose 6 list (at least one). */
+export function sharedRows(teams: readonly Pick<ResolvedTeam, "candidates">[]) {
+  return PANEL_ROWS + Math.max(1, ...teams.map((team) => team.candidates.length));
+}
+
 /** One half of the League team | PokéPaste segmented control (as the calculator's 1v1 | 2v2 switch). */
 const sourceButton =
   "min-h-11 rounded-md px-3 py-1.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus";
@@ -110,8 +119,8 @@ export default function TeamSourcePanel({ role, team, source, ownMode, rosters, 
   const chosen = team.candidates.filter((candidate) => team.chosen.includes(candidate.key));
 
   return (
-    <section ref={panel} data-training-team={role} aria-labelledby={`${id}-heading`} className="min-w-0 space-y-3 rounded-xl border border-line bg-panel p-3 sm:p-4">
-      <div className="flex flex-wrap items-center justify-between gap-2">
+    <section ref={panel} data-training-team={role} aria-labelledby={`${id}-heading`} className={`${styles.team} min-w-0 rounded-xl border border-line bg-panel p-3 sm:p-4`}>
+      <div className={`${styles.teamHeader} flex flex-wrap items-center justify-between gap-2`}>
         {/* Takes the keyboard focus from the Start bar's fact and after Change teams. */}
         <h2 id={`${id}-heading`} tabIndex={-1} data-training-team-heading={role}
           className={`${styles.sideHeading} rounded text-lg font-semibold text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus`}>{title}</h2>
@@ -126,30 +135,34 @@ export default function TeamSourcePanel({ role, team, source, ownMode, rosters, 
         </div>
       </div>
 
-      {/* The shared pickers without their own card, heading or roster status: the setup states those once for both teams. */}
-      {source.mode === "league" ? (
-        role === "own"
-          ? <MyTeamPicker embedded state={rosters.state} onLeagueChange={rosters.selectLeague} onRefresh={rosters.refresh} loginNext="/training" />
-          : <OpponentPicker embedded state={rosters.state} onOpponentChange={rosters.selectOpponent} onRefresh={rosters.refresh} loginNext="/training"
-            onLeagueChange={ownMode === "paste" ? rosters.selectLeague : undefined} quick={quick} />
-      ) : (
-        <PokePasteImporter embedded role={role} owner={owner} applied={source.paste} runtime={runtime} onApply={apply} onRemove={removePaste}
-          removeDescription={TRAINING_PICKER_TEXT.removeDescription}
-          draft={source.pasteDraft ?? undefined} onDraftChange={(draft) => onSource((current) => ({ ...current, pasteDraft: draft }))} />
-      )}
+      {/* The shared pickers without their own card, heading or roster status: the setup states those once for both teams. From
+          64rem the other side's taller controls are this row's height too, so both lists start level. */}
+      <div className={styles.teamSource}>
+        {source.mode === "league" ? (
+          role === "own"
+            ? <MyTeamPicker embedded state={rosters.state} onLeagueChange={rosters.selectLeague} onRefresh={rosters.refresh} loginNext="/training" />
+            : <OpponentPicker embedded state={rosters.state} onOpponentChange={rosters.selectOpponent} onRefresh={rosters.refresh} loginNext="/training"
+              onLeagueChange={ownMode === "paste" ? rosters.selectLeague : undefined} quick={quick} />
+        ) : (
+          <PokePasteImporter embedded role={role} owner={owner} applied={source.paste} runtime={runtime} onApply={apply} onRemove={removePaste}
+            removeDescription={TRAINING_PICKER_TEXT.removeDescription}
+            draft={source.pasteDraft ?? undefined} onDraftChange={(draft) => onSource((current) => ({ ...current, pasteDraft: draft }))} />
+        )}
+      </div>
 
       {/* Without a chosen league, or with its teams unavailable, the picker ("No team chosen.") or the setup's roster status
           ("No leagues.", "League teams unavailable") already states it. Not a live region: the status beside Start says it. */}
       {source.mode === "league" && rosters.state.status === "ready" && rosters.state.teamsStatus !== "error"
         && rosters.state.leagues.some((league) => league.id === rosters.state.selectedLeagueId)
         && team.status !== "ready" && team.status !== "loading" && team.message && (
-        <p className="wrap-anywhere text-sm text-muted">{team.message}</p>
+        <p className={`${styles.teamNote} wrap-anywhere text-sm text-muted`}>{team.message}</p>
       )}
       {team.status === "ready" && team.candidates.length > 0 && (
-        <fieldset aria-labelledby={`${id}-heading ${id}-choose`} className="min-w-0">
+        // A group, not a fieldset: from 64rem its rows join the panel's shared rows (a fieldset cannot be a subgrid).
+        <div role="group" aria-labelledby={`${id}-heading ${id}-choose`} className={`${styles.choose} min-w-0`}>
           {/* Named "Your team Choose 6 · 6 of 10 chosen". From 64rem the fact; below, the same fact as the list's toggle. */}
-          <legend tabIndex={-1} data-training-choose
-            className="w-full rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus">
+          <div tabIndex={-1} data-training-choose
+            className={`${styles.chooseFact} rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus`}>
             <span id={`${id}-choose`} className="block text-sm font-semibold text-text max-lg:hidden">{chooseFact}</span>
             <h3 className="text-sm font-semibold text-text lg:hidden">
               <button type="button" data-training-choose-toggle={role} aria-expanded={list.open} aria-controls={`${id}-list`}
@@ -159,8 +172,8 @@ export default function TeamSourcePanel({ role, team, source, ownMode, rosters, 
                 <span className="min-w-0 wrap-anywhere">{chooseFact}<span className="sr-only"> · {title}</span></span>
               </button>
             </h3>
-          </legend>
-          {team.label && <p className="wrap-anywhere text-xs text-muted">{team.label}</p>}
+          </div>
+          {team.label && <p className={`${styles.chooseLabel} wrap-anywhere text-xs text-muted`}>{team.label}</p>}
           {/* Folded (below 64rem only): the six by name, and the side's Showdown count as its rows would state it. */}
           {!list.open && (
             <div data-training-chosen={role} className="mt-1 space-y-1 lg:hidden">
@@ -181,7 +194,8 @@ export default function TeamSourcePanel({ role, team, source, ownMode, rosters, 
               {count > 0 && <p className="text-xs text-danger">{allOpen ? problemsFact(count) : hiddenProblems(count)}</p>}
             </div>
           )}
-          <ul id={`${id}-list`} aria-busy={pendingSets(team) === "loading" || undefined} className={fold ? `mt-2 grid gap-2 ${fold}` : "mt-2 grid gap-2"}>
+          {/* From 64rem each row shares its height with the other side's row in the same place. */}
+          <ul id={`${id}-list`} aria-busy={pendingSets(team) === "loading" || undefined} className={fold ? `${styles.members} mt-2 grid gap-2 ${fold}` : `${styles.members} mt-2 grid gap-2`}>
             {team.candidates.map((candidate) => {
               const index = team.chosen.indexOf(candidate.key);
               const member = index >= 0 ? team.members[index] : null;
@@ -208,23 +222,25 @@ export default function TeamSourcePanel({ role, team, source, ownMode, rosters, 
               );
             })}
           </ul>
-        </fieldset>
+        </div>
       )}
 
       {team.suggestion === "error" && (
-        <Alert variant="error" title="Suggested sets unavailable" action={<Button variant="secondary" size="sm" className="min-h-11" onClick={onRetrySuggest}>Retry</Button>}>
+        <Alert variant="error" title="Suggested sets unavailable" className={styles.suggestError}
+          action={<Button variant="secondary" size="sm" className="min-h-11" onClick={onRetrySuggest}>Retry</Button>}>
           {team.suggestError}
         </Alert>
       )}
       {!!problems?.team.length && (allOpen
-        ? <ul data-training-problems className="space-y-0.5 text-xs text-danger">{problems.team.map((problem, index) => <li key={index} className="wrap-anywhere">{problem}</li>)}</ul>
-        : <p data-training-problems className="text-xs text-danger">{hiddenProblems(problems.team.length)}</p>)}
+        ? <ul data-training-problems className={`${styles.teamProblems} space-y-0.5 text-xs text-danger`}>{problems.team.map((problem, index) => <li key={index} className="wrap-anywhere">{problem}</li>)}</ul>
+        : <p data-training-problems className={`${styles.teamProblems} text-xs text-danger`}>{hiddenProblems(problems.team.length)}</p>)}
       {/* At the end of the list: folded with it below 64rem. */}
       {allOpen && ready.length > 0 && (
-        <div className={fold ?? undefined}>
+        <div className={fold ? `${styles.teamEdit} ${fold}` : styles.teamEdit}>
           <Button variant="secondary" size="sm" className="min-h-11" onClick={editAsPaste}>Edit as PokéPaste</Button>
         </div>
       )}
+      <div aria-hidden="true" className={styles.teamEnd} />
     </section>
   );
 }

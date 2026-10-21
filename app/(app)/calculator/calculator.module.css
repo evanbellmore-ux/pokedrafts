@@ -32,18 +32,28 @@
   scroll-margin-top: calc(var(--app-nav-height, 0px) + var(--calculator-sticky-height) + 1rem);
 }
 
+/*
+ * From 80rem (useDesktopRosterLayout) the two team rails beside the calculator share their rows (subgrid): the heading
+ * with the team's name, a message, one row per choice of the longer roster and the end (LeagueMatchupPicker.tsx
+ * railRows). Each row is as tall as its taller rail, so every choice sits level with the other rail's. The calculator
+ * spans them and a last flexible row that takes its extra height, so it never stretches a rail row.
+ */
 .withRosters {
   display: grid;
-  grid-template-areas: "attacker calculator defender";
   grid-template-columns: 12rem minmax(0, 1fr) 12rem;
+  grid-template-rows: repeat(var(--rail-rows), auto) 1fr;
   align-items: start;
-  gap: 1rem;
+  column-gap: 1rem;
 }
 
 .center {
-  grid-area: calculator;
   min-width: 0;
   container: calculator / inline-size;
+}
+
+.withRosters > .center {
+  grid-column: 2;
+  grid-row: 1 / -1;
 }
 
 .rail {
@@ -54,12 +64,48 @@
   scroll-margin-top: calc(var(--app-nav-height, 0px) + 1rem);
 }
 
+.withRosters > .rail {
+  display: grid;
+  grid-row: 1 / -2;
+  grid-template-rows: subgrid;
+}
+
 .attackerRoster {
-  grid-area: attacker;
+  grid-column: 1;
 }
 
 .defenderRoster {
-  grid-area: defender;
+  grid-column: 3;
+}
+
+/* A rail's roster in the shared rows; its choices 0.5rem apart as margins, so a row the shorter roster lacks stays empty. */
+.rail > [data-calculator-roster] {
+  display: grid;
+  grid-row: 1 / -1;
+  grid-template-rows: subgrid;
+}
+
+.rail [data-roster-row="header"] {
+  grid-row: 1;
+}
+
+.rail [data-roster-row="message"] {
+  grid-row: 2;
+}
+
+.rail [data-roster-row="list"] {
+  display: grid;
+  grid-row: 3 / -2;
+  grid-template-rows: subgrid;
+  row-gap: 0;
+}
+
+.rail [data-roster-row="list"] > * + * {
+  margin-block-start: 0.5rem;
+}
+
+.rail [data-roster-row="end"] {
+  grid-row: -2;
 }
 
 /*
@@ -170,6 +216,38 @@
   /* Keeps the settings below close to their cards. */
   margin-block-end: 0.5rem;
 }
+
+/*
+ * The summary's two cards are side by side at every width and share their rows (subgrid; MatchupSummary.tsx), so each
+ * part sits level with the other card's: the team line, the name and forms, types, the Tera and Mimicry notes,
+ * mechanics, the Tera field, retained settings, the HP label, value, meter and fact, the buttons, the HP editor and the
+ * quick moves. Parts keep their own margins, so a row neither card uses stays 0 tall; the first and last rows hold the
+ * cards' padding.
+ */
+.summaryCard {
+  display: grid;
+  grid-row: span 17;
+  grid-template-rows: subgrid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.cardStart { grid-row: 1; }
+.cardOwner { grid-row: 2; }
+.cardName { grid-row: 3; }
+.cardTypes { grid-row: 4; }
+.cardOriginal { grid-row: 5; }
+.cardMimicry { grid-row: 6; }
+.cardMechanics { grid-row: 7; }
+.cardTera { grid-row: 8; }
+.cardRetained { grid-row: 9; }
+.cardHPLabel { grid-row: 10; }
+.cardHPValue { grid-row: 11; }
+.cardHPMeter { grid-row: 12; }
+.cardHPFact { grid-row: 13; }
+.cardActions { grid-row: 14; }
+.cardEditor { grid-row: 15; }
+.cardMoves { grid-row: 16; }
+.cardEnd { grid-row: 17; }
 
 .quickMoves {
   display: grid;

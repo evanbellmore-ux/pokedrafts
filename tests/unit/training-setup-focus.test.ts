@@ -90,13 +90,13 @@ describe("Your team's panel", () => {
     expect(String(reactProps(active).value)).toMatch(/^Garchomp\nAbility: Rough Skin\n/);
     await press("Preview team text");
     await press("Import team (5 selectable)");
-    const legend = document.activeElement as FakeElement;
-    expect(legend.localName).toBe("legend");
-    expect(legend.getAttribute("data-training-choose")).not.toBeNull();
-    expect(legend.getAttribute("tabindex")).toBe("-1");
-    // The legend holds the list's fact (from 64rem) and the same fact as its toggle (below 64rem).
-    expect(legend.querySelectorAll("span")[0].textContent).toBe("Choose 6 · 5 of 6 chosen");
-    expect(legend.querySelector("button")?.textContent).toBe("Choose 6 · 5 of 6 chosen · Your team");
+    const fact = document.activeElement as FakeElement;
+    expect(fact.localName).toBe("div");
+    expect(fact.getAttribute("data-training-choose")).not.toBeNull();
+    expect(fact.getAttribute("tabindex")).toBe("-1");
+    // It holds the list's fact (from 64rem) and the same fact as its toggle (below 64rem).
+    expect(fact.querySelectorAll("span")[0].textContent).toBe("Choose 6 · 5 of 6 chosen");
+    expect(fact.querySelector("button")?.textContent).toBe("Choose 6 · 5 of 6 chosen · Your team");
     // A later change of the source (back to League team) moves nothing.
     const toggle = document.querySelectorAll("button").find((each) => each.textContent === "League team")!;
     toggle.focus();
