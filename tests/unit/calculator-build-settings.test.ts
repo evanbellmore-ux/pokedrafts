@@ -1,7 +1,7 @@
 import { createElement, type ComponentProps, type MouseEvent } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import BuildSettingsSections from "@/app/(app)/calculator/BuildSettings";
+import BuildSettingsSections, { BUILD_ROWS } from "@/app/(app)/calculator/BuildSettings";
 import { describeConditions } from "@/app/(app)/calculator/BattleConditions";
 import PokemonPanel from "@/app/(app)/calculator/PokemonPanel";
 import { buildSectionKey, fieldSectionKey, NO_SETTINGS_SECTIONS, setSectionOpen, trackSectionIssues } from "@/app/(app)/calculator/settings-sections";
@@ -182,6 +182,8 @@ describe("Build settings under the summary", () => {
     const summaryEnd = html.indexOf("</section>", html.indexOf("<section data-calculator-summary"));
     // The summary's wrapper (the sticky box) closes right after the summary, before the settings.
     expect(html.slice(summaryEnd)).toMatch(/^<\/section><\/div><div data-calculator-settings="true"/);
+    // Side by side, the two Build settings share their rows (shared-rows-layouts.test.ts): one for the inline rosters' choices (none here).
+    expect(html.slice(summaryEnd)).toMatch(new RegExp(`^</section></div><div data-calculator-settings="true"[^>]* style="--build-rows:${BUILD_ROWS + 1}"`));
     const settings = html.slice(summaryEnd, html.indexOf('role="tabpanel"'));
     const order = ['data-build-section="attacker"', 'data-build-section="defender"', 'data-field-section="true"'].map((marker) => settings.indexOf(marker));
     expect(order.every((index) => index > -1)).toBe(true);

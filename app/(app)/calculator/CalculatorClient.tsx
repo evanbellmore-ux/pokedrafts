@@ -19,7 +19,7 @@ import { createDoubles, followShared, resetDoubles, type CalculatorState } from 
 import { useDoublesView } from "./useDoublesView";
 import KeepWhileHidden from "./KeepWhileHidden";
 import ResultsFeedback, { hasResultsFeedback, previewBlockedReason } from "./results-feedback";
-import BuildSettingsSections, { type BuildSettings } from "./BuildSettings";
+import BuildSettingsSections, { buildRows, type BuildSettings } from "./BuildSettings";
 import SettingsDisclosure from "./SettingsDisclosure";
 import MatchupSummary from "./MatchupSummary";
 import MoveResults, { type MoveResultsHandle } from "./MoveResults";
@@ -608,7 +608,9 @@ export default function CalculatorClient({ initialMode = "1v1" }: { initialMode?
             </div>
           )} />
           <KeepWhileHidden active={mode === "1v1"} render={() => (
-            <div data-calculator-settings className={`${styles.settings} overflow-hidden rounded-xl border border-line bg-panel`} data-calculator-mode-only="1v1" hidden={mode !== "1v1"}>
+            // Side by side, the two Build settings share their rows: one per two choices of the longer inline roster (none with the rails).
+            <div data-calculator-settings className={`${styles.settings} overflow-hidden rounded-xl border border-line bg-panel`} data-calculator-mode-only="1v1" hidden={mode !== "1v1"}
+              style={{ "--build-rows": buildRows(desktopRosters ? [] : [rosterPanels[matchup.attacker.role], rosterPanels[matchup.defender.role]]) } as CSSProperties}>
               <BuildSettingsSections runtime={runtime} attacker={matchup.attacker} defender={matchup.defender} issues={issues} builds={builds} renderEditor={renderBuildEditor} />
               <SettingsDisclosure
                 kind="field"

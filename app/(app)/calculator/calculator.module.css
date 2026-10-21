@@ -130,9 +130,28 @@
   grid-column: 1 / -1;
 }
 
+/*
+ * Side by side, the two Build settings also share their rows (subgrid; BuildSettings.tsx buildRows), so each part of one
+ * sits level with the other's: the disclosure button, the region's top edge, the editor's two error lines, the roster's
+ * heading, message and choices (two to a row), its end, then each part of the rest of the editor. Parts keep their own
+ * margins, so a row neither side uses stays 0 tall. The region's first row and the roster's last row hold their padding
+ * with empty ::before / ::after items, so PokemonPanel and RosterPicker keep their markup for 2v2 and Change Pokémon.
+ */
 @container calculator (min-width: 44rem) {
   .settings {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(var(--build-rows), auto) auto;
+  }
+
+  .buildSection {
+    display: grid;
+    grid-row: 1 / -2;
+    grid-template-rows: subgrid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .settings > .fieldSection {
+    grid-row: -2;
   }
 
   .buildSection + .buildSection {
@@ -142,6 +161,142 @@
 
   .buildOwner {
     display: none;
+  }
+
+  .buildSection > [data-build-toggle] {
+    grid-row: 1;
+  }
+
+  .buildSection > [data-build-region]:not([hidden]) {
+    display: grid;
+    grid-row: 2 / -1;
+    grid-template-rows: subgrid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .buildSection > [data-build-region]::before {
+    content: "";
+    grid-row: 1;
+  }
+
+  .buildSection .editor {
+    grid-row: 2 / -1;
+    grid-template-rows: subgrid;
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 0;
+  }
+
+  /* Each part 0.75rem above the next, as the editor's gap is when stacked. */
+  .buildSection .editor > * {
+    align-self: start;
+    margin-block-end: 0.75rem;
+  }
+
+  .buildSection .editorSpecies {
+    grid-row: 1;
+  }
+
+  .buildSection .editorGame {
+    grid-row: 2;
+  }
+
+  .buildSection .editor > [data-calculator-roster] {
+    display: grid;
+    grid-row: 3 / -13;
+    grid-template-rows: subgrid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .buildSection .editor > [data-calculator-roster] > * {
+    align-self: start;
+  }
+
+  .buildSection .editor > [data-calculator-roster]::after {
+    content: "";
+    grid-row: -2;
+  }
+
+  .buildSection [data-roster-row="header"] {
+    grid-row: 1;
+  }
+
+  .buildSection [data-roster-row="message"] {
+    grid-row: 2;
+  }
+
+  .buildSection [data-roster-row="list"] {
+    display: grid;
+    grid-row: 3 / -2;
+    grid-template-rows: subgrid;
+    row-gap: 0;
+  }
+
+  /* Two choices to a row (sm:grid-cols-2), the rows 0.5rem apart as margins. */
+  .buildSection [data-roster-row="list"] > :nth-child(n + 3) {
+    margin-block-start: 0.5rem;
+  }
+
+  .buildSection .editorFields {
+    grid-row: -13;
+  }
+
+  .buildSection .editorRoomItem {
+    grid-row: -12;
+  }
+
+  .buildSection .editorFieldItem {
+    grid-row: -11;
+  }
+
+  .buildSection .editorRequired {
+    grid-row: -10;
+  }
+
+  .buildSection .editorAbility {
+    grid-row: -9;
+  }
+
+  .buildSection .editorIntimidate {
+    grid-row: -8;
+  }
+
+  .buildSection .editorMechanic {
+    grid-row: -7;
+  }
+
+  /* The stats' heading, innate IVs checkbox, table and point issues, each in its own row. */
+  .buildSection .editorStats {
+    display: grid;
+    grid-row: -6 / -2;
+    grid-template-rows: subgrid;
+    grid-template-columns: minmax(0, 1fr);
+    margin-block-end: 0;
+  }
+
+  .buildSection .editorStats > * {
+    align-self: start;
+  }
+
+  .buildSection .editorStatsHeading {
+    grid-row: 1;
+  }
+
+  .buildSection .editorInnate {
+    grid-row: 2;
+  }
+
+  .buildSection .editorTable {
+    grid-row: 3;
+  }
+
+  .buildSection .editorStatIssues {
+    grid-row: 4;
+  }
+
+  /* Gender and Happiness, always last: the region's bottom padding lands on them. */
+  .buildSection .editorExtra {
+    grid-row: -2;
+    margin-block: 0.75rem 0;
   }
 }
 
@@ -178,9 +333,118 @@
   gap: 0.75rem;
 }
 
+/* A side's box (BattleConditions.tsx) with its name on the top border, centred on it as a fieldset's legend: 1rem line, 1px border. */
+.fieldSide {
+  margin-block-start: calc(0.5rem - 0.5px);
+}
+
+.fieldSideName {
+  margin-block-start: calc(-0.5rem - 0.5px);
+}
+
+/*
+ * Side by side, the two sides of Field conditions share their rows (subgrid), so each part sits level with the other
+ * side's: the side's name, its toggles, its conditions from earlier turns (2v2: checkboxes, then counts), its Bench (the
+ * heading, Add to bench, the full note, the issue and a row per bench Pokémon, at most four) and Hazards (the heading,
+ * checkboxes, counts), then each Pokémon's group (its name, checkboxes, counts), left beside left and right beside right.
+ * Parts keep their own margins, so a row neither side uses stays 0 tall; the last row holds the box's bottom padding.
+ */
 @container calculator (min-width: 36rem) {
   .fieldSides {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(22, auto);
+    row-gap: 0;
+  }
+
+  .fieldSide {
+    display: grid;
+    grid-row: 1 / -1;
+    grid-template-rows: subgrid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .fieldSide::after {
+    content: "";
+    grid-row: -2;
+  }
+
+  .fieldSide :is(.fieldSideName, .sideToggles, .sideHeading, .sideChecks, .sideInputs, .benchAdd, .benchFull, .benchIssue) {
+    align-self: start;
+  }
+
+  .fieldSideName {
+    grid-row: 1;
+  }
+
+  .fieldSide > .sideToggles {
+    grid-row: 2;
+  }
+
+  .fieldSide > :is([data-doubles-side-earlier], [data-doubles-bench], [data-doubles-carried]),
+  .fieldSide :is(.bench, .benchRows, [data-doubles-hazards]) {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .fieldSide > [data-doubles-side-earlier] {
+    grid-row: 3 / span 2;
+  }
+
+  .fieldSide [data-doubles-side-earlier] > .sideChecks {
+    grid-row: 1;
+  }
+
+  .fieldSide [data-doubles-side-earlier] > .sideInputs {
+    grid-row: 2;
+  }
+
+  .fieldSide > [data-doubles-bench] {
+    grid-row: 5 / span 11;
+  }
+
+  .fieldSide .bench {
+    grid-row: 1 / span 8;
+  }
+
+  .fieldSide .benchAdd {
+    grid-row: 2;
+  }
+
+  .fieldSide .benchFull {
+    grid-row: 3;
+  }
+
+  .fieldSide .benchIssue {
+    grid-row: 4;
+  }
+
+  .fieldSide .benchRows {
+    grid-row: 5 / span 4;
+  }
+
+  .fieldSide [data-doubles-hazards] {
+    grid-row: 9 / span 3;
+  }
+
+  .fieldSide > [data-doubles-carried$="-left"] {
+    grid-row: 16 / span 3;
+  }
+
+  .fieldSide > [data-doubles-carried$="-right"] {
+    grid-row: 19 / span 3;
+  }
+
+  .fieldSide [role="group"] > .sideHeading {
+    grid-row: 1;
+  }
+
+  .fieldSide [role="group"] > .sideChecks {
+    grid-row: 2;
+  }
+
+  .fieldSide [role="group"] > .sideInputs {
+    grid-row: 3;
   }
 }
 

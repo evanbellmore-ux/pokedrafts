@@ -9,13 +9,13 @@ export const SUMMARY_CARD_ROWS = [
   "cardHPLabel", "cardHPValue", "cardHPMeter", "cardHPFact", "cardActions", "cardEditor", "cardMoves", "cardEnd",
 ] as const;
 
-/** The class lists of an element's direct children: the element is the first one whose start tag contains `marker`. */
-export function childClasses(html: string, marker: string): string[][] {
+/** The start tags' attributes of an element's direct children: the element is the first one whose start tag contains `marker`. */
+export function childAttributes(html: string, marker: string): string[] {
   const start = html.lastIndexOf("<", html.indexOf(marker));
   if (html.indexOf(marker) < 0 || start < 0) throw new Error(`No element with ${marker}`);
   const tags = /<(\/?)([a-zA-Z][\w-]*)([^>]*?)(\/?)>/g;
   tags.lastIndex = start;
-  const children: string[][] = [];
+  const children: string[] = [];
   let depth = 0;
   for (let tag = tags.exec(html); tag; tag = tags.exec(html)) {
     const [, closing, name, attributes, selfClosing] = tag;
@@ -24,10 +24,15 @@ export function childClasses(html: string, marker: string): string[][] {
       if (depth === 0) break;
       continue;
     }
-    if (depth === 1) children.push(/\bclass="([^"]*)"/.exec(attributes)?.[1].split(/\s+/).filter(Boolean) ?? []);
+    if (depth === 1) children.push(attributes);
     if (!selfClosing && !VOID.has(name.toLowerCase())) depth += 1;
   }
   return children;
+}
+
+/** The class lists of an element's direct children (childAttributes). */
+export function childClasses(html: string, marker: string): string[][] {
+  return childAttributes(html, marker).map((attributes) => /\bclass="([^"]*)"/.exec(attributes)?.[1].split(/\s+/).filter(Boolean) ?? []);
 }
 
 /** The body of the first CSS block whose header (a selector or an at-rule) is exactly `header`. */

@@ -3,6 +3,8 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 import { combatant, EMPTY_PANEL } from "../fixtures/doubles-turn";
 import { positionalIn } from "../fixtures/naming";
+import { childAttributes } from "../fixtures/shared-rows";
+import BattleConditions from "@/app/(app)/calculator/BattleConditions";
 import BenchFields from "@/app/(app)/calculator/BenchFields";
 import DoublesSummary from "@/app/(app)/calculator/DoublesSummary";
 import DoublesTurn from "@/app/(app)/calculator/DoublesTurn";
@@ -909,6 +911,36 @@ describe("the Bench and Hazards on the page", () => {
     expect(view.rows[2].remove(doubles).bench.picks).toEqual({});
     page({ doubles, issues: null, apply: (change) => applied.push(change), rosters, update: (transition) => updates.push(transition) });
     expect([applied, updates]).toEqual([[], []]);
+  });
+
+  it("gives every part of each side its shared row, so the two sides line up side by side (calculator.module.css .fieldSides)", () => {
+    const { doubles, rosters } = busy();
+    const full = benched(doubles, "own", entryOf(runtimes[SV], "own", 5, "snorlax"));
+    const html = renderToStaticMarkup(createElement(EarlierTurnContext.Provider, { value: { doubles: full, issues: null, apply: () => undefined, rosters, update: () => undefined } },
+      createElement(BattleConditions, { value: createConditions(), issues: [], onChange: () => undefined, runtime: runtimes[SV], variant: "doubles",
+        sideLegends: { attackerSide: "Your side", defenderSide: "Opponent's side" }, carried: carriedControls(full) })));
+    /** The row a part names: its shared-row class, or the attribute the side's rows place it by. */
+    const part = (attributes: string) => {
+      const classes = /\bclass="([^"]*)"/.exec(attributes)?.[1].split(" ") ?? [];
+      return (["fieldSideName", "sideToggles", "sideHeading", "sideChecks", "sideInputs", "bench", "benchAdd", "benchFull", "benchIssue", "benchRows"] as const)
+        .find((name) => classes.includes(styles[name])) ?? (/data-doubles-(side-earlier|bench|hazards)=/.exec(attributes)?.[1] ?? /data-doubles-carried="\w+-(\w+)"/.exec(attributes)?.[1] ?? null);
+    };
+    for (const [side, id] of [["attackerSide", "own"], ["defenderSide", "opponent"]] as const) {
+      const start = html.lastIndexOf("<div", html.indexOf(`-${side}-name"`));
+      const sideHtml = html.slice(start, side === "attackerSide" ? html.lastIndexOf("<div", html.indexOf("-defenderSide-name\"")) : undefined);
+      expect(childAttributes(sideHtml, `-${side}-name"`).map(part)).toEqual(["fieldSideName", "sideToggles", "side-earlier", "bench", "left", "right"]);
+      expect(childAttributes(sideHtml, `data-doubles-bench="${id}"`).map(part)).toEqual(["bench", "hazards"]);
+      // Your side holds four: the cap's note; the opponent's two leave Add to bench.
+      expect(childAttributes(sideHtml, `class="${styles.bench} `).map(part)).toEqual(id === "own" ? ["sideHeading", "benchFull", "benchRows"] : ["sideHeading", "benchAdd", "benchRows"]);
+      expect(childAttributes(sideHtml, `class="${styles.benchRows} `)).toHaveLength(id === "own" ? 4 : 2);
+      // Hazards and each Pokémon: the heading, then its checkboxes and counts where it has them, each in its row.
+      for (const marker of [`data-doubles-hazards="${id}"`, `data-doubles-carried="${id}-left"`, `data-doubles-carried="${id}-right"`]) {
+        const rows = childAttributes(sideHtml, marker).map(part);
+        expect(rows[0]).toBe("sideHeading");
+        expect(rows.length).toBeGreaterThan(1);
+        expect(rows).toEqual(["sideHeading", "sideChecks", "sideInputs"].filter((name) => rows.includes(name)));
+      }
+    }
   });
 });
 

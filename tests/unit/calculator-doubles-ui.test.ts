@@ -529,7 +529,7 @@ describe("2v2 settings and Moves pane", () => {
     expect([...html.matchAll(/data-editor="([^"]+)"/g)].map((match) => match[1])).toEqual(DOUBLES_SLOTS);
     expect(html.match(/data-field-toggle="true" aria-expanded="true" aria-controls="field-2v2"/)).not.toBeNull();
     expect(text(html)).toContain("Field conditionsDoubles · No weather · No terrain · 2 toggles on");
-    expect(html).toMatch(/<legend class="px-1 text-xs font-semibold text-text">Your side<\/legend>[\s\S]*Charge: Charizard[\s\S]*Charge: Venusaur[\s\S]*<legend class="px-1 text-xs font-semibold text-text">Opponent&#x27;s side<\/legend>[\s\S]*Charge: Blastoise[\s\S]*Charge: Pikachu/);
+    expect(html).toMatch(/<p id="[^"]+" class="[^"]*">Your side<\/p>[\s\S]*Charge: Charizard[\s\S]*Charge: Venusaur[\s\S]*<p id="[^"]+" class="[^"]*">Opponent&#x27;s side<\/p>[\s\S]*Charge: Blastoise[\s\S]*Charge: Pikachu/);
     expect(html).toMatch(/data-doubles-charge="own-left"[^>]*checked=""/);
     change(inputs.find((input) => input["data-doubles-charge"] === "opponent-left")!);
     expect(props.onChargedChange).toHaveBeenCalledWith("opponent-left", true);
@@ -885,7 +885,8 @@ function carriedBlock(html: string, slot: DoublesSlotId) {
   const start = html.indexOf(`data-doubles-carried="${slot}"`);
   expect(start).toBeGreaterThan(-1);
   const rest = html.slice(start);
-  const end = rest.slice(1).search(/data-doubles-carried="|<\/fieldset>/);
+  // Up to the next Pokémon's block, the opponent's side (a group named by its first line) or the note after the sides.
+  const end = rest.slice(1).search(/data-doubles-carried="|<div role="group" aria-labelledby="[^"]+Side-name"|<div role="note"/);
   return end < 0 ? rest : rest.slice(0, end + 1);
 }
 
@@ -909,10 +910,10 @@ describe("2v2 state from earlier turns (Field conditions)", () => {
       charged: { "own-left": false, "own-right": false, "opponent-left": false, "opponent-right": false, ...charged }, onChargedChange: vi.fn(),
     }));
 
-  it("groups each Pokémon's Charge, Confused and Substitute under its name, in its side's fieldset", () => {
+  it("groups each Pokémon's Charge, Confused and Substitute under its name, in its side's group", () => {
     const onChange = vi.fn();
     const { html, inputs } = capture(() => renderToStaticMarkup(settings(carriedControlsFor(championsRuntime, builds, view.names, {}, onChange), { "own-left": true })));
-    const yours = html.slice(html.indexOf(">Your side</legend>"), html.indexOf(">Opponent&#x27;s side</legend>"));
+    const yours = html.slice(html.indexOf(">Your side</p>"), html.indexOf(">Opponent&#x27;s side</p>"));
     expect([...yours.matchAll(/data-doubles-carried="([^"]+)"/g)].map((match) => match[1])).toEqual(["own-left", "own-right"]);
     const charizard = carriedBlock(html, "own-left");
     expect(html).toMatch(/<div role="group" aria-labelledby="([^"]+)" data-doubles-carried="own-left"[^>]*><p id="\1"[^>]*>Charizard<\/p>/);
