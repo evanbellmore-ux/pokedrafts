@@ -230,7 +230,7 @@ const F5 = [/^Tera Type$/, /^Current HP$/, /^Apply Intimidate to /];
 /**
  * Duplicate names: radios within their group; any other repeated name unless it is F5's, or (the same class as F5) each
  * copy sits in a different named fieldset, group or region (the Build settings editor's `Nature`, one per region named
- * after its Pokémon; a side's `Reflect` in its `{name}’s side` fieldset). `allowed` collects those, for review.
+ * after its Pokémon; a side's `Reflect` in its `{name}’s side` group). `allowed` collects those, for review.
  */
 function duplicates(rows: Named[], allowed: string[] = []): string[] {
   const byKey = new Map<string, Named[]>();

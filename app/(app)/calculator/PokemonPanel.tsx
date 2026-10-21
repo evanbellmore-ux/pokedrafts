@@ -130,12 +130,13 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
   const innateIVs = build.game !== "champions" ? build.native.innateIVs : undefined;
 
   return (
+    // Each part's editor* class names its row where the 1v1 Build settings share theirs (calculator.module.css .buildSection).
     <div data-calculator-build-settings className={styles.editor}>
-      {errorFor("speciesId") && <p className="text-sm text-danger">Unsupported build: {errorFor("speciesId")}</p>}
-      {errorFor("game") && <p className="text-sm text-danger">{errorFor("game")}</p>}
+      {errorFor("speciesId") && <p className={`${styles.editorSpecies} text-sm text-danger`}>Unsupported build: {errorFor("speciesId")}</p>}
+      {errorFor("game") && <p className={`${styles.editorGame} text-sm text-danger`}>{errorFor("game")}</p>}
       {roster}
 
-      <div className={styles.fields}>
+      <div className={`${styles.fields} ${styles.editorFields}`}>
         <CurrentHPField id={`${prefix}-hp`} build={build} issues={issues} text={hpInput} onTextChange={onHPChange} runtime={runtime} allowFainted={allowFainted} data-calculator-hp />
         <Field id={`${prefix}-nature`} label="Nature" error={errorFor("nature")}>
           <Select value={build.nature} onChange={(event) => onChange({ ...build, nature: event.target.value })}>
@@ -206,7 +207,7 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
       </div>
 
       {roomItemChoice && (
-        <label htmlFor={`${prefix}-room-item`} className="flex min-h-11 items-center gap-2 text-xs text-text">
+        <label htmlFor={`${prefix}-room-item`} className={`${styles.editorRoomItem} flex min-h-11 items-center gap-2 text-xs text-text`}>
           <input
             id={`${prefix}-room-item`}
             type="checkbox"
@@ -219,7 +220,7 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
       )}
 
       {fieldItemChoice && (
-        <label htmlFor={`${prefix}-field-item`} className="flex min-h-11 items-center gap-2 text-xs text-text">
+        <label htmlFor={`${prefix}-field-item`} className={`${styles.editorFieldItem} flex min-h-11 items-center gap-2 text-xs text-text`}>
           <input
             id={`${prefix}-field-item`}
             type="checkbox"
@@ -233,7 +234,7 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
 
       {errorFor("preparedMoves") && (
         requiredMove ? (
-          <div className="flex flex-wrap items-end gap-2">
+          <div className={`${styles.editorRequired} flex flex-wrap items-end gap-2`}>
             <Field id={`${prefix}-required-move`} label={`Quick move to replace with ${requiredMove.name}`} error={errorFor("preparedMoves")} className="min-w-0 flex-1">
               <Select value={requiredSlot} onChange={(event) => setRequiredSlot(event.target.value)}>
                 <option value="">—</option>
@@ -246,13 +247,13 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
               if (slot !== null) requiredMove.onEquip(slot);
             }}>{`Replace with ${requiredMove.name}`}</Button>
           </div>
-        ) : <p className="text-sm text-danger">{errorFor("preparedMoves")}</p>
+        ) : <p className={`${styles.editorRequired} text-sm text-danger`}>{errorFor("preparedMoves")}</p>
       )}
 
       {activationLabel && typeof abilityActivationFact === "string" ? (
-        <p data-ability-activation-fact className="text-xs text-muted">{abilityActivationFact}</p>
+        <p data-ability-activation-fact className={`${styles.editorAbility} text-xs text-muted`}>{abilityActivationFact}</p>
       ) : activationLabel && (
-        <div>
+        <div className={styles.editorAbility}>
           <label htmlFor={`${prefix}-ability-active`} className="flex min-h-11 items-center gap-2 text-xs text-text">
             <input
               id={`${prefix}-ability-active`}
@@ -272,7 +273,7 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
       )}
 
       {build.abilityId === "intimidate" && onApplyIntimidate && (
-        <div>
+        <div className={styles.editorIntimidate}>
           {/* The label names a Pokémon ("Apply Intimidate to Dudunsparce-Three-Segment (opponent's, 2)"), so it wraps (over Button's nowrap). */}
           <Button size="sm" variant="secondary" className="min-h-11 max-w-full whitespace-normal! wrap-anywhere" onClick={onApplyIntimidate}>
             {intimidateLabel ?? "Apply Intimidate"}
@@ -281,22 +282,22 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
         </div>
       )}
 
-      {errorFor("mechanic") && <p className="text-xs text-danger">{errorFor("mechanic")}</p>}
+      {errorFor("mechanic") && <p className={`${styles.editorMechanic} text-xs text-danger`}>{errorFor("mechanic")}</p>}
 
-      <div className="min-w-0">
-        <div className="mb-1 flex flex-wrap items-baseline justify-between gap-x-2">
+      <div className={`${styles.editorStats} min-w-0`}>
+        <div className={`${styles.editorStatsHeading} mb-1 flex flex-wrap items-baseline justify-between gap-x-2`}>
           <h3 className="text-xs font-semibold text-text">Stats at level {level ?? "—"}</h3>
           <p className={`text-xs tabular-nums ${allocationComplete && total > budget ? "text-danger" : "text-muted"}`}>
             {allocationComplete ? `${total} / ${budget} ${build.game === "champions" ? "Stat Points" : "EVs"}` : `${build.game === "champions" ? "Stat Point" : "EV"} allocation incomplete`}
           </p>
         </div>
         {build.game !== "champions" && (runtime.profile.generation === 7 || innateIVs) && (
-          <label htmlFor={`${prefix}-innate-context`} className="flex min-h-11 items-center gap-2 text-xs text-text">
+          <label htmlFor={`${prefix}-innate-context`} className={`${styles.editorInnate} flex min-h-11 items-center gap-2 text-xs text-text`}>
             <input id={`${prefix}-innate-context`} type="checkbox" checked={!!innateIVs} className="h-4 w-4 shrink-0 accent-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus" onChange={(event) => onChange({ ...build, native: { ...build.native, innateIVs: event.target.checked ? { ...build.native.ivs } : undefined } })} />
             Specify innate IVs before Hyper Training
           </label>
         )}
-        <TableWrap>
+        <TableWrap className={styles.editorTable}>
           <table className={`${styles.statTable} w-full ${build.game === "champions" ? "min-w-[15rem]" : innateIVs ? "min-w-[19.5rem]" : "min-w-[18rem]"} text-left text-sm`} aria-label={`${name} stats and ${build.game === "champions" ? "Stat Points" : "EVs and IVs"}`}>
             <thead className="bg-panel-hover text-xs text-muted">
               <tr>
@@ -354,13 +355,13 @@ export default function PokemonPanel({ side, build, issues, onChange, hpInput, o
           </table>
         </TableWrap>
         {trainingIssues.length > 0 && (
-          <ul id={`${prefix}-points-errors`} className="mt-2 space-y-1 text-xs text-danger">
+          <ul id={`${prefix}-points-errors`} className={`${styles.editorStatIssues} mt-2 space-y-1 text-xs text-danger`}>
             {trainingIssues.map((issue, index) => <li key={`${issue.field}-${index}`}>{issue.message}</li>)}
           </ul>
         )}
       </div>
 
-      <div className={styles.fields}>
+      <div className={`${styles.fields} ${styles.editorExtra}`}>
         <Field id={`${prefix}-gender`} label="Gender" error={errorFor("configuration.gender")} help={species?.gender ? `This species has fixed gender: ${species.gender === "N" ? "genderless" : species.gender === "M" ? "male" : "female"}.` : undefined}>
           <Select value={build.configuration?.gender ?? ""} onChange={(event) => onChange({ ...build, configuration: { ...build.configuration, gender: event.target.value ? event.target.value as "M" | "F" | "N" : undefined } })}>
             <option value="">{species?.gender ? "Use species gender" : "Unknown"}</option>

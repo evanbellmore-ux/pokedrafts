@@ -40,10 +40,10 @@ export default function BenchFields({ id, side }: { id: string; side: DoublesSid
   return (
     <div data-doubles-bench={side} className="min-w-0">
       {view.shown && (
-        <div role="group" aria-labelledby={`${id}-heading`} className="mt-1 min-w-0 border-t border-line pt-1">
-          <p id={`${id}-heading`} className="wrap-anywhere text-xs font-semibold text-text">Bench<Whose name={whose} /></p>
+        <div role="group" aria-labelledby={`${id}-heading`} className={`${styles.bench} mt-1 min-w-0 border-t border-line pt-1`}>
+          <p id={`${id}-heading`} className={`${styles.sideHeading} wrap-anywhere text-xs font-semibold text-text`}>Bench<Whose name={whose} /></p>
           {canAdd && (
-            <div className={`${styles.fields} pb-1`}>
+            <div className={`${styles.fields} ${styles.benchAdd} pb-1`}>
               <Field id={`${id}-add`} label={<>Add to bench<Whose name={whose} /></>}>
                 <Select data-doubles-bench-add={side} value="" onChange={(event) => {
                   const choice = roster.find((each) => each.source?.key === event.target.value);
@@ -56,7 +56,7 @@ export default function BenchFields({ id, side }: { id: string; side: DoublesSid
             </div>
           )}
           {canChoose && update && (
-            <div className="pb-1">
+            <div className={`${styles.benchAdd} pb-1`}>
               <Button size="sm" variant="secondary" className="min-h-11" data-doubles-bench-add={side} onClick={() => setChoosing(true)}>
                 <span className="text-xs">Add to bench<Whose name={whose} /></span>
               </Button>
@@ -65,10 +65,10 @@ export default function BenchFields({ id, side }: { id: string; side: DoublesSid
                 adding={{ title: `Add to ${BENCH_WORDS[side]}`, announce: (name) => `${name} added to ${BENCH_WORDS[side]}.` }} />
             </div>
           )}
-          {view.full && (view.add.length > 0 || view.choose) && <p className="wrap-anywhere text-xs text-muted">A bench holds at most four Pokémon.</p>}
-          {view.issue && <p className="mb-1 wrap-anywhere text-xs text-danger">{view.issue}</p>}
+          {view.full && (view.add.length > 0 || view.choose) && <p className={`${styles.benchFull} wrap-anywhere text-xs text-muted`}>A bench holds at most four Pokémon.</p>}
+          {view.issue && <p className={`${styles.benchIssue} mb-1 wrap-anywhere text-xs text-danger`}>{view.issue}</p>}
           {view.rows.length > 0 && (
-            <ul className="min-w-0">
+            <ul className={`${styles.benchRows} min-w-0`}>
               {view.rows.map((row, index) => {
                 const { checks, inputs } = split(row.controls);
                 const rowId = `${id}-${index}`;
@@ -97,14 +97,14 @@ export default function BenchFields({ id, side }: { id: string; side: DoublesSid
       )}
       {hasHazards && (
         <div role="group" aria-labelledby={`${id}-hazards`} data-doubles-hazards={side} className="mt-1 min-w-0 border-t border-line pt-1">
-          <p id={`${id}-hazards`} className="wrap-anywhere text-xs font-semibold text-text">Hazards<Whose name={whose} /></p>
+          <p id={`${id}-hazards`} className={`${styles.sideHeading} wrap-anywhere text-xs font-semibold text-text`}>Hazards<Whose name={whose} /></p>
           {hazards.checks.length > 0 && (
-            <div className="grid grid-cols-2 gap-x-2">
+            <div className={`${styles.sideChecks} grid grid-cols-2 gap-x-2`}>
               {hazards.checks.map((control) => <EarlierCheckbox key={control.key} id={controlId(id, control)} control={control} whose={whose} apply={apply} />)}
             </div>
           )}
           {hazards.inputs.length > 0 && (
-            <div className={`${styles.fields} pb-1`}>
+            <div className={`${styles.fields} ${styles.sideInputs} pb-1`}>
               {hazards.inputs.map((control) => <EarlierInput key={control.key} id={controlId(id, control)} control={control} whose={whose} apply={apply} />)}
             </div>
           )}

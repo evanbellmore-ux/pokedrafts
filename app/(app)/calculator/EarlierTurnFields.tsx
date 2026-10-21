@@ -145,8 +145,8 @@ export function CarriedFields({ id, control, charge, earlier = [], onEarlier }: 
   const counts = !!options.sleep || !!options.freeze || !!confusion || options.toxic || (!!options.substitute && value.substitute !== undefined) || inputs.length > 0;
   return (
     <div role="group" aria-labelledby={`${id}-name`} data-doubles-carried={slot} className="mt-1 min-w-0 border-t border-line pt-1">
-      <p id={`${id}-name`} className="wrap-anywhere text-xs font-semibold text-text">{name}</p>
-      <div className="grid grid-cols-2 gap-x-2">
+      <p id={`${id}-name`} className={`${styles.sideHeading} wrap-anywhere text-xs font-semibold text-text`}>{name}</p>
+      <div className={`${styles.sideChecks} grid grid-cols-2 gap-x-2`}>
         {charge && (
           <label htmlFor={`${id}-charged`} className="flex min-h-11 min-w-0 items-center gap-2 wrap-anywhere text-text">
             <input id={`${id}-charged`} type="checkbox" data-doubles-charge={slot} checked={charge.checked} onChange={(event) => charge.onChange(event.target.checked)} className={checkboxClassName} />
@@ -176,7 +176,7 @@ export function CarriedFields({ id, control, charge, earlier = [], onEarlier }: 
         {checks.map((entry) => <EarlierCheckbox key={entry.key} id={controlId(id, entry)} control={entry} whose={name} apply={apply} />)}
       </div>
       {counts && (
-        <div className={`${styles.fields} pb-1`}>
+        <div className={`${styles.fields} ${styles.sideInputs} pb-1`}>
           {options.sleep && (
             <Field id={`${id}-sleep`} label={<>Turns lost to sleep<Whose name={name} /></>} error={issues.sleep}>
               <Select data-doubles-sleep={slot} value={sleep.attempts} onChange={(event) => setSleep(Number(event.target.value), sleep.rest)}>
@@ -271,12 +271,12 @@ export default function EarlierTurnFields({ id, side, carried, charge }: { id: s
       {earlier && own && (own.checks.length > 0 || own.inputs.length > 0) && (
         <div data-doubles-side-earlier={SIDE_IDS[side]} className="min-w-0">
           {own.checks.length > 0 && (
-            <div className="grid grid-cols-2 gap-x-2">
+            <div className={`${styles.sideChecks} grid grid-cols-2 gap-x-2`}>
               {own.checks.map((entry) => <EarlierCheckbox key={entry.key} id={controlId(`${id}-${side}`, entry)} control={entry} whose={SIDE_NAMES[side]} apply={earlier.apply} />)}
             </div>
           )}
           {own.inputs.length > 0 && (
-            <div className={`${styles.fields} pb-1`}>
+            <div className={`${styles.fields} ${styles.sideInputs} pb-1`}>
               {own.inputs.map((entry) => <EarlierInput key={entry.key} id={controlId(`${id}-${side}`, entry)} control={entry} whose={SIDE_NAMES[side]} apply={earlier.apply} />)}
             </div>
           )}

@@ -4,8 +4,21 @@ import type { ReactNode } from "react";
 import { championsRuntime, type BattleRuntime } from "@/app/lib/battle/runtime";
 import type { BuildIssue } from "@/app/lib/battle/types";
 import SettingsDisclosure from "./SettingsDisclosure";
-import { matchupNames, type BattleSide, type PreparedMatchup } from "./roster-prep";
+import { matchupNames, type BattleSide, type PreparedMatchup, type RosterPanel } from "./roster-prep";
 import styles from "./calculator.module.css";
+
+/**
+ * The rows the two Build settings share side by side (calculator.module.css .settings) besides the roster's choices: the
+ * disclosure button, the region's top edge, the editor's two error lines, the roster's heading, message and end, and the
+ * twelve rows of the rest of the editor (its fields, two item choices, the required move, the ability condition, Intimidate,
+ * the mechanic issue, the stats' heading, innate IVs, table and issues, and Gender with Happiness).
+ */
+export const BUILD_ROWS = 19;
+
+/** All the rows the Build settings share: BUILD_ROWS and one per two choices of the longer roster (at least one). */
+export function buildRows(panels: readonly Pick<RosterPanel, "choices">[]) {
+  return BUILD_ROWS + Math.max(1, ...panels.map((panel) => Math.ceil(panel.choices.length / 2)));
+}
 
 /** One side's collapsible Build settings. */
 export type BuildSettings = {

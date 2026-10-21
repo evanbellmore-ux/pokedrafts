@@ -173,11 +173,13 @@ export default function BattleConditions({ value, issues, onChange, runtime = ch
         </div>
         {doubles && <EarlierFieldFields id={`${prefix}-earlier-shared`} part="shared" />}
       </fieldset>
+      {/* Side by side, the two sides share their rows (calculator.module.css .fieldSides), which a fieldset cannot: each
+          side is a group named by its first line, drawn on the box's top border as a legend is. */}
       <div className={styles.fieldSides}>
         {(["attackerSide", "defenderSide"] as const).map((side) => (
-          <fieldset key={side} className="min-w-0 rounded-lg border border-line px-2 pb-1">
-            <legend className="px-1 text-xs font-semibold text-text">{sideLegend(side)}</legend>
-            <div className="grid grid-cols-2 gap-x-2">
+          <div key={side} role="group" aria-labelledby={`${prefix}-${side}-name`} className={`${styles.fieldSide} min-w-0 rounded-lg border border-line px-2 pb-1`}>
+            <p id={`${prefix}-${side}-name`} className={`${styles.fieldSideName} w-fit bg-panel px-1 text-xs font-semibold text-text`}>{sideLegend(side)}</p>
+            <div className={`${styles.sideToggles} grid grid-cols-2 gap-x-2`}>
               {sideOptions.filter((option) => !doubles || !DOUBLES_DERIVED.has(option.key)).map((option) => (
                 <label key={option.key} htmlFor={`${prefix}-${side}-${option.key}`} className="flex min-h-11 min-w-0 items-center gap-2 wrap-anywhere text-text">
                   <input
@@ -200,7 +202,7 @@ export default function BattleConditions({ value, issues, onChange, runtime = ch
               ))}
             </div>
             <EarlierTurnFields id={`${prefix}-carried`} side={side} carried={carried} charge={charge} />
-          </fieldset>
+          </div>
         ))}
       </div>
       <div role="note" aria-labelledby={`${prefix}-unmodelled`} className="rounded-lg border border-line px-3 py-2 text-xs text-muted">

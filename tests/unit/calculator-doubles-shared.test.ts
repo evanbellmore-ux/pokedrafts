@@ -78,7 +78,7 @@ describe("PokemonPanel 2v2 props", () => {
     expect(plus).toMatch(/-ability-active" type="checkbox"/);
     const fact = panel(usual("charizard", "plus"), { abilityActivationFact: "Ally Minun has Minus." });
     expect(fact).not.toMatch(/-ability-active/);
-    expect(fact).toContain('<p data-ability-activation-fact="true" class="text-xs text-muted">Ally Minun has Minus.</p>');
+    expect(fact).toMatch(/<p data-ability-activation-fact="true" class="[^"]* text-xs text-muted">Ally Minun has Minus\.<\/p>/);
   });
 });
 
@@ -247,13 +247,16 @@ describe("BattleConditions 2v2 variant", () => {
   });
 
   it("names each 1v1 side after its Pokémon, with no position", () => {
+    // Shared field effects keeps its legend; each side is a group named by its first line (shared-rows-layouts.test.ts).
     const legends = (html: string) => [...html.matchAll(/<legend class="px-1 text-xs font-semibold text-text">([^<]*)<\/legend>/g)].map((match) => match[1]);
+    const sideNames = (html: string) => [...html.matchAll(/<div role="group" aria-labelledby="([^"]+)" class="[^"]*"><p id="\1" class="[^"]*">([^<]*)<\/p>/g)].map((match) => match[2]);
     const named = conditions({ names: { attackerSide: "Charizard", defenderSide: "Blastoise" } });
-    expect(legends(named)).toEqual(["Shared field effects", "Charizard’s side", "Blastoise’s side"]);
-    expect(legends(conditions())).toEqual(["Shared field effects", "Pokémon’s side", "Pokémon’s side"]);
-    // A mirror's legends come from CalculatorClient (sideLegends), which names each one's team.
-    expect(legends(conditions({ names: { attackerSide: "Charizard", defenderSide: "Charizard" }, sideLegends: { attackerSide: "Charizard’s side (yours)", defenderSide: "Charizard’s side (opponent's)" } })))
-      .toEqual(["Shared field effects", "Charizard’s side (yours)", "Charizard’s side (opponent&#x27;s)"]);
+    expect(legends(named)).toEqual(["Shared field effects"]);
+    expect(sideNames(named)).toEqual(["Charizard’s side", "Blastoise’s side"]);
+    expect(sideNames(conditions())).toEqual(["Pokémon’s side", "Pokémon’s side"]);
+    // A mirror's names come from CalculatorClient (sideLegends), which names each one's team.
+    expect(sideNames(conditions({ names: { attackerSide: "Charizard", defenderSide: "Charizard" }, sideLegends: { attackerSide: "Charizard’s side (yours)", defenderSide: "Charizard’s side (opponent's)" } })))
+      .toEqual(["Charizard’s side (yours)", "Charizard’s side (opponent&#x27;s)"]);
     expect(positionalIn(named)).toEqual([]);
     expect(positionalIn(conditions())).toEqual([]);
   });
@@ -273,10 +276,10 @@ describe("BattleConditions 2v2 variant", () => {
       for (const key of ["reflect", "lightScreen", "auroraVeil", "tailwind"]) expect(html).toMatch(new RegExp(`id="[^"]+-${side}-${key}"`));
     }
     for (const key of ["weather", "terrain", "critical", "gravity", "trickRoom", "wonderRoom", "magicRoom"]) expect(html).toMatch(new RegExp(`id="[^"]+-${key}"`));
-    const sides = html.split("<fieldset").slice(-2);
-    expect(sides[0]).toMatch(/^[^>]*><legend[^>]*>Your side<\/legend>[\s\S]*Charge: Charizard[\s\S]*Charge: Venusaur/);
+    const sides = html.split('<div role="group" aria-labelledby="').slice(-2);
+    expect(sides[0]).toMatch(/^[^>]*><p id="[^"]+" class="[^"]*">Your side<\/p>[\s\S]*Charge: Charizard[\s\S]*Charge: Venusaur/);
     expect(sides[0]).not.toContain("Charge: Blastoise");
-    expect(sides[1]).toMatch(/^[^>]*><legend[^>]*>Opponent&#x27;s side<\/legend>[\s\S]*Charge: Blastoise[\s\S]*Charge: Pikachu/);
+    expect(sides[1]).toMatch(/^[^>]*><p id="[^"]+" class="[^"]*">Opponent&#x27;s side<\/p>[\s\S]*Charge: Blastoise[\s\S]*Charge: Pikachu/);
     expect(html).toMatch(/data-doubles-charge="own-left"[^>]*checked=""/);
     // status2 (NU, IN §5.6): the 2v2 note lists the 2v2's own states (unmodelledDoublesStates), not the 1v1's.
     expect(note(html)).not.toBe(note(conditions()));
