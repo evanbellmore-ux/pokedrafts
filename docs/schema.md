@@ -10,6 +10,7 @@ this document describes what they produce. Apply them in filename order:
 | `20260909120000_release_hardening.sql` | Columns, data fixes, constraints, indexes, realtime, storage, the RPC catalog, and the complete RLS policy set. Idempotent. |
 | `20260912120000_playoffs.sql` | Standings tiebreakers and single-elimination playoffs (docs/release-architecture.md section 12): league and match columns, the `season` news type, `league_standings`, `generate_playoffs`, `clear_playoffs`, new signatures for `create_league` and `report_match_result`, and a champion for finished leagues without playoffs. Idempotent. |
 | `20260916120000_pool_builder.sql` | Pool Builder v2 (docs/release-architecture.md section 13): the [`pokemon`](#pokemon) dataset table with its generated `bst`, indexes, one select policy for `authenticated`, read-only grants, and `_migration_report()` extended with the table's unique constraints. Loads no data (`npm run seed:pokemon` does), adds no function. Idempotent. |
+| `20261020130000_draft_timer_sweep.sql` | The server-side draft clock (docs/release-architecture.md section 14): `_auto_pick_if_expired` (the body of `auto_pick_if_expired`, which now calls it), the sweep `_auto_pick_expired_drafts`, and, when pg_cron is enabled, the jobs that run it every minute and trim its run history daily (see [Draft clock sweep](#draft-clock-sweep)). Ends with a one-row select saying whether the sweep is scheduled. Idempotent. |
 
 The hardening migration drops **every** policy on the application tables and
 recreates the set in [Row level security](#row-level-security), and drops the
@@ -428,7 +429,7 @@ Codes shared by many functions: `not_authenticated` (no user),
 | `set_draft_order(p_league_id uuid, p_member_ids uuid[])` | commissioner | Only before the draft. At least 2 ids, no duplicates, all in the league. Listed members get positions 1..n; unlisted members become spectators (`null`). One statement under the deferred unique constraint. | void. `draft_already_started`, `not_enough_coaches`, `duplicate_member`, `member_not_found` |
 | `start_draft(p_league_id uuid)` | commissioner | Requires >= 2 positioned members, `pool size >= positioned * picks_per_team`, and `picks_per_team * min(points) <= point_budget`. The pool is `custom_pool` as configured (`draft_formats` is never read). Clears stale picks/teams, sets `draft_started`, `current_pick_number = 1`, `pick_started_at = now()`, un-pauses. | void. `draft_already_started`, `not_enough_coaches`, `pool_too_small`, `budget_too_small` |
 | `make_pick(p_league_id uuid, p_pokemon_name text)` | coach on the clock | The caller's membership is checked right after the league lock, before any draft-state check, so a non-member only ever sees `not_a_member` and learns nothing about the draft. Points and tier come from the pool. Budget rule: `points <= remaining` and `remaining - points >= slots_left_after * min_pool_points`. Inserts the pick at `current_pick_number`, then advances the clock or finalizes on the last pick. | `jsonb { pick_number, pokemon_name, draft_completed }`. `draft_not_started`, `draft_completed`, `draft_paused`, `not_your_turn`, `pokemon_not_in_pool`, `pokemon_already_drafted`, `roster_full`, `over_budget` |
-| `auto_pick_if_expired(p_league_id uuid)` | any member | If the draft is live, not paused and `now() >= pick_started_at + pick_timer_seconds`, drafts the best legal Pokémon (highest points, then name) for the coach on the clock; if nothing is legal the turn is skipped (empty slot). Idempotent under concurrency: the second caller sees the refreshed clock and returns `picked: false`. | `jsonb { picked, pokemon_name, skipped, draft_completed }` |
+| `auto_pick_if_expired(p_league_id uuid)` | any member | If the draft is live, not paused and `now() >= pick_started_at + pick_timer_seconds`, drafts the best legal Pokémon (highest points, then name) for the coach on the clock; if nothing is legal the turn is skipped (empty slot). Idempotent under concurrency: the second caller sees the refreshed clock and returns `picked: false`. Checks the caller (`not_authenticated`, `league_not_found`, `not_a_member`), then runs `_auto_pick_if_expired`, the same code the [draft clock sweep](#draft-clock-sweep) runs for every draft each minute. | `jsonb { picked, pokemon_name, skipped, draft_completed }` |
 | `pause_draft(p_league_id uuid)` / `resume_draft(p_league_id uuid)` | commissioner | Pause records `draft_paused_at`; resume shifts `pick_started_at` forward by the paused duration, adds it to `draft_paused_total_seconds` and clears the pause. | void. `draft_not_started`, `draft_completed`, `already_paused`, `not_paused` |
 | `undo_last_pick(p_league_id uuid)` | commissioner | Deletes the highest pick, sets `current_pick_number` to its number and restarts the clock. | `jsonb { pick_number, pokemon_name }`. `draft_not_started`, `draft_completed`, `no_picks` |
 | `force_pick(p_league_id uuid, p_pokemon_name text)` | commissioner | Picks for the coach on the clock (same validation as `make_pick` without the turn check). `null` name = best available; if nothing is legal the turn is skipped. | `jsonb { pick_number, pokemon_name, draft_completed, skipped }`. As `make_pick` minus `not_your_turn` |
@@ -475,7 +476,10 @@ league without a row gets one through `_create_invite`; runs under the league
 lock the caller holds, for `regenerate_invite` and `remove_member`),
 `_setting_int`, `_advance_or_finalize`, `_finalize_draft` (materializes
 `drafted_teams`, regenerates `league_matches`, sets `draft_completed`),
-`_pick_internal`, and `_chat_message_defaults` (the `draft_chat_messages`
+`_pick_internal`, `_auto_pick_if_expired` and `_auto_pick_expired_drafts`
+(the auto-pick and the pg_cron sweep, from
+`20261020130000_draft_timer_sweep.sql`; see
+[Draft clock sweep](#draft-clock-sweep)), and `_chat_message_defaults` (the `draft_chat_messages`
 trigger function: plain `language plpgsql`, not security definer, since it
 only rewrites `new.id` and `new.created_at`). `_migration_report` is the
 operator-facing health check from
@@ -573,6 +577,56 @@ The schedule appends a bye when `n` is odd, then for round `r` (0-based) pairs
 index `i` with `n - 1 - i`, skipping byes, with home/away swapped on odd rounds,
 and rotates all but the first entry between rounds. Double round robin appends
 the mirrored rounds. Match numbers restart at 1 per round.
+
+### Draft clock sweep
+
+`20261020130000_draft_timer_sweep.sql` makes a pick clock run out on the server
+as well as in an open draft room (docs/release-architecture.md section 14).
+`_auto_pick_if_expired(p_league_id)` holds the rules `auto_pick_if_expired`
+documents above (lock the league; a live, unpaused draft whose clock has run
+out gets the best legal Pokémon for the coach on the clock, or a skipped turn;
+anything else returns `picked: false` and changes nothing), and both the RPC
+and the sweep call it.
+
+`_auto_pick_expired_drafts()` is the sweep: it lists the live, unpaused drafts
+whose clock has run out, in league id order, and runs `_auto_pick_if_expired`
+for each. A league that another transaction holds at that moment is skipped
+(`for update skip locked`) and taken on the next run; each league runs in its
+own subtransaction, so one whose auto-pick fails is rolled back alone with a
+`WARNING` naming the league and the SQLSTATE while the others still move. A
+turn restarts its league's clock at the start of the run, so a league gets at
+most one turn per run and the next coach a full clock. It returns
+`setof (league_id uuid, picked bool, pokemon_name text, skipped bool,
+draft_completed bool)`, one row per turn taken. Both functions are internal
+(revoked from `public`, `anon` and `authenticated`); run the sweep by hand as
+`postgres` with `select * from public._auto_pick_expired_drafts();`.
+
+When pg_cron is enabled (Integrations > Cron), the file schedules two jobs
+as the role running it, and re-running it replaces them rather than adding
+more:
+
+| Job | Schedule | Command |
+| --- | --- | --- |
+| `pokedrafts-draft-timer` | `* * * * *` (every minute) | `select * from public._auto_pick_expired_drafts()`; `cron.job_run_details.return_message` reads `SELECT n`, the turns that run took |
+| `pokedrafts-draft-timer-cleanup` | `17 4 * * *` (daily, 04:17 UTC) | deletes the two jobs' `cron.job_run_details` rows older than seven days (pg_cron never trims them; the timer writes about 1,440 a day) |
+
+Without pg_cron the file schedules nothing and warns; the draft room's own
+calls stay the only auto-pick. Instead of `_migration_report()`, the file ends
+with a one-row select, `draft_timer`: `Scheduled: ...` or `Not scheduled:
+pg_cron is not enabled ...`. To check the jobs:
+
+```sql
+select jobname, schedule, active from cron.job where jobname like 'pokedrafts-draft-timer%';
+select status, return_message, start_time
+from cron.job_run_details
+where jobid = (select jobid from cron.job where jobname = 'pokedrafts-draft-timer')
+order by start_time desc
+limit 5;
+```
+
+To stop the sweep, `select cron.unschedule('pokedrafts-draft-timer');` (and
+`'pokedrafts-draft-timer-cleanup'`); running the file again schedules both
+again.
 
 ## Row level security
 
@@ -705,6 +759,15 @@ table, signed-in users can, neither can write it and the service role can;
 `_migration_report()` lists a missing `pokemon` unique constraint and a re-run
 adds it back; and `draft_formats.json` accepts a `rules` key while
 `_format_pool` and `update_league_pool` still copy only `{ name, points, tier }`),
+the draft clock sweep (`draft-timer-sweep.test.ts`, in a database of its own
+because the sweep acts on every live draft: a turn taken with no signed-in
+user, running, paused, unstarted and finished drafts left alone, a whole draft
+ending with the same teams as a twin driven by `auto_pick_if_expired`, one
+turn per expired draft per run, a locked league skipped without waiting, a
+failing league rolled back with a warning while the others move, one pick
+when the sweep races the room, both functions refused to `authenticated` and
+`anon`, and, with a stub `cron` schema, the jobs scheduled once however often
+the file runs and both job commands working),
 and the client contract (`client-contract.test.ts`: the RPC names the release
 gate `scripts/check-client-contract.mjs` accepts are exactly the functions
 granted to the API roles, the read-only tables it knows are exactly the tables

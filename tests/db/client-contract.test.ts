@@ -24,9 +24,9 @@ import {
   scanSource,
 } from "../../scripts/lib/client-contract.mjs";
 import { connect, type Client } from "./harness";
-import { HARDENING_MIGRATION, PLAYOFFS_MIGRATION, POOL_BUILDER_MIGRATION, readMigrations } from "./migrations-lib";
+import { DRAFT_TIMER_SWEEP_MIGRATION, HARDENING_MIGRATION, PLAYOFFS_MIGRATION, POOL_BUILDER_MIGRATION, readMigrations } from "./migrations-lib";
 
-const GRANTING_MIGRATIONS = [HARDENING_MIGRATION, PLAYOFFS_MIGRATION, POOL_BUILDER_MIGRATION];
+const GRANTING_MIGRATIONS = [HARDENING_MIGRATION, PLAYOFFS_MIGRATION, POOL_BUILDER_MIGRATION, DRAFT_TIMER_SWEEP_MIGRATION];
 
 describe("client contract", () => {
   let db: Client;
@@ -61,13 +61,15 @@ describe("client contract", () => {
     // Per file: the hardening file grants the 28 first-release functions, the
     // playoffs file the three new ones plus the six it re-creates, the pool
     // builder file no function at all (its grants section only names the
-    // read-only pokemon table), and the base schema and the eight legacy
-    // files have no grants section.
+    // read-only pokemon table), the draft timer file none either (its grants
+    // section only revokes its two internal helpers), and the base schema and
+    // the eight legacy files have no grants section.
     const migrations = readMigrations();
     const hardening = migrations.find((m) => m.name === HARDENING_MIGRATION);
     const playoffs = migrations.find((m) => m.name === PLAYOFFS_MIGRATION);
     const poolBuilder = migrations.find((m) => m.name === POOL_BUILDER_MIGRATION);
-    if (!hardening || !playoffs || !poolBuilder) throw new Error("hardening, playoffs or pool builder migration missing");
+    const timerSweep = migrations.find((m) => m.name === DRAFT_TIMER_SWEEP_MIGRATION);
+    if (!hardening || !playoffs || !poolBuilder || !timerSweep) throw new Error("hardening, playoffs, pool builder or draft timer migration missing");
     expect(parseRpcCatalog(hardening.sql)).toHaveLength(28);
     expect(parseRpcCatalog(playoffs.sql)).toEqual([
       "clear_match_result",
@@ -81,9 +83,12 @@ describe("client contract", () => {
       "update_league_settings",
     ]);
     expect(parseRpcCatalog(poolBuilder.sql)).toEqual([]);
+    expect(parseRpcCatalog(timerSweep.sql)).toEqual([]);
+    expect(grantsSection(timerSweep.sql)).toContain("'public._auto_pick_expired_drafts()'");
     expect(parseReadOnlyTables(hardening.sql)).toEqual([]);
     expect(parseReadOnlyTables(playoffs.sql)).toEqual([]);
     expect(parseReadOnlyTables(poolBuilder.sql)).toEqual(["pokemon"]);
+    expect(parseReadOnlyTables(timerSweep.sql)).toEqual([]);
     // The parser must see the same section whatever line endings the checkout
     // has: git's core.autocrlf (the Windows default) hands it CRLF files, and
     // a section boundary that only matched LF ran the pool builder's section
@@ -91,7 +96,7 @@ describe("client contract", () => {
     // tables, so the gate's read-only list depended on the platform.
     const asCrlf = (sql: string) => sql.replace(/\r?\n/g, "\r\n");
     const asLf = (sql: string) => sql.replace(/\r\n?/g, "\n");
-    for (const migration of [hardening, playoffs, poolBuilder]) {
+    for (const migration of [hardening, playoffs, poolBuilder, timerSweep]) {
       expect(grantsSection(asCrlf(migration.sql)), `${migration.name} grants section on CRLF`).toBe(grantsSection(asLf(migration.sql)));
     }
     expect(parseReadOnlyTables(asCrlf(poolBuilder.sql))).toEqual(["pokemon"]);
