@@ -683,4 +683,28 @@ describe("pool builder migration", () => {
     await rpcAs(db, user, "reset_league_pool", { p_league_id: leagueId });
     expect((await leagueRow(db, leagueId)).custom_pool).toEqual(fromFormat);
   });
+
+  it("the small sprites migration points a listed row's artwork at its game sprite and leaves every other row alone", async () => {
+    const artwork = (id: number) => `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
+    const migration = migrationNamed(readMigrations(), "20261020121000_small_pokemon_sprites.sql");
+    const insert = (c: Client, id: number, slug: string, spriteUrl: string) => c.query(
+      "insert into public.pokemon (id, species_id, slug, display_name, species_name, form_kind, type1, hp, attack, defense, special_attack, special_defense, speed, generation, sprite_url) values ($1, $1, $2, $2, $2, 'default', 'Fire', 1, 1, 1, 1, 1, 1, 1, $3)",
+      [id, slug, spriteUrl],
+    );
+    const spriteOf = async (c: Client, id: number) => (await c.query<{ sprite_url: string }>("select sprite_url from public.pokemon where id = $1", [id])).rows[0].sprite_url;
+    await rolledBack(db, async (c) => {
+      await c.query("delete from public.pokemon where id in (6, 10301)");
+      await insert(c, 6, "sprite-test-listed", artwork(6));
+      // Mega Zygarde (10301) is not listed: it has no game sprite and keeps its artwork.
+      await insert(c, 10301, "sprite-test-unlisted", artwork(10301));
+      await insert(c, 900050, "sprite-test-other", "https://example.test/own.png");
+      await c.query(migration.sql);
+      expect(await spriteOf(c, 6)).toBe("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png");
+      expect(await spriteOf(c, 10301)).toBe(artwork(10301));
+      expect(await spriteOf(c, 900050)).toBe("https://example.test/own.png");
+      // Idempotent: a second run changes nothing.
+      await c.query(migration.sql);
+      expect(await spriteOf(c, 6)).toBe("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png");
+    });
+  });
 });

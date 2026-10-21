@@ -105,6 +105,17 @@ const CommissionerControls = memo(function CommissionerControls({
   const lastPickTeam = lastPick
     ? teamNameLabel(membersById.get(lastPick.member_id)?.team_name)
     : null;
+  // start_draft drafts positioned members only: before the start, name the
+  // members outside the order so nobody is left out by surprise. Without an
+  // order of two the draft cannot start, and startBlock already says so.
+  const members = [...membersById.values()];
+  const placedCount = members.filter((member) => member.draft_position !== null).length;
+  const unplaced =
+    phase === "setup" && placedCount >= 2
+      ? members
+          .filter((member) => member.draft_position === null)
+          .map((member) => teamNameLabel(member.team_name))
+      : [];
 
   /** The choice as it will be sent: a name that is still legal, else Best available. */
   const forceValue = legalForOnClock.some((entry) => entry.name === forceChoice)
@@ -292,6 +303,13 @@ const CommissionerControls = memo(function CommissionerControls({
       {phase === "setup" && startBlock && (
         <p id={startReasonId} className="mt-2 text-xs text-warning">
           {startBlock}
+        </p>
+      )}
+
+      {unplaced.length > 0 && (
+        <p data-draft-unplaced className="mt-2 text-xs text-muted">
+          Not in the draft order, so they will watch:{" "}
+          {new Intl.ListFormat("en", { style: "long", type: "conjunction" }).format(unplaced)}.
         </p>
       )}
 

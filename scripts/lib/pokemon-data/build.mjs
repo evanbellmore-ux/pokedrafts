@@ -175,11 +175,15 @@ export function buildRow({ catalog, species, pokemon, kind, curated }) {
     tags: tagsFor(species, curated),
     games: gamesFor({ pokemon, species, isDefault }),
     dex_numbers: dexNumbersFor(species),
+    // The form's 96px game sprite (about 1 KB) first: the app shows sprites at
+    // 32-64px, where the official artwork (120-200 KB) only costs downloads.
+    // Its own artwork stands in where a form has no game sprite, before any
+    // of the default variety's images, which show a different form.
     sprite_url:
-      pokemon.sprites.official_artwork ??
       pokemon.sprites.front_default ??
-      defaultVariety.sprites.official_artwork ??
+      pokemon.sprites.official_artwork ??
       defaultVariety.sprites.front_default ??
+      defaultVariety.sprites.official_artwork ??
       null,
   };
   for (const entry of pokemon.stats) {

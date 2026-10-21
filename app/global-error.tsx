@@ -8,10 +8,10 @@ import "./globals.css";
  */
 export default function GlobalError({
   error,
-  unstable_retry,
+  retry,
 }: {
   error: Error & { digest?: string };
-  unstable_retry: () => void;
+  retry: () => void;
 }) {
   return (
     <html lang="en" data-pokemon-theme="normal">
@@ -38,7 +38,7 @@ export default function GlobalError({
             <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-center">
               <button
                 type="button"
-                onClick={() => unstable_retry()}
+                onClick={() => retry()}
                 className="inline-flex items-center justify-center rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-on-accent hover:bg-accent-hover"
               >
                 Try again

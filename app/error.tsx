@@ -5,10 +5,10 @@ import Button, { ButtonLink } from "@/app/components/ui/Button";
 
 export default function ErrorPage({
   error,
-  unstable_retry,
+  retry,
 }: {
   error: Error & { digest?: string };
-  unstable_retry: () => void;
+  retry: () => void;
 }) {
   useEffect(() => {
     console.error("[pokedrafts] route error", error);
@@ -34,7 +34,7 @@ export default function ErrorPage({
           </p>
         )}
         <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-center">
-          <Button onClick={() => unstable_retry()}>Try again</Button>
+          <Button onClick={() => retry()}>Try again</Button>
           <ButtonLink href="/dashboard" variant="secondary">
             Go to dashboard
           </ButtonLink>

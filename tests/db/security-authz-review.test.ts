@@ -434,6 +434,8 @@ describe("security review round 2: authority, invites, direct writes", () => {
       const league = await buildLeague(db, { coaches: 2, maxCoaches: 4, picksPerTeam: 2, pool: samplePool(12) });
       const spectatorUser = await createUser(db);
       await rpcAs(db, spectatorUser, "join_league", { p_code: league.inviteCode, p_team_name: "Watcher" });
+      // A late joiner goes to the end of the order; the commissioner leaves them out of it on purpose.
+      await rpcAs(db, league.commissioner.userId, "set_draft_order", { p_league_id: league.leagueId, p_member_ids: league.order.map((p) => p.memberId) });
       const spectator = await memberFor(db, league.leagueId, spectatorUser);
       expect(spectator.draft_position).toBeNull();
 

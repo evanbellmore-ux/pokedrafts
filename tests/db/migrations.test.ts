@@ -5,7 +5,9 @@ import {
   EXECUTION_MIGRATION,
   EXECUTION_RULES_MIGRATION,
   EXECUTION_TIMEOUT_MIGRATION,
+  JOIN_DRAFT_ORDER_MIGRATION,
   RAID_REVIEW_MIGRATION,
+  SMALL_SPRITES_MIGRATION,
   HARDENING_MIGRATION,
   PLAYOFFS_MIGRATION,
   POOL_BUILDER_MIGRATION,
@@ -237,7 +239,7 @@ describe("migrations", () => {
     await admin.end();
   });
 
-  it("ship the base, legacy, hardening, playoffs, pool builder and private Execution migrations in order", () => {
+  it("ship the base, legacy, hardening, playoffs, pool builder, private Execution, join draft order and small sprites migrations in order", () => {
     const migrations = readMigrations();
     expect(migrations[0].name).toBe(BASE_MIGRATION);
     expect(migrations[9].name).toBe(HARDENING_MIGRATION);
@@ -247,7 +249,9 @@ describe("migrations", () => {
     expect(migrations[13].name).toBe(EXECUTION_RULES_MIGRATION);
     expect(migrations[14].name).toBe(RAID_REVIEW_MIGRATION);
     expect(migrations[15].name).toBe(EXECUTION_TIMEOUT_MIGRATION);
-    expect(migrations).toHaveLength(16);
+    expect(migrations[16].name).toBe(JOIN_DRAFT_ORDER_MIGRATION);
+    expect(migrations[17].name).toBe(SMALL_SPRITES_MIGRATION);
+    expect(migrations).toHaveLength(18);
   });
 
   it("the shared test database was migrated by the global setup", async () => {
