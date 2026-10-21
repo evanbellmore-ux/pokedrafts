@@ -171,31 +171,40 @@ describe("security review round 3: format ownership window, chat rows, reflected
       // functions themselves: with no pool array on the league row the pool is
       // empty, never the format's live json.
       const league = await leagueOnOwnedFormat();
-      const commissionerParticipant = { userId: league.owner, memberId: league.ownerMemberId, teamName: "Owner" };
-      const coachParticipant = { userId: league.coach, memberId: league.coachMemberId, teamName: "Coach" };
-      await runFullDraft(db, {
-        leagueId: league.leagueId,
-        inviteCode: "",
-        commissioner: commissionerParticipant,
-        coaches: [coachParticipant],
-        order: [commissionerParticipant, coachParticipant],
-      });
-      await db.query("update public.leagues set custom_pool = null where id = $1", [league.leagueId]);
-      expect((await db.query("select draft_completed from public.leagues where id = $1", [league.leagueId])).rows[0].draft_completed).toBe(true);
+      try {
+        const commissionerParticipant = { userId: league.owner, memberId: league.ownerMemberId, teamName: "Owner" };
+        const coachParticipant = { userId: league.coach, memberId: league.coachMemberId, teamName: "Coach" };
+        await runFullDraft(db, {
+          leagueId: league.leagueId,
+          inviteCode: "",
+          commissioner: commissionerParticipant,
+          coaches: [coachParticipant],
+          order: [commissionerParticipant, coachParticipant],
+        });
+        await db.query("update public.leagues set custom_pool = null where id = $1", [league.leagueId]);
+        expect((await db.query("select draft_completed from public.leagues where id = $1", [league.leagueId])).rows[0].draft_completed).toBe(true);
 
-      await rpcAs(db, league.owner, "transfer_commissioner", { p_league_id: league.leagueId, p_member_id: league.coachMemberId });
-      const rigged = { pokemon: [...samplePool(12), { name: "Freebie", points: 0 }] };
-      await asUser(db, league.owner, (c) => c.query("update public.draft_formats set json = $1 where id = $2", [JSON.stringify(rigged), league.formatId]));
+        await rpcAs(db, league.owner, "transfer_commissioner", { p_league_id: league.leagueId, p_member_id: league.coachMemberId });
+        const rigged = { pokemon: [...samplePool(12), { name: "Freebie", points: 0 }] };
+        await asUser(db, league.owner, (c) => c.query("update public.draft_formats set json = $1 where id = $2", [JSON.stringify(rigged), league.formatId]));
 
-      expect(await poolNames(league.leagueId)).toHaveLength(0);
-      const before = await teamFor(db, league.leagueId, league.ownerMemberId);
-      await expectRpcError(
-        rpcAs(db, league.owner, "swap_free_agent", { p_league_id: league.leagueId, p_drop_name: before.pokemon[0].name, p_add_name: "Freebie" }),
-        "pokemon_not_in_pool",
-      );
-      const after = await teamFor(db, league.leagueId, league.ownerMemberId);
-      expect(after.pokemon).toEqual(before.pokemon);
-      expect(after.total_points).toBe(before.total_points);
+        expect(await poolNames(league.leagueId)).toHaveLength(0);
+        const before = await teamFor(db, league.leagueId, league.ownerMemberId);
+        await expectRpcError(
+          rpcAs(db, league.owner, "swap_free_agent", { p_league_id: league.leagueId, p_drop_name: before.pokemon[0].name, p_add_name: "Freebie" }),
+          "pokemon_not_in_pool",
+        );
+        const after = await teamFor(db, league.leagueId, league.ownerMemberId);
+        expect(after.pokemon).toEqual(before.pokemon);
+        expect(after.total_points).toBe(before.total_points);
+      } finally {
+        // A finished league without a pool is what _migration_report() lists,
+        // and migrations.test.ts expects that report to be empty on the shared
+        // database whichever suite runs first. The league and the format
+        // rigged above go when the test ends, pass or fail.
+        await db.query("delete from public.leagues where id = $1", [league.leagueId]);
+        await db.query("delete from public.draft_formats where id = $1", [league.formatId]);
+      }
     });
   });
 
