@@ -2,6 +2,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { connect, type Client } from "./harness";
 import {
   BASE_MIGRATION,
+  DRAFT_TIMER_SWEEP_MIGRATION,
   EXECUTION_MIGRATION,
   EXECUTION_RULES_MIGRATION,
   EXECUTION_TIMEOUT_MIGRATION,
@@ -239,7 +240,7 @@ describe("migrations", () => {
     await admin.end();
   });
 
-  it("ship the base, legacy, hardening, playoffs, pool builder, private Execution, join draft order and small sprites migrations in order", () => {
+  it("ship the base, legacy, hardening, playoffs, pool builder, private Execution, join draft order, small sprites and draft timer sweep migrations in order", () => {
     const migrations = readMigrations();
     expect(migrations[0].name).toBe(BASE_MIGRATION);
     expect(migrations[9].name).toBe(HARDENING_MIGRATION);
@@ -251,7 +252,8 @@ describe("migrations", () => {
     expect(migrations[15].name).toBe(EXECUTION_TIMEOUT_MIGRATION);
     expect(migrations[16].name).toBe(JOIN_DRAFT_ORDER_MIGRATION);
     expect(migrations[17].name).toBe(SMALL_SPRITES_MIGRATION);
-    expect(migrations).toHaveLength(18);
+    expect(migrations[18].name).toBe(DRAFT_TIMER_SWEEP_MIGRATION);
+    expect(migrations).toHaveLength(19);
   });
 
   it("the shared test database was migrated by the global setup", async () => {
