@@ -20,6 +20,7 @@ export const EXECUTION_TIMEOUT_MIGRATION = "20261015143000_castmirror_request_ti
 export const JOIN_DRAFT_ORDER_MIGRATION = "20261020120000_join_league_draft_order.sql";
 export const SMALL_SPRITES_MIGRATION = "20261020121000_small_pokemon_sprites.sql";
 export const DRAFT_TIMER_SWEEP_MIGRATION = "20261020130000_draft_timer_sweep.sql";
+export const UNDO_WHILE_PAUSED_MIGRATION = "20261021120000_undo_while_paused.sql";
 export const BASE_MIGRATION = "00000000000000_base_schema.sql";
 
 export type MigrationFile = { name: string; sql: string };

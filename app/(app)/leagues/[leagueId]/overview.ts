@@ -136,6 +136,20 @@ export function inviteUrl(code: string): string {
   return `${origin}/invite/${encodeURIComponent(code)}`;
 }
 
+/**
+ * The PostgREST `or` filter for the news after `oldest` in the feed's order
+ * (created_at desc, then id desc). Rows written in one transaction share
+ * created_at (the last regular-season result and "The playoff bracket is
+ * set.", the final and the champion row), so the id breaks the tie: a cursor
+ * on created_at alone skipped the rows that shared the last row's timestamp.
+ */
+export function olderNewsFilter(
+  oldest: Pick<OverviewNews, "created_at" | "id">
+): string {
+  const at = oldest.created_at;
+  return `created_at.lt.${at},and(created_at.eq.${at},id.lt.${oldest.id})`;
+}
+
 /** Appends a page of older news, skipping rows the feed already shows. */
 export function mergeNews(
   current: OverviewNews[],

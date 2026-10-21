@@ -354,6 +354,38 @@ describe("draft RPCs", () => {
 
       await rpcAs(db, commissioner, "make_pick", { p_league_id: league.leagueId, p_pokemon_name: "Mon001" });
     });
+
+    it("gives a turn that an undo hands back during a pause one full clock, from the moment the draft resumes", async () => {
+      const league = await buildLeague(db, { coaches: 1, picksPerTeam: 2, pickTimerSeconds: 120, pool: samplePool(8) });
+      const [a, b] = league.order;
+      await rpcAs(db, a.userId, "start_draft", { p_league_id: league.leagueId });
+      await rpcAs(db, a.userId, "make_pick", { p_league_id: league.leagueId, p_pokemon_name: "Mon001" });
+      await rpcAs(db, b.userId, "make_pick", { p_league_id: league.leagueId, p_pokemon_name: "Mon002" });
+      await rpcAs(db, a.userId, "pause_draft", { p_league_id: league.leagueId });
+      // The draft has been paused for 45 seconds when the commissioner undoes pick 2.
+      await db.query("update public.leagues set draft_paused_at = draft_paused_at - interval '45 seconds' where id = $1", [league.leagueId]);
+      const undone = await rpcAs<{ pick_number: number; pokemon_name: string }>(db, a.userId, "undo_last_pick", { p_league_id: league.leagueId });
+      expect(undone).toEqual({ pick_number: 2, pokemon_name: "Mon002" });
+
+      // While paused the room shows the clock as it stood at the pause (the
+      // countdown runs to draft_paused_at): the restored turn's full 120
+      // seconds, not 120 plus the 45 the draft had already been paused.
+      const frozen = await db.query<{ seconds: string }>(
+        "select extract(epoch from pick_started_at + make_interval(secs => pick_timer_seconds) - draft_paused_at)::text as seconds from public.leagues where id = $1",
+        [league.leagueId],
+      );
+      expect(Number(frozen.rows[0].seconds)).toBe(120);
+
+      // Resuming starts that full clock now.
+      await rpcAs(db, a.userId, "resume_draft", { p_league_id: league.leagueId });
+      const left = await db.query<{ seconds: string }>(
+        "select extract(epoch from pick_started_at + make_interval(secs => pick_timer_seconds) - now())::text as seconds from public.leagues where id = $1",
+        [league.leagueId],
+      );
+      expect(Number(left.rows[0].seconds)).toBeGreaterThan(110);
+      expect(Number(left.rows[0].seconds)).toBeLessThanOrEqual(120);
+      expect((await onClockMember(db, league.leagueId)).memberId).toBe(b.memberId);
+    });
   });
 
   describe("undo_last_pick and force_pick", () => {

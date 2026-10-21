@@ -9,6 +9,7 @@ import {
   JOIN_DRAFT_ORDER_MIGRATION,
   RAID_REVIEW_MIGRATION,
   SMALL_SPRITES_MIGRATION,
+  UNDO_WHILE_PAUSED_MIGRATION,
   HARDENING_MIGRATION,
   PLAYOFFS_MIGRATION,
   POOL_BUILDER_MIGRATION,
@@ -240,7 +241,7 @@ describe("migrations", () => {
     await admin.end();
   });
 
-  it("ship the base, legacy, hardening, playoffs, pool builder, private Execution, join draft order, small sprites and draft timer sweep migrations in order", () => {
+  it("ship the base, legacy, hardening, playoffs, pool builder, private Execution, join draft order, small sprites, draft timer sweep and undo while paused migrations in order", () => {
     const migrations = readMigrations();
     expect(migrations[0].name).toBe(BASE_MIGRATION);
     expect(migrations[9].name).toBe(HARDENING_MIGRATION);
@@ -253,7 +254,8 @@ describe("migrations", () => {
     expect(migrations[16].name).toBe(JOIN_DRAFT_ORDER_MIGRATION);
     expect(migrations[17].name).toBe(SMALL_SPRITES_MIGRATION);
     expect(migrations[18].name).toBe(DRAFT_TIMER_SWEEP_MIGRATION);
-    expect(migrations).toHaveLength(19);
+    expect(migrations[19].name).toBe(UNDO_WHILE_PAUSED_MIGRATION);
+    expect(migrations).toHaveLength(20);
   });
 
   it("the shared test database was migrated by the global setup", async () => {

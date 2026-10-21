@@ -191,6 +191,26 @@ describe("draft timer sweep", () => {
     expect(await sweep(db, paused)).toEqual([pickedRow(paused, "Mon001")]);
   });
 
+  it("takes a turn that an undo handed back during a pause once one full clock has run after the resume", async () => {
+    const league = await buildLeague(db, { coaches: 1, picksPerTeam: 2, pickTimerSeconds: 120, pool: samplePool(8) });
+    const commissioner = league.commissioner.userId;
+    await startDraft(db, league);
+    await rpcAs(db, commissioner, "make_pick", { p_league_id: league.leagueId, p_pokemon_name: "Mon003" });
+    await rpcAs(db, commissioner, "pause_draft", { p_league_id: league.leagueId });
+    // Paused for 45 seconds before the undo hands pick 1 back.
+    await db.query("update public.leagues set draft_paused_at = draft_paused_at - interval '45 seconds' where id = $1", [league.leagueId]);
+    await rpcAs(db, commissioner, "undo_last_pick", { p_league_id: league.leagueId });
+    expect(await sweep(db, league)).toEqual([]);
+
+    await rpcAs(db, commissioner, "resume_draft", { p_league_id: league.leagueId });
+    // 110 of the 120 seconds after the resume: still the coach's turn.
+    await db.query("update public.leagues set pick_started_at = pick_started_at - interval '110 seconds' where id = $1", [league.leagueId]);
+    expect(await sweep(db, league)).toEqual([]);
+    // 121 seconds: the clock has run out, so the sweep picks.
+    await db.query("update public.leagues set pick_started_at = pick_started_at - interval '11 seconds' where id = $1", [league.leagueId]);
+    expect(await sweep(db, league)).toEqual([pickedRow(league, "Mon001")]);
+  });
+
   it("drives a whole draft to the same teams as the draft room's auto-pick, skipped turn and finalization included", async () => {
     // 2 teams, 2 picks, budget 10, pool 9/9/1/5: A takes 9, B takes 9 then 1,
     // and A cannot afford the 5 left, so the last turn is skipped and the

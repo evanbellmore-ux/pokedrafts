@@ -374,9 +374,9 @@ export default function StandingsClient() {
     leagueId,
     name: "standings",
     tables: ["league_matches", "leagues", "league_members"],
-    onChange: (table) => {
+    onChange: (tables) => {
       // The league row carries the tiebreaker, playoff format and champion.
-      if (table === "leagues" || table === null) void refresh();
+      if (!tables || tables.has("leagues")) void refresh();
       void reload();
     },
   });

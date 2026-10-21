@@ -27,6 +27,7 @@ import {
   mergeNews,
   NEWS_PAGE_SIZE,
   NEWS_SELECT,
+  olderNewsFilter,
   sortCoaches,
   type OverviewInvite,
   type OverviewMatch,
@@ -199,9 +200,9 @@ export default function LeagueOverviewClient() {
     leagueId,
     name: "overview",
     tables: ["leagues", "league_members", "league_matches", "league_news"],
-    onChange: (table) => {
-      if (table === "leagues" || table === null) void refresh();
-      if (table !== "leagues") void reload();
+    onChange: (tables) => {
+      if (!tables || tables.has("leagues")) void refresh();
+      if (!tables || [...tables].some((table) => table !== "leagues")) void reload();
     },
   });
 
@@ -236,7 +237,7 @@ export default function LeagueOverviewClient() {
         .from("league_news")
         .select(NEWS_SELECT)
         .eq("league_id", leagueId)
-        .lt("created_at", oldest.created_at)
+        .or(olderNewsFilter(oldest))
         .order("created_at", { ascending: false })
         .order("id", { ascending: false })
         .limit(NEWS_PAGE_SIZE);

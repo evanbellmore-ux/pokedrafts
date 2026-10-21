@@ -17,7 +17,7 @@ import DraftOrderStrip from "./DraftOrderStrip";
 import DraftPool from "./DraftPool";
 import MobilePanelBar from "./MobilePanelBar";
 import RosterPanel from "./RosterPanel";
-import type { MobilePanel } from "./draft-room";
+import { countUnreadChat, type MobilePanel } from "./draft-room";
 import { useDraftRoom } from "./useDraftRoom";
 
 /**
@@ -34,16 +34,16 @@ export default function DraftClient() {
   const [panel, setPanel] = useState<MobilePanel>("pool");
   const [rosterChoice, setRosterChoice] = useState<string | null>(null);
   /**
-   * Messages counted as read: everything present at the first load, then
-   * everything on screen whenever the chat panel is showing. Adjusted during
-   * render (React's "adjusting state on prop change" pattern), not in an
-   * effect.
+   * Ids of the messages counted as read: everything present at the first
+   * load, then everything on screen whenever the chat panel is showing.
+   * Adjusted during render (React's "adjusting state on prop change"
+   * pattern), not in an effect.
    */
-  const [chatSeen, setChatSeen] = useState<number | null>(null);
-  if (room.loaded && (chatSeen === null || (panel === "chat" && chatSeen !== room.chat.length))) {
-    setChatSeen(room.chat.length);
+  const [chatSeen, setChatSeen] = useState<ReadonlySet<string> | null>(null);
+  const unreadChat = chatSeen === null ? 0 : countUnreadChat(room.chat, chatSeen);
+  if (room.loaded && (chatSeen === null || (panel === "chat" && unreadChat > 0))) {
+    setChatSeen(new Set(room.chat.map((message) => message.id)));
   }
-  const unreadChat = chatSeen === null ? 0 : Math.max(0, room.chat.length - chatSeen);
 
   const leagueHref = `/leagues/${room.league.id}`;
   const onClockName = room.onClock ? teamNameLabel(room.onClock.team_name) : null;

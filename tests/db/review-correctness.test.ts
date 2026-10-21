@@ -203,7 +203,7 @@ describe("review: correctness and concurrency", () => {
     }
   });
 
-  it("undo_last_pick during a pause restarts the clock, and resume then shifts it into the future", async () => {
+  it("undo_last_pick during a pause restarts the clock at the pause, so resume starts one full clock now", async () => {
     const league = await buildLeague(db, { coaches: 1, picksPerTeam: 2, pool: samplePool(8) });
     const [a] = league.order;
     await rpcAs(db, a.userId, "start_draft", { p_league_id: league.leagueId });
@@ -214,8 +214,10 @@ describe("review: correctness and concurrency", () => {
     await rpcAs(db, a.userId, "resume_draft", { p_league_id: league.leagueId });
     const row = await leagueRow(db, league.leagueId);
     const aheadSeconds = (new Date(row.pick_started_at as string).getTime() - Date.now()) / 1000;
-    // pick_started_at is ~300 s in the future: the coach gets timer + 300 s.
-    expect(aheadSeconds).toBeGreaterThan(290);
+    // Until 20261021120000_undo_while_paused.sql the undo restarted the clock
+    // at now() and resume added the whole pause on top: pick_started_at
+    // landed ~300 s in the future and the coach got timer + 300 s.
+    expect(Math.abs(aheadSeconds)).toBeLessThan(10);
   });
 
   it("a pause taken after the timer already expired does not refund time: auto-pick fires right after resume", async () => {
