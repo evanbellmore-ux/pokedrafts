@@ -371,14 +371,106 @@ describe("proxy: public and protected paths", () => {
     expect(response.status).toBe(200);
   });
 
-  it.each(["/dashboard", "/builder", "/leagues/new", "/invite", "/nope"])(
-    "%s requires a session",
-    async (path) => {
-      const response = await run(path, { claims: null });
-      expect(response.status).toBe(307);
-      expect(response.headers.get("location")).toBe(
-        `${ORIGIN}/login?next=${encodeURIComponent(path)}`
-      );
-    }
-  );
+  it.each([
+    "/dashboard",
+    "/builder",
+    "/calculator",
+    "/training",
+    "/leagues/new",
+    "/leagues/8f3c9c1e-1111-4222-8333-444455556666/draft",
+    // Inside a signed-in section a missing page still asks for a session
+    // first: whether a league or tab exists is not for signed-out visitors.
+    "/leagues",
+    "/dashboard/no-such-tab",
+  ])("%s requires a session", async (path) => {
+    const response = await run(path, { claims: null });
+    expect(response.status).toBe(307);
+    expect(response.headers.get("location")).toBe(
+      `${ORIGIN}/login?next=${encodeURIComponent(path)}`
+    );
+  });
+});
+
+describe("proxy: unknown paths reach the 404 page", () => {
+  // Passing through means Next renders app/not-found.tsx with a 404.
+  const unknown = [
+    "/nope",
+    "/no-such-page-xyz",
+    "/invite",
+    "/dashboards",
+    "/auth/elsewhere",
+    "/api/nope",
+  ];
+
+  it.each(unknown)("%s passes through for a signed-out visitor", async (path) => {
+    const response = await run(path, { claims: null });
+    expect(response.status).toBe(200);
+    expect(response.headers.get("location")).toBeNull();
+    expect(response.headers.get("content-security-policy")).toMatch(/'nonce-/);
+  });
+
+  it.each(unknown)("%s passes through for a signed-in user", async (path) => {
+    const response = await run(path, { claims: { sub: "user-1" } });
+    expect(response.status).toBe(200);
+    expect(response.headers.get("location")).toBeNull();
+  });
+});
+
+describe("proxy: Content-Security-Policy", () => {
+  function nonceOf(policy: string | null) {
+    return /'nonce-([^']+)'/.exec(policy ?? "")?.[1] ?? null;
+  }
+
+  it("sends the policy with the page and hands the same policy to the render", async () => {
+    const response = await run("/dashboard", { claims: { sub: "user-1" } });
+    const policy = response.headers.get("content-security-policy");
+    expect(nonceOf(policy)).not.toBeNull();
+    // NextResponse.next({ request }) forwards the request's headers this
+    // way; Next reads the nonce from the forwarded policy while rendering.
+    expect(response.headers.get("x-middleware-request-content-security-policy")).toBe(policy);
+    expect(response.headers.get("x-middleware-override-headers")).toContain(
+      "content-security-policy"
+    );
+  });
+
+  it("keeps the policy when the session refresh rebuilds the response", async () => {
+    const response = await run("/dashboard", {
+      claims: { sub: "user-1" },
+      writes: REFRESHED,
+    });
+    const policy = response.headers.get("content-security-policy");
+    expect(nonceOf(policy)).not.toBeNull();
+    expect(response.headers.get("x-middleware-request-content-security-policy")).toBe(policy);
+    expect(setCookieNames(response)).toEqual(["sb-abc-auth-token.0", "sb-abc-auth-token.1"]);
+  });
+
+  it("uses a fresh nonce for every request", async () => {
+    const first = await run("/login", { claims: null });
+    const second = await run("/login", { claims: null });
+    const a = nonceOf(first.headers.get("content-security-policy"));
+    const b = nonceOf(second.headers.get("content-security-policy"));
+    expect(a).not.toBeNull();
+    expect(b).not.toBeNull();
+    expect(a).not.toBe(b);
+  });
+
+  it("covers a public page rendered for a signed-in user the auth server cannot vouch for", async () => {
+    const response = await run("/", { claims: { sub: "user-1" }, user: "unreachable" });
+    expect(response.status).toBe(200);
+    expect(nonceOf(response.headers.get("content-security-policy"))).not.toBeNull();
+  });
+
+  it.each([
+    "/castmirror",
+    "/CastMirror",
+    "/castmirror/guild-execution",
+    "/raidcard",
+    "/castmirror.html",
+    "/raidcard.html",
+    "/api/castmirror/zones",
+  ])("leaves the other project's %s without the policy", async (path) => {
+    const response = await run(path, { claims: null });
+    expect(response.headers.get("content-security-policy")).toBeNull();
+    expect(response.headers.get("x-middleware-request-content-security-policy")).toBeNull();
+  });
 });

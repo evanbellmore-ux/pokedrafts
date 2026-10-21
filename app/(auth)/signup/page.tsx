@@ -6,6 +6,9 @@ import SignupForm from "./SignupForm";
 
 export const metadata: Metadata = {
   title: "Sign up",
+  description:
+    "Create a PokeDrafts account to start a Pokémon draft league or join one from an invite link.",
+  alternates: { canonical: "/signup" },
 };
 
 export default async function SignupPage({

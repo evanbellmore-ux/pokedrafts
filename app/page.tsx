@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   },
   description:
     "Create a Pokémon draft league, invite your coaches, run a live snake draft with a pick timer, then play out a season with a schedule, standings and free-agent moves.",
+  alternates: { canonical: "/" },
 };
 
 const steps = [

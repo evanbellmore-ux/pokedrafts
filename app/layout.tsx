@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { cookies } from "next/headers";
 import { ThemeProvider } from "@/app/components/ThemeProvider";
+import { SITE_NAME, SITE_URL } from "@/app/lib/site";
 import { THEME_COOKIE, parseTheme, themeBackgrounds } from "@/app/lib/theme";
 import "./globals.css";
 
@@ -15,14 +16,30 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+/**
+ * Link previews: og:title and og:description follow each page's own title and
+ * description, and app/opengraph-image.tsx is the share image (Next fills the
+ * Twitter card from the Open Graph tags). A page that sets its own `openGraph`
+ * replaces this object, image included, so pages set `title`, `description`
+ * and `alternates.canonical` only.
+ */
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "PokeDrafts",
-    template: "%s | PokeDrafts",
+    default: SITE_NAME,
+    template: `%s | ${SITE_NAME}`,
   },
   description:
     "Fantasy-style Pokémon draft leagues: create a league, invite coaches, run a live snake draft with a pick timer, then play a season with standings and free agents.",
-  applicationName: "PokeDrafts",
+  applicationName: SITE_NAME,
+  openGraph: {
+    type: "website",
+    siteName: SITE_NAME,
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
 };
 
 /**
