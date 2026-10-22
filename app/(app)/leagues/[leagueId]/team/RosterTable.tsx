@@ -11,6 +11,7 @@ import {
   theadClassName,
   trClassName,
 } from "@/app/components/ui";
+import { pointsLabel } from "@/app/lib/league/labels";
 import type { RosterPokemon } from "@/app/types/league";
 import { useMinWidthMd } from "../useMinWidthMd";
 import { isFreeAgentPickup } from "./roster";
@@ -110,7 +111,7 @@ export default function RosterTable({ roster, label }: RosterTableProps) {
             <p className="truncate font-semibold text-text">{entry.name}</p>
             <PokemonTypes name={entry.name} className="mt-1" />
             <p className="mt-1 text-xs text-muted">
-              {entry.points} pts · Tier {entry.tier}
+              {pointsLabel(entry.points)} · Tier {entry.tier}
             </p>
           </div>
           <PickLabel entry={entry} />

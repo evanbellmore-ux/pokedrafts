@@ -14,6 +14,7 @@ import {
   theadClassName,
   trClassName,
 } from "@/app/components/ui";
+import { pointsLabel } from "@/app/lib/league/labels";
 import type { DraftPokemon } from "@/app/types/draft";
 import { useMinWidthMd } from "../useMinWidthMd";
 
@@ -183,7 +184,7 @@ export default function FreeAgentList({
                   <p className="truncate font-semibold text-text">{entry.name}</p>
                   <PokemonTypes name={entry.name} className="mt-1" />
                   <p className="mt-1 text-xs text-muted">
-                    {entry.points} pts · Tier {entry.tier}
+                    {pointsLabel(entry.points)} · Tier {entry.tier}
                   </p>
                 </div>
               </div>

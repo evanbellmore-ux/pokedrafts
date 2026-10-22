@@ -26,6 +26,7 @@ import TableWrap, {
   theadClassName,
   trClassName,
 } from "@/app/components/ui/TableWrap";
+import { pointsLabel } from "@/app/lib/league/labels";
 import {
   ALL_POKEMON_LABEL,
   applyRules,
@@ -316,7 +317,7 @@ function PreviewCards({ entries, rules }: { entries: PokemonEntry[]; rules: Form
             </div>
             <div className="text-right">
               <p className="text-sm font-semibold text-text">{entry.bst}</p>
-              <p className="text-xs text-muted">{pointsFor(entry, rules)} pts</p>
+              <p className="text-xs text-muted">{pointsLabel(pointsFor(entry, rules))}</p>
             </div>
           </div>
           <dl className="mt-3 grid grid-cols-6 gap-1 text-center">

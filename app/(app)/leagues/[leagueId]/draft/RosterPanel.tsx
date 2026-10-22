@@ -4,7 +4,7 @@ import { memo, useMemo } from "react";
 import PokemonSprite from "@/app/components/PokemonSprite";
 import PokemonTypes from "@/app/components/PokemonTypes";
 import { Field, Select } from "@/app/components/ui";
-import { teamNameLabel } from "@/app/lib/league/labels";
+import { pluralize, pointsLabel, teamNameLabel } from "@/app/lib/league/labels";
 import type { DraftPick, LeagueMember } from "@/app/types/league";
 import type { TeamBudget } from "./draft-room";
 
@@ -65,7 +65,7 @@ const RosterPanel = memo(function RosterPanel({
           {selected && teamBudget && (
             <p className="mt-0.5 text-sm text-muted">
               {rosterPicks.length} of {picksPerTeam} slots filled · {teamBudget.spent}{" "}
-              spent · {teamBudget.remaining} of {teamBudget.budget} points left
+              spent · {teamBudget.remaining} of {pluralize(teamBudget.budget, "point")} left
             </p>
           )}
           {!selected && (
@@ -114,7 +114,7 @@ const RosterPanel = memo(function RosterPanel({
                   </p>
                   <PokemonTypes name={pick.pokemon_name} className="mt-1 justify-center" />
                   <p className="mt-1 text-xs tabular-nums text-muted">
-                    {pick.points} pts · #{pick.pick_number}
+                    {pointsLabel(pick.points)} · #{pick.pick_number}
                   </p>
                 </>
               ) : (

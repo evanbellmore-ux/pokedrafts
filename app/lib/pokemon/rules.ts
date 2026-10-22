@@ -356,6 +356,11 @@ export function defaultRules(
   };
 }
 
+/** A band's point value as words: "1 point", "20 points". */
+function pointValue(points: number): string {
+  return `${points} ${points === 1 ? "point" : "points"}`;
+}
+
 /**
  * Why a bands list cannot be used, or null when it is exactly 20 integers,
  * each lower than the one before it, ending in 0.
@@ -366,14 +371,15 @@ export function bandsProblem(bands: unknown): string | null {
   }
   for (let index = 0; index < bands.length; index += 1) {
     const value: unknown = bands[index];
+    const band = pointValue(MAX_POINTS - index);
     if (typeof value !== "number" || !Number.isInteger(value)) {
-      return `The minimum total for ${MAX_POINTS - index} points must be a whole number.`;
+      return `The minimum total for ${band} must be a whole number.`;
     }
     if (value < 0) {
-      return `The minimum total for ${MAX_POINTS - index} points cannot be negative.`;
+      return `The minimum total for ${band} cannot be negative.`;
     }
     if (index > 0 && value >= (bands[index - 1] as number)) {
-      return `The minimum total for ${MAX_POINTS - index} points must be lower than the one for ${MAX_POINTS - index + 1} points.`;
+      return `The minimum total for ${band} must be lower than the one for ${pointValue(MAX_POINTS - index + 1)}.`;
     }
   }
   if (bands[BAND_COUNT - 1] !== 0) {

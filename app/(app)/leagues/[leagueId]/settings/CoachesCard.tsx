@@ -116,12 +116,13 @@ export default function CoachesCard({
           const isSelf = member.user_id === currentUserId;
           const teamName = teamNameLabel(member.team_name);
           const joined = joinedLabel(member.joined_at);
+          // The card sits in the narrow settings column on desktop, so the row
+          // wraps by its contents rather than by the viewport: the team block
+          // starts at its full width and the buttons drop below it when both
+          // do not fit, instead of squeezing the name down to a letter.
           return (
-            <li
-              key={member.id}
-              className="flex flex-col gap-3 py-3 sm:flex-row sm:items-center sm:justify-between"
-            >
-              <div className="flex min-w-0 items-center gap-3">
+            <li key={member.id} className="flex flex-wrap items-center gap-3 py-3">
+              <div className="flex min-w-0 flex-auto items-center gap-3">
                 <TeamAvatar name={member.team_name} mine={isSelf} />
                 <div className="min-w-0">
                   <p className="flex min-w-0 items-baseline gap-2">
@@ -132,12 +133,17 @@ export default function CoachesCard({
                   </p>
                   <p className="mt-0.5 text-xs text-muted">
                     {roleLabel(member.role)}
-                    {joined && ` · Joined ${joined}`}
+                    {joined && (
+                      <>
+                        {" · "}
+                        <span className="whitespace-nowrap">Joined {joined}</span>
+                      </>
+                    )}
                   </p>
                 </div>
               </div>
               {!isSelf && (
-                <div className="flex flex-wrap gap-2 sm:shrink-0 sm:justify-end">
+                <div className="flex flex-wrap gap-2">
                   <Button
                     size="sm"
                     variant="secondary"

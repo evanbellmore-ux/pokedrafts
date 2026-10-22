@@ -4,6 +4,7 @@ import { Trash2 } from "lucide-react";
 import PokemonSprite from "@/app/components/PokemonSprite";
 import PokemonTypes from "@/app/components/PokemonTypes";
 import { Button, NumberInput } from "@/app/components/ui";
+import { pointsUnit } from "@/app/lib/league/labels";
 import { LEAGUE_LIMITS } from "@/app/types/league";
 import type { PoolRowsProps } from "./PoolTable";
 
@@ -32,7 +33,7 @@ export default function PoolCards({
               <div className="shrink-0 text-right">
                 <p className="text-lg font-semibold text-text tabular-nums">
                   {row.points}
-                  <span className="ml-1 text-xs font-normal text-muted">pts</span>
+                  <span className="ml-1 text-xs font-normal text-muted">{pointsUnit(row.points ?? 0)}</span>
                 </p>
                 <p className="text-xs text-muted">Tier {row.tier ?? "–"}</p>
               </div>

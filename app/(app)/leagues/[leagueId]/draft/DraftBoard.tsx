@@ -4,7 +4,7 @@ import { memo } from "react";
 import PokemonSprite from "@/app/components/PokemonSprite";
 import PokemonTypes from "@/app/components/PokemonTypes";
 import { EmptyState, StatusPill } from "@/app/components/ui";
-import { teamNameLabel } from "@/app/lib/league/labels";
+import { pointsUnit, teamNameLabel } from "@/app/lib/league/labels";
 import type { BoardRound } from "./draft-room";
 
 export type DraftBoardProps = {
@@ -81,7 +81,7 @@ const DraftBoard = memo(function DraftBoard({
                           </div>
                           <span className="shrink-0 text-sm font-semibold tabular-nums text-text">
                             {entry.pick.points}
-                            <span className="text-xs font-normal text-muted"> pts</span>
+                            <span className="text-xs font-normal text-muted"> {pointsUnit(entry.pick.points)}</span>
                           </span>
                         </>
                       ) : (

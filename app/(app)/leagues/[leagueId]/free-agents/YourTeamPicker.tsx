@@ -4,6 +4,7 @@ import { Plus } from "lucide-react";
 import PokemonSprite from "@/app/components/PokemonSprite";
 import PokemonTypes from "@/app/components/PokemonTypes";
 import { SkeletonLines } from "@/app/components/ui";
+import { pointsLabel } from "@/app/lib/league/labels";
 import type { RosterPokemon } from "@/app/types/league";
 import { PickLabel } from "../team/RosterTable";
 import { pokemonKey } from "../team/roster";
@@ -85,7 +86,7 @@ export default function YourTeamPicker({
               </span>
               <PokemonTypes name={entry.name} className="justify-center" />
               <span className="text-xs text-muted">
-                {entry.points} pts · Tier {entry.tier}
+                {pointsLabel(entry.points)} · Tier {entry.tier}
               </span>
               <PickLabel entry={entry} />
               {pressed && (

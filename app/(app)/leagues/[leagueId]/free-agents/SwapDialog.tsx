@@ -3,6 +3,7 @@
 import PokemonSprite from "@/app/components/PokemonSprite";
 import PokemonTypes from "@/app/components/PokemonTypes";
 import { Dialog } from "@/app/components/ui";
+import { pointsLabel } from "@/app/lib/league/labels";
 import type { DraftPokemon } from "@/app/types/draft";
 import type { RosterPokemon } from "@/app/types/league";
 
@@ -49,7 +50,7 @@ function MoveCard({
       </p>
       <PokemonTypes name={entry.name} className="row-start-4 mt-1 justify-center" />
       <p className="row-start-5 mt-1 text-xs text-muted">
-        {entry.points} pts · Tier {entry.tier}
+        {pointsLabel(entry.points)} · Tier {entry.tier}
       </p>
     </div>
   );
