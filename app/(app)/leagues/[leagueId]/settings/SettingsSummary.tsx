@@ -7,6 +7,7 @@ import {
   tiebreakerLabel,
 } from "@/app/lib/league/labels";
 import { CREATE_LEAGUE_DEFAULTS } from "@/app/lib/league/limits";
+import { readStreamLink, streamLabel } from "@/app/lib/watch/stream-links";
 import type { League } from "@/app/types/league";
 import {
   formatName,
@@ -32,6 +33,13 @@ function Item({ label, value }: { label: string; value: string }) {
       <dd className="min-w-0 break-words text-sm font-medium text-text sm:text-right">{value}</dd>
     </div>
   );
+}
+
+/** "Public · twitch.tv/name", "Public", or "Private" (section 15). */
+function publicPageLabel(league: League) {
+  if (!league.is_public) return "Private";
+  const stream = readStreamLink(league.stream_url);
+  return stream ? `Public · ${streamLabel(stream)}` : "Public";
 }
 
 /** Read-only view of the league settings for coaches. */
@@ -91,6 +99,7 @@ export default function SettingsSummary({
               (league.draft_format_id ? "Format no longer available" : "None")
             }
           />
+          <Item label="Public page" value={publicPageLabel(league)} />
         </dl>
       </section>
 

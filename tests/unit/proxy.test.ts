@@ -366,9 +366,17 @@ describe("proxy: public and protected paths", () => {
     "/update-password",
     "/auth/callback?code=x",
     "/invite/ABC123",
+    "/watch",
+    "/watch/8f3c9c1e-1111-4222-8333-444455556666",
   ])("%s is reachable logged out", async (path) => {
     const response = await run(path, { claims: null });
     expect(response.status).toBe(200);
+  });
+
+  it("a signed-in visitor stays on /watch (it is not a sign-in page)", async () => {
+    const response = await run("/watch", { claims: { sub: "user-1" }, user: "ok" });
+    expect(response.status).toBe(200);
+    expect(response.headers.get("location")).toBeNull();
   });
 
   it.each([

@@ -25,7 +25,9 @@ import {
   type LeagueFixture,
 } from "./harness";
 
-const ANON_FUNCTIONS = ["get_server_time", "get_invite_preview", "is_league_member"];
+// The public leagues file (20261022120000_public_leagues.sql) adds the two
+// reads a signed-out visitor of /watch needs.
+const ANON_FUNCTIONS = ["get_server_time", "get_invite_preview", "is_league_member", "list_public_leagues", "get_public_league"];
 
 describe("security probes", () => {
   let db: Client;
@@ -336,7 +338,7 @@ describe("security probes", () => {
   });
 
   describe("grants and exposure", () => {
-    it("no public function is executable by PUBLIC; anon executes only the three allowed; internals are hidden", async () => {
+    it("no public function is executable by PUBLIC; anon executes only the five allowed; internals are hidden", async () => {
       const { rows } = await db.query<{ proname: string; nargs: number; public_exec: boolean; anon_exec: boolean; auth_exec: boolean }>(`
         select p.proname,
                p.pronargs as nargs,

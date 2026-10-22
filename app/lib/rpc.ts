@@ -8,9 +8,12 @@ import type {
   InvitePreview,
   League,
   LeagueNews,
+  LeaguePublicPage,
   LeagueSettingsInput,
   LeagueStanding,
   PickResult,
+  PublicLeague,
+  PublicLeagueList,
   ScheduleFormat,
   UndoPickResult,
 } from "@/app/types/league";
@@ -219,6 +222,26 @@ export function createRpc(client: SupabaseClient = createClient()) {
 
     clearPlayoffs: (leagueId: string) =>
       call<null>(client, "clear_playoffs", { p_league_id: leagueId }),
+
+    /**
+     * Section 15: the commissioner's Public page card saves the public flag,
+     * the stream link and the replay list at once, links in the stored form
+     * of app/lib/watch/stream-links.ts.
+     */
+    updateLeaguePublicPage: (leagueId: string, page: LeaguePublicPage) =>
+      call<LeaguePublicPage>(client, "update_league_public_page", {
+        p_league_id: leagueId,
+        p_is_public: page.is_public,
+        p_stream_url: page.stream_url,
+        p_replay_links: page.replay_links.map(({ title, url }) => ({ title, url })),
+      }),
+
+    /** Anyone, signed out included: the public leagues for /watch. */
+    listPublicLeagues: () => call<PublicLeagueList>(client, "list_public_leagues", {}),
+
+    /** Anyone: one public league, or null when it is missing or private. */
+    getPublicLeague: (leagueId: string) =>
+      call<PublicLeague | null>(client, "get_public_league", { p_league_id: leagueId }),
   };
 }
 

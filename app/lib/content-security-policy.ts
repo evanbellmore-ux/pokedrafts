@@ -18,6 +18,11 @@
  *   team import.
  * - worker-src: the Training engine's worker, which Turbopack starts from a
  *   /_next/static chunk.
+ * - frame-src: the Watch pages' players (docs/release-architecture.md
+ *   section 15): Twitch's player and clip embeds, YouTube's live-stream
+ *   embed (www.youtube.com) and its video embeds (youtube-nocookie.com).
+ *   Everything inside a player is the player's own page, under its own
+ *   policy.
  * - Vercel: the toolbar sources from Vercel's CSP guide (vercel.live, its
  *   pusher socket, vercel.com images and assets.vercel.com fonts).
  */
@@ -73,7 +78,14 @@ export function contentSecurityPolicy({
       "wss://ws-us3.pusher.com",
     ],
     ["worker-src", "'self'"],
-    ["frame-src", VERCEL_LIVE],
+    [
+      "frame-src",
+      "https://player.twitch.tv",
+      "https://clips.twitch.tv",
+      "https://www.youtube.com",
+      "https://www.youtube-nocookie.com",
+      VERCEL_LIVE,
+    ],
     ["object-src", "'none'"],
     ["base-uri", "'self'"],
     ["form-action", "'self'"],

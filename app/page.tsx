@@ -162,6 +162,9 @@ export default function LandingPage() {
             Freak or The Pokémon Company.
           </p>
           <div className="flex gap-4 text-sm">
+            <Link href="/watch" className={`${linkClassName} text-muted hover:text-text`}>
+              Watch live leagues
+            </Link>
             <Link href="/login" className={`${linkClassName} text-muted hover:text-text`}>
               Log in
             </Link>

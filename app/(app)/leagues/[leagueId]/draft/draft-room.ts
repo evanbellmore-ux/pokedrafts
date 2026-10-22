@@ -353,12 +353,16 @@ export function clampChatMessage(text: string): string {
     : text;
 }
 
+/** What the board shows of a coach and of a pick (the draft room's rows, or a public league's). */
+export type BoardCoach = Pick<LeagueMember, "id" | "team_name">;
+export type BoardPick = Pick<DraftPick, "pick_number" | "member_id" | "pokemon_name" | "points">;
+
 export type BoardEntry = {
   pickNumber: number;
   /** Coach who owned the pick slot (null when the order no longer resolves). */
-  coach: LeagueMember | null;
+  coach: BoardCoach | null;
   /** The pick, or null when the turn was skipped (no legal Pokémon). */
-  pick: DraftPick | null;
+  pick: BoardPick | null;
 };
 
 export type BoardRound = {
@@ -373,13 +377,13 @@ export type BoardRound = {
  * instead of silently disappearing.
  */
 export function buildBoard(
-  picks: DraftPick[],
-  coaches: LeagueMember[],
-  membersById: Map<string, LeagueMember>,
+  picks: BoardPick[],
+  coaches: BoardCoach[],
+  membersById: Map<string, BoardCoach>,
   lastPickNumber: number
 ): BoardRound[] {
   const teamCount = coaches.length;
-  const byNumber = new Map<number, DraftPick>();
+  const byNumber = new Map<number, BoardPick>();
   let maxPick = 0;
   for (const pick of picks) {
     byNumber.set(pick.pick_number, pick);

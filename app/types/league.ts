@@ -55,6 +55,29 @@ export type League = {
   playoff_format: PlayoffFormat;
   /** The winner of the final, or the top seed when there are no playoffs. */
   champion_member_id: string | null;
+  /**
+   * Listed on /watch and readable by anyone through `get_public_league`
+   * (section 15). These three are missing on a database without
+   * 20261022120000_public_leagues.sql, so readers default them.
+   */
+  is_public?: boolean;
+  stream_url?: string | null;
+  replay_links?: ReplayLinkRow[];
+};
+
+/** One entry of `leagues.replay_links`: a titled Twitch or YouTube video link. */
+export type ReplayLinkRow = {
+  title: string;
+  url: string;
+  /** Set by the database when the link is first listed. */
+  added_at?: string;
+};
+
+/** What `update_league_public_page` takes and returns. */
+export type LeaguePublicPage = {
+  is_public: boolean;
+  stream_url: string | null;
+  replay_links: ReplayLinkRow[];
 };
 
 /** Row shape of `public.league_members`. */
@@ -190,6 +213,103 @@ export type InvitePreview = {
   draft_completed: boolean;
   already_member: boolean;
   invite_valid: boolean;
+};
+
+/** A team as the public reads name it: never the coach's account. */
+export type PublicTeamRef = { team_name: string | null };
+
+/** One league of `list_public_leagues` (docs/release-architecture.md section 15). */
+export type PublicLeagueSummary = {
+  id: string;
+  name: string;
+  coach_count: number;
+  /** Coaches with a draft position. */
+  drafting_count: number;
+  max_coaches: number;
+  picks_per_team: number | null;
+  current_pick_number: number | null;
+  draft_started: boolean;
+  draft_completed: boolean;
+  draft_paused: boolean;
+  /** While the draft runs: when the clock of the coach on it runs out. */
+  pick_deadline: string | null;
+  on_clock: PublicTeamRef | null;
+  last_pick: (PublicTeamRef & { pick_number: number; pokemon_name: string }) | null;
+  regular_played: number;
+  regular_total: number;
+  champion: PublicTeamRef | null;
+  stream_url: string | null;
+  replay_links: ReplayLinkRow[];
+  last_activity: string | null;
+};
+
+export type PublicLeagueList = {
+  server_time: string;
+  leagues: PublicLeagueSummary[];
+};
+
+export type PublicCoach = {
+  id: string;
+  team_name: string | null;
+  draft_position: number | null;
+};
+
+export type PublicPick = {
+  pick_number: number;
+  member_id: string;
+  pokemon_name: string;
+  points: number;
+};
+
+export type PublicMatch = Pick<
+  LeagueMatch,
+  | "id"
+  | "round_number"
+  | "match_number"
+  | "stage"
+  | "status"
+  | "home_member_id"
+  | "away_member_id"
+  | "winner_member_id"
+  | "winner_remaining"
+  | "home_seed"
+  | "away_seed"
+>;
+
+/** Sprite and types of a Pokémon on a public league's board or rosters. */
+export type PublicPokemonInfo = {
+  sprite_url: string | null;
+  type1: string | null;
+  type2: string | null;
+};
+
+/** `get_public_league`: one public league for /watch/<id>. */
+export type PublicLeague = {
+  id: string;
+  name: string;
+  max_coaches: number;
+  point_budget: number | null;
+  picks_per_team: number | null;
+  pick_timer_seconds: number;
+  draft_started: boolean;
+  draft_completed: boolean;
+  current_pick_number: number | null;
+  pick_started_at: string | null;
+  draft_paused_at: string | null;
+  on_clock_member_id: string | null;
+  schedule_format: ScheduleFormat;
+  playoff_format: PlayoffFormat;
+  tiebreaker: Tiebreaker;
+  champion_member_id: string | null;
+  stream_url: string | null;
+  replay_links: ReplayLinkRow[];
+  server_time: string;
+  coaches: PublicCoach[];
+  picks: PublicPick[];
+  teams: Array<{ member_id: string; pokemon: RosterPokemon[]; total_points: number }>;
+  matches: PublicMatch[];
+  standings: LeagueStanding[];
+  pokemon: Record<string, PublicPokemonInfo>;
 };
 
 /** Accepted keys for `update_league_settings`. */

@@ -26,6 +26,8 @@ const items: NavItem[] = [
   { href: "/builder", label: "Pool Builder" },
   { href: "/calculator", label: "Calculator" },
   { href: "/training", label: TRAINING_LABEL },
+  // Public (app/watch, outside app/(app)), and the only tab a signed-out visitor could also open.
+  { href: "/watch", label: "Watch" },
 ];
 
 function within(pathname: string, href: string) {

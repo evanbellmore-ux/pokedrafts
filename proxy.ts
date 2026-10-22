@@ -26,6 +26,7 @@ const PUBLIC_EXACT = new Set([
   "/forgot-password",
   "/update-password",
   "/auth/callback",
+  "/watch",
 ]);
 
 const AUTH_ENTRY_PATHS = new Set(["/", "/login", "/signup"]);
@@ -37,6 +38,8 @@ const OTHER_APP_EXACT = new Set(["/castmirror", "/CastMirror", "/castmirror/guil
 function isPublicPath(pathname: string) {
   if (PUBLIC_EXACT.has(pathname)) return true;
   if (pathname.startsWith("/invite/")) return true;
+  // Public leagues: the Watch list and each league's watch page.
+  if (pathname.startsWith("/watch/")) return true;
   if (OTHER_APP_EXACT.has(pathname)) return true;
   if (pathname.startsWith("/api/castmirror/")) return true;
   return false;

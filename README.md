@@ -404,3 +404,19 @@ in this order:
    `-- --refresh-serebii` for the Champions regulation pages), review the diff
    of `data/pokemon/*.json` and `report.json`, commit, and run
    `npm run seed:pokemon` again.
+
+Public leagues and streams (`20261022120000_public_leagues.sql`,
+docs/release-architecture.md section 15) ship in this order:
+
+1. Run `20261022120000_public_leagues.sql` in the SQL editor (after every
+   earlier file). It adds three `leagues` columns and three functions, changes
+   no policy, and ends with `select * from public._migration_report();`.
+2. Optional, for live status on the Watch pages: set `TWITCH_CLIENT_ID` and
+   `TWITCH_CLIENT_SECRET` (an application registered at dev.twitch.tv/console,
+   client type Confidential) and `YOUTUBE_API_KEY` (a Google Cloud API key with
+   the YouTube Data API v3 enabled) on the host. They are server-only and take
+   effect on the next deployment; without them a public league counts as live
+   only while its draft runs.
+3. Deploy the client. A client deployed before step 1 shows "This feature is
+   not available yet" on /watch and on the Settings card's Public page until
+   the file runs.

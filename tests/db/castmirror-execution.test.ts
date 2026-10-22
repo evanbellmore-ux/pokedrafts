@@ -83,7 +83,7 @@ describe('private CastMirror Execution PostgreSQL authority', () => {
     return call<{ revision: number }>(db, 'checkpoint', [account, c.owner, c.fence, c.revision, typeof value === 'string' ? value : JSON.stringify(value) + '\n', JSON.stringify(history)]);
   }
 
-  it('keeps a private eleven-function executor catalog and public 31 functions untouched', async () => {
+  it('keeps a private eleven-function executor catalog and public 34 functions untouched', async () => {
     const { rows } = await admin.query<{ name: string; definer: boolean; owner: string; config: string[] }>(`
       select p.proname name,p.prosecdef definer,r.rolname owner,p.proconfig config from pg_proc p
       join pg_roles r on r.oid=p.proowner where p.pronamespace='execution_v3'::regnamespace
@@ -96,7 +96,7 @@ describe('private CastMirror Execution PostgreSQL authority', () => {
     }
     const count = await admin.query(`select count(*)::int n from pg_proc where pronamespace='public'::regnamespace and proname not like '\\_%'
       and (has_function_privilege('anon',oid,'EXECUTE') or has_function_privilege('authenticated',oid,'EXECUTE'))`);
-    expect(count.rows[0].n).toBe(31);
+    expect(count.rows[0].n).toBe(34);
     const owners = await admin.query(`select rolcanlogin,rolsuper,rolbypassrls,rolcreatedb,rolcreaterole,rolreplication from pg_roles
       where rolname in ('execution_v3_executor','execution_v3_owner')`);
     expect(owners.rows).toHaveLength(2);
