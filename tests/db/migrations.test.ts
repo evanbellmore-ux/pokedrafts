@@ -10,6 +10,7 @@ import {
   RAID_REVIEW_MIGRATION,
   SMALL_SPRITES_MIGRATION,
   UNDO_WHILE_PAUSED_MIGRATION,
+  PUBLIC_LEAGUES_MIGRATION,
   HARDENING_MIGRATION,
   PLAYOFFS_MIGRATION,
   POOL_BUILDER_MIGRATION,
@@ -53,6 +54,9 @@ const API_FUNCTIONS = [
   "league_standings",
   "generate_playoffs",
   "clear_playoffs",
+  "update_league_public_page",
+  "list_public_leagues",
+  "get_public_league",
 ];
 
 const APP_TABLES = [
@@ -241,7 +245,7 @@ describe("migrations", () => {
     await admin.end();
   });
 
-  it("ship the base, legacy, hardening, playoffs, pool builder, private Execution, join draft order, small sprites, draft timer sweep and undo while paused migrations in order", () => {
+  it("ship the base, legacy, hardening, playoffs, pool builder, private Execution, join draft order, small sprites, draft timer sweep, undo while paused and public leagues migrations in order", () => {
     const migrations = readMigrations();
     expect(migrations[0].name).toBe(BASE_MIGRATION);
     expect(migrations[9].name).toBe(HARDENING_MIGRATION);
@@ -255,7 +259,8 @@ describe("migrations", () => {
     expect(migrations[17].name).toBe(SMALL_SPRITES_MIGRATION);
     expect(migrations[18].name).toBe(DRAFT_TIMER_SWEEP_MIGRATION);
     expect(migrations[19].name).toBe(UNDO_WHILE_PAUSED_MIGRATION);
-    expect(migrations).toHaveLength(20);
+    expect(migrations[20].name).toBe(PUBLIC_LEAGUES_MIGRATION);
+    expect(migrations).toHaveLength(21);
   });
 
   it("the shared test database was migrated by the global setup", async () => {
@@ -317,10 +322,10 @@ describe("migrations", () => {
     for (const fn of API_FUNCTIONS) {
       expect(byName.get(fn)?.authenticated, `${fn} should be executable by authenticated`).toBe(true);
     }
-    for (const fn of ["get_server_time", "get_invite_preview", "is_league_member"]) {
+    for (const fn of ["get_server_time", "get_invite_preview", "is_league_member", "list_public_leagues", "get_public_league"]) {
       expect(byName.get(fn)?.anon, `${fn} should be executable by anon`).toBe(true);
     }
-    for (const fn of ["create_league", "make_pick", "swap_free_agent", "join_league"]) {
+    for (const fn of ["create_league", "make_pick", "swap_free_agent", "join_league", "update_league_public_page"]) {
       expect(byName.get(fn)?.anon, `${fn} should not be executable by anon`).toBe(false);
     }
     for (const row of rows) {

@@ -5,12 +5,18 @@ import PokemonSprite from "@/app/components/PokemonSprite";
 import PokemonTypes from "@/app/components/PokemonTypes";
 import { EmptyState, StatusPill } from "@/app/components/ui";
 import { pointsUnit, teamNameLabel } from "@/app/lib/league/labels";
+import type { PublicPokemonInfo } from "@/app/types/league";
 import type { BoardRound } from "./draft-room";
 
 export type DraftBoardProps = {
   board: BoardRound[];
   /** Gate the empty-state copy until the first load has finished. */
   loading: boolean;
+  /**
+   * Sprites and types by Pokémon name, for pages a signed-out visitor sees
+   * (the public watch page): the dex those lookups use needs a session.
+   */
+  pokemon?: Readonly<Record<string, PublicPokemonInfo>>;
   className?: string;
 };
 
@@ -22,6 +28,7 @@ export type DraftBoardProps = {
 const DraftBoard = memo(function DraftBoard({
   board,
   loading,
+  pokemon,
   className = "",
 }: DraftBoardProps) {
   return (
@@ -52,48 +59,56 @@ const DraftBoard = memo(function DraftBoard({
                   Round {round.round}
                 </h3>
                 <ol className="mt-1 divide-y divide-line">
-                  {round.entries.map((entry) => (
-                    <li
-                      key={entry.pickNumber}
-                      className="flex items-center gap-3 py-2.5"
-                    >
-                      <span className="w-8 shrink-0 text-xs font-semibold tabular-nums text-muted">
-                        #{entry.pickNumber}
-                      </span>
-                      {entry.pick ? (
-                        <>
-                          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-bg/70 ring-1 ring-line">
-                            <PokemonSprite
-                              name={entry.pick.pokemon_name}
-                              size="fill"
-                              bare
-                              className="scale-110"
-                            />
-                          </span>
-                          <div className="min-w-0 flex-1">
-                            <p className="truncate text-sm font-semibold text-text">
-                              {entry.pick.pokemon_name}
-                            </p>
+                  {round.entries.map((entry) => {
+                    const info = entry.pick ? pokemon?.[entry.pick.pokemon_name] : undefined;
+                    return (
+                      <li
+                        key={entry.pickNumber}
+                        className="flex items-center gap-3 py-2.5"
+                      >
+                        <span className="w-8 shrink-0 text-xs font-semibold tabular-nums text-muted">
+                          #{entry.pickNumber}
+                        </span>
+                        {entry.pick ? (
+                          <>
+                            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-bg/70 ring-1 ring-line">
+                              <PokemonSprite
+                                name={entry.pick.pokemon_name}
+                                src={info?.sprite_url ?? undefined}
+                                size="fill"
+                                bare
+                                className="scale-110"
+                              />
+                            </span>
+                            <div className="min-w-0 flex-1">
+                              <p className="truncate text-sm font-semibold text-text">
+                                {entry.pick.pokemon_name}
+                              </p>
+                              <p className="truncate text-xs text-muted">
+                                {teamNameLabel(entry.coach?.team_name)}
+                              </p>
+                              <PokemonTypes
+                                name={entry.pick.pokemon_name}
+                                types={info?.type1 ? { type1: info.type1, type2: info.type2 } : undefined}
+                                className="mt-1"
+                              />
+                            </div>
+                            <span className="shrink-0 text-sm font-semibold tabular-nums text-text">
+                              {entry.pick.points}
+                              <span className="text-xs font-normal text-muted"> {pointsUnit(entry.pick.points)}</span>
+                            </span>
+                          </>
+                        ) : (
+                          <div className="flex min-w-0 flex-1 items-center justify-between gap-2">
                             <p className="truncate text-xs text-muted">
                               {teamNameLabel(entry.coach?.team_name)}
                             </p>
-                            <PokemonTypes name={entry.pick.pokemon_name} className="mt-1" />
+                            <StatusPill tone="neutral">Skipped</StatusPill>
                           </div>
-                          <span className="shrink-0 text-sm font-semibold tabular-nums text-text">
-                            {entry.pick.points}
-                            <span className="text-xs font-normal text-muted"> {pointsUnit(entry.pick.points)}</span>
-                          </span>
-                        </>
-                      ) : (
-                        <div className="flex min-w-0 flex-1 items-center justify-between gap-2">
-                          <p className="truncate text-xs text-muted">
-                            {teamNameLabel(entry.coach?.team_name)}
-                          </p>
-                          <StatusPill tone="neutral">Skipped</StatusPill>
-                        </div>
-                      )}
-                    </li>
-                  ))}
+                        )}
+                      </li>
+                    );
+                  })}
                 </ol>
               </section>
             ))}

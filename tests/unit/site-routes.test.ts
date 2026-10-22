@@ -88,6 +88,7 @@ describe("sitemap.xml", () => {
       "https://www.pokedrafts.io",
       "https://www.pokedrafts.io/login",
       "https://www.pokedrafts.io/signup",
+      "https://www.pokedrafts.io/watch",
     ]);
     expect(INDEXED_PATHS.every((path) => !SIGNED_IN_SECTIONS.some((s) => isInSection(path, s)))).toBe(true);
   });

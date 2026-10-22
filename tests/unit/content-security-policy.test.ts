@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { contentSecurityPolicy } from "@/app/lib/content-security-policy";
+import {
+  parseReplayLink,
+  parseStreamLink,
+  replayEmbedUrl,
+  streamEmbedUrl,
+} from "@/app/lib/watch/stream-links";
 
 /**
  * The policy proxy.ts sends with every page (app/lib/content-security-policy.ts),
@@ -70,6 +76,37 @@ describe("contentSecurityPolicy", () => {
     expect(production().get("worker-src")).toEqual(["'self'"]);
   });
 
+  it("frames the Watch pages' Twitch and YouTube players and nothing else beside the Vercel Toolbar", () => {
+    expect(production().get("frame-src")).toEqual([
+      "https://player.twitch.tv",
+      "https://clips.twitch.tv",
+      "https://www.youtube.com",
+      "https://www.youtube-nocookie.com",
+      "https://vercel.live",
+    ]);
+  });
+
+  it("allows every host the Watch pages' embed URLs point at", () => {
+    const frames = production().get("frame-src") ?? [];
+    const options = { host: "www.pokedrafts.io" };
+    const twitch = parseStreamLink("https://www.twitch.tv/pokedrafts");
+    const youTube = parseStreamLink("https://www.youtube.com/channel/UC1234567890abcdefghijAB");
+    const replays = [
+      "https://www.twitch.tv/videos/123",
+      "https://clips.twitch.tv/SomeClip",
+      "https://youtu.be/dQw4w9WgXcQ",
+    ].map((url) => parseReplayLink(url));
+    const urls = [
+      twitch.ok ? streamEmbedUrl(twitch.link, options) : null,
+      youTube.ok ? streamEmbedUrl(youTube.link, options) : null,
+      ...replays.map((replay) => (replay.ok ? replayEmbedUrl(replay.link, options) : null)),
+    ];
+    for (const url of urls) {
+      expect(url).not.toBeNull();
+      expect(frames, String(url)).toContain(new URL(String(url)).origin);
+    }
+  });
+
   it("allows the Vercel Toolbar's sources from Vercel's CSP guide", () => {
     const policy = production();
     expect(policy.get("connect-src")).toEqual(
@@ -78,7 +115,7 @@ describe("contentSecurityPolicy", () => {
     expect(policy.get("img-src")).toEqual(
       expect.arrayContaining(["https://vercel.live", "https://vercel.com"])
     );
-    expect(policy.get("frame-src")).toEqual(["https://vercel.live"]);
+    expect(policy.get("frame-src")).toEqual(expect.arrayContaining(["https://vercel.live"]));
     expect(policy.get("style-src")).toEqual(
       expect.arrayContaining(["https://vercel.live", "'unsafe-inline'"])
     );

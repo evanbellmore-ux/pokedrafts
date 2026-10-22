@@ -60,6 +60,14 @@ describe("wrapping app navigation", () => {
     expect(active).not.toMatch(/<a href="\/calculator" aria-current="page"/);
   });
 
+  it("links Watch last and marks it active on the public league pages", () => {
+    const html = renderToStaticMarkup(createElement(AppNav));
+    expect(html).toMatch(/<a href="\/watch"[^>]*>Watch</);
+    expect(html.indexOf('href="/training"')).toBeLessThan(html.indexOf('href="/watch"'));
+    navigation.pathname = "/watch/abc";
+    expect(renderToStaticMarkup(createElement(AppNav))).toMatch(/<a href="\/watch" aria-current="page"[^>]*>Watch</);
+  });
+
   it("marks Dashboard as the current section on league pages, not as the page", () => {
     navigation.pathname = "/leagues/abc/standings";
     const html = renderToStaticMarkup(createElement(AppNav));

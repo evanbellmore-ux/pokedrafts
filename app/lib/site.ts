@@ -8,8 +8,12 @@ export const SITE_URL = "https://www.pokedrafts.io";
 
 export const SITE_NAME = "PokeDrafts";
 
-/** The pages search engines may index: app/sitemap.ts lists exactly these. */
-export const INDEXED_PATHS = ["/", "/login", "/signup"] as const;
+/**
+ * The pages search engines may index: app/sitemap.ts lists exactly these.
+ * Each public league's /watch/<id> page carries its own canonical but is not
+ * listed (the list of public leagues changes all the time).
+ */
+export const INDEXED_PATHS = ["/", "/login", "/signup", "/watch"] as const;
 
 /**
  * The signed-in areas, one per top-level folder of app/(app). proxy.ts sends

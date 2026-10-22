@@ -6,7 +6,7 @@ This document is the contract for the release-hardening work. Every page, migrat
 
 - Ship a first public release of PokeDrafts: fantasy-football-style Pokemon draft leagues (create league, invite coaches, live snake draft with a pick timer, teams, schedule, results, standings, free-agent swaps).
 - Every mutation that spans more than one row, or that must be validated against other rows, runs inside a Postgres function (`security definer`) so it is atomic and enforced server-side. The browser never writes directly to `leagues`, `league_members`, `league_invites`, `draft_picks`, `drafted_teams`, `league_matches`, or `league_news`.
-- Reads stay client-side through the anon key and row-level security (RLS). A server Supabase client is used only in `proxy.ts`, the auth callback route, and the league layout (membership check and metadata).
+- Reads stay client-side through the anon key and row-level security (RLS). A server Supabase client is used only in `proxy.ts`, the auth callback route, the league layout (membership check and metadata), and the public Watch pages (section 15).
 - `leagues.commissioner_id` is the single source of truth for "who is the commissioner". `league_members.role` is display-only and is kept in sync by the functions.
 - The backend must be reproducible from `supabase/migrations` on a fresh project, and the same files must apply cleanly to the existing project (everything is `if not exists` / `create or replace` / `drop policy if exists`).
 - Next.js 16 conventions apply (see `node_modules/next/dist/docs`): `proxy.ts` not `middleware.ts`, `params` is a Promise, `metadata` only from server components, `error.tsx` and `global-error.tsx` use the `retry` prop (it was `unstable_retry` before Next 16.3), `next lint` is gone (plain `eslint`).
@@ -49,8 +49,10 @@ app/
     forgot-password/page.tsx
     update-password/page.tsx      reached from the recovery email
   invite/[code]/page.tsx          server wrapper + InviteClient. Viewable logged out (preview via get_invite_preview); Join requires auth and carries ?next.
+  watch/page.tsx                  public: the public leagues, live ones first, with their players (section 15)
+  watch/[leagueId]/page.tsx       public: one public league's stream next to its draft board and standings (section 15)
   (app)/
-    layout.tsx                    server: AppNav shell (brand mark link, Dashboard, Pool Builder, Calculator, Training tabs, account menu with theme and sign out), max-w-6xl container
+    layout.tsx                    server: AppNav shell (brand mark link, Dashboard, Pool Builder, Calculator, Training and Watch tabs, account menu with theme and sign out), max-w-6xl container
     loading.tsx
     dashboard/page.tsx            + DashboardClient.tsx (loading, delete), LeagueCard.tsx, DashboardSidebar.tsx (join by code, tools), dashboard.ts (pure helpers)
     builder/page.tsx              Pool Builder: BuilderClient.tsx (entry), RuleBuilder.tsx (the "Build from rules" card, section 13.7), FormatLibrary.tsx, PoolTable.tsx, hooks.ts, poolFormat.ts, resolvePokemon.ts
@@ -85,7 +87,7 @@ app/
 
 - Uses `@supabase/ssr` `createServerClient` with the `getAll` / `setAll` cookie adapter; refreshed cookies and the `Cache-Control` headers from `setAll` are copied onto every response, including redirects.
 - Matcher: `['/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|txt|xml)$).*)']`.
-- Public paths: `/`, `/login`, `/signup`, `/forgot-password`, `/update-password`, `/auth/callback`, `/invite/:code`.
+- Public paths: `/`, `/login`, `/signup`, `/forgot-password`, `/update-password`, `/auth/callback`, `/invite/:code`, `/watch`, `/watch/:leagueId`.
 - The shared Cast Mirror project additionally exposes exact `/castmirror`, `/CastMirror`, `/castmirror/guild-execution`, `/raidcard`, and `/api/castmirror/` routes publicly. The guild page exception does not expose neighboring nested paths.
 - Unauthenticated request to a protected path -> redirect to `/login?next=<pathname+search>`.
 - Authenticated request to `/`, `/login`, `/signup` -> redirect to `/dashboard` (or to `next` if present and relative), but only after `getUser()` confirmed the session with the auth server. A locally verified JWT (asymmetric signing keys) is not proof that GoTrue still accepts the session: the browser client's own `getUser()` may just have failed (auth server unreachable, user deleted or banned) and sent the user to `/login`, and bouncing them back on the strength of the cookie alone would loop until the access token expired. When the auth server cannot vouch for the session the public page renders; the cookies are kept (or cleared when it answers `session_not_found`). Protected paths stay optimistic (`getClaims()` only, no round trip). `tests/unit/proxy.test.ts` and the ES256 cases in `tests/unit/auth-session-real-clients.test.ts` cover this.
@@ -303,6 +305,7 @@ Pages use `bg-bg`, `bg-panel`, `border-line`, `bg-accent text-on-accent`, `text-
 5. Run `node scripts/check-client-contract.mjs` on the branch being deployed (exit 0) and ship the client and the hardening migration in the same window (README, "The deployed client must be on the RPC catalog first").
 6. Enable pg_cron (Integrations > Cron) and apply `20261020130000_draft_timer_sweep.sql`, so a pick clock runs out even when nobody has the draft room open; its result row should read `Scheduled: ...` (section 14.5).
 7. Apply `20261021120000_undo_while_paused.sql`, so an undo during a pause hands the turn back with one full clock (section 14.6).
+8. Apply `20261022120000_public_leagues.sql` before deploying the Watch pages, and optionally set `TWITCH_CLIENT_ID`, `TWITCH_CLIENT_SECRET` and `YOUTUBE_API_KEY` on the host for live status (section 15.9).
 
 ## 11. Out of scope for this release
 
@@ -660,3 +663,102 @@ Added 2026-10-21 (release audit). Pause and the sweep agree: the sweep lists onl
 Tests: `draft.test.ts` (undo 45 seconds into a pause: 120 seconds frozen on the clock, 120 seconds left after Resume) and `draft-timer-sweep.test.ts` (the sweep leaves the restored turn alone while paused and 110 seconds after Resume, and takes it at 121 seconds). `migrations.test.ts` and `review-applyability.test.ts` now count twenty files.
 
 Release: run `20261021120000_undo_while_paused.sql` in the SQL editor ("Success. No rows returned"). Nothing to deploy for it: the room reads the clock from the league row.
+
+## 15. Public leagues and streams
+
+Added 2026-10-22. A commissioner can make a league public and attach its stream; anyone, signed out included, can browse the public leagues on `/watch` and follow one on `/watch/<league id>`: the stream (or a replay) next to a read-only draft board and the standings. Migration `supabase/migrations/20261022120000_public_leagues.sql`. Earlier sections stay as they are unless a line here says otherwise.
+
+### 15.1 Decisions
+
+- **Everyone can watch.** `/watch` and `/watch/<id>` are public pages (`PUBLIC_EXACT` and the `/watch/` prefix in `proxy.ts`), in `app/watch/`, outside `app/(app)`. A signed-in visitor keeps `AppNav`, which gains a Watch tab after Training; a signed-out visitor gets the landing page's header (Log in, Sign up) and footer. The league's own pages stay members-only.
+- **Live means the stream is on air or the draft is running.** A league is live while its draft runs (started, not complete, not paused) or while the platform says its stream is on air (section 15.4). Twitch needs an app's client ID and secret, YouTube an API key; without them only running drafts count, and the players still show whatever the platform shows.
+- **Replays are links.** The commissioner lists up to 20 titled replay links (Twitch past broadcasts, highlights and clips; YouTube videos). `/watch` shows the newest replays across the public leagues when nothing is live, and a league's page lists them beside its stream.
+- **Twitch and YouTube.** The stream is a Twitch channel, a YouTube channel (its @handle or its channel ID) or one YouTube live video.
+- **Two read functions, no policy changes.** Every table keeps its member-only select policy; an outsider reads a league only through `list_public_leagues` and `get_public_league` (both callable by `anon`), which choose the fields themselves: team names (never an account id), picks, rosters, matches, standings, stream and replays; never the invite, the pool, the chat or `commissioner_id`. A private league reads as null, exactly like a missing one.
+- **Spectators poll.** A signed-out visitor cannot subscribe to a league's tables (Realtime applies RLS), so the watch page polls `get_public_league` (every 10 s while the draft runs, every minute otherwise, only while the tab is visible) and `/watch` re-renders every minute. Section 7's realtime rules are unchanged for members.
+- **Server reads, so links preview.** Both pages read on the server (`app/watch/data.ts`, with the visitor's own Supabase session when there is one) beside the live check, whose keys never reach the browser. This adds the Watch pages to section 1's short list of places that use a server Supabase client.
+
+### 15.2 Data
+
+| Column on `leagues` | Type | Notes |
+| --- | --- | --- |
+| `is_public` | boolean | not null, default false |
+| `stream_url` | text | null, or one stream link in its stored form; check `leagues_stream_url_check` (`_stream_url_ok`) |
+| `replay_links` | jsonb | not null, default `[]`; `[{ title, url, added_at }]` in the commissioner's order, at most 20 (check `leagues_replay_links_check`); `added_at` is when the link was first listed and survives later saves |
+
+Partial index `leagues_public_idx on leagues (id) where is_public` for the public list.
+
+Stored link forms, written by `app/lib/watch/stream-links.ts` from whatever a commissioner pastes (`twitch.tv/Name/videos`, `m.youtube.com/@name/live`, `youtu.be/ID?t=42`, `player.twitch.tv/?channel=...` and so on) and the only forms the database accepts:
+
+| Kind | Stored as | Player |
+| --- | --- | --- |
+| Twitch channel (stream) | `https://www.twitch.tv/<login>` (lowercase) | `https://player.twitch.tv/?channel=<login>&parent=<host>` |
+| YouTube channel (stream) | `https://www.youtube.com/channel/<UC id>` | `https://www.youtube.com/embed/live_stream?channel=<UC id>`, or the live video once the live check found it |
+| YouTube @handle (stream) | `https://www.youtube.com/@<handle>` (lowercase, a-z 0-9 . _ -) | as a channel once the live check resolved the handle; otherwise a link out to YouTube |
+| YouTube live video (stream) | `https://www.youtube.com/watch?v=<id>` | `https://www.youtube-nocookie.com/embed/<id>` |
+| Twitch video (replay) | `https://www.twitch.tv/videos/<id>[?t=<h>h<m>m<s>s]` | `https://player.twitch.tv/?video=v<id>&parent=<host>[&time=...]` |
+| Twitch clip (replay) | `https://clips.twitch.tv/<slug>` | `https://clips.twitch.tv/embed?clip=<slug>&parent=<host>` |
+| YouTube video (replay) | `https://www.youtube.com/watch?v=<id>[&t=<s>s]` | `https://www.youtube-nocookie.com/embed/<id>[?start=<s>]` |
+
+### 15.3 Functions
+
+| Function | Who | Behaviour | Returns / errors |
+| --- | --- | --- | --- |
+| `update_league_public_page(p_league_id uuid, p_is_public boolean, p_stream_url text, p_replay_links jsonb)` | commissioner | Locks the league and saves all three at once. The stream link is trimmed (blank means none) and must be a stored stream form. The replays are at most 20 `{ title, url }` objects: a trimmed title of 1..80 characters and a stored replay form, each link once; a link already listed keeps its `added_at`, a new one gets `now()`. | jsonb `{ is_public, stream_url, replay_links }`. `invalid_public_setting`, `invalid_stream_link`, `invalid_replays`, `too_many_replays`, `invalid_replay_title`, `invalid_replay_link`, `duplicate_replay` (the replay messages name the entry: "Replay 2 ...") |
+| `list_public_leagues()` | anon, authenticated | The 100 public leagues with the most recent activity (creation, newest pick or news row), running drafts first. Per league: name, coach counts, draft progress (the team on the clock and its deadline while the draft runs, the newest pick), regular season progress, champion, stream link, replays. | jsonb `{ server_time, leagues: [...] }` (`PublicLeagueSummary` in `app/types/league.ts`) |
+| `get_public_league(p_league_id uuid)` | anon, authenticated | One public league, or null when it is missing or private. Settings and draft state, the member on the clock while the draft runs, the coaches (member id, team name, draft position), every pick, the rosters, the matches, the standings (`_league_standings`, no member check), stream, replays, and the sprite and types of every Pokémon on the board or a roster (`_public_pokemon`), since a signed-out visitor cannot read the dex. Never raises. | jsonb (`PublicLeague`) or null |
+
+Internal helpers (no API grants): `_stream_url_ok(text)` and `_replay_url_ok(text)` (the stored forms, immutable; the stream check uses the first), `_pokemon_name_key(text)` (the key `normalizePokemonName` builds, near enough for pool names) and `_public_pokemon(text[])` (exact `pokemon.display_name` matches through its unique index, then the rest by key against the dataset's display names and slugs, then `pokemon_dex`). The file's Grants section adds the three functions to the catalog that `scripts/check-client-contract.mjs` accepts (section 6) and no read-only table.
+
+### 15.4 Live status
+
+`app/lib/watch/live-status.ts` (server only) answers, for a list of stored stream links, whether each is on air: `{ checked, live, title, viewers, startedAt, liveVideoId, channelId }`. `checked` is false when the platform was not asked (no keys) or did not answer.
+
+- **Twitch:** with `TWITCH_CLIENT_ID` and `TWITCH_CLIENT_SECRET` (an application registered in the Twitch developer console, client type Confidential), an app access token by client credentials, kept in memory until it nears expiry and replaced after a 401, then Helix `GET /helix/streams?user_login=...`, up to 100 channels a call.
+- **YouTube:** with `YOUTUBE_API_KEY` (a Google Cloud API key with the YouTube Data API v3 enabled), an @handle becomes its channel ID through `channels?forHandle` (cached a day); each channel's five newest uploads come from its uploads playlist (`playlistItems`, playlist `UU` plus the channel ID after `UC`), which lists a broadcast while it is live, and `videos?part=snippet,liveStreamingDetails` (50 IDs a call) says which of those, and of the attached live videos, is live (`snippet.liveBroadcastContent`). Each call costs one quota unit, where `search?eventType=live` would cost a hundred; the default quota is 10,000 units a day.
+- **Caching:** the GETs go through Next's fetch cache (`next.revalidate`: 60 s for Twitch, 120 s for YouTube), so however many visitors load the pages, each platform is asked at most once per window for the same channels. Each call has a three-second timeout; an error, a timeout or a refused key leaves the stream `checked: false` and not live. Nothing is logged.
+
+### 15.5 Pages
+
+```
+app/
+  watch/
+    layout.tsx                AppNav for a signed-in visitor, else the landing header and footer
+    data.ts                   readPublicLeagues / readPublicLeague: the two functions on the server, cached per request
+    page.tsx                  /watch: metadata (canonical /watch, in INDEXED_PATHS and the sitemap), the list and its live checks
+    WatchBrowse.tsx           Live now (players, or a draft tile for a running draft without a stream), Replays when nothing is live, every other public league
+    StreamPlayer.tsx          the 16:9 iframe, built on the client with parent=<window.location.hostname>
+    WatchStatusLine.tsx       the one status line (dot or trophy, label, muted detail)
+    WatchError.tsx            a failed server read, with Try again
+    useAutoRefresh.ts         polling while the tab is visible
+    [leagueId]/
+      page.tsx                metadata (league name, canonical /watch/<id>; noindex when missing), the league and its live check; notFound() when null
+      not-found.tsx           "League not found": missing or not public, on purpose the same
+      WatchLeagueClient.tsx   the player and its sources, the draft clock, Draft board | Standings
+      PublicStandings.tsx     the standings table without Remaining
+```
+
+- **Players.** Twitch plays only inside the domains its `parent` parameter names, so the iframe is built on the client from `window.location.hostname` (www.pokedrafts.io in production, localhost, a Vercel preview's host); until then the frame keeps its 16:9 space empty. The list never autoplays; the watch page autoplays, muted, only a stream that is on air. Twitch asks for at least 400 by 300 pixels before it autoplays: the watch page's player has that from a 1024-pixel window; on a phone the players are smaller and play on a tap, as mobile browsers require anyway.
+- **What plays first** on a league's page (`defaultSource`): the stream while it is on air, while the draft runs, or when nobody could check it; otherwise the newest replay. The visitor can switch between them; the stream's entry reads "Live now" while it is on air.
+- **The board** is the draft room's `DraftBoard` (its `buildBoard` now takes only the fields the board shows), given the `pokemon` map from `get_public_league` so sprites and type badges come with the data; `PokemonTypes` with `types` no longer loads the dex, so a signed-out page never asks for a table it cannot read. While the draft runs, a clock card shows the round, the pick, the team on the clock and the time left, counted from the server's time.
+- **Status lines** (`leagueStatus` in `app/lib/watch/watch-view.ts`): "Live on Twitch · 1,234 watching · Pick 9 of 64", "Drafting now · Pick 9 of 64 · Team on the clock", "Draft paused · Pick 9 of 64", "Setting up · 5 of 8 coaches", "In season · 12 of 28 matches played", "Champion · Team".
+
+### 15.6 Settings
+
+The commissioner's Settings page gains a Public page card (`settings/PublicPageCard.tsx`, below Draft order): the watch link with Copy and Open once the league is public, the Public league checkbox (off by default; its help text says what becomes visible), the stream link (checked and stored in its normal form on Save) and the replay list (title and link; Add puts the newest first, Remove per row, at most 20). One call to `update_league_public_page` saves everything. Coaches see a "Public page" row in the read-only summary ("Private", "Public", or "Public · twitch.tv/name").
+
+### 15.7 Content-Security-Policy
+
+`frame-src` adds `https://player.twitch.tv`, `https://clips.twitch.tv`, `https://www.youtube.com` and `https://www.youtube-nocookie.com`; everything inside a player is the player's own page under its own policy, and the live checks run on the server, where the policy does not apply. `tests/unit/content-security-policy.test.ts` checks that every embed URL the pages build is allowed.
+
+### 15.8 Tests
+
+- `tests/db/public-leagues.test.ts`: a new league is private; the commissioner saves all three settings at once (trimmed, normalized, `added_at` kept for a link that stays, a blank stream meaning none); coaches, outsiders, a session without a user and `anon` are refused; every non-stored stream form and every malformed replay list is refused with its code (the replay named); what the Settings card's parser writes is exactly what the database stores; the column checks hold for a write that skips the function; a private or unknown league reads as null for everyone, its own coaches included; a public league's coaches, picks, coach on the clock, rosters, matches and standings; no account id, invite code or chat line anywhere in either function's JSON; sprites and types from the dataset, a form matched by key; the tables still closed to `anon`; the list holds public leagues only, running drafts first, with the newest pick, and drops a league that goes private.
+- `tests/unit/watch-stream-links.test.ts` (pasted forms, refusals and their messages, start times, player URLs), `watch-live-status.test.ts` (Twitch and YouTube stand-ins: the calls, the token's reuse and renewal, the answers read, no keys and errors), `watch-view.test.ts` (live order, replays, status lines, what plays first, the clock), plus the proxy, site-routes, app-nav and CSP cases above.
+- `migrations.test.ts`, `review-applyability.test.ts` and `client-contract.test.ts` count twenty-one files, three more API functions (two of them for `anon`) and the new Grants section; `security.test.ts` allows `anon` five functions, and `castmirror-execution.test.ts` counts 34 public functions.
+
+### 15.9 Migration and release order
+
+1. Run `20261022120000_public_leagues.sql` in the SQL editor. It ends with `select * from public._migration_report();`, so no rows means nothing to fix.
+2. Optional, for live status: in Vercel (Production and Preview) set `TWITCH_CLIENT_ID` and `TWITCH_CLIENT_SECRET` (register an application at dev.twitch.tv/console with any OAuth redirect URL such as `https://www.pokedrafts.io`, client type Confidential, then New Secret) and `YOUTUBE_API_KEY` (Google Cloud console: enable the YouTube Data API v3, create an API key and restrict it to that API). They are server-only (no `NEXT_PUBLIC_` prefix) and take effect on the next deployment. Without them, live means a running draft.
+3. Deploy the client. A client that ships before step 1 shows "This feature is not available yet, please try again later." on `/watch` and on the Settings card until the file runs; members' league pages are unaffected either way.

@@ -32,6 +32,7 @@ import {
   type SettingsMember,
 } from "./helpers";
 import InviteCard from "./InviteCard";
+import PublicPageCard from "./PublicPageCard";
 import SettingsForm from "./SettingsForm";
 import SettingsSummary from "./SettingsSummary";
 
@@ -232,6 +233,17 @@ export default function SettingsClient() {
     await settle("Draft order saved.", { refreshLeague: true });
   }
 
+  async function handlePublicPageSaved(madePublic: boolean | null) {
+    await settle(
+      madePublic === true
+        ? "Public page saved. The league is public now."
+        : madePublic === false
+          ? "Public page saved. The league is private now."
+          : "Public page saved.",
+      { refreshLeague: true }
+    );
+  }
+
   async function handleRemoved(member: SettingsMember) {
     // remove_member rotates the invite code; settle() re-reads the invite row.
     await settle(
@@ -318,6 +330,7 @@ export default function SettingsClient() {
               currentUserId={user.id}
               onSaved={handleOrderSaved}
             />
+            <PublicPageCard league={league} onSaved={handlePublicPageSaved} />
           </div>
           <div className="flex min-w-0 flex-col gap-6">
             <CoachesCard
