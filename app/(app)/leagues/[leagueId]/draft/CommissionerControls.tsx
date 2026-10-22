@@ -2,7 +2,7 @@
 
 import { memo, useId, useState } from "react";
 import { Alert, Button, Dialog, Field, Select } from "@/app/components/ui";
-import { teamNameLabel } from "@/app/lib/league/labels";
+import { pointsLabel, teamNameLabel } from "@/app/lib/league/labels";
 import type { DraftPokemon } from "@/app/types/draft";
 import type { DraftPick, LeagueMember } from "@/app/types/league";
 import type { DraftPhase } from "./draft-room";
@@ -365,7 +365,7 @@ const CommissionerControls = memo(function CommissionerControls({
             <option value="">Best available</option>
             {legalForOnClock.map((entry) => (
               <option key={entry.name} value={entry.name}>
-                {entry.name} ({entry.points} pts)
+                {entry.name} ({pointsLabel(entry.points)})
               </option>
             ))}
           </Select>

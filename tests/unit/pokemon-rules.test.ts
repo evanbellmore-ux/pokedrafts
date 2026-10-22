@@ -463,6 +463,10 @@ describe("pricing bands", () => {
     [DEFAULT_BANDS.map((band, index) => (index === 3 ? 660 : band)), /17 points must be lower than the one for 18 points/],
     [DEFAULT_BANDS.map((band, index) => (index === 0 ? 700.5 : band)), /20 points must be a whole number/],
     [DEFAULT_BANDS.map((band, index) => (index === 18 ? -1 : band)), /2 points cannot be negative/],
+    // The last band prices at "1 point", not "1 points".
+    [DEFAULT_BANDS.map((band, index) => (index === 19 ? 0.5 : band)), /total for 1 point must be a whole number/],
+    [DEFAULT_BANDS.map((band, index) => (index === 19 ? -1 : band)), /total for 1 point cannot be negative/],
+    [DEFAULT_BANDS.map((band, index) => (index === 18 ? 0 : band)), /total for 1 point must be lower than the one for 2 points/],
     ["nope", /20 minimum totals/],
   ])("rejects %j", (bands, message) => {
     expect(bandsProblem(bands)).toMatch(message);

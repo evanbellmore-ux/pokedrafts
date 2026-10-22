@@ -15,6 +15,7 @@ import {
   theadClassName,
   trClassName,
 } from "@/app/components/ui";
+import { pointsLabel } from "@/app/lib/league/labels";
 import type { DraftPokemon } from "@/app/types/draft";
 import { useMinWidthMd } from "../useMinWidthMd";
 import {
@@ -256,7 +257,7 @@ const DraftPool = memo(function DraftPool({
                   </p>
                   <PokemonTypes name={entry.name} className="mt-1" />
                   <p className="mt-1 text-xs text-muted">
-                    {entry.points} pts · Tier {entry.tier}
+                    {pointsLabel(entry.points)} · Tier {entry.tier}
                   </p>
                   {block !== null && (
                     <p className="mt-1 text-xs text-muted">{PICK_BLOCK_LABELS[block]}</p>

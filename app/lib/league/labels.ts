@@ -110,3 +110,13 @@ export function teamInitials(teamName: string | null | undefined): string {
 export function pluralize(count: number, singular: string, plural?: string) {
   return `${count} ${count === 1 ? singular : (plural ?? `${singular}s`)}`;
 }
+
+/** The short unit after a price or budget: "pt" for exactly one point, else "pts". */
+export function pointsUnit(points: number) {
+  return points === 1 ? "pt" : "pts";
+}
+
+/** A price or budget in short form: "1 pt", "0 pts", "12 pts". */
+export function pointsLabel(points: number) {
+  return `${points} ${pointsUnit(points)}`;
+}

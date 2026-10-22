@@ -2,7 +2,7 @@
 
 import { memo } from "react";
 import { StatusPill } from "@/app/components/ui";
-import { teamNameLabel } from "@/app/lib/league/labels";
+import { pointsLabel, teamNameLabel } from "@/app/lib/league/labels";
 import type { LeagueMember } from "@/app/types/league";
 import { getRoundOrder, type TeamBudget } from "./draft-room";
 
@@ -14,14 +14,18 @@ export type DraftOrderStripProps = {
   nextUpName: string | null;
   myId: string;
   budgets: Map<string, TeamBudget>;
-  /** Highlights are only meaningful while the draft is running. */
+  /** Round order, highlights and budgets are only meaningful while the draft is running. */
   draftLive: boolean;
 };
 
 /**
- * The drafting coaches in the order they pick this round (reversed on even
- * rounds, snake style), with the coach on the clock and the next pick
- * highlighted. Scrolls sideways on narrow screens.
+ * While the draft runs: the drafting coaches in the order they pick this
+ * round (reversed on even rounds, snake style) with the points each has
+ * left, the coach on the clock and the next pick highlighted. Before the
+ * start and once the draft is complete there is no round being picked, so
+ * it lists the draft order itself (slot 1 first) and no budgets: a full
+ * budget before the start and the unspent rest afterwards would read like
+ * scores ("0 pts"). Scrolls sideways on narrow screens.
  */
 const DraftOrderStrip = memo(function DraftOrderStrip({
   coaches,
@@ -35,7 +39,7 @@ const DraftOrderStrip = memo(function DraftOrderStrip({
 }: DraftOrderStripProps) {
   if (coaches.length === 0) return null;
 
-  const order = getRoundOrder(coaches, round);
+  const order = draftLive ? getRoundOrder(coaches, round) : coaches;
 
   return (
     <section aria-labelledby="draft-order-heading">
@@ -57,7 +61,7 @@ const DraftOrderStrip = memo(function DraftOrderStrip({
         {order.map((coach, index) => {
           const current = draftLive && coach.id === onClockId;
           const next = draftLive && !current && coach.id === nextUpId;
-          const remaining = budgets.get(coach.id)?.remaining;
+          const remaining = draftLive ? budgets.get(coach.id)?.remaining : undefined;
           const isMe = coach.id === myId;
 
           return (
@@ -78,7 +82,7 @@ const DraftOrderStrip = memo(function DraftOrderStrip({
                 {isMe && <span className="font-normal"> (you)</span>}
               </span>
               {remaining !== undefined && (
-                <span className="text-xs tabular-nums">{remaining} pts</span>
+                <span className="text-xs tabular-nums">{pointsLabel(remaining)}</span>
               )}
               {current && <StatusPill tone="accent">On the clock</StatusPill>}
               {next && <StatusPill tone="neutral">Next</StatusPill>}

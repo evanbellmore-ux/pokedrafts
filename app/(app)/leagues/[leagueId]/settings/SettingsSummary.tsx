@@ -66,7 +66,7 @@ export default function SettingsSummary({
           <Item label="Coaches" value={`${members.length} of ${league.max_coaches}`} />
           <Item
             label="Point budget"
-            value={`${league.point_budget ?? CREATE_LEAGUE_DEFAULTS.pointBudget} points`}
+            value={pluralize(league.point_budget ?? CREATE_LEAGUE_DEFAULTS.pointBudget, "point")}
           />
           <Item
             label="Picks per team"
