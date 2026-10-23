@@ -44,8 +44,6 @@ describe("ready-made teams", () => {
         expect(new Set(team.members.map((member) => member.build.itemId).filter(Boolean)).size).toBe(team.members.filter((member) => member.build.itemId).length);
         expect(team.members.every((member) => member.origin === "suggested" && member.suggestion?.source === "usage")).toBe(true);
         expect(team.members.every((member) => member.moves.some((slot) => slot.moveId))).toBe(true);
-        // No set gives a foe Simple (not in the Champions catalog, so the AI's turn engine could not value it).
-        expect(team.members.some((member) => member.moves.some((slot) => slot.moveId === "simplebeam"))).toBe(false);
         const problems = deps.validate(team);
         expect(problems.team).toEqual([]);
         expect(Object.values(problems.members).flat()).toEqual([]);
@@ -57,6 +55,15 @@ describe("ready-made teams", () => {
   it("are the same for the same random draws", () => {
     expect(teamsFor("same")).toEqual(teamsFor("same"));
     expect(teamsFor("same")).not.toEqual(teamsFor("other"));
+  });
+
+  it("may hold a Simple Beam set: the AI values Simple, which the Champions catalog lacks (sim/observe.ts buildOf)", () => {
+    // Six usage rows, Audino's among them, so every draw takes all six.
+    const six = ["audino", "incineroar", "garchomp", "whimsicott", "kingambit", "rotomwash"];
+    const only: DealDeps = { ...deps, usage: { ...deps.usage, species: Object.fromEntries(six.map((id) => [id, deps.usage.species[id]])) } };
+    const team = readyMadeTeam(createRandom("simple-beam"), only, "Yours", "you");
+    expect(team.members.map((member) => member.speciesId).sort()).toEqual([...six].sort());
+    expect(team.members.find((member) => member.speciesId === "audino")!.moves.map((slot) => slot.moveId)).toContain("simplebeam");
   });
 });
 

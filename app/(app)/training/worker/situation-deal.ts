@@ -23,11 +23,6 @@ export type DealDeps = {
 };
 
 export const TEAM_SIZE = 6;
-/**
- * Moves that give their target a fixed ability: one the catalog lacks cannot be valued by the AI's turn engine (its build is
- * refused: app/lib/battle/calculate.ts makePokemon), so a ready-made set with it is drawn again.
- */
-const ABILITY_MOVES: Readonly<Record<string, string>> = { simplebeam: "simple", worryseed: "insomnia" };
 /** At most two Mega forms per ready-made team (one Mega Evolution per battle, PS/data/mods/champions). */
 export const MAX_MEGAS = 2;
 /** Usage weight → draw weight: the most used Pokémon stay the most likely, the long tail a little less rare. */
@@ -107,11 +102,7 @@ export function readyMadeTeam(random: AIRandom, deps: DealDeps, label: string, p
     const team: TrainingTeam = { label, members: membersOf(drawn, deps, prefix) };
     last = team;
     const problems = deps.validate(team);
-    const unvalued = (member: TrainingMember) => member.moves.some((slot) => {
-      const ability = slot.moveId ? ABILITY_MOVES[slot.moveId] : undefined;
-      return !!ability && !deps.runtime.abilitiesById.has(ability);
-    });
-    const bad = team.members.map((member, index) => (problems.members[member.key]?.length || unvalued(member) ? drawn[index].rowId : null)).filter((id): id is string => !!id);
+    const bad = team.members.map((member, index) => (problems.members[member.key]?.length ? drawn[index].rowId : null)).filter((id): id is string => !!id);
     if (team.members.length === TEAM_SIZE && !problems.team.length && !bad.length) return team;
     for (const id of bad) refused.add(id);
   }
