@@ -299,7 +299,7 @@ export function createEngineProvider(config: EngineProviderOptions): EngineProvi
       statusOptions: { its: ai.filter((candidate) => candidate.status).length, yours: player.kept.filter((candidate) => candidate.status).length },
       byMethod, engineCalls: evaluator.used.engineCalls, rolloutSamples: evaluator.used.rolloutSamples,
       preludes: services.spent.preludes, builds: services.spent.builds, beliefMs, elapsedMs: 0, valveFired,
-      exploitability: solution.exploitability, approximations: [...services.approximations], mega: megaStats,
+      exploitability: solution.exploitability, value: solution.value, approximations: [...services.approximations], mega: megaStats,
     };
     const evaluated_ = evaluator.timing;
     trace = {
@@ -377,6 +377,13 @@ export function createEngineProvider(config: EngineProviderOptions): EngineProvi
       });
       model.setBring(result.bring);
       return { order: result.order, report: { ...result.report, elapsedMs: o.now() - started } };
+    },
+    async beginDealt(ctx, o) {
+      checkAbort(o.signal);
+      habit.startBattle();
+      decisions.clear();
+      // Your four were dealt at random from your six: the belief keeps its even bring prior until they show.
+      startBelief(ctx.info, ctx.sheet, ctx.usage);
     },
     chooseTurn,
     async replayTurn(ctx, o) {

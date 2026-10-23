@@ -15,6 +15,7 @@ import type { ObservedAction, TurnObservations } from "@/app/(app)/training/mode
 import { createRandom, seedHex } from "@/app/(app)/training/model/random";
 import { redactSheet, type SheetView } from "@/app/(app)/training/model/sheet";
 import type { ShowdownRequest, SideID } from "@/app/(app)/training/model/showdown-types";
+import type { TrainingSituation } from "@/app/(app)/training/model/situation";
 import type { TrainingUsageData } from "@/app/(app)/training/model/usage";
 import { jointActionKey, megaSlots, type DecisionReport, type JointAction, type TrainingDifficulty, type TrainingTeam } from "@/app/(app)/training/model/view-types";
 import { BattleHost, type HostDrain } from "@/app/(app)/training/sim/battle-host";
@@ -24,6 +25,7 @@ import { isMidTurn } from "@/app/(app)/training/sim/requests";
 import { memberKeys, sheetFromSets, toShowdownTeam, validateTeams, hasProblems, type AdaptedTeam } from "@/app/(app)/training/sim/showdown-set";
 import { FORMAT, TeamValidator } from "@/app/(app)/training/sim/sim";
 import { createTurnServices } from "@/app/(app)/training/sim/services";
+import { hostSituation } from "@/app/(app)/training/sim/situation-start";
 import { createTracker, type PublicTracker } from "@/app/(app)/training/sim/tracker";
 
 export const TURN_CAP = 200;
@@ -74,6 +76,11 @@ export type MatchOptions = {
   forcedPreview?: Partial<Record<SideID, number[]>>;
   /** Stop the battle after this decision (Mega positions). */
   stop?: (record: DecisionRecord) => boolean;
+  /**
+   * A battle dealt partway through (Situations, model/situation.ts): its position goes in as team preview ends
+   * (sim/situation-start.ts); each seat starts its battle there (DecisionProvider.beginDealt) and commits its dealt order.
+   */
+  situation?: TrainingSituation;
 };
 export type MatchResult = {
   index: number; seed: string;
@@ -147,14 +154,16 @@ export async function runMatch(options: MatchOptions): Promise<MatchResult> {
       choiceLogHash: "", inputLog: [], habits: { p1: seats.p1.provider.habits(), p2: seats.p2.provider.habits() }, choices };
   }
   const keys = memberKeys(adapted.p1, adapted.p2);
+  const dealt = options.situation ? hostSituation({ own: teams.p1, opponent: teams.p2, situation: options.situation }) : null;
   const host = new BattleHost({
     formatid: FORMAT, seed: seed as `sodium,${string}`,
     p1: { name: "You", team: adapted.p1.sets.map((entry) => entry.set) },
     p2: { name: "Training", team: adapted.p2.sets.map((entry) => entry.set) },
+    situation: dealt?.start ?? null,
   });
   const trackers: Record<SideID, PublicTracker> = {
-    p1: createTracker("p1", (side, name) => keys.keyOf(side, name)),
-    p2: createTracker("p2", (side, name) => keys.keyOf(side, name)),
+    p1: createTracker("p1", (side, name) => keys.keyOf(side, name), keys.speciesOf),
+    p2: createTracker("p2", (side, name) => keys.keyOf(side, name), keys.speciesOf),
   };
   // What each seat knows of the other side's team at team preview (SPEC 7.2 start step 4).
   const sheets: Record<SideID, SheetView> = {
@@ -188,6 +197,15 @@ export async function runMatch(options: MatchOptions): Promise<MatchResult> {
     const turn = trackers[side].state().turn;
     const record: DecisionRecord = { side, kind, turn, requestId, ms: 0, choice: "", stats: null, report: null, action: null, recovery: null, engineIssues: 0, available: availableMoves(request) };
     const started = performance.now();
+    if (kind === "preview" && dealt) {
+      // A situation: the seat's battle starts as at team preview, and its order is the dealt one.
+      const context = { runtime, ai: teams[side], sheet: sheets[side], info: view, usage };
+      if (seat.provider.beginDealt) await seat.provider.beginDealt(context, decideOptions);
+      else await seat.provider.teamPreview(context, decideOptions);
+      record.ms = performance.now() - started;
+      record.choice = teamChoice(dealt.order[side]);
+      return { choice: record.choice, record };
+    }
     if (kind === "preview") {
       const decision = await seat.provider.teamPreview({ runtime, ai: teams[side], sheet: sheets[side], info: view, usage }, decideOptions);
       record.ms = performance.now() - started;
@@ -319,7 +337,8 @@ export async function runMatch(options: MatchOptions): Promise<MatchResult> {
     const state = trackers[side].state();
     const own = side;
     const revealed = Object.values(state.mons).filter((mon) => mon.side === other(own) && mon.switchIns > 0).map((mon) => mon.key.slice(3));
-    try { seats[side].provider.observeBattle({ leads: leads[side], revealed }); }
+    // A situation dealt each side's Pokémon and leads: they are no seat's habits (as the worker records it).
+    try { seats[side].provider.observeBattle(dealt ? { leads: null, revealed: [] } : { leads: leads[side], revealed }); }
     catch (error) { errors.push({ side, stage: "observeBattle", message: (error as Error).message }); }
   }
   const winnerName = battle.winner;

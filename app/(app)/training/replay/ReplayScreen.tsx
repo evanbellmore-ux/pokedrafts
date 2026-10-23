@@ -16,7 +16,7 @@ import BattleAnnouncer from "../log/BattleAnnouncer";
 import BattleLog from "../log/BattleLog";
 import { TurnLines, turnTitle } from "../log/TurnLines";
 import { infoFact, usesTestSettings } from "../model/info";
-import { resultText, turnsText, type ReplayState } from "../model/saved-battle";
+import { matchupOf, resultText, turnsText, type ReplayState } from "../model/saved-battle";
 import type { BoardView, LogTurn } from "../model/view-types";
 import { downloadText, isoTime, savedDate } from "../saved/download";
 import type { TrainingSession } from "../training-session";
@@ -40,7 +40,7 @@ function ReplayFacts({ replay }: { replay: ReplayState }) {
   const testOn = usesTestSettings(setup.info.aiKnows) || usesTestSettings(setup.info.youSee);
   return (
     <div className="min-w-0 space-y-0.5 text-sm">
-      <p className="wrap-anywhere text-text">{summary.own} vs {summary.opponent}</p>
+      <p className="wrap-anywhere text-text">{matchupOf(summary)}</p>
       <p className="wrap-anywhere tabular-nums text-muted">
         <time dateTime={isoTime(summary.createdAt)}>{savedDate(summary.createdAt)}</time>
         {` · ${resultText(summary)} · ${turnsText(summary)} · ${DIFFICULTY[setup.difficulty]}${testOn ? " · Test settings on" : ""}${summary.source === "imported" ? " · Imported" : ""}`}

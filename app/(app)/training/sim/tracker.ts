@@ -229,7 +229,12 @@ export function shownPercent(hp: number, maxhp: number): ShownHP {
   return { percent, color };
 }
 
-export function createTracker(viewer: SideID, keys: (side: SideID, name: string) => string): PublicTracker {
+/**
+ * `speciesOf`: a member's species by its key (both teams' six are public from team preview), for a Pokémon a line names
+ * before any line shows its details: a situation's Pokémon that fainted before the start (sim/situation-start.ts), whose
+ * battle name is its base species' ("Floette" for Floette-Eternal). Without it, the name stands for the species.
+ */
+export function createTracker(viewer: SideID, keys: (side: SideID, name: string) => string, speciesOf?: (side: SideID, key: string) => string): PublicTracker {
   const mons: Record<string, Mon> = {};
   const active: Record<SideID, [string | null, string | null]> = { p1: [null, null], p2: [null, null] };
   const sides: PublicState["sides"] = {
@@ -285,12 +290,13 @@ export function createTracker(viewer: SideID, keys: (side: SideID, name: string)
     const ref = parseRef(ident);
     if (!ref) return null;
     const key = override ?? `${ref.side}:${keys(ref.side, ref.name)}`;
+    const speciesId = (!override && speciesOf ? toID(speciesOf(ref.side, key.slice(3))) : "") || toID(ref.name);
     mons[key] ??= {
-      key, side: ref.side, position: null, speciesId: toID(ref.name), mega: false,
+      key, side: ref.side, position: null, speciesId, mega: false,
       hp: { percent: 100, color: null }, exact: null, fainted: false, status: "", statusElapsed: 0, boosts: zeroBoosts(), volatiles: [],
       item: { state: "not-shown" }, ability: null, movesUsed: {}, lastMove: null, lastMoveTarget: null, lastResult: null, actions: 0,
       activeTurns: 0, timesHit: 0, switchIns: 0, protectStreak: 0, lock: null, transformedInto: null,
-      thisResult: undefined, protectedThisTurn: false, charging: null, stintMoves: [], notChoiceShown: false, stintSpecies: toID(ref.name), baseShown: null,
+      thisResult: undefined, protectedThisTurn: false, charging: null, stintMoves: [], notChoiceShown: false, stintSpecies: speciesId, baseShown: null,
     };
     return mons[key];
   }

@@ -9,13 +9,18 @@ import { TRAINING_LABEL } from "./model/format-facts";
 import TeamPreview from "./preview/TeamPreview";
 import ReplayScreen from "./replay/ReplayScreen";
 import SavedBattles, { LastBattle, ResumePrompt, type SavedActions } from "./saved/SavedBattles";
+import SetupModeSwitch from "./setup/SetupModeSwitch";
+import SituationSetup from "./setup/SituationSetup";
 import TeamSetup from "./setup/TeamSetup";
 import { useNextOpponent } from "./setup/useNextOpponent";
 import { useRememberedPicks } from "./setup/useRememberedPicks";
 import { useTrainingSession } from "./useTrainingSession";
 import styles from "./training.module.css";
 
-/** The Training tab: Setup (with Saved battles), Team preview, then the battle (SPEC 12.3 screen selection); or a replay. */
+/**
+ * The Training tab: Setup (a full battle's teams, or Situations; with Saved battles), Team preview, then the battle (SPEC 12.3
+ * screen selection); or a replay. A situation has no team preview: its battle screen waits for the dealt position.
+ */
 export default function TrainingClient() {
   const [snapshot, session] = useTrainingSession();
   // The calculator's rosters; Training restores the league you last picked, and its Opponent picker starts on the opponent you
@@ -52,8 +57,9 @@ export default function TrainingClient() {
     resume: session.resume, rematchSaved: session.rematchSaved, deleteSaved: session.deleteSaved, deleteAllSaved: session.deleteAllSaved,
     exportSaved: session.exportSaved, importSaved: session.importSaved,
   }), [session]);
-  // Change teams (team preview or the battle's end) gives the keyboard focus, left on the page body, to Your team's heading:
-  // tracked from the battle back to Setup without an error (a stopped battle's alert speaks for itself), never on first load.
+  // Change teams (team preview or the battle's end) gives the keyboard focus, left on the page body, to Your team's heading
+  // (Situations' in that mode): tracked from the battle back to Setup without an error (a stopped battle's alert speaks for
+  // itself), never on first load.
   const view = snapshot.replay ? "replay" : battle ? "battle" : "setup";
   const [shownView, setShownView] = useState(view);
   const [teamsReturn, setTeamsReturn] = useState(false);
@@ -61,11 +67,13 @@ export default function TrainingClient() {
     setShownView(view);
     setTeamsReturn(shownView === "battle" && view === "setup" && !snapshot.setupError);
   }
+  const mode = snapshot.situations.settings.mode;
   useEffect(() => {
     if (!teamsReturn) return;
     const active = document.activeElement;
-    if (!active || active === document.body) document.querySelector<HTMLElement>('[data-training-team-heading="own"]')?.focus();
-  }, [teamsReturn]);
+    const heading = mode === "situations" ? "[data-training-situations-heading]" : '[data-training-team-heading="own"]';
+    if (!active || active === document.body) document.querySelector<HTMLElement>(heading)?.focus();
+  }, [teamsReturn, mode]);
   // A reload ends the battle; Resume rebuilds it from its last autosave (each resolved turn). Until this battle has one
   // (team preview, turn 1, or storage failed), the browser's own leave-page prompt.
   const autosaved = !!battle && snapshot.saved.autosaved?.battleId === battle.id;
@@ -84,11 +92,14 @@ export default function TrainingClient() {
       <>
         <ResumePrompt saved={snapshot.saved} session={session} />
         <LastBattle saved={snapshot.saved} session={cardSession} />
-        <TeamSetup runtime={runtime} rosters={rosters} snapshot={snapshot} session={session} />
+        <SetupModeSwitch mode={mode} onChange={(next) => session.updateSituations((current) => (current.mode === next ? current : { ...current, mode: next }))} />
+        {mode === "situations"
+          ? <SituationSetup runtime={runtime} snapshot={snapshot} session={session} />
+          : <TeamSetup runtime={runtime} rosters={rosters} snapshot={snapshot} session={session} />}
         <SavedBattles saved={snapshot.saved} session={listSession} returnTo={returnTo?.id ?? null} fromCard={!!returnTo?.fromCard} onReturned={returned} />
       </>
     );
-  } else if ((battle.phase.kind === "starting" && !battle.resumed) || battle.phase.kind === "preview") {
+  } else if (!battle.setup.situation && ((battle.phase.kind === "starting" && !battle.resumed) || battle.phase.kind === "preview")) {
     const phase = battle.phase;
     screen = (
       <>
@@ -98,7 +109,7 @@ export default function TrainingClient() {
       </>
     );
   } else {
-    screen = <BattleScreen runtime={runtime} battle={battle} session={session} habits={snapshot.habits.data} />;
+    screen = <BattleScreen runtime={runtime} battle={battle} session={session} habits={snapshot.habits.data} deal={snapshot.situations.deal} />;
   }
 
   return (

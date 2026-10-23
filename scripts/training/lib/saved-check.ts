@@ -12,6 +12,7 @@ import { DEFAULT_INFO, CLOSED_TEAM_SHEETS, PERFECT_INFORMATION, type InfoSetting
 import { createRandom, seedHex } from "@/app/(app)/training/model/random";
 import { canonicalJson, logHash, logShapeHash } from "@/app/(app)/training/model/saved-battle";
 import type { ShowdownRequest } from "@/app/(app)/training/model/showdown-types";
+import type { TrainingSituation } from "@/app/(app)/training/model/situation";
 import type { BoardView, JointAction, LogTurn, PlayerChoice, TrainingRequest, TrainingSetup, TrainingTeam } from "@/app/(app)/training/model/view-types";
 import type { FromWorker, ToWorker } from "@/app/(app)/training/model/worker-protocol";
 import { identName, legalJointActions, type MemberKeys } from "@/app/(app)/training/sim/choices";
@@ -184,6 +185,8 @@ export async function runSavedCheck(options: {
   battles: number; seat: SeatName; pools?: string; run?: string; onProgress?(index: number): void;
   /** Fixed teams for every battle (the Illusion and Transform slice) in place of pairs from the pools, and the AI's forced choices. */
   teams?: { pair: () => TeamPair } & ForcedChoices;
+  /** Battles dealt partway through (Situations): each battle's position from its pair. */
+  situation?: (pair: TeamPair, index: number) => TrainingSituation;
 }): Promise<SavedCheck> {
   const run = options.run ?? "saved";
   const pools = parsePools(options.pools ?? "S,V,A");
@@ -192,7 +195,10 @@ export async function runSavedCheck(options: {
   for (let index = 0; index < options.battles; index++) {
     options.onProgress?.(index);
     const pair = options.teams ? options.teams.pair() : teamPair(run, index, pools, runtime);
-    const setup: TrainingSetup = { own: pair.p1.team, opponent: pair.p2.team, difficulty: index % 2 ? "reads" : "safe", showRead: true, info: INFOS[index % INFOS.length] };
+    const setup: TrainingSetup = {
+      own: pair.p1.team, opponent: pair.p2.team, difficulty: index % 2 ? "reads" : "safe", showRead: true, info: INFOS[index % INFOS.length],
+      ...(options.situation ? { situation: options.situation(pair, index) } : {}),
+    };
     const forfeitTurn = index % 5 === 4 ? 3 : null;
     const base: DriveOptions = { run, index, setup, seat: options.seat, sealer, forfeitTurn, forced: options.teams };
     out.battles++;

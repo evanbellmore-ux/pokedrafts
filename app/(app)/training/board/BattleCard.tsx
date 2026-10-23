@@ -4,7 +4,7 @@ import PokemonName from "@/app/(app)/calculator/PokemonName";
 import { nameText, type DoublesSlotId, type NameParts } from "@/app/lib/battle/doubles-types";
 import type { PokemonView } from "../model/view-types";
 import { pointsText } from "../setup/team-export";
-import { boostLabel, boostText, hpFraction, hpText, hpTone, hpValueText, itemText, statusLabel } from "./board-format";
+import { boostLabel, boostText, hpFraction, hpText, hpTone, hpValueText, itemText, statsLabel, statsText, statusLabel } from "./board-format";
 import { HP_ANIMATION_MS } from "./playback";
 import styles from "./board.module.css";
 
@@ -113,6 +113,7 @@ export default function BattleCard({ mon, slot, name, target, play }: { mon: Pok
           <li className="wrap-anywhere">{abilityText(mon)}</li>
           {mon.nature && <li>{mon.nature}</li>}
           {spread !== null && <li className="wrap-anywhere">SPs: {spread || "0"}</li>}
+          {mon.stats && <li className="wrap-anywhere tabular-nums" aria-label={statsLabel(mon.stats)}>{statsText(mon.stats)}</li>}
           {mon.moves.map((move) => (
             <li key={move.id} className="flex justify-between gap-2"><span className="min-w-0 wrap-anywhere text-text">{move.name}</span>{typeof move.pp === "number" && <span className="shrink-0 tabular-nums">{move.pp}/{move.maxpp ?? move.pp}</span>}</li>
           ))}

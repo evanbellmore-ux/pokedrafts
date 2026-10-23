@@ -9,10 +9,8 @@ import type { BattleRuntime } from "@/app/lib/battle/runtime";
 import { usesTestSettings } from "../model/info";
 import type { EngineLoad, SetupDraft, TeamSourceDraft, TrainingSetup, TrainingSnapshot } from "../model/view-types";
 import type { TrainingSession } from "../training-session";
-import DifficultyField, { DIFFICULTY_LABEL } from "./DifficultyField";
-import FormatFacts from "./FormatFacts";
-import HabitTrends from "./HabitTrends";
-import InfoSettingsPanel from "./InfoSettingsPanel";
+import BattleSettingsFields from "./BattleSettingsFields";
+import { DIFFICULTY_LABEL } from "./DifficultyField";
 import { opponentQuickPicks, type NextMatch } from "./next-opponent";
 import { pendingSets, resolveSetup, sharedNames, untouched, withMode, type ResolvedTeam } from "./team-draft";
 import { problemCount, problemsFact } from "./TeamMemberRow";
@@ -91,7 +89,7 @@ function StartFact({ lines, startable, onSide }: { lines: StartLine[]; startable
 
 export default function TeamSetup({ runtime, rosters, snapshot, session }: TeamSetupProps) {
   const id = useId();
-  const { draft, validation, engine, habits, trendsOpen, setupError, suggestions, moveOptions } = snapshot;
+  const { draft, validation, engine, setupError, suggestions, moveOptions } = snapshot;
   const resolved = useMemo(() => resolveSetup(draft, rosters.state, suggestions, runtime), [draft, rosters.state, suggestions, runtime]);
   const { own, opponent, setup, key } = resolved;
   const shared = useMemo(() => sharedNames(own, opponent), [own, opponent]);
@@ -101,8 +99,6 @@ export default function TeamSetup({ runtime, rosters, snapshot, session }: TeamS
     setReveal((current) => ({ ...current, [side]: current[side] + 1 }));
     focusSide(side);
   };
-  // The habit counts decay by 0.9 per battle (ai/habits.ts): whole turns for display.
-  const habitTurns = Math.round(habits.turns);
 
   // The worker suggests sets for the chosen league members and validates complete teams; the store drops repeats by key.
   useEffect(() => {
@@ -132,7 +128,6 @@ export default function TeamSetup({ runtime, rosters, snapshot, session }: TeamS
   const startable = canStart(snapshot, setup, key);
   const sides = [{ team: own, name: "Your team" }, { team: opponent, name: "Opponent" }] as const;
   const problems = current?.status === "ready" ? current : null;
-  const habitsText = `${habitTurns} ${habitTurns === 1 ? "turn" : "turns"}`;
   const loadingRules = engine.status === "idle" || engine.status === "loading";
   // What Start waits on, in the status region's order (the engine's and the Showdown check's errors where they stand).
   const lines: StartLine[] = [
@@ -184,24 +179,7 @@ export default function TeamSetup({ runtime, rosters, snapshot, session }: TeamS
 
       <section aria-labelledby={`${id}-battle`} className="min-w-0 space-y-4 rounded-xl border border-line bg-panel p-3 sm:p-4">
         <h2 id={`${id}-battle`} className="text-lg font-semibold text-text">Battle settings</h2>
-        <div className={styles.battleFields}>
-          <div className="min-w-0 space-y-3">
-            <DifficultyField value={draft.difficulty} onChange={(difficulty) => update((current) => ({ ...current, difficulty }))} />
-            <label htmlFor={`${id}-read`} className="flex min-h-11 cursor-pointer items-center gap-2 text-sm text-text">
-              <input id={`${id}-read`} type="checkbox" checked={draft.showRead} onChange={(event) => update((current) => ({ ...current, showRead: event.target.checked }))}
-                className="h-4 w-4 shrink-0 accent-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus" />
-              Show the AI&apos;s read after each turn
-            </label>
-            <div className="flex flex-wrap items-center gap-2 text-sm">
-              <span data-training-habits className="text-text">Habits: {habitsText} in this browser</span>
-              <Button variant="secondary" size="sm" className="min-h-11" disabled={!habits.turns}
-                onClick={() => { if (window.confirm(`Clear the AI's habits (${habitsText})?`)) session.clearHabits(); }}>Clear habits</Button>
-            </div>
-            <HabitTrends data={habits.data} runtime={runtime} open={trendsOpen} onToggle={(open) => session.setTrendsOpen(open)} />
-          </div>
-          <InfoSettingsPanel info={draft.info} onChange={(info) => update((current) => ({ ...current, info }))} />
-        </div>
-        <FormatFacts />
+        <BattleSettingsFields runtime={runtime} snapshot={snapshot} session={session} />
 
         <div className="space-y-2">
           {engine.status === "error" && (

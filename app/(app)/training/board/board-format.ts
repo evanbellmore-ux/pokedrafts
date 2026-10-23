@@ -1,5 +1,5 @@
 import { DOUBLES_SLOTS, duplicateNameParts, nameText, slotSide, type DoublesSideId, type DoublesSlotId, type NameParts } from "@/app/lib/battle/doubles-types";
-import type { BattleStatus, CombatStat } from "@/app/lib/battle/types";
+import type { BattleStat, BattleStatus, CombatStat } from "@/app/lib/battle/types";
 import type { BoardView, FieldEffectView, HPView, ItemView, PokemonView } from "../model/view-types";
 
 // Text for the battle board: facts only. Foe HP is the percentage the game shows (pinned Champions getHealth,
@@ -86,6 +86,18 @@ export function boostText(boosts: Boosts) {
 /** "Attack +1, Sp. Def −1" for aria-label. */
 export function boostLabel(boosts: Boosts) {
   return BOOST_ORDER.filter((stat) => (boosts[stat] ?? 0) !== 0).map((stat) => `${BOOST_FULL[stat]} ${signed(boosts[stat]!)}`).join(", ");
+}
+
+const STAT_ORDER: readonly BattleStat[] = ["hp", "atk", "def", "spa", "spd", "spe"];
+const STAT_SHORT: Record<BattleStat, string> = { hp: "HP", atk: "Atk", def: "Def", spa: "SpA", spd: "SpD", spe: "Spe" };
+const STAT_FULL: Record<BattleStat, string> = { hp: "HP", atk: "Attack", def: "Defense", spa: "Sp. Atk", spd: "Sp. Def", spe: "Speed" };
+/** "HP 183 · Atk 150 · Def 115 · SpA 90 · SpD 105 · Spe 169": its stats as the game's summary shows them. */
+export function statsText(stats: Record<BattleStat, number>) {
+  return STAT_ORDER.map((stat) => `${STAT_SHORT[stat]} ${stats[stat]}`).join(" · ");
+}
+/** "HP 183, Attack 150, …" for aria-label. */
+export function statsLabel(stats: Record<BattleStat, number>) {
+  return STAT_ORDER.map((stat) => `${STAT_FULL[stat]} ${stats[stat]}`).join(", ");
 }
 
 /** "Item: Sitrus Berry", "Item: Sitrus Berry (eaten)", "Item: Focus Sash (used)", "Item: Choice Scarf (removed)", "No item", "Item: not shown". */

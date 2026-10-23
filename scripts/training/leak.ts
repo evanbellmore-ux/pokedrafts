@@ -9,12 +9,15 @@
 // The L2 Illusion and Transform slice plays the same checks with fixed teams (tests/fixtures/training-teams.ts
 // ILLUSION_TRANSFORM: the AI's Zoroark leads disguised and its Imposter Ditto transforms; your Garchomp and Ditto), so the
 // gate sees an Illusion, a Transform and look-alikes, which the pools' teams never bring.
-//   npx tsx scripts/training/leak.ts [--battles 40 (dice 60)] [--fields sp,nature,…] [--l2 40] [--l2-illusion 16] [--seat safe]
+// Situations: L1-situation deals both battles partway through, alike but for your Pokémon in the back (its HP and status);
+// the L2 situation slice plays the L2 checks on battles dealt partway through (scripts/training/lib/situations.ts).
+//   npx tsx scripts/training/leak.ts [--battles 40 (dice 60)] [--fields sp,nature,…] [--l2 40] [--l2-illusion 16] [--l2-situations 12] [--seat safe]
 import { join } from "node:path";
 import { CLOSED_TEAM_SHEETS, DEFAULT_INFO } from "@/app/(app)/training/model/info";
 import { l1Fields, runL1Field } from "./lib/leak-l1";
 import { runL2 } from "./lib/leak-l2";
 import type { SeatName } from "./lib/providers";
+import { situationFor } from "./lib/situations";
 import { illusionTransformPair } from "./lib/teams";
 import { ILLUSION_TRANSFORM } from "@/tests/fixtures/training-teams";
 import { gateTable, parseArgs, writeJson, writeText, type GateRow } from "./lib/report";
@@ -56,6 +59,20 @@ async function main(): Promise<void> {
       gate: "L2 Illusion and Transform (Zoroark, Ditto; youSee closed)", threshold: `0 hits over ${sliceBattles} battles; an Illusion ended, a Transform and look-alikes shown`,
       result: `${slice.hits.length} hits in ${slice.messages} messages over ${slice.battles} battles; ${slice.illusions} Illusions ended, ${slice.transforms} with a Transform, ${slice.lookAlikes} look-alike decisions; ${slice.replayBoardsEqual}/${slice.replays} replays equal, ${slice.resumes} resumed`,
       status: slice.hits.length === 0 && slice.errors.length === 0 && slice.battles === sliceBattles && shown && slice.replays === slice.battles && slice.replayBoardsEqual === slice.replays ? "pass" : "fail",
+      detail: [...slice.hits.slice(0, 10), ...slice.errors.slice(0, 5)].join(" | "),
+    });
+  }
+  const dealtBattles = Number(args["l2-situations"] ?? 12);
+  if (dealtBattles > 0) {
+    const slice = await runL2({
+      battles: dealtBattles, seat, info: { aiKnows: DEFAULT_INFO.aiKnows, youSee: CLOSED_TEAM_SHEETS },
+      situations: { situation: (pair, index) => situationFor(pair, "leak-l2-situations", index), run: "leak-l2-situations" },
+    });
+    details["L2-situations"] = slice;
+    rows.push({
+      gate: "L2 Situations (battles dealt partway through; youSee closed)", threshold: `0 hits over ${dealtBattles} battles; every battle replayed, its boards = the battle's`,
+      result: `${slice.hits.length} hits in ${slice.messages} messages over ${slice.battles} battles; ${slice.replayBoardsEqual}/${slice.replays} replays equal, ${slice.resumes} resumed`,
+      status: slice.hits.length === 0 && slice.errors.length === 0 && slice.battles === dealtBattles && slice.replays === slice.battles && slice.replayBoardsEqual === slice.replays ? "pass" : "fail",
       detail: [...slice.hits.slice(0, 10), ...slice.errors.slice(0, 5)].join(" | "),
     });
   }

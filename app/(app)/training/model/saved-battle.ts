@@ -6,6 +6,7 @@ import type { HabitsData } from "./habits-data";
 import type { HabitsRecord } from "./decision";
 import { SHEET_FIELDS, usesTestSettings } from "./info";
 import { fnv1a32 } from "./random";
+import { SITUATION_LEVELS, SITUATION_SPOTS, SITUATION_STATS, SITUATION_STATUSES, situationLabel, situationProblem } from "./situation";
 import { TRAINING_FORMAT_ID, type BoardView, type LogTurn, type TrainingDifficulty, type TrainingSetup } from "./view-types";
 
 export const SAVED_BATTLE_VERSION = 1;
@@ -78,6 +79,8 @@ export type SavedBattleSummary = {
    * field: the store's list fills it in from the record (battle-store.ts).
    */
   testSettings?: boolean;
+  /** It began from a situation: its label ("Down one · Hard"); absent for a full battle. */
+  situation?: string;
 };
 
 /** The Saved battles list on the setup screen (the page store's view of the BattleStore). */
@@ -175,7 +178,12 @@ export function summaryOf(record: SavedBattle): SavedBattleSummary {
     id: record.id, status: record.status, source: record.source, createdAt: record.createdAt, updatedAt: record.updatedAt,
     own: record.setup.own.label, opponent: record.setup.opponent.label, turn: record.turn, result: record.result, difficulty: record.setup.difficulty,
     testSettings: usesTestSettings(record.setup.info.aiKnows) || usesTestSettings(record.setup.info.youSee),
+    ...(record.setup.situation ? { situation: situationLabel(record.setup.situation) } : {}),
   };
+}
+/** How Saved battles, the Resume prompt and the replay name a battle: "Home vs Rival", or its situation ("Down one · Hard"). */
+export function matchupOf(summary: Pick<SavedBattleSummary, "own" | "opponent" | "situation">): string {
+  return summary.situation ?? `${summary.own} vs ${summary.opponent}`;
 }
 /** "Won", "Lost", "Tie", "Forfeited", "Unfinished". */
 export function resultText(summary: Pick<SavedBattleSummary, "status" | "result">): string {
@@ -250,8 +258,23 @@ const member = shape({
   spriteName: optional(text(200)),
 });
 const team = shape({ label: text(200), members: list(member, 6, 6) });
+// Situations (model/situation.ts): what was asked for and the dealt position; situationProblem checks it against the teams.
+const stages = map(oneOf(...SITUATION_STATS), int(-6, 6), SITUATION_STATS.length);
+const customSide = shape({ left: int(1, 4), hp: int(1, 100), leads: list(stages, 2, 2) });
+const situationRequest: Check = (value, path) => {
+  if (!isObject(value)) return `${path} is not an object`;
+  if (value.kind === "any" || value.kind === "random") return shape({ level: oneOf(...SITUATION_LEVELS) })(value, path);
+  if (value.kind === "spot") return shape({ spot: oneOf(...SITUATION_SPOTS), level: oneOf(...SITUATION_LEVELS) })(value, path);
+  return value.kind === "custom" ? shape({ custom: shape({ own: customSide, opponent: customSide }) })(value, path) : `${path}.kind is not any, spot, random or custom`;
+};
+const situationSide = shape({
+  members: list(shape({ key: text(200), hp: int(0, 100), status: optional(oneOf(...SITUATION_STATUSES)), boosts: optional(stages) }), 4, 4),
+  tailwind: optional(bool),
+});
+const situation = shape({ request: situationRequest, spot: nullable(oneOf(...SITUATION_SPOTS)), own: situationSide, opponent: situationSide });
 const setup = shape({
   own: team, opponent: team, difficulty: oneOf("safe", "reads"), showRead: bool, info: shape({ aiKnows: infoView, youSee: infoView }),
+  situation: optional(situation),
 });
 const slotAction: Check = (value, path) => {
   if (!isObject(value)) return `${path} is not an object`;
@@ -343,6 +366,9 @@ export function parseFinishedBattle(value: unknown): ParsedBattle {
   if (new Set(log.map((turn) => turn.turn)).size !== log.length) return { ok: false, error: "Not a saved Training battle: battle.log repeats a turn." };
   const keys = (side: "own" | "opponent") => (record.setup as TrainingSetup)[side].members.map((each) => each.key);
   if (new Set(keys("own")).size !== 6 || new Set(keys("opponent")).size !== 6) return { ok: false, error: "Not a saved Training battle: a team repeats a member key." };
+  const dealt = (record.setup as TrainingSetup).situation;
+  const problem = dealt ? situationProblem(dealt, record.setup as TrainingSetup) : null;
+  if (problem) return { ok: false, error: `Not a saved Training battle: ${problem}` };
   const clean: SavedBattle = {
     version: 1, id: record.id as string, status: "finished", source: record.source as SavedBattle["source"], format: TRAINING_FORMAT_ID,
     rules: record.rules as string, createdAt: record.createdAt as number, updatedAt: record.updatedAt as number,
@@ -386,7 +412,7 @@ export function parseExportText(raw: string): ParsedBattle {
 const summaryCheck = shape({
   id: text(100), status: oneOf("finished", "unfinished"), source: oneOf("played", "imported"), createdAt: time, updatedAt: time,
   own: text(200), opponent: text(200), turn: int(0, 1000), result: nullable(shape({ result: oneOf("win", "loss", "tie"), forfeited: bool })),
-  difficulty: oneOf("safe", "reads"), testSettings: optional(bool),
+  difficulty: oneOf("safe", "reads"), testSettings: optional(bool), situation: optional(text(100)),
 });
 /** A stored summary back (null when corrupt). */
 export function parseSummary(value: unknown): SavedBattleSummary | null {

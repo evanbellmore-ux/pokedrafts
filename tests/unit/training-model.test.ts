@@ -257,7 +257,7 @@ describe("contract shape", () => {
     const files = readdirSync(modelDir).filter((file) => file.endsWith(".ts"));
     expect(files.sort()).toEqual([
       "ai-inputs.ts", "ai-view.ts", "decision.ts", "format-facts.ts", "habits-data.ts", "info.ts", "positions.ts", "public-state.ts", "random.ts", "saved-battle.ts",
-      "sets.ts", "sheet.ts", "showdown-types.ts", "usage.ts", "view-types.ts", "worker-protocol.ts",
+      "sets.ts", "sheet.ts", "showdown-types.ts", "situation.ts", "usage.ts", "view-types.ts", "worker-protocol.ts",
     ]);
     for (const file of files) {
       const source = readFileSync(join(modelDir, file), "utf8");
@@ -286,7 +286,7 @@ describe("contract shape", () => {
     expectTypeOf<TurnRecord["observedMega"]>().toEqualTypeOf<DoublesSlotId | null>();
     expectTypeOf<SlotContext["canMega"]>().toEqualTypeOf<boolean>();
     expectTypeOf<DecisionStats["statusOptions"]>().toEqualTypeOf<{ its: number; yours: number }>();
-    expectTypeOf<keyof TrainingSnapshot>().toEqualTypeOf<"revision" | "engine" | "draft" | "picks" | "validation" | "habits" | "trendsOpen" | "setupError" | "battle" | "suggestions" | "moveOptions" | "saved" | "replay">();
+    expectTypeOf<keyof TrainingSnapshot>().toEqualTypeOf<"revision" | "engine" | "draft" | "picks" | "validation" | "habits" | "trendsOpen" | "setupError" | "battle" | "suggestions" | "moveOptions" | "saved" | "replay" | "situations">();
     expectTypeOf<MegaPolicy>().toEqualTypeOf<"per-turn" | "first-chance">();
     expectTypeOf<PreviewContext["usage"]>().toEqualTypeOf<TrainingUsageData>();
     expectTypeOf<TurnContext["usage"]>().toEqualTypeOf<TrainingUsageData>();

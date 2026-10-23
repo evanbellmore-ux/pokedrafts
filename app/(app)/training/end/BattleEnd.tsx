@@ -5,6 +5,7 @@ import { Button } from "@/app/components/ui";
 import { remaining } from "../board/board-format";
 import { resultHeading } from "../log/announcement";
 import type { HabitsData } from "../model/habits-data";
+import { requestLabel, type SituationDeal } from "../model/situation";
 import type { TrainingBattle } from "../model/view-types";
 import { battleComparison, DECAY_FACT, type ComparisonRow } from "../setup/habit-trends";
 
@@ -16,6 +17,10 @@ export type BattleEndProps = {
   logText: string;
   /** The stored habits now (after this battle's observations); compared with battle.habitsBefore. */
   habits: HabitsData;
+  /** A battle dealt partway through: deal another of the same kind (a Random situation draws again). */
+  onNewSituation?(): void;
+  /** That deal while it deals, or after it failed. */
+  deal?: SituationDeal;
 };
 
 /** "This battle compared with your usual": this battle's exact shares and the habits before it (setup/habit-trends.ts). */
@@ -50,12 +55,13 @@ export function BattleComparison({ rows }: { rows: ComparisonRow[] }) {
 }
 
 /** "You won", "The AI won", "Tie", "You forfeited", with the facts line; focused on arrival. */
-export default function BattleEnd({ battle, onRematch, onChangeTeams, logText, habits }: BattleEndProps) {
+export default function BattleEnd({ battle, onRematch, onChangeTeams, logText, habits, onNewSituation, deal }: BattleEndProps) {
   const id = useId();
   const heading = useRef<HTMLHeadingElement>(null);
   const [copied, setCopied] = useState<"idle" | "copied" | "failed">("idle");
   useEffect(() => { heading.current?.focus(); }, []);
   const comparison = useMemo(() => battleComparison(battle.habitsBefore, habits), [battle.habitsBefore, habits]);
+  const dealing = deal?.status === "dealing";
   if (battle.phase.kind !== "ended") return null;
   const board = battle.board;
   const facts = [
@@ -77,10 +83,17 @@ export default function BattleEnd({ battle, onRematch, onChangeTeams, logText, h
       <p className="wrap-anywhere text-sm tabular-nums text-muted">{facts}</p>
       <div className="flex flex-wrap gap-2">
         <Button className="min-h-11" onClick={onRematch}>Rematch</Button>
-        <Button variant="secondary" className="min-h-11" onClick={onChangeTeams}>Change teams</Button>
+        {/* A situation: another dealt the same way (it stays focusable while one deals, a press then does nothing). */}
+        {onNewSituation && (
+          <Button variant="secondary" className="min-h-11 aria-disabled:cursor-not-allowed aria-disabled:opacity-60" aria-disabled={dealing || undefined}
+            aria-describedby={`${id}-deal`} onClick={() => { if (!dealing) onNewSituation(); }}>New situation</Button>
+        )}
+        <Button variant="secondary" className="min-h-11" onClick={onChangeTeams}>{battle.setup.situation ? "Back to setup" : "Change teams"}</Button>
         <Button variant="secondary" className="min-h-11" onClick={() => void copy()}>Copy log</Button>
       </div>
       {copied !== "idle" && <p role="status" className="text-sm text-muted">{copied === "copied" ? "Log copied." : "Copy failed."}</p>}
+      {onNewSituation && <p id={`${id}-deal`} role="status" className="text-sm text-muted">{deal?.status === "dealing" ? `Dealing ${requestLabel(deal.request)}…` : ""}</p>}
+      {onNewSituation && deal?.status === "error" && <p role="alert" className="wrap-anywhere text-sm text-danger">Situation not dealt: {deal.message}</p>}
       {comparison && <BattleComparison rows={comparison} />}
     </section>
   );

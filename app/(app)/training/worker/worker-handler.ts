@@ -13,6 +13,7 @@ import { slotAt } from "../model/positions";
 import type { ObservedAction } from "../model/public-state";
 import type { SideID } from "../model/showdown-types";
 import { createRandom, seedHex } from "../model/random";
+import type { SituationRequest } from "../model/situation";
 import { redactSheet, type SheetView } from "../model/sheet";
 import type { TrainingUsageData, SetLegality } from "../model/usage";
 import { logHash, logShapeHash, turnHashes, turnShapeHashes } from "../model/saved-battle";
@@ -28,6 +29,7 @@ import { aiInputs, createTestOracle } from "../sim/inputs";
 import { normalizeRequest } from "../sim/requests";
 import { createTurnServices } from "../sim/services";
 import { createSetLegality, hasProblems, memberKeys, sheetFromSets, toShowdownTeam, validateTeams, type AdaptedTeam } from "../sim/showdown-set";
+import { hostSituation } from "../sim/situation-start";
 import { Dex, FORMAT, TeamValidator } from "../sim/sim";
 import { createTracker, type PublicTracker } from "../sim/tracker";
 import { editorMoveOptions } from "../usage/move-options";
@@ -36,6 +38,7 @@ import { loadTrainingUsage } from "../usage/training-usage";
 import { createMoveType } from "./move-type";
 import { redactJoint, redactReport, type RedactContext } from "./redact-report";
 import type { Sealer } from "./sealer";
+import { dealPosition, drawAny, RANDOM_MARGIN, RANDOM_TRIES, readyMadeTeam, type DealDeps } from "./situation-deal";
 
 export type WorkerDeps = {
   post(message: FromWorker): void;
@@ -99,6 +102,8 @@ type BattleState = {
   shownReads: Map<number, DecisionReport | null> | null;
   /** Resume is replaying the recorded choices: your choices and a forfeit wait for it. */
   rebuilding: boolean;
+  /** A battle dealt partway through (setup.situation): each side's team preview choice, which the worker makes. */
+  dealt: Record<SideID, number[]> | null;
 };
 
 const messageOf = (error: unknown) => (error instanceof Error ? error.message : String(error));
@@ -209,33 +214,41 @@ export function createTrainingWorker(deps: WorkerDeps): { receive(message: ToWor
       const id = forYou.members.find((member) => member.key === key)?.abilityId;
       return id ? Dex.forFormat(FORMAT).abilities.get(id).name : null;
     });
+    // A situation (an import file's included) is checked against its teams before the battle is made.
+    const dealt = setup.situation ? hostSituation({ ...setup, situation: setup.situation }) : null;
     const host = new BattleHost({
       formatid: FORMAT, seed: seed as HostOptions["seed"],
       p1: { name: "You", team: adapted.own.sets.map((entry) => entry.set) },
       p2: { name: "Training", team: adapted.opponent.sets.map((entry) => entry.set) },
+      situation: dealt?.start ?? null,
     });
     return {
-      host, adapted: { own: adapted.own, opponent: adapted.opponent }, keys, forYou, mirrored: [...new Set(mirrored)],
-      trackers: { p1: createTracker("p1", keys.keyOf), p2: createTracker("p2", keys.keyOf) },
+      host, adapted: { own: adapted.own, opponent: adapted.opponent }, keys, forYou, mirrored: [...new Set(mirrored)], dealt: dealt?.order ?? null,
+      trackers: { p1: createTracker("p1", keys.keyOf, keys.speciesOf), p2: createTracker("p2", keys.keyOf, keys.speciesOf) },
       formatter: createLogFormatter({ names: display, teams }),
       // The board replays each turn from these steps (the same p1 channel as the log).
       steps: createStepBuilder({ names: display, teams, keyOf: keys.keyOf, moveType }),
     };
   }
 
-  /** A new battle's state (Resume: its seed, AI seed base and starting habits); null after posting battle-error. */
+  /** A new battle's state (Resume: its seed, AI seed base and starting habits); throws on teams the validator refuses. */
+  function battleState(battleId: number, setup: TrainingSetup, habits: HabitsRecord | null, saved?: { seed: string; aiBase: string }): BattleState {
+    const parts = battleParts(setup, saved?.seed ?? null);
+    return {
+      battleId, setup, host: parts.host, adapted: parts.adapted, keys: parts.keys, trackers: parts.trackers, mirrored: parts.mirrored,
+      sheets: { forAI: redactSheet(sheetFromSets(parts.adapted.own), setup.info.aiKnows), forYou: parts.forYou },
+      provider: deps.createProvider(habits), aiBase: saved?.aiBase ?? deps.randomHex(),
+      formatter: parts.formatter, steps: parts.steps,
+      log: new Map(), dirty: new Set(), snapshots: new Map(), ai: null, held: null, pending: new Map(), ownActions: new Map(),
+      lastTurn: 0, habitsChanged: false, ended: false, forfeited: false,
+      seed: String(parts.host.battle.prng.startingSeed), habitsAtStart: habits ? structuredClone(habits) : null, events: [], shownReads: null, rebuilding: false,
+      dealt: parts.dealt,
+    };
+  }
+  /** battleState, or null after posting battle-error. */
   function createBattle(battleId: number, setup: TrainingSetup, habits: HabitsRecord | null, saved?: { seed: string; aiBase: string }): BattleState | null {
     try {
-      const parts = battleParts(setup, saved?.seed ?? null);
-      return {
-        battleId, setup, host: parts.host, adapted: parts.adapted, keys: parts.keys, trackers: parts.trackers, mirrored: parts.mirrored,
-        sheets: { forAI: redactSheet(sheetFromSets(parts.adapted.own), setup.info.aiKnows), forYou: parts.forYou },
-        provider: deps.createProvider(habits), aiBase: saved?.aiBase ?? deps.randomHex(),
-        formatter: parts.formatter, steps: parts.steps,
-        log: new Map(), dirty: new Set(), snapshots: new Map(), ai: null, held: null, pending: new Map(), ownActions: new Map(),
-        lastTurn: 0, habitsChanged: false, ended: false, forfeited: false,
-        seed: String(parts.host.battle.prng.startingSeed), habitsAtStart: habits ? structuredClone(habits) : null, events: [], shownReads: null, rebuilding: false,
-      };
+      return battleState(battleId, setup, habits, saved);
     } catch (error) {
       deps.post({ type: "battle-error", battleId, message: messageOf(error) });
       return null;
@@ -247,6 +260,8 @@ export function createTrainingWorker(deps: WorkerDeps): { receive(message: ToWor
     const s = createBattle(battleId, setup, habits);
     if (!s) return;
     state = s;
+    // A situation has no team preview for you: your dealt order waits for the AI's, as a choice you sent would (G1).
+    if (s.dealt) s.held = { requestId: s.host.requestId, choice: teamChoice(s.dealt.p1), action: null };
     advance(s);
   }
 
@@ -351,7 +366,8 @@ export function createTrainingWorker(deps: WorkerDeps): { receive(message: ToWor
       const firstTurn = observations.find((each) => each.turn === 1);
       const leads = firstTurn && firstTurn.actions.length === 2 ? [firstTurn.actions[0].key.slice(3), firstTurn.actions[1].key.slice(3)] as [string, string] : null;
       const revealed = Object.values(s.trackers.p2.state().mons).filter((mon) => mon.side === "p1" && mon.switchIns > 0).map((mon) => mon.key.slice(3));
-      try { s.provider.observeBattle({ leads, revealed }); s.habitsChanged = true; } catch { /* habits only */ }
+      // A situation dealt your Pokémon and your leads: they are not habits of yours.
+      try { s.provider.observeBattle(s.dealt ? { leads: null, revealed: [] } : { leads, revealed }); s.habitsChanged = true; } catch { /* habits only */ }
       const winner = drain.ended.winner;
       post(s, {
         seed: s.seed, request: null,
@@ -584,7 +600,14 @@ export function createTrainingWorker(deps: WorkerDeps): { receive(message: ToWor
     const request = s.host.request("p2")!;
     const usage = tools().usage;
     if ("teamPreview" in request) {
-      const preview = await s.provider.teamPreview({ runtime, ai: s.setup.opponent, sheet: s.sheets.forAI, info: s.setup.info.aiKnows, usage }, options(s, requestId, signal, salt));
+      const context = { runtime, ai: s.setup.opponent, sheet: s.sheets.forAI, info: s.setup.info.aiKnows, usage };
+      // A situation: the AI's battle starts as at team preview (its habits, its belief over your sheet); its order is dealt.
+      if (s.dealt) {
+        if (s.provider.beginDealt) await s.provider.beginDealt(context, options(s, requestId, signal, salt));
+        else await s.provider.teamPreview(context, options(s, requestId, signal, salt));
+        return { choice: teamChoice(s.dealt.p2), action: null, report: null, question: null };
+      }
+      const preview = await s.provider.teamPreview(context, options(s, requestId, signal, salt));
       return { choice: teamChoice(preview.order), action: null, report: preview.report, question: null };
     }
     const inputs = inputsFor(s, requestId);
@@ -597,7 +620,7 @@ export function createTrainingWorker(deps: WorkerDeps): { receive(message: ToWor
     }
     if (rebuild && s.provider.replayTurn) return { choice: "", action: null, report: null, question: await s.provider.replayTurn({ runtime, inputs, services, usage }, options(s, requestId, signal, salt)) };
     const decision = await s.provider.chooseTurn({ runtime, inputs, services, usage }, options(s, requestId, signal, salt));
-    return { choice: toChoiceString("p2", decision.action, request, s.keys, "p2"), action: decision.action, report: decision.report, question: decision.question };
+    return { choice: toChoiceString("p2", decision.action, request, s.keys, "p2"), action: decision.action, report: decision.report, question: decision.question, value: decision.stats.value ?? null };
   }
 
   /**
@@ -701,6 +724,8 @@ export function createTrainingWorker(deps: WorkerDeps): { receive(message: ToWor
     if (!s || s.battleId !== battleId || s.host.requestId !== requestId || s.ended || s.rebuilding) return;
     const request = s.host.request("p1");
     if (!request || "wait" in request) return;
+    // A situation's team order is dealt (start held it): nothing to choose at its team preview.
+    if (s.dealt && "teamPreview" in request) return;
     let text: string;
     let action: JointAction | null = null;
     try {
@@ -741,6 +766,67 @@ export function createTrainingWorker(deps: WorkerDeps): { receive(message: ToWor
     advance(s);
   }
 
+  // ---------- situations: ready-made teams and the dealt position ----------
+  /** Bumped by every deal: a fully random deal still rating gives up when another one was asked for. */
+  let dealing = 0;
+
+  /**
+   * How far ahead the AI's engine rates a dealt position (DecisionStats.value at its first turn, as Plays safe would decide
+   * it), on a battle of its own that posts nothing; null when it cannot be rated.
+   */
+  async function rate(setup: TrainingSetup, salt: string): Promise<number | null> {
+    try {
+      const s = battleState(-1, { ...setup, difficulty: "safe" }, null);
+      if (!s.dealt) return null;
+      s.host.choose("p2", teamChoice(s.dealt.p2));
+      s.host.choose("p1", teamChoice(s.dealt.p1));
+      ingest(s);
+      if (s.host.battle.ended || !s.host.needsChoice("p2")) return null;
+      const request = s.host.request("p2");
+      if (!request || !("active" in request)) return null;
+      const result = await decide(s, s.host.requestId, false, `rate-${salt}`, new AbortController().signal);
+      return (result as { value?: number | null }).value ?? null;
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Both ready-made teams, then the position: a Random situation draws a named or a fully random one; a fully random one is
+   * dealt again (RANDOM_TRIES at most) until the AI's engine rates the AI RANDOM_MARGIN ahead, else the most AI-favoured is kept.
+   */
+  async function deal(key: string, request: SituationRequest, settings: Pick<TrainingSetup, "difficulty" | "showRead" | "info">) {
+    const mine = ++dealing;
+    const random = createRandom(deps.randomHex(), "deal");
+    let teams: Pick<TrainingSetup, "own" | "opponent">;
+    try {
+      const { usage: data, legality: rules, validator: check } = tools();
+      const dealDeps: DealDeps = {
+        usage: data, legality: rules, runtime,
+        validate: (team) => { const adapted = toShowdownTeam(team.members, runtime); return validateTeams(adapted, adapted, check).own; },
+      };
+      teams = { own: readyMadeTeam(random, dealDeps, "Your ready-made team", "you"), opponent: readyMadeTeam(random, dealDeps, "The AI's ready-made team", "ai") };
+    } catch (error) {
+      deps.post({ type: "deal-error", key, message: messageOf(error) });
+      return;
+    }
+    const concrete = request.kind === "any" ? drawAny(request.level, random) : request;
+    const setupOf = (situation: TrainingSetup["situation"]): TrainingSetup => ({ ...teams, ...settings, situation });
+    if (concrete.kind !== "random") {
+      deps.post({ type: "dealt", key, setup: setupOf(dealPosition(concrete, request, teams, random, runtime)) });
+      return;
+    }
+    let best: { setup: TrainingSetup; value: number } | null = null;
+    for (let attempt = 0; attempt < RANDOM_TRIES; attempt++) {
+      const setup = setupOf(dealPosition(concrete, request, teams, random, runtime));
+      const value = (await rate(setup, String(attempt))) ?? -Infinity;
+      if (mine !== dealing) return;
+      if (!best || value > best.value) best = { setup, value };
+      if (value >= RANDOM_MARGIN[concrete.level]) break;
+    }
+    deps.post({ type: "dealt", key, setup: best!.setup });
+  }
+
   // ---------- usage helpers (A1.2, A1.3) ----------
   function suggest(key: string, side: "own" | "opponent", members: Parameters<typeof suggestTrainingSets>[0]) {
     try {
@@ -779,6 +865,7 @@ export function createTrainingWorker(deps: WorkerDeps): { receive(message: ToWor
         case "move-options": moveOptions(message.speciesId); return;
         case "resume": void resume(message.battleId, message.setup, message.sealed, message.log); return;
         case "replay": replay(message.replayId, message.setup, message.seed, message.inputLog, message.forfeited); return;
+        case "deal": void deal(message.key, message.request, message.settings); return;
       }
     },
   };
