@@ -2,14 +2,14 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { Button } from "@/app/components/ui";
-import { IMPORT_MAX_LABEL, resultText, SAVED_BATTLES_CAP, turnsText, type SavedBattleSummary, type SavedBattlesState } from "../model/saved-battle";
+import { IMPORT_MAX_LABEL, matchupOf, resultText, SAVED_BATTLES_CAP, turnsText, type SavedBattleSummary, type SavedBattlesState } from "../model/saved-battle";
 import { DIFFICULTY_LABEL } from "../setup/DifficultyField";
 import type { TrainingSession } from "../training-session";
 import { downloadText, isoTime, savedDate } from "./download";
 
 export type SavedActions = Pick<TrainingSession,"openReplay" | "resume" | "rematchSaved" | "deleteSaved" | "deleteAllSaved" | "exportSaved" | "importSaved">;
 
-const teams = (summary: SavedBattleSummary) => `${summary.own} vs ${summary.opponent}`;
+const teams = (summary: SavedBattleSummary) => matchupOf(summary);
 /** "Won · 7 turns · Reads you" ("Unfinished · Turn 3 · …"), then " · Test settings on" (Rematch and Resume play with them) and " · Imported". */
 const facts = (summary: SavedBattleSummary) => `${resultText(summary)} · ${turnsText(summary)} · ${DIFFICULTY_LABEL[summary.difficulty]}`
   + `${summary.testSettings ? " · Test settings on" : ""}${summary.source === "imported" ? " · Imported" : ""}`;

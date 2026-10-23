@@ -192,6 +192,12 @@ describe("training boundaries (SPEC §14.6 S2)", () => {
     expect(offenders).toEqual([]);
   });
 
+  it("only the battle host writes a situation's position into the real battle (sim/situation-start.ts installSituationStart)", () => {
+    const scripts = walk(join(ROOT, "scripts", "training")).filter(code);
+    const callers = [...trainingFiles, ...scripts].filter((file) => /\binstallSituationStart\s*\(/.test(readFileSync(file, "utf8"))).map(rel);
+    expect(callers.sort()).toEqual([`${T}sim/battle-host.ts`, `${T}sim/situation-start.ts`]);
+  });
+
   it("the belief-battle side (tracker, belief battles, services) never reaches the host, the board or the worker handler", () => {
     const AI_SIDE = ["tracker", "belief-battle", "effects", "observe", "bridge", "splits", "prelude", "rollout", "residual", "services"];
     const refused = new Set([`${T}sim/battle-host.ts`, `${T}sim/board.ts`, `${T}worker/worker-handler.ts`]);

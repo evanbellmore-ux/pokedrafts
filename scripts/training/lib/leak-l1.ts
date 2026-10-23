@@ -8,6 +8,7 @@ import type { CellActions, TurnServices } from "@/app/(app)/training/model/ai-vi
 import type { WorkBudget } from "@/app/(app)/training/model/decision";
 import { DEFAULT_INFO, OPEN_TEAM_SHEETS, type InfoSettings, type InfoView } from "@/app/(app)/training/model/info";
 import type { SideID } from "@/app/(app)/training/model/showdown-types";
+import type { TrainingSituation } from "@/app/(app)/training/model/situation";
 import type { TrainingMember, TrainingTeam } from "@/app/(app)/training/model/view-types";
 import { loadTrainingUsage } from "@/app/(app)/training/usage/training-usage";
 import { needsPrelude } from "@/app/(app)/training/sim/bridge";
@@ -33,6 +34,8 @@ export type Field = {
   /** The player's team and the opponents' (default PLAYER, OPPONENTS). */
   player?: string;
   opponents?: readonly string[];
+  /** A battle dealt partway through (Situations): its position in A and in B (L1-situation). */
+  situation?: (teams: { p1: TrainingTeam; p2: TrainingTeam }, teamB: boolean) => TrainingSituation;
 };
 
 const withMember = (team: TrainingTeam, speciesId: string, change: (member: TrainingMember) => TrainingMember): TrainingTeam =>
@@ -64,7 +67,20 @@ export function l1Fields(): Field[] {
     // Future Sight on both sides, with the hidden counters redrawn as for "dice".
     { id: "dice-eot", info: DEFAULT_INFO, mutate: redrawDice, player: "E01", opponents: ["E02", "E02", "V02", "V04", "A08"] },
     { id: "choice", info: DEFAULT_INFO, choice: true },
+    // Situations: a battle dealt partway through, where only your Pokémon in the back differs (its HP and status) until it
+    // is sent in; the leads, the fainted one and the AI's side are the same.
+    { id: "situation", info: DEFAULT_INFO, situation: dealtWithBack },
   ];
+}
+
+/** Your three left (two leads, one in the back), one fainted, against the AI's four: the back one at full HP in A, hurt and paralyzed in B. */
+function dealtWithBack(teams: { p1: TrainingTeam; p2: TrainingTeam }, teamB: boolean): TrainingSituation {
+  const [a, b, c, d] = teams.p1.members.map((member) => member.key);
+  return {
+    request: { kind: "custom", custom: { own: { left: 3, hp: 100, leads: [{}, {}] }, opponent: { left: 4, hp: 100, leads: [{}, {}] } } }, spot: null,
+    own: { members: [{ key: a, hp: 70 }, { key: b, hp: 55 }, teamB ? { key: c, hp: 35, status: "par" } : { key: c, hp: 100 }, { key: d, hp: 0 }] },
+    opponent: { members: teams.p2.members.slice(0, 4).map((member, index) => ({ key: member.key, hp: index === 1 ? 80 : 100 })) },
+  };
 }
 
 /** A damaged p1 active gets another HP that Showdown shows the same (its getHealth().shared, sim/pokemon.ts getHealth). */
@@ -153,6 +169,7 @@ export async function playL1(field: Field, opponentId: string, index: number, se
     teams: { p1: p1Team, p2: p2Team }, info: field.info, runtime, usage, budget, seedRun: `leak:${field.id}:${opponentId}`, index,
     forced: forcedChoices,
     forcedPreview: field.preview ? { p1: teamB ? field.preview.b : field.preview.a } : undefined,
+    situation: field.situation?.({ p1: p1Team, p2: p2Team }, teamB),
     observer: {
       drained(_host, _trackers, _keys, drain) { p2Lines.push(...drain.channel.p2); },
       before(side, _kind, host, ordinal) {

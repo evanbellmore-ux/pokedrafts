@@ -113,6 +113,11 @@ export type DecisionStats = {
   beliefMs: number; elapsedMs: number; valveFired: boolean;
   /** max_a (M y*)_a − min_b (x*ᵀ M)_b over the matrix spread. */
   exploitability: number;
+  /**
+   * The solved turn's value V for the AI (its side minus yours, SPEC 10.6; about 1 per Pokémon of worth): how far ahead it
+   * rates the position (a fully random situation is dealt again until it is ahead). Absent without a solved matrix.
+   */
+  value?: number;
   approximations: string[];
   /** Addendum A1.5: null when the AI had no Mega Evolution available this turn. */
   mega: MegaStats | null;
@@ -124,6 +129,11 @@ export type SwitchDecision = { action: JointAction };
 export interface DecisionProvider {
   readonly id: "engine" | "jev";
   teamPreview(context: PreviewContext, options: DecideOptions): Promise<PreviewDecision>;
+  /**
+   * A battle dealt partway through (a situation) has no team preview: what teamPreview starts (the habits' new battle, the
+   * belief over your sheet), without choosing an order. Absent: the worker calls teamPreview and sends the dealt order.
+   */
+  beginDealt?(context: PreviewContext, options: DecideOptions): Promise<void>;
   chooseTurn(context: TurnContext, options: DecideOptions): Promise<TurnDecision>;
   chooseReplacements(context: SwitchContext, options: DecideOptions): Promise<SwitchDecision>;
   /**

@@ -5,6 +5,7 @@ import type { DoublesSideId } from "@/app/lib/battle/doubles-types";
 import type { HabitsRecord } from "./decision";
 import type { EditorMoveOption, SuggestedSet, SuggestMember } from "./usage";
 import type { RerunTurn } from "./saved-battle";
+import type { SituationRequest } from "./situation";
 import type { BoardView, LogTurn, PlayerChoice, TeamProblems, TrainingRequest, TrainingSetup } from "./view-types";
 
 export type ToWorker =
@@ -21,7 +22,9 @@ export type ToWorker =
   /** An unfinished battle from its sealed checkpoint: rebuilt by replaying its choices, then played on. `log`: the saved log (its reads). */
   | { type: "resume"; battleId: number; setup: TrainingSetup; sealed: string; log: LogTurn[] }
   /** A finished battle re-run for the replay screen; the teams are validated first (an import file is untrusted). */
-  | { type: "replay"; replayId: number; setup: TrainingSetup; seed: string; inputLog: string[]; forfeited: boolean };
+  | { type: "replay"; replayId: number; setup: TrainingSetup; seed: string; inputLog: string[]; forfeited: boolean }
+  /** Situations: both ready-made teams and the position for the request, with the battle settings the setup takes. */
+  | { type: "deal"; key: string; request: SituationRequest; settings: Pick<TrainingSetup, "difficulty" | "showRead" | "info"> };
 
 export type FromWorker =
   | { type: "loaded"; ms: number }
@@ -67,7 +70,10 @@ export type FromWorker =
   | { type: "suggest-error"; key: string; side: DoublesSideId; message: string }
   /** Addendum A1.3: every legal move of the species, usage order first, then A–Z. */
   | { type: "move-options-ready"; speciesId: string; moves: EditorMoveOption[] }
-  | { type: "move-options-error"; speciesId: string; message: string };
+  | { type: "move-options-error"; speciesId: string; message: string }
+  /** Situations: the dealt setup (both teams, the settings, setup.situation), legal for the format; the page starts it. */
+  | { type: "dealt"; key: string; setup: TrainingSetup }
+  | { type: "deal-error"; key: string; message: string };
 
 export type TrainingTransport = {
   post(message: ToWorker): void;

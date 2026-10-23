@@ -4,10 +4,13 @@
 import type { ShowdownRequest, ShowdownSet, SideID } from "../model/showdown-types";
 import { isMidTurn } from "./requests";
 import { Battle, State, extractChannelMessages, type ChoiceRequest, type PRNGSeed } from "./sim";
+import { installSituationStart, type SituationStart } from "./situation-start";
 
 export type HostOptions = {
   formatid: string; seed: PRNGSeed | readonly number[] | null;
   p1: { name: "You"; team: ShowdownSet[] }; p2: { name: "Training"; team: ShowdownSet[] };
+  /** A battle dealt partway through: its position goes in as team preview ends (sim/situation-start.ts). */
+  situation?: SituationStart | null;
 };
 export type HostDrain = {
   channel: { p1: string[]; p2: string[] }; turn: number; requestId: number;
@@ -62,6 +65,7 @@ export class BattleHost {
         else this.sideUpdates.send(type, data);
       },
     });
+    if (options.situation) installSituationStart(this.battle, options.situation);
     this.battle.setPlayer("p1", { name: options.p1.name, team: structuredClone(options.p1.team) });
     this.battle.setPlayer("p2", { name: options.p2.name, team: structuredClone(options.p2.team) });
     this.track();

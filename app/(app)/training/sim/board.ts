@@ -93,6 +93,7 @@ export function buildBoard({ battle, tracker, sheet, info, keys, runtime, ownKey
       volatiles: pokemon.isActive ? realVolatiles(pokemon, runtime) : [],
       item, ability: { id: pokemon.ability, name: runtime.abilitiesById.get(pokemon.ability)?.name ?? pokemon.ability },
       nature: set.nature, points: Object.fromEntries(STATS.map((stat) => [stat, set.evs[stat] ?? 0])) as Record<BattleStat, number>,
+      stats: { hp: pokemon.maxhp, ...pokemon.storedStats },
       moves: pokemon.moveSlots.map((slot) => ({ id: slot.id, name: runtime.movesById.get(slot.id)?.name ?? slot.move, pp: slot.pp, maxpp: slot.maxpp })),
       mega: !!pokemon.species.isMega, revealed: true, brought: true,
       ...(pokemon.volatiles.commanding ? { commanding: true } : {}),
@@ -131,10 +132,11 @@ export function buildBoard({ battle, tracker, sheet, info, keys, runtime, ownKey
       boosts: Object.fromEntries(Object.entries(mon?.boosts ?? {}).filter(([, value]) => value !== 0)),
       volatiles: mon && mon.position !== null ? volatileNames(mon.volatiles, runtime) : [],
       item, ability: abilityId ? { id: abilityId, name: runtime.abilitiesById.get(abilityId)?.name ?? abilityId } : null,
-      nature: member.nature, points: member.points ? { ...member.points } : null,
+      nature: member.nature, points: member.points ? { ...member.points } : null, stats: null,
       moves: moves.map((id) => ({ id, name: runtime.movesById.get(id)?.name ?? id })),
       ...(member.moves ? {} : { unseenMoves: Math.max(0, 4 - used.length) }),
-      mega: !!mon?.mega, revealed: !!mon && mon.switchIns > 0,
+      // Shown: it has been active, or its faint was (a situation's Pokémon that fainted before the start: sim/situation-start.ts).
+      mega: !!mon?.mega, revealed: !!mon && (mon.switchIns > 0 || mon.fainted),
       brought: info.brought && broughtKnown ? realAI.has(member.key) : null,
     };
   };

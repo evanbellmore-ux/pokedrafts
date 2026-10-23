@@ -8,6 +8,7 @@ import AIStatusPill from "./board/AIStatusPill";
 import BattleBoard from "./board/BattleBoard";
 import type { CardPlay } from "./board/BattleCard";
 import BenchStrip from "./board/BenchStrip";
+import TeamPanels from "./board/TeamPanels";
 import { boardNames, remaining } from "./board/board-format";
 import PlaybackBar from "./board/PlaybackBar";
 import { cardLabels, highlightColour, spokenName, stepAnnouncement } from "./board/playback";
@@ -19,6 +20,7 @@ import BattleAnnouncer from "./log/BattleAnnouncer";
 import BattleLog from "./log/BattleLog";
 import LastTurn from "./log/LastTurn";
 import type { HabitsData } from "./model/habits-data";
+import { situationLabel, type SituationDeal } from "./model/situation";
 import type { BoardView, TrainingBattle } from "./model/view-types";
 import type { DoublesSlotId } from "@/app/lib/battle/doubles-types";
 import type { TrainingSession } from "./training-session";
@@ -27,7 +29,10 @@ import styles from "./training.module.css";
 export type BattleScreenProps = {
   runtime: BattleRuntime;
   battle: TrainingBattle;
-  session: Pick<TrainingSession, "choose" | "forfeit" | "rematch" | "changeTeams">;
+  /** Situations: the deal of BattleEnd's New situation, while it deals or after it failed. */
+  deal?: SituationDeal;
+  /** startSituation: New situation at the end of a situation's battle (absent: no such button). */
+  session: Pick<TrainingSession, "choose" | "forfeit" | "rematch" | "changeTeams"> & Partial<Pick<TrainingSession, "startSituation">>;
   /** The stored habits now, for the battle end's comparison with battle.habitsBefore. */
   habits: HabitsData;
 };
@@ -46,7 +51,7 @@ const EMPTY_BOARD: BoardView = {
  * resolves plays on the board first, one step at a time (board/useTurnPlayback.ts): a popup with the move, then its results
  * on the cards. Your controls come back after it.
  */
-export default function BattleScreen({ runtime, battle, session, habits }: BattleScreenProps) {
+export default function BattleScreen({ runtime, battle, session, habits, deal }: BattleScreenProps) {
   const id = useId();
   const formRef = useRef<HTMLFormElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -99,6 +104,12 @@ export default function BattleScreen({ runtime, battle, session, habits }: Battl
   const ownName = (key: string) => ownNames.get(key) ?? null;
   const showRead = battle.setup.showRead;
   const turn = step ? step.turn : Math.max(1, board.turn);
+  // A situation's battle has no team preview: until its first turn's request, its position is still going in.
+  const situation = battle.setup.situation ?? null;
+  const dealing = !!situation && (phase.kind === "starting" || phase.kind === "preview");
+  const shownBoard = battle.board && !dealing ? battle.board : null;
+  const counts = shownBoard ? `You: ${remaining(shown, "own")} left · AI: ${remaining(shown, "opponent")} left` : null;
+  const facts = [situation ? situationLabel(situation) : null, counts].filter(Boolean).join(" · ");
 
   return (
     <div data-training-screen="battle" className={styles.battle}>
@@ -106,17 +117,20 @@ export default function BattleScreen({ runtime, battle, session, habits }: Battl
         <header data-training-turn className="flex flex-wrap items-center justify-between gap-2">
           <div className="min-w-0">
             <h2 ref={headingRef} tabIndex={-1} className="rounded text-xl font-semibold text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus">Turn {turn}</h2>
-            {battle.board && <p className="text-sm tabular-nums text-muted">You: {remaining(shown, "own")} left · AI: {remaining(shown, "opponent")} left</p>}
+            {facts && <p data-training-battle-facts className="text-sm tabular-nums text-muted">{facts}</p>}
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <AIStatusPill ai={battle.ai} />
-            {!ended && battle.board && <Button variant="secondary" size="sm" className="min-h-11" onClick={() => { if (window.confirm("Forfeit this battle?")) session.forfeit(); }}>Forfeit</Button>}
+            {!ended && shownBoard && <Button variant="secondary" size="sm" className="min-h-11" onClick={() => { if (window.confirm("Forfeit this battle?")) session.forfeit(); }}>Forfeit</Button>}
           </div>
         </header>
         {error && <Alert variant="error" title="Choice not accepted">{error}</Alert>}
-        {ended && !playing && <BattleEnd battle={battle} onRematch={session.rematch} onChangeTeams={session.changeTeams} logText={logText(battle.log)} habits={habits} />}
+        {ended && !playing && (
+          <BattleEnd battle={battle} onRematch={session.rematch} onChangeTeams={session.changeTeams} logText={logText(battle.log)} habits={habits}
+            onNewSituation={situation && session.startSituation ? () => session.startSituation?.(situation.request) : undefined} deal={deal} />
+        )}
         <div className={styles.lastTurn}><LastTurn turn={latestResolved(battle)} runtime={runtime} showRead={showRead} board={battle.board} ownName={ownName} /></div>
-        {battle.board ? (
+        {shownBoard ? (
           <form ref={formRef} aria-label={`Turn ${turn} actions`} {...controls.formProps}>
             {/* While a turn plays, your controls wait and Skip stays usable (the fieldset is not disabled). */}
             <fieldset disabled={!playing && (phase.kind === "waiting" || ended)} className="min-w-0">
@@ -127,8 +141,9 @@ export default function BattleScreen({ runtime, battle, session, habits }: Battl
               {!playing && controls.submitBar}
             </fieldset>
           </form>
-        ) : <p role="status" className="text-sm text-muted">{battle.resumed ? "Resuming battle…" : "Starting battle…"}</p>}
-        {battle.board && <BenchStrip board={shown} />}
+        ) : <p role="status" className="text-sm text-muted">{battle.resumed ? "Resuming battle…" : situation ? "Starting the situation…" : "Starting battle…"}</p>}
+        {shownBoard && <BenchStrip board={shown} />}
+        {shownBoard && <TeamPanels board={shown} setup={battle.setup} runtime={runtime} />}
       </div>
       <aside aria-labelledby={`${id}-log`} className={styles.logColumn}>
         <BattleLog log={battle.log} runtime={runtime} showRead={showRead} board={battle.board} ownName={ownName} headingId={`${id}-log`} />

@@ -3,7 +3,10 @@
 // (replays re-run hash-equal, Resume equals uninterrupted play: --saved 30 engine battles, 0 skips).
 // --saved-illusion N more saved battles play the Illusion and Transform teams (tests/fixtures/training-teams.ts
 // ILLUSION_TRANSFORM: the AI's Zoroark leads disguised and its Imposter Ditto transforms), which the pools never bring.
-//   npx tsx scripts/training/conformance.ts [--battles 40] [--pools S,V,A] [--eot 10] [--seats maxdamage:random] [--containment 2] [--saved 30] [--saved-illusion 6]
+//   npx tsx scripts/training/conformance.ts [--battles 40] [--pools S,V,A] [--eot 10] [--situations 18] [--seats maxdamage:random] [--containment 2] [--saved 30] [--saved-illusion 6] [--saved-situations 9]
+// --situations N more battles in each mode start partway through (Situations: scripts/training/lib/situations.ts deals each
+// pair a position, every named situation at both levels, a custom and a fully random one in turn), and every gate counts
+// them; --saved-situations N more saved battles start so (check 9d).
 // --eot N more battles in each mode play pool E (tests/fixtures/training-teams.ts: E01 against E02), whose moves leave the
 // state the bridge carries into the engine (Ally Switch, Trick, Switcheroo, Substitute, Leech Seed, Salt Cure, Syrup Bomb,
 // Wish, Future Sight, a Binding Band trap...: status-eot EOT-5); every gate counts them.
@@ -36,6 +39,7 @@ import { createTurnServices } from "@/app/(app)/training/sim/services";
 import { compareFacts, oracleFacts, realBattle, trackerFacts } from "./lib/oracle";
 import { createSeat, ensureSeats, isSeatName } from "./lib/providers";
 import { gateTable, parseArgs, pct, writeJson, writeText, type GateRow } from "./lib/report";
+import { situationFor } from "./lib/situations";
 import { illusionTransformPair, parsePools, teamPair } from "./lib/teams";
 import { ILLUSION_TRANSFORM } from "@/tests/fixtures/training-teams";
 
@@ -179,6 +183,8 @@ type Report = {
   saved?: SavedCheck;
   /** Check 9c: the saved-battle checks on the Illusion and Transform teams. */
   savedIllusion?: SavedCheck;
+  /** Check 9d: the saved-battle checks on battles dealt partway through (Situations). */
+  savedSituations?: SavedCheck;
   errors: string[];
 };
 
@@ -187,6 +193,7 @@ async function main(): Promise<void> {
   const battles = Number(args.battles ?? 40);
   const pools = parsePools(String(args.pools ?? "S,V,A"));
   const eotBattles = Number(args.eot ?? 10);
+  const situationBattles = Number(args.situations ?? 18);
   const [p2Name, p1Name] = String(args.seats ?? "maxdamage:random").split(":");
   if (!isSeatName(p2Name) || !isSeatName(p1Name)) throw new Error(`Unknown --seats ${String(args.seats)}.`);
   await ensureSeats([p2Name, p1Name]);
@@ -210,10 +217,13 @@ async function main(): Promise<void> {
   for (const mode of ["perfect", "open"] as const) {
     // Perfect information (aiKnows): truth worlds, equivalence and the bridge. Open: parity, robustness, choices, census.
     const info: InfoSettings = mode === "perfect" ? { aiKnows: PERFECT_INFORMATION, youSee: DEFAULT_INFO.youSee } : DEFAULT_INFO;
-    for (let index = 0; index < battles + eotBattles; index++) {
+    for (let index = 0; index < battles + eotBattles + situationBattles; index++) {
       // --only N: one battle index (diagnosing a gate).
       if (args.only !== undefined && Number(args.only) !== index) continue;
-      const pair = index < battles ? teamPair(run, index, pools, runtime) : teamPair(`${run}:eot`, index - battles, ["E"], runtime);
+      const dealtAt = index - battles - eotBattles;
+      const pair = index < battles ? teamPair(run, index, pools, runtime)
+        : dealtAt < 0 ? teamPair(`${run}:eot`, index - battles, ["E"], runtime) : teamPair(`${run}:situation`, dealtAt, pools, runtime);
+      const situation = dealtAt >= 0 ? situationFor(pair, run, dealtAt) : undefined;
       const adapted = { p1: toShowdownTeam(pair.p1.team.members, runtime), p2: toShowdownTeam(pair.p2.team.members, runtime) };
       let pendingInputs: AiInputs | null = null;
       let pendingKind = "";
@@ -221,7 +231,7 @@ async function main(): Promise<void> {
       const random = createRandom(run, mode, index, "conformance");
       const result = await runMatch({
         seats: { p1: createSeat(p1Name, runtime, null), p2: createSeat(p2Name, runtime, null) },
-        teams: { p1: pair.p1.team, p2: pair.p2.team }, info, runtime, usage, seedRun: `${run}:${mode}`, index,
+        teams: { p1: pair.p1.team, p2: pair.p2.team }, info, runtime, usage, seedRun: `${run}:${mode}`, index, situation,
         observer: {
           drained(host, trackers, keys) {
             if (mode !== "open") return;
@@ -376,6 +386,13 @@ async function main(): Promise<void> {
     const slice = await runSavedCheck({ battles: illusionBattles, seat: "safe", run: `${run}-saved-illusion`, teams: { pair: () => illusionTransformPair(runtime), aiOrder: ILLUSION_TRANSFORM.aiOrder, aiReplaceWith: ILLUSION_TRANSFORM.aiReplaceWith } });
     report.savedIllusion = slice;
     rows.push({ gate: "9c. Saved battles with an Illusion and a Transform: re-run and Resume = original", threshold: `100% of ${illusionBattles}`, result: `${slice.replayEqual}/${slice.replays} hash, ${slice.replayBoardsEqual}/${slice.replays} boards and result; Resume ${slice.resumeEqual}/${slice.resumed}`, status: slice.replays === illusionBattles && slice.replayEqual === slice.replays && slice.replayBoardsEqual === slice.replays && slice.resumed >= illusionBattles - 1 && slice.resumeEqual === slice.resumed ? "pass" : "fail", detail: slice.failures.slice(0, 5).join(" | ") });
+  }
+  const dealtSaved = Number(args["saved-situations"] ?? 9);
+  if (dealtSaved > 0) {
+    // Check 9d: the same saved-battle checks on battles dealt partway through (their position re-applied by every re-run).
+    const slice = await runSavedCheck({ battles: dealtSaved, seat: "safe", pools: pools.join(","), run: `${run}-saved-situations`, situation: (pair, index) => situationFor(pair, `${run}-saved-situations`, index) });
+    report.savedSituations = slice;
+    rows.push({ gate: "9d. Saved battles dealt partway through (Situations): re-run and Resume = original", threshold: `100% of ${dealtSaved}`, result: `${slice.replayEqual}/${slice.replays} hash, ${slice.replayBoardsEqual}/${slice.replays} boards and result; Resume ${slice.resumeEqual}/${slice.resumed}`, status: slice.replays === dealtSaved && slice.replayEqual === slice.replays && slice.replayBoardsEqual === slice.replays && slice.resumed >= dealtSaved - 2 && slice.resumeEqual === slice.resumed ? "pass" : "fail", detail: slice.failures.slice(0, 5).join(" | ") });
   }
   rows.push({ gate: "Runner errors", threshold: "0", result: `${report.errors.length}`, status: report.errors.length === 0 ? "pass" : "fail" });
   const dir = join(process.cwd(), "scripts", ".cache", "training", "conformance");

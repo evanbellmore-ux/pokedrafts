@@ -6,6 +6,7 @@ import {
   turnShapeHashes, type RerunTurn, type ReplayState, type SavedBattle, type SavedBattlesState,
 } from "./model/saved-battle";
 import { DEFAULT_INFO, parseInfoSettings, SHEET_FIELDS, type InfoSettings } from "./model/info";
+import { DEFAULT_SITUATION_SETTINGS, parseSituationSettings, type SituationRequest, type SituationSettings } from "./model/situation";
 import type { SuggestedSet, SuggestMember } from "./model/usage";
 import {
   TRAINING_FORMAT_ID, type LogTurn, type PlayerChoice, type SetupDraft, type TrainingBattle, type TrainingPhase, type TrainingRequest,
@@ -54,6 +55,13 @@ export type TrainingSession = {
   clearHabits(): void;
   /** Opens or closes "Your trends" on the setup screen (remembered). */
   setTrendsOpen(open: boolean): void;
+  /** Setup's Situations choices: full battle or Situations, the level, the custom situation (remembered per account). */
+  updateSituations(update: (settings: SituationSettings) => SituationSettings): void;
+  /**
+   * Situations: the worker deals both ready-made teams and the position (with the draft's difficulty, read and information
+   * settings), then the battle starts there. A newer request replaces one still dealing.
+   */
+  startSituation(request: SituationRequest): void;
   /**
    * From useCalculatorRosters().state.userId; another account resets the battle and reads its own habits, information settings
    * and remembered setup (the first account's, with the changes you made to the draft before it was bound applied again).
@@ -92,6 +100,7 @@ export const HABITS_KEY = "pokedrafts:training:habits:v1:";
 export const INFO_KEY = "pokedrafts:training:info:v1:";
 export const TRENDS_KEY = "pokedrafts:training:trends:v1:";
 export const SETUP_KEY = "pokedrafts:training:setup:v1:";
+export const SITUATIONS_KEY = "pokedrafts:training:situations:v1:";
 export const VALIDATE_DELAY_MS = 250;
 
 function accountKey(userId: string | null) {
@@ -113,6 +122,7 @@ export function initialSnapshot(info: InfoSettings = DEFAULT_INFO): TrainingSnap
     moveOptions: {},
     saved: { status: "idle", list: [], message: null, import: { status: "idle" }, autosaved: null },
     replay: null,
+    situations: { settings: DEFAULT_SITUATION_SETTINGS, deal: { status: "idle" } },
   };
 }
 
@@ -194,6 +204,9 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
   /** Worker messages waiting for it to load (Resume, replays, an import's check). */
   let waiting: ToWorker[] = [];
   let replayCounter = 0;
+  let dealCounter = 0;
+  /** The deal the worker was last asked for (Retry asks the new worker again). */
+  let dealMessage: Extract<ToWorker, { type: "deal" }> | null = null;
   /** The re-runs the worker is doing, by replayId: the replay screen's, and an import file's check (both can run at once). */
   type ReplayJob = {
     replayId: number; record: SavedBattle; kind: "view" | "import"; message: ToWorker;
@@ -243,6 +256,17 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
   function readInfo(userId: string | null): InfoSettings | null {
     const value = read(INFO_KEY + accountKey(userId));
     return value === null ? null : parseInfoSettings(value);
+  }
+  function readSituations(userId: string | null): SituationSettings | null {
+    const value = read(SITUATIONS_KEY + accountKey(userId));
+    return value === null ? null : parseSituationSettings(value);
+  }
+  function setDeal(deal: TrainingSnapshot["situations"]["deal"]) {
+    set({ situations: { ...snapshot.situations, deal } });
+  }
+  /** Another battle, Resume or Back to setup: a deal still in flight is no longer wanted (its answer is then ignored). */
+  function dropDeal() {
+    if (snapshot.situations.deal.status !== "idle") setDeal({ status: "idle" });
   }
   function readTrendsOpen(userId: string | null): boolean {
     const value = read(TRENDS_KEY + accountKey(userId));
@@ -314,6 +338,9 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
       if ((each.type === "resume" || each.type === "start") && snapshot.battle?.id === each.battleId) set({ battle: null, setupError: `The battle engine did not load: ${message}` });
     }
     for (const job of [...replayJobs.values()]) replayFailed(job.replayId, `The battle engine did not load: ${message}`);
+    // A deal waiting for the worker, or one it was dealing when it stopped, fails with it.
+    const deal = snapshot.situations.deal;
+    if (deal.status === "dealing") setDeal({ status: "error", request: deal.request, message: `The battle engine did not load: ${message}` });
   }
 
   function receive(message: FromWorker) {
@@ -467,12 +494,27 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
         set({ battle: null, setupError: message.message });
         return;
       }
+      case "dealt": {
+        const deal = snapshot.situations.deal;
+        if (deal.status !== "dealing" || deal.key !== message.key) return;
+        setDeal({ status: "idle" });
+        stopBattle();
+        startBattle(message.setup, null);
+        return;
+      }
+      case "deal-error": {
+        const deal = snapshot.situations.deal;
+        if (deal.status !== "dealing" || deal.key !== message.key) return;
+        setDeal({ status: "error", request: deal.request, message: message.message });
+        return;
+      }
     }
   }
 
   // ---------- battles ----------
   /** `whenReady`: posted once the worker has loaded (a saved battle's Rematch can come before it has). */
   function startBattle(setup: TrainingSetup, lastPreview: number[] | null, whenReady = false) {
+    dropDeal();
     const id = ++battleCounter;
     chosenFrom = null;
     submittedOrder = null;
@@ -675,6 +717,7 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
 
     changeTeams() {
       stopBattle();
+      dropDeal();
       chosenFrom = null;
       set({ battle: null, setupError: null });
     },
@@ -684,8 +727,9 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
       disconnect();
       chosenFrom = null;
       queuedValidate = null;
-      // The new worker re-runs the replays and import checks the old one was asked for; a Resume does not carry over.
+      // The new worker re-runs the replays and import checks the old one was asked for, and a deal in progress; a Resume does not carry over.
       waiting = [...replayJobs.values()].map((job) => job.message);
+      if (dealMessage && snapshot.situations.deal.status === "dealing" && snapshot.situations.deal.key === dealMessage.key) waiting.push(dealMessage);
       const suggestions = { ...snapshot.suggestions };
       for (const side of ["own", "opponent"] as const) {
         const last = suggestRequests[side];
@@ -715,6 +759,25 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
       if (account) write(TRENDS_KEY + accountKey(account.id), { open });
     },
 
+    updateSituations(update) {
+      const settings = update(snapshot.situations.settings);
+      if (settings === snapshot.situations.settings) return;
+      set({ situations: { ...snapshot.situations, settings } });
+      if (account) write(SITUATIONS_KEY + accountKey(account.id), settings);
+    },
+
+    startSituation(request) {
+      const key = `deal-${++dealCounter}`;
+      const { difficulty, showRead, info } = snapshot.draft;
+      dealMessage = { type: "deal", key, request, settings: { difficulty, showRead, info } };
+      setDeal({ status: "dealing", key, request });
+      if (snapshot.engine.status === "error") {
+        setDeal({ status: "error", request, message: `The battle engine did not load: ${snapshot.engine.message ?? "unknown error"}` });
+        return;
+      }
+      postWhenReady(dealMessage);
+    },
+
     bindAccount(userId) {
       if (account && account.id === userId) return;
       const first = account === undefined;
@@ -734,6 +797,7 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
       const stored = readInfo(userId);
       const view = habitsView(habits);
       const trendsOpen = readTrendsOpen(userId);
+      const storedSituations = readSituations(userId);
       // The remembered setup: the draft's choices, your league picks (the page restores those) and the last team order.
       const remembered = readSetup(userId);
       const picks = picksOf(userId, remembered);
@@ -747,7 +811,8 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
         const changed = early.length > 0;
         early = [];
         lastTeam ??= remembered?.lastTeam ?? null;
-        set({ draft, picks, habits: view, trendsOpen, saved, replay: null });
+        // The first account keeps the Situations choices made before it was known, unless it has its own (and the deal in progress).
+        set({ draft, picks, habits: view, trendsOpen, saved, replay: null, situations: { ...snapshot.situations, settings: storedSituations ?? snapshot.situations.settings } });
         if (!stored) storeInfo(info);
         if (changed) storeSetup();
         refreshSaved();
@@ -762,6 +827,7 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
       set({
         draft: remembered ? restoredDraft(remembered, info) : createSetupDraft(info), picks, battle: null, validation: { status: "idle" }, setupError: null,
         habits: view, trendsOpen, suggestions: { own: { status: "idle" }, opponent: { status: "idle" } }, saved, replay: null,
+        situations: { settings: storedSituations ?? DEFAULT_SITUATION_SETTINGS, deal: { status: "idle" } },
       });
       refreshSaved();
     },
@@ -791,6 +857,7 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
         if (epoch !== storeEpoch) return;
         if (!record || record.status !== "unfinished" || !record.resume) { setSaved({ message: UNREADABLE }); return; }
         stopBattle();
+        dropDeal();
         chosenFrom = null;
         submittedOrder = record.order;
         lastTeam = record.order ? { ownKeys: record.setup.own.members.map((member) => member.key), order: [...record.order] } : null;

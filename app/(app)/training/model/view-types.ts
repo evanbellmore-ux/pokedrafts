@@ -7,6 +7,7 @@ import type { ImportDraft } from "@/app/(app)/calculator/PokePasteImporter";
 import type { HabitsData } from "./habits-data";
 import type { InfoSettings } from "./info";
 import type { ReplayState, SavedBattlesState } from "./saved-battle";
+import type { SituationDeal, SituationSettings, TrainingSituation } from "./situation";
 import type { ShowdownActiveData, ShowdownMoveData, ShowdownSidePokemon } from "./showdown-types";
 import type { EditorMoveOption, SuggestedSet, SuggestionSource } from "./usage";
 
@@ -34,6 +35,8 @@ export type TrainingTeam = { label: string; members: TrainingMember[] }; // exac
 export type TrainingSetup = {
   own: TrainingTeam; opponent: TrainingTeam; difficulty: TrainingDifficulty; showRead: boolean;
   info: InfoSettings;
+  /** A battle dealt partway through (model/situation.ts): no team preview, it begins at this position. */
+  situation?: TrainingSituation;
 };
 export type TeamSourceDraft = {
   mode: "league" | "paste";
@@ -118,12 +121,14 @@ export type PokemonView = {
   ability: { id: string; name: string } | null;
   nature: string | null;
   points: Record<BattleStat, number> | null;
+  /** Yours: its stats as the game's summary shows them (maximum HP, then the stored stats of its form now). The AI's: null. */
+  stats?: Record<BattleStat, number> | null;
   /** Yours: the four, with PP. The AI's: the sheet's four when Moves are open, else the moves it has used. */
   moves: { id: string; name: string; pp?: number; maxpp?: number }[];
   /** The AI's with Moves closed: how many of its moves you have not seen. */
   unseenMoves?: number;
   mega: boolean;
-  /** The AI's: has been active. Yours: true for the four brought. */
+  /** The AI's: has been active, or shown fainted (a situation's fainted Pokémon). Yours: true for the four brought. */
   revealed: boolean;
   /** The AI's under the "brought" test setting: true for its four, false for the other two; otherwise null. Yours: true. */
   brought: boolean | null;
@@ -341,4 +346,6 @@ export type TrainingSnapshot = {
   /** Saved battles in this browser (the setup screen's list, Resume, import) and the replay screen when one is open. */
   saved: SavedBattlesState;
   replay: ReplayState | null;
+  /** Situations: Setup's mode, level and custom choices (remembered per browser and account), and the deal in progress. */
+  situations: { settings: SituationSettings; deal: SituationDeal };
 };

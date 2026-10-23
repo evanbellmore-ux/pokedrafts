@@ -40,8 +40,8 @@ export function announcement(battle: TrainingBattle, { heard = null }: { heard?:
   const recap = last ? [...(heard === null ? [`${turnTitle(last.turn)}.`, ...last.lines.map((line) => line.text)] : []), ...read].join(" ") : "";
   const join = (...parts: string[]) => parts.filter(Boolean).join(" ");
   switch (phase.kind) {
-    case "starting": return "Starting battle…";
-    case "preview": return phase.error ? `Choice not accepted: ${phase.error}` : "Team preview. Bring 4.";
+    case "starting": return battle.setup.situation ? "Starting the situation…" : "Starting battle…";
+    case "preview": return battle.setup.situation ? "Starting the situation…" : phase.error ? `Choice not accepted: ${phase.error}` : "Team preview. Bring 4.";
     case "choose": return phase.error ? `Choice not accepted: ${phase.error}` : join(recap, `Turn ${battle.board?.turn ?? 1}.`);
     case "switch": {
       if (phase.error) return `Choice not accepted: ${phase.error}`;

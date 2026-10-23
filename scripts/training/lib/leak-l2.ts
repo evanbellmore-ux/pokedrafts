@@ -17,6 +17,7 @@ import type { DecisionProvider, HabitsRecord } from "@/app/(app)/training/model/
 import type { InfoSettings } from "@/app/(app)/training/model/info";
 import { createRandom, seedHex } from "@/app/(app)/training/model/random";
 import type { ShowdownRequest } from "@/app/(app)/training/model/showdown-types";
+import type { TrainingSituation } from "@/app/(app)/training/model/situation";
 import type { FromWorker, ToWorker } from "@/app/(app)/training/model/worker-protocol";
 import type { BoardView, JointAction, LogLine, LogTurn, PlayerChoice, TrainingRequest, TrainingSetup, TrainingTeam } from "@/app/(app)/training/model/view-types";
 import { identName, legalJointActions, type MemberKeys } from "@/app/(app)/training/sim/choices";
@@ -426,18 +427,23 @@ export async function runL2(options: {
    * the member it sends in when it replaces one Pokémon (when on its bench) and the run's name.
    */
   teams?: { pair: () => TeamPair; run: string } & ForcedChoices;
+  /** Battles dealt partway through (Situations): each battle's position from its pair, and the run's name. */
+  situations?: { situation: (pair: TeamPair, index: number) => TrainingSituation; run: string };
 }): Promise<L2Result> {
   await ensureSeats([options.seat]);
   const pools = parsePools(options.pools ?? "V,U");
-  const run = options.teams?.run ?? "leak-l2";
+  const run = options.teams?.run ?? options.situations?.run ?? "leak-l2";
   const out: L2Result = {
     battles: 0, messages: 0, hits: [], ended: 0, errors: [], forfeits: 0, replays: 0, replayBoards: 0, resumes: 0, checkpoints: 0, replayBoardsEqual: 0,
     illusions: 0, transforms: 0, lookAlikes: 0,
   };
   const sealer = createMemorySealer();
   for (let index = 0; index < options.battles; index++) {
-    const pair = options.teams ? options.teams.pair() : teamPair("leak-l2", index, pools, runtime);
-    const setup: TrainingSetup = { own: pair.p1.team, opponent: pair.p2.team, difficulty: "safe", showRead: true, info: options.info };
+    const pair = options.teams ? options.teams.pair() : teamPair(options.situations?.run ?? "leak-l2", index, pools, runtime);
+    const setup: TrainingSetup = {
+      own: pair.p1.team, opponent: pair.p2.team, difficulty: "safe", showRead: true, info: options.info,
+      ...(options.situations ? { situation: options.situations.situation(pair, index) } : {}),
+    };
     const turns = new Map<number, LogTurn>();
     const starts = new Map<number, BoardView>();
     // The moves your requests listed (the resumed battle saw the same requests up to its checkpoint).
