@@ -10,7 +10,8 @@ import type { SideID, ShowdownRequest } from "../model/showdown-types";
 import type { BeliefBattle } from "./belief-battle";
 import { fieldClock, fieldConditions, liveBuild, monKey, slotOfPokemon } from "./bridge";
 import { identName, legalJointActions } from "./choices";
-import { createBuild } from "@/app/lib/battle/model";
+import { GAS_STAND_IN } from "@/app/lib/battle/calculate";
+import { createBuild, defaultAbilityActive } from "@/app/lib/battle/model";
 import type { DoublesSlotId } from "@/app/lib/battle/doubles-types";
 import type { Pokemon } from "./sim";
 
@@ -35,8 +36,20 @@ export function revealedKeys(inputs: AiInputs): Set<string> {
   return out;
 }
 
+/**
+ * The build the AI's own estimates read (its view, the particles, a rollout's post state). An ability the Champions catalog
+ * does not list, held or copied by Trace (Simple, which Simple Beam gives: no Champions species has it), has no entry in the
+ * calculator (calculate.ts makePokemon throws for it), so it reads as no ability: GAS_STAND_IN, the calculator's stand-in for
+ * a suppressed one. Simple only doubles a stage change as it happens, and the simulator has already applied it to the
+ * stages. The engine path keeps the real ability (bridge.ts liveBuild) and rolls such a turn out.
+ */
 export function buildOf(pokemon: Pokemon, runtime: BattleRuntime): BattleBuild {
-  return liveBuild(pokemon, runtime) ?? createBuild(pokemon.species.id, runtime);
+  const build = liveBuild(pokemon, runtime) ?? createBuild(pokemon.species.id, runtime);
+  const listed = (id: string | undefined) => id === undefined || runtime.abilitiesById.has(id);
+  if (listed(build.abilityId) && listed(build.tracedAbility)) return build;
+  const { tracedAbility: _copied, ...rest } = build;
+  void _copied;
+  return { ...rest, abilityId: GAS_STAND_IN, abilityActive: defaultAbilityActive(GAS_STAND_IN), abilityChanged: true };
 }
 
 export type ObserveArgs = {
