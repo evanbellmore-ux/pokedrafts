@@ -5,10 +5,12 @@
 // state by replaying its choices, then plays on); a finished battle re-runs from its seed and choices for the replay screen.
 import type { DoublesSlotId } from "@/app/lib/battle/doubles-types";
 import { championsRuntime, type BattleRuntime } from "@/app/lib/battle/runtime";
+import { isProtectMove } from "../ai/battle-facts";
 import type { AiInputs } from "../model/ai-inputs";
 import {
   DEFAULT_BUDGET, type DecideOptions, type DecisionProvider, type HabitsRecord, type PlayerQuestion, type TurnRecord,
 } from "../model/decision";
+import type { InfoView } from "../model/info";
 import { slotAt } from "../model/positions";
 import type { ObservedAction } from "../model/public-state";
 import type { SideID } from "../model/showdown-types";
@@ -17,7 +19,9 @@ import type { SituationRequest } from "../model/situation";
 import { redactSheet, type SheetView } from "../model/sheet";
 import type { TrainingUsageData, SetLegality } from "../model/usage";
 import { logHash, logShapeHash, turnHashes, turnShapeHashes } from "../model/saved-battle";
-import { jointActionKey, type BoardView, type DecisionReport, type JointAction, type LogTurn, type PlayerChoice, type TrainingSetup } from "../model/view-types";
+import {
+  jointActionKey, type BoardView, type DecisionReport, type JointAction, type LogTurn, type PlayerChoice, type TrainingSetup, type TrainingTeam,
+} from "../model/view-types";
 import type { FromWorker, ToWorker } from "../model/worker-protocol";
 import { createStepBuilder, type StepBuilder } from "../log/protocol-steps";
 import { createLogFormatter, type LogFormatter } from "../log/protocol-text";
@@ -38,7 +42,9 @@ import { loadTrainingUsage } from "../usage/training-usage";
 import { createMoveType } from "./move-type";
 import { redactJoint, redactReport, type RedactContext } from "./redact-report";
 import type { Sealer } from "./sealer";
-import { dealPosition, drawAny, RANDOM_MARGIN, RANDOM_TRIES, readyMadeTeam, type DealDeps } from "./situation-deal";
+import {
+  DEAL_TRIES, dealPosition, drawAny, GUARD_PLAYOUTS, GUARD_TURNS, OUT_OF_REACH, RANDOM_MARGIN, readyMadeTeam, TEAMS_EVERY, type DealDeps,
+} from "./situation-deal";
 
 export type WorkerDeps = {
   post(message: FromWorker): void;
@@ -72,6 +78,15 @@ type Checkpoint = { v: 1; turn: number; seed: string; aiBase: string; habits: Ha
 const REBUILD_FAILED = "The saved battle did not re-run the same way.";
 /** The p1 tracker's key for a Pokémon that came in beside one shown under the same name (an Illusion), until |replace|. */
 const ILLUSION_PLACEHOLDER = "p2:?illusion";
+/** Your seat in a forced-loss guard playout sees the AI's whole team sheet: it stands for the best you could do, not for what you are shown. */
+const GUARD_SEAT: InfoView = { open: { statPoints: true, natures: true, items: true, abilities: true, moves: true }, exactHP: false, brought: false };
+/** A guard playout's drains at most: team preview, its turns (stalls included) and their replacements fit well within it. */
+const GUARD_STEPS = 20;
+/** A turn your side spends only protecting (each Pokémon that acts uses a protecting move): a stall, not a turn played. */
+function stall(action: JointAction): boolean {
+  const acts = Object.values(action).filter((slot) => !!slot && slot.kind !== "pass");
+  return acts.length > 0 && acts.every((slot) => slot.kind === "move" && isProtectMove(slot.moveId));
+}
 
 type AiJob = { requestId: number; controller: AbortController; committed: boolean };
 type Pending = {
@@ -105,6 +120,8 @@ type BattleState = {
   /** A battle dealt partway through (setup.situation): each side's team preview choice, which the worker makes. */
   dealt: Record<SideID, number[]> | null;
 };
+/** One seat of a forced-loss guard playout: the engine on that side, Plays safe, with what it knows of the other side. */
+type GuardSeat = { side: SideID; provider: DecisionProvider; team: TrainingTeam; own: AdaptedTeam; sheet: SheetView; info: InfoView; aiBase: string };
 
 const messageOf = (error: unknown) => (error instanceof Error ? error.message : String(error));
 const defaultYield = () => new Promise<void>((resolve) => {
@@ -143,7 +160,11 @@ function parseCheckpoint(value: unknown): Checkpoint {
   return value as unknown as Checkpoint;
 }
 
-export function createTrainingWorker(deps: WorkerDeps): { receive(message: ToWorker): void } {
+export function createTrainingWorker(deps: WorkerDeps): {
+  receive(message: ToWorker): void;
+  /** The forced-loss guard the deal message runs on each position it deals (tests check positions with it). */
+  forcedLoss(setup: TrainingSetup): Promise<boolean | null>;
+} {
   const runtime = deps.runtime ?? championsRuntime;
   const yieldNow = deps.yieldNow ?? defaultYield;
   let validator: TeamValidator | null = null;
@@ -257,6 +278,7 @@ export function createTrainingWorker(deps: WorkerDeps): { receive(message: ToWor
 
   function start(battleId: number, setup: TrainingSetup, habits: HabitsRecord | null) {
     stop();
+    dropDeal();
     const s = createBattle(battleId, setup, habits);
     if (!s) return;
     state = s;
@@ -434,6 +456,7 @@ export function createTrainingWorker(deps: WorkerDeps): { receive(message: ToWor
    */
   async function resume(battleId: number, setup: TrainingSetup, sealed: string, shown: readonly LogTurn[]) {
     stop();
+    dropDeal();
     const mine = generation;
     const fail = (message: string) => {
       if (generation !== mine) return;
@@ -586,13 +609,14 @@ export function createTrainingWorker(deps: WorkerDeps): { receive(message: ToWor
     };
   }
 
-  function fallbackChoice(s: BattleState): string {
-    const request = s.host.request("p2");
+  /** The seat's first legal choice (the AI's; yours in a guard playout), else Showdown's "default". */
+  function fallbackChoice(s: BattleState, side: SideID = "p2"): string {
+    const request = s.host.request(side);
     if (!request) return "default";
     if ("teamPreview" in request) return teamChoice([1, 2, 3, 4]);
-    const bench = request.side.pokemon.map((each) => s.keys.keyOf("p2", identName(each.ident)));
-    const legal = legalJointActions({ side: "p2", aiSide: "p2", request, bench, firstTurn: [false, false], megaUsed: true, keys: s.keys });
-    try { return legal[0] ? toChoiceString("p2", legal[0], request, s.keys, "p2") : "default"; } catch { return "default"; }
+    const bench = request.side.pokemon.map((each) => s.keys.keyOf(side, identName(each.ident)));
+    const legal = legalJointActions({ side, aiSide: side, request, bench, firstTurn: [false, false], megaUsed: true, keys: s.keys });
+    try { return legal[0] ? toChoiceString(side, legal[0], request, s.keys, side) : "default"; } catch { return "default"; }
   }
 
   /** `rebuild` (Resume): a turn's decide goes only up to its question (provider.replayTurn when it has one). */
@@ -766,15 +790,19 @@ export function createTrainingWorker(deps: WorkerDeps): { receive(message: ToWor
     advance(s);
   }
 
-  // ---------- situations: ready-made teams and the dealt position ----------
-  /** Bumped by every deal: a fully random deal still rating gives up when another one was asked for. */
-  let dealing = 0;
+  // ---------- situations: ready-made teams, the dealt position and the forced-loss guard ----------
+  /** The deal in progress: a newer deal, a battle or a Resume aborts it (its ratings and playouts stop; it posts nothing). */
+  let dealJob: AbortController | null = null;
+  function dropDeal() {
+    dealJob?.abort();
+    dealJob = null;
+  }
 
   /**
    * How far ahead the AI's engine rates a dealt position (DecisionStats.value at its first turn, as Plays safe would decide
    * it), on a battle of its own that posts nothing; null when it cannot be rated.
    */
-  async function rate(setup: TrainingSetup, salt: string): Promise<number | null> {
+  async function rate(setup: TrainingSetup, salt: string, signal: AbortSignal): Promise<number | null> {
     try {
       const s = battleState(-1, { ...setup, difficulty: "safe" }, null);
       if (!s.dealt) return null;
@@ -784,7 +812,7 @@ export function createTrainingWorker(deps: WorkerDeps): { receive(message: ToWor
       if (s.host.battle.ended || !s.host.needsChoice("p2")) return null;
       const request = s.host.request("p2");
       if (!request || !("active" in request)) return null;
-      const result = await decide(s, s.host.requestId, false, `rate-${salt}`, new AbortController().signal);
+      const result = await decide(s, s.host.requestId, false, `rate-${salt}`, signal);
       return (result as { value?: number | null }).value ?? null;
     } catch {
       return null;
@@ -792,39 +820,164 @@ export function createTrainingWorker(deps: WorkerDeps): { receive(message: ToWor
   }
 
   /**
-   * Both ready-made teams, then the position: a Random situation draws a named or a fully random one; a fully random one is
-   * dealt again (RANDOM_TRIES at most) until the AI's engine rates the AI RANDOM_MARGIN ahead, else the most AI-favoured is kept.
+   * The seat's choice at its request, the engine's action for it and, for a turn, how far ahead it rates its side
+   * (DecisionStats.value): the dealt order at team preview (its belief starts there), else the engine's (it may throw).
+   */
+  async function guardChoice(
+    s: BattleState, seat: GuardSeat, midTurn: boolean, signal: AbortSignal,
+  ): Promise<{ choice: string; action: JointAction | null; value: number | null }> {
+    const request = s.host.request(seat.side)!;
+    const requestId = s.host.requestId;
+    const usage = tools().usage;
+    const decideOptions: DecideOptions = {
+      difficulty: "safe", budget: DEFAULT_BUDGET, deadlineMs: deps.deadlineMs,
+      random: createRandom(seat.aiBase, requestId, "guard"), seedBase: seedHex(seat.aiBase, requestId), signal, yieldNow, now: deps.now,
+    };
+    if ("teamPreview" in request) {
+      const context = { runtime, ai: seat.team, sheet: seat.sheet, info: seat.info, usage };
+      try {
+        if (seat.provider.beginDealt) await seat.provider.beginDealt(context, decideOptions);
+        else await seat.provider.teamPreview(context, decideOptions);
+      } catch { /* the dealt order goes in all the same */ }
+      return { choice: teamChoice(s.dealt![seat.side]), action: null, value: null };
+    }
+    const oracle = seat.info.exactHP || seat.info.brought ? createTestOracle(s.host.battle, seat.side, seat.info, s.keys) : null;
+    const inputs = aiInputs({ side: seat.side, requestId, request, own: seat.own, sheet: seat.sheet, tracker: s.trackers[seat.side], info: seat.info, oracle });
+    const services = (worlds: Parameters<typeof createTurnServices>[1]) => createTurnServices(inputs, worlds, { runtime, keys: s.keys, seedBase: decideOptions.seedBase, midTurn });
+    if ("forceSwitch" in request) {
+      const slots = request.forceSwitch.flatMap((flag, position) => (flag ? [slotAt(seat.side, position, seat.side)] : []));
+      const decision = await seat.provider.chooseReplacements({ runtime, inputs, services, slots, midTurn, usage }, decideOptions);
+      return { choice: toChoiceString(seat.side, decision.action, request, s.keys, seat.side), action: decision.action, value: null };
+    }
+    const decision = await seat.provider.chooseTurn({ runtime, inputs, services, usage }, decideOptions);
+    return { choice: toChoiceString(seat.side, decision.action, request, s.keys, seat.side), action: decision.action, value: decision.stats.value ?? null };
+  }
+
+  /**
+   * One guard playout of a dealt position, on a battle of its own that posts nothing, the engine deciding both seats (yours
+   * as GUARD_SEAT, the AI's with aiKnows): "lost" when the AI won before your side had played GUARD_TURNS turns, "in it"
+   * when you were still in it then (or won, or tied), "out of reach" when the AI's first decision rated its side more than
+   * OUT_OF_REACH ahead, null when it could not run or was aborted. A turn in which each of your Pokémon only used a
+   * protecting move is a stall, not a turn played: Protect delays a loss, it does not make one winnable.
+   */
+  async function playout(setup: TrainingSetup, base: string, signal: AbortSignal): Promise<"lost" | "in it" | "out of reach" | null> {
+    let s: BattleState;
+    try {
+      s = battleState(-1, { ...setup, difficulty: "safe" }, null, { seed: `sodium,${seedHex(base, "battle")}`, aiBase: seedHex(base, "ai") });
+    } catch {
+      return null;
+    }
+    if (!s.dealt) return null;
+    const seats: Record<SideID, GuardSeat> = {
+      p1: {
+        side: "p1", provider: deps.createProvider(null), team: setup.own, own: s.adapted.own,
+        sheet: redactSheet(sheetFromSets(s.adapted.opponent), GUARD_SEAT), info: GUARD_SEAT, aiBase: seedHex(base, "you"),
+      },
+      p2: { side: "p2", provider: s.provider, team: setup.opponent, own: s.adapted.opponent, sheet: s.sheets.forAI, info: setup.info.aiKnows, aiBase: s.aiBase },
+    };
+    const send = (side: SideID, choice: string) => {
+      const chosen = s.host.choose(side, choice);
+      if (chosen.ok) s.trackers[side].chose(choice);
+      return chosen.ok;
+    };
+    let stalls = 0;
+    for (let step = 0; step < GUARD_STEPS; step++) {
+      const drain = s.host.drain();
+      s.trackers.p1.push(drain.channel.p1);
+      s.trackers.p2.push(drain.channel.p2);
+      if (drain.ended) return drain.ended.winner === "p2" ? "lost" : "in it";
+      if (drain.turn > GUARD_TURNS + stalls) return "in it";
+      const need = (["p2", "p1"] as const).filter((side) => s.host.needsChoice(side));
+      if (!need.length) return null;
+      // Both seats decide before either choice goes in (G1); a choice the battle refuses falls back as the AI's would.
+      const made: Partial<Record<SideID, string>> = {};
+      for (const side of need) {
+        try {
+          const { choice, action, value } = await guardChoice(s, seats[side], drain.midTurn, signal);
+          if (side === "p2" && drain.turn === 1 && value !== null && value > OUT_OF_REACH) return "out of reach";
+          made[side] = choice;
+          if (side === "p1" && action && !drain.midTurn && "active" in s.host.request(side)! && stall(action)) stalls++;
+        } catch {
+          made[side] = fallbackChoice(s, side);
+        }
+        if (signal.aborted) return null;
+      }
+      for (const side of need) if (!send(side, made[side]!) && !send(side, fallbackChoice(s, side))) send(side, "default");
+    }
+    return null;
+  }
+
+  /**
+   * The forced-loss guard (situation-deal.ts GUARD_TURNS): true when the AI wins before your side has played GUARD_TURNS
+   * turns of the dealt position in every one of GUARD_PLAYOUTS playouts, whatever your seat chose, or the AI's engine rates
+   * it out of reach; false at the first playout you are still in, or one that could not run (the guard never refuses a
+   * position for its own failure); null when aborted. Its seeds come from the setup, so a position gets the same verdict
+   * each time where no deadline cuts the engine short (tests, Node).
+   */
+  async function forcedLoss(setup: TrainingSetup, signal: AbortSignal = new AbortController().signal): Promise<boolean | null> {
+    const base = seedHex("guard", JSON.stringify([setup.own, setup.opponent, setup.situation ?? null, setup.info.aiKnows]));
+    for (let n = 0; n < GUARD_PLAYOUTS; n++) {
+      const result = await playout(setup, seedHex(base, n), signal);
+      if (signal.aborted) return null;
+      if (result === "out of reach") return true;
+      if (result !== "lost") return false;
+    }
+    return true;
+  }
+
+  /**
+   * Both ready-made teams, then positions until one passes the forced-loss guard: DEAL_TRIES at most, new teams every
+   * TEAMS_EVERY, a Random situation drawing a named or a fully random one each time. A fully random one is tried only when
+   * the AI's engine rates the AI RANDOM_MARGIN to OUT_OF_REACH ahead; when no position passed, the ones rated below the
+   * margin are tried nearest it first. None passes: deal-error.
    */
   async function deal(key: string, request: SituationRequest, settings: Pick<TrainingSetup, "difficulty" | "showRead" | "info">) {
-    const mine = ++dealing;
+    dropDeal();
+    const job = new AbortController();
+    dealJob = job;
+    const { signal } = job;
     const random = createRandom(deps.randomHex(), "deal");
-    let teams: Pick<TrainingSetup, "own" | "opponent">;
+    const finish = (message: FromWorker) => {
+      if (dealJob === job) dealJob = null;
+      deps.post(message);
+    };
     try {
       const { usage: data, legality: rules, validator: check } = tools();
       const dealDeps: DealDeps = {
         usage: data, legality: rules, runtime,
         validate: (team) => { const adapted = toShowdownTeam(team.members, runtime); return validateTeams(adapted, adapted, check).own; },
       };
-      teams = { own: readyMadeTeam(random, dealDeps, "Your ready-made team", "you"), opponent: readyMadeTeam(random, dealDeps, "The AI's ready-made team", "ai") };
+      const newTeams = () => ({ own: readyMadeTeam(random, dealDeps, "Your ready-made team", "you"), opponent: readyMadeTeam(random, dealDeps, "The AI's ready-made team", "ai") });
+      let teams = newTeams();
+      const below: { setup: TrainingSetup; value: number }[] = [];
+      for (let attempt = 0; attempt < DEAL_TRIES; attempt++) {
+        if (attempt > 0 && attempt % TEAMS_EVERY === 0) teams = newTeams();
+        const concrete = request.kind === "any" ? drawAny(request.level, random) : request;
+        const setup: TrainingSetup = { ...teams, ...settings, situation: dealPosition(concrete, request, teams, random, runtime) };
+        if (concrete.kind === "random") {
+          const value = (await rate(setup, String(attempt), signal)) ?? -Infinity;
+          if (signal.aborted) return;
+          if (value > OUT_OF_REACH) continue;
+          if (value < RANDOM_MARGIN[concrete.level]) { below.push({ setup, value }); continue; }
+        }
+        const lost = await forcedLoss(setup, signal);
+        if (signal.aborted) return;
+        if (!lost) { finish({ type: "dealt", key, setup }); return; }
+      }
+      for (const { setup } of below.sort((a, b) => b.value - a.value)) {
+        const lost = await forcedLoss(setup, signal);
+        if (signal.aborted) return;
+        if (!lost) { finish({ type: "dealt", key, setup }); return; }
+      }
+      finish({
+        type: "deal-error", key,
+        message: request.kind === "custom"
+          ? "Every position dealt with these choices was hopeless for your side. Give your side more Pokémon, HP or stat stages."
+          : "Every position dealt was hopeless for your side. Deal again.",
+      });
     } catch (error) {
-      deps.post({ type: "deal-error", key, message: messageOf(error) });
-      return;
+      if (!signal.aborted) finish({ type: "deal-error", key, message: messageOf(error) });
     }
-    const concrete = request.kind === "any" ? drawAny(request.level, random) : request;
-    const setupOf = (situation: TrainingSetup["situation"]): TrainingSetup => ({ ...teams, ...settings, situation });
-    if (concrete.kind !== "random") {
-      deps.post({ type: "dealt", key, setup: setupOf(dealPosition(concrete, request, teams, random, runtime)) });
-      return;
-    }
-    let best: { setup: TrainingSetup; value: number } | null = null;
-    for (let attempt = 0; attempt < RANDOM_TRIES; attempt++) {
-      const setup = setupOf(dealPosition(concrete, request, teams, random, runtime));
-      const value = (await rate(setup, String(attempt))) ?? -Infinity;
-      if (mine !== dealing) return;
-      if (!best || value > best.value) best = { setup, value };
-      if (value >= RANDOM_MARGIN[concrete.level]) break;
-    }
-    deps.post({ type: "dealt", key, setup: best!.setup });
   }
 
   // ---------- usage helpers (A1.2, A1.3) ----------
@@ -846,6 +999,7 @@ export function createTrainingWorker(deps: WorkerDeps): { receive(message: ToWor
   }
 
   return {
+    forcedLoss: (setup) => forcedLoss(setup),
     receive(message: ToWorker) {
       switch (message.type) {
         case "load": load(); return;

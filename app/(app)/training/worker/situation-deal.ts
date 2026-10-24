@@ -2,7 +2,8 @@
 // usage Pokémon drawn by usage (Species Clause, at most two Mega forms) with Training's usage sets (usage/suggested-sets.ts:
 // Item Clause in order, the Protect rule); a Mega form keeps its own row's moves and spread and battles as its base holding the
 // stone, as a drafted one does. The position follows the request: a named situation's recipe, a custom one's counts, HP and
-// stat stages, or one fully random draw (the worker rates those with the AI's engine and keeps one it rates ahead).
+// stat stages, or one fully random draw (the worker rates those with the AI's engine and keeps one it rates ahead). The
+// worker deals again any position the forced-loss guard refuses (worker-handler.ts forcedLoss).
 import { megaEntries } from "@/app/lib/battle/mega-forms";
 import { usualAbility } from "@/app/lib/battle/move-defaults";
 import type { BattleRuntime } from "@/app/lib/battle/runtime";
@@ -35,8 +36,28 @@ const TEAM_TRIES = 8;
  * +2.1 to +3.1 at Very hard (8 deals each, ready-made teams, Plays safe, the default budget).
  */
 export const RANDOM_MARGIN: Readonly<Record<SituationLevel, number>> = { hard: 1.6, "very-hard": 2.5 };
-/** Fully random positions rated before the most AI-favoured one is kept. */
-export const RANDOM_TRIES = 8;
+/**
+ * A position the AI's engine rates further ahead than this is out of reach: never dealt (a fully random one is rated before
+ * the forced-loss guard, which rates every position by the AI's first decision in its first playout). In the calibration
+ * above fully random deals rated at most +4.9 and named ones +4.2, but for two Last one standing deals at +11 and +12.
+ */
+export const OUT_OF_REACH = 6;
+/**
+ * The forced-loss guard (worker-handler.ts forcedLoss): a dealt position is played out from its start, the engine deciding
+ * both sides (yours with the AI's whole team sheet open), up to GUARD_PLAYOUTS times, each until your side has played
+ * GUARD_TURNS turns (a turn spent only protecting is a stall and does not count). When the AI wins before then in every
+ * playout, whatever your side chose, the position is dealt again.
+ */
+export const GUARD_TURNS = 2;
+export const GUARD_PLAYOUTS = 4;
+/**
+ * Positions dealt for one request before it gives up (each refused or, fully random, rated out of range); new teams every
+ * TEAMS_EVERY. The guard refused 4 of 6 Last one standing positions at each level, 1 or 2 of 6 Endgame ones, 1 of 6 Down two
+ * at Hard and none of 6 of each other kind (Node, the default budget): at 4 in 6 refused each time, a Last one standing deal
+ * gives up about once in 130.
+ */
+export const DEAL_TRIES = 12;
+export const TEAMS_EVERY = 4;
 /** A fully random side's HP range by level: yours drawn lower at Very hard, the AI's higher. */
 const RANDOM_HP: Readonly<Record<SituationLevel, { own: readonly [number, number]; opponent: readonly [number, number] }>> = {
   hard: { own: [10, 100], opponent: [30, 100] }, "very-hard": { own: [10, 80], opponent: [50, 100] },
@@ -205,20 +226,23 @@ function customSide(custom: CustomSide, team: TrainingTeam, random: AIRandom): S
 
 /** Pokémon left for a fully random side (1–4; the AI's at least yours, so it is rarely behind on count). */
 const LEFT_WEIGHTS = [{ left: 1, weight: 1 }, { left: 2, weight: 2.5 }, { left: 3, weight: 3.5 }, { left: 4, weight: 3 }];
-function randomSide(team: TrainingTeam, minLeft: number, hp: readonly [number, number], random: AIRandom, runtime: BattleRuntime): SituationSide {
+/** `yours`: your side, whose last Pokémon (one left) is never dealt a status or a lowered stat. */
+function randomSide(team: TrainingTeam, minLeft: number, hp: readonly [number, number], yours: boolean, random: AIRandom, runtime: BattleRuntime): SituationSide {
   const options = LEFT_WEIGHTS.filter((each) => each.left >= minLeft);
   const left = options[weighted(options, random)].left;
   const picks = brought(team, left, random);
   const members = picks.map(({ member, standing }, index): SituationMember => {
     if (!standing) return { key: member.key, hp: 0 };
     const out: SituationMember = { key: member.key, hp: drawHP(hp, random) };
-    if (random.float() < 0.15) {
+    const last = yours && left === 1;
+    if (random.float() < 0.15 && !last) {
       const statuses = (["brn", "par", "psn"] as const).filter((status) => canHold(member, status, runtime));
       if (statuses.length) out.status = statuses[random.int(statuses.length)];
     }
     if (index < 2 && random.float() < 0.2) {
       const stat = SITUATION_STATS[random.int(SITUATION_STATS.length)];
-      out.boosts = { [stat]: [-2, -1, 1, 2][random.int(4)] };
+      const stage = [-2, -1, 1, 2][random.int(4)];
+      out.boosts = { [stat]: last ? Math.abs(stage) : stage };
     }
     return out;
   });
@@ -247,7 +271,7 @@ export function dealPosition(
     return { request: asked, spot: null, own: customSide(request.custom.own, teams.own, random), opponent: customSide(request.custom.opponent, teams.opponent, random) };
   }
   const range = RANDOM_HP[request.level];
-  const own = randomSide(teams.own, 1, range.own, random, runtime);
-  const opponent = randomSide(teams.opponent, own.members.filter((member) => member.hp > 0).length, range.opponent, random, runtime);
+  const own = randomSide(teams.own, 1, range.own, true, random, runtime);
+  const opponent = randomSide(teams.opponent, own.members.filter((member) => member.hp > 0).length, range.opponent, false, random, runtime);
   return { request: asked, spot: null, own, opponent };
 }
