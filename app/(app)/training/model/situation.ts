@@ -34,7 +34,7 @@ export type SituationRequest =
   /** Random situation: one of the named ones or a fully random position, at this level. */
   | { kind: "any"; level: SituationLevel }
   | { kind: "spot"; spot: SituationSpotId; level: SituationLevel }
-  /** Fully random: dealt again until the AI's engine rates the AI ahead by the level's margin (worker/situation-deal.ts). */
+  /** Fully random: dealt again until the AI's engine rates the AI ahead by the level's margin but not out of reach (worker/situation-deal.ts). */
   | { kind: "random"; level: SituationLevel }
   | { kind: "custom"; custom: CustomSituation };
 
@@ -150,7 +150,7 @@ export function spotFact(id: SituationSpotId, level: SituationLevel): string {
   const recipe = spotInfo(id).recipes[level];
   return `You: ${sideFact(recipe.own)}. AI: ${sideFact(recipe.opponent)}.`;
 }
-export const RANDOM_FACT = "Pokémon left, HP, status, stat stages and Tailwind at random, dealt again until the AI's engine rates the AI ahead.";
+export const RANDOM_FACT = "Pokémon left, HP, status, stat stages and Tailwind at random, dealt again until the AI's engine rates the AI ahead but not out of reach.";
 export const ANY_FACT = "One of the named situations or a fully random one.";
 
 // ---------- labels ----------

@@ -152,7 +152,7 @@ describe("the worker's deal", () => {
     const worker = createTrainingWorker({ post: (message) => posted.push(message), createProvider, now: () => 0, randomHex: () => String(++hex).padStart(32, "0"), deadlineMs: null });
     worker.receive({ type: "load" });
     worker.receive({ type: "deal", key: "k1", request, settings: { difficulty: "reads", showRead: false, info: DEFAULT_INFO } });
-    for (let wait = 0; wait < 600 && !posted.some((message) => message.type === "dealt" || message.type === "deal-error"); wait++) await new Promise((resolve) => setTimeout(resolve, 5));
+    for (let wait = 0; wait < 6000 && !posted.some((message) => message.type === "dealt" || message.type === "deal-error"); wait++) await new Promise((resolve) => setTimeout(resolve, 5));
     return posted.find((message) => message.type === "dealt" || message.type === "deal-error")!;
   }
 
@@ -167,7 +167,7 @@ describe("the worker's deal", () => {
     expect(played.ended).not.toBeNull();
   }, 60_000);
 
-  it("deals a fully random position (the stub AI rates none: the first of its tries is kept)", async () => {
+  it("deals a fully random position (the stub AI rates none: its tries go to the guard in order, the first it passes is kept)", async () => {
     const message = await dealt({ kind: "random", level: "hard" });
     expect(message.type).toBe("dealt");
     const setup = (message as Extract<FromWorker, { type: "dealt" }>).setup;
