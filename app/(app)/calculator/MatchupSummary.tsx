@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment, useEffect, useId, useRef, useState } from "react";
+import BattleSprite from "@/app/components/BattleSprite";
 import TypeBadge from "@/app/components/TypeBadge";
 import { Button } from "@/app/components/ui";
 import { championsRuntime, type BattleRuntime } from "@/app/lib/battle/runtime";
@@ -117,7 +118,11 @@ function SummaryCombatant({ slot, side, label, issues, projected, moveName, roll
       <div aria-hidden="true" className={styles.cardStart} />
       {slot.source && <p className={`${styles.cardOwner} wrap-anywhere text-xs font-semibold text-muted`}>{ownership}{slot.source.name !== species?.name ? ` · ${slot.source.name}` : ""}</p>}
       <div className={`${styles.cardName} flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1`}>
-        <h3 className="min-w-0 wrap-anywhere text-base font-semibold leading-snug text-text sm:text-lg">{label}</h3>
+        {/* The sprite stays beside the name; the form buttons wrap below them. */}
+        <div className="flex min-w-0 items-center gap-2">
+          <BattleSprite speciesId={slot.build.speciesId} name={species?.name ?? slot.build.speciesId} size="card" />
+          <h3 className="min-w-0 wrap-anywhere text-base font-semibold leading-snug text-text sm:text-lg">{label}</h3>
+        </div>
         {megaOptions.length > 0 && (
           <div role="group" aria-label={`${label} ${megaOptions.every((option) => option.label.startsWith("Mega")) ? "Mega forms" : "battle forms"}`} className="flex min-w-0 flex-wrap gap-1">
             {megaOptions.map((option) => {

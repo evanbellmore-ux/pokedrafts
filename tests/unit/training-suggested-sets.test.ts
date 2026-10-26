@@ -244,9 +244,9 @@ describe("every suggested set", () => {
 describe("a suggested set as a TrainingMember", () => {
   it("is the calculator's build shape with the set's fields, and its sheet is the set", () => {
     const set = suggestOne("incineroar");
-    const memberRow = suggestedMember(set, { name: "Incineroar", spriteName: "Incineroar" });
+    const memberRow = suggestedMember(set, { name: "Incineroar" });
     expect(memberRow).toMatchObject({
-      key: set.key, name: "Incineroar", speciesId: "incineroar", origin: "suggested", spriteName: "Incineroar",
+      key: set.key, name: "Incineroar", speciesId: "incineroar", origin: "suggested",
       suggestion: { source: "usage", protectAdded: true },
       build: { game: "champions", speciesId: "incineroar", abilityId: "intimidate", abilityActive: defaultAbilityActive("intimidate"), itemId: "sitrusberry", nature: "Impish", points: set.points },
     });

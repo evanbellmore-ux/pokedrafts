@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useState } from "react";
-import PokemonSprite from "@/app/components/PokemonSprite";
+import BattleSprite from "@/app/components/BattleSprite";
 import type { BattleRuntime } from "@/app/lib/battle/runtime";
 import { SHEET_FIELD_LABEL, SHEET_FIELDS, type InfoView, type SheetField } from "../model/info";
 import { PROTECT_ADDED_FACT, SUGGESTION_LABEL } from "../model/usage";
@@ -106,7 +106,7 @@ export default function TeamMemberRow({ candidate, label, member, chosen, full, 
         <label htmlFor={`${id}-choose`} className={`flex min-h-11 min-w-0 flex-1 items-center gap-2 rounded has-focus-visible:ring-2 has-focus-visible:ring-focus ${disabled ? "cursor-not-allowed" : "cursor-pointer"}`}>
           <input id={`${id}-choose`} type="checkbox" checked={chosen} disabled={disabled} onChange={onToggle}
             aria-describedby={describedBy} className="h-4 w-4 shrink-0 accent-accent disabled:opacity-50" />
-          {species && <span aria-hidden="true" className="shrink-0"><PokemonSprite name={candidate.spriteName ?? species.name} size="md" /></span>}
+          {species && <BattleSprite speciesId={species.id} name={species.name} />}
           <span className={`min-w-0 wrap-anywhere font-semibold ${disabled ? "text-muted" : "text-text"}`}>{candidate.name}</span>
         </label>
         {editable && (

@@ -156,7 +156,7 @@ describe("battle board", () => {
   it("lists the benches with how many of the AI's four are not seen, or Brought / Not brought under the test setting", () => {
     expect(benchFacts(boardView())).toEqual({ own: ["Incineroar 202 / 202 HP", "Aerodactyl Fainted"], opponent: ["Annihilape 58% HP"], unseen: 1 });
     const html = renderToStaticMarkup(createElement(BenchStrip, { board: boardView() }));
-    expect(html).toContain("Annihilape 58% HP · 1 not seen");
+    expect(html.replace(/<[^>]+>/g, "")).toContain("Your benchIncineroar 202 / 202 HP · Aerodactyl FaintedOpponent&#x27;s benchAnnihilape 58% HP · 1 not seen");
     const tested = boardView();
     tested.team.opponent = tested.team.opponent.map((mon, index) => ({ ...mon, brought: index < 4 }));
     expect(benchFacts(tested).opponent).toEqual(["Annihilape 58% HP · Brought", "Altaria · Brought", "Appletun · Not brought", "Araquanid · Not brought"]);

@@ -18,6 +18,7 @@ import { movesById, speciesById } from "@/app/lib/battle/catalog";
 import { createBuild, createConditions, SHARED_FIELD_EFFECTS, validateBuild, withUsualAbility } from "@/app/lib/battle/model";
 import { usualAbility } from "@/app/lib/battle/move-defaults";
 import { createMoveSlots } from "@/app/lib/battle/move-defaults";
+import { battleSpriteUrl } from "@/app/lib/battle/sprites";
 const usualBuild = (id: string) => withUsualAbility(createBuild(id), usualAbility(id, "Doubles"));
 
 
@@ -1033,7 +1034,7 @@ describe("league matchup UI", () => {
     expect(html).not.toContain('disabled=""');
   });
 
-  it("uses decorative 40px sprite fallbacks only for resolved rail species, including unsupported forms", () => {
+  it("shows decorative 40px sprites only for resolved rail species, including unsupported forms", () => {
     const state = loaded();
     state.data!.teams[0] = team("team-own", "member-own", ["Mega Charizard X", "Vivillon-Garden", "Custom mascot"]);
     const props = { state, role: "own" as const, side: "attacker" as const, occupant: "Charizard", activeSource: null, onSelect: () => undefined, runtime: unsupportedSpeciesRuntime };
@@ -1042,18 +1043,17 @@ describe("league matchup UI", () => {
       renderToStaticMarkup(createElement(RosterPicker, props));
       expect(sprite).not.toHaveBeenCalled();
       const html = renderToStaticMarkup(createElement(RosterPicker, { ...props, variant: "rail" }));
-      expect(sprite.mock.calls.map(([props]) => ({ name: props.name, size: props.size }))).toEqual([
-        // League entries look up their sprite by the roster's own (Pool Builder) name.
-        { name: "Mega Charizard X", size: "md" },
-        { name: "Vivillon-Garden", size: "md" },
+      expect(sprite.mock.calls.map(([props]) => ({ src: props.src, size: props.size, decorative: props.decorative }))).toEqual([
+        // The resolved form's sprite from the bundled table, never a dex lookup by name.
+        { src: battleSpriteUrl("charizardmegax"), size: "md", decorative: true },
+        { src: battleSpriteUrl("vivillongarden"), size: "md", decorative: true },
       ]);
       const buttons = html.match(/<button\b[\s\S]*?<\/button>/g)!;
       expect(buttons[1]).toContain("Unsupported · inspect build");
       for (const button of buttons.slice(0, 2)) {
-        expect(button).toMatch(/<span aria-hidden="true" class="shrink-0"><div aria-hidden="true" class="h-10 w-10 [^"]*animate-pulse/);
+        expect(button).toMatch(/<img src="https:\/\/raw\.githubusercontent\.com\/PokeAPI\/sprites\/master\/sprites\/pokemon\/[^"]+\.png" alt="" width="40" height="40"[^>]* class="h-10 w-10 /);
       }
-      expect(buttons[2]).not.toContain("h-10 w-10");
-      expect(html).not.toContain("<img");
+      expect(buttons[2]).not.toContain("<img");
     } finally {
       sprite.mockRestore();
     }

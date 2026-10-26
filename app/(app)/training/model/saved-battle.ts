@@ -255,7 +255,6 @@ function isObjectCheck(): Check { return (value, path) => (isObject(value) ? nul
 const time = int(0, MAX_TIME);
 const member = shape({
   key: text(200), name: text(100), speciesId: id, build, moves: list(moveSlot, 4, 4), origin: oneOf("suggested", "imported", "edited"),
-  spriteName: optional(text(200)),
 });
 const team = shape({ label: text(200), members: list(member, 6, 6) });
 // Situations (model/situation.ts): what was asked for and the dealt position; situationProblem checks it against the teams.

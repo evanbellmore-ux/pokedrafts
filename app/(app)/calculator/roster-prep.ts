@@ -39,8 +39,6 @@ export type RosterChoice = {
   source: RosterSource | null;
   reason: string | null;
   owner?: TeamSourceOwner;
-  /** League entries, duplicates included: the roster's own (Pool Builder) name, which keys the sprite dex. */
-  spriteName?: string;
 };
 
 export function rosterChoices(leagueId: string, team: TeamRoster, runtime: BattleRuntime = championsRuntime): RosterChoice[] {
@@ -65,7 +63,6 @@ export function rosterChoices(leagueId: string, team: TeamRoster, runtime: Battl
         ...(resolved.status === "resolved" && resolved.abilityId ? { abilityId: resolved.abilityId } : {}),
       } : null,
       reason: duplicate ? "Duplicate roster name." : resolved.status === "resolved" ? null : resolved.reason,
-      spriteName: pokemon.name,
     };
   });
 }

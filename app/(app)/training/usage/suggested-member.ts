@@ -12,7 +12,7 @@ import type { TrainingMember } from "../model/view-types";
  * Stat Points, nature through showdownNature; moves as MoveSlots: "usage" (Champions Doubles usage) for a usage set, "suggested"
  * for the calculator's fill and the Protect the rule added.
  */
-export function suggestedMember(set: SuggestedSet, extra: { name: string; spriteName?: string }, runtime: BattleRuntime = championsRuntime): TrainingMember {
+export function suggestedMember(set: SuggestedSet, extra: { name: string }, runtime: BattleRuntime = championsRuntime): TrainingMember {
   const fresh = createBuild(set.speciesId, runtime);
   if (fresh.game !== "champions") throw new Error("Training suggested sets are Champions builds.");
   const build = showdownNature({ ...withUsualAbility(fresh, set.abilityId), itemId: set.itemId, nature: set.nature, points: { ...set.points } });
@@ -26,6 +26,5 @@ export function suggestedMember(set: SuggestedSet, extra: { name: string; sprite
   return {
     key: set.key, name: extra.name, speciesId: set.speciesId, build, moves, origin: "suggested",
     suggestion: { source: set.source, protectAdded: set.protectAdded },
-    ...(extra.spriteName ? { spriteName: extra.spriteName } : {}),
   };
 }

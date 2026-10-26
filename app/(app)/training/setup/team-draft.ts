@@ -23,7 +23,6 @@ export type Candidate = {
   key: string;
   name: string;
   speciesId: string | null;
-  spriteName?: string;
   eligible: boolean;
   reason: string | null;
   /** League members: what the worker suggests a set for. */
@@ -116,8 +115,6 @@ function leagueCandidate(choice: RosterChoice, runtime: BattleRuntime): Candidat
     key: source?.key ?? choice.key,
     name: speciesName(runtime, speciesId, choice.name),
     speciesId,
-    // The roster's sprite is the Mega form's: the base form's sprite instead (from speciesId).
-    ...(choice.spriteName && !mega ? { spriteName: choice.spriteName } : {}),
     eligible,
     reason: eligible ? null : choice.reason ?? "This roster name does not resolve to one Champions Pokémon.",
     suggest: eligible && source?.kind === "league"
@@ -169,7 +166,7 @@ function moveSlots(moves: readonly string[], origin: MoveSlot["origin"]): MoveSl
 }
 
 /** A suggested set as the member the battle uses (Champions build: nature, item, ability, Stat Points; SPEC C15 Hardy). */
-export function memberFromSuggestion(set: SuggestedSet, candidate: Pick<Candidate, "key" | "name" | "spriteName">, runtime: BattleRuntime): TrainingMember {
+export function memberFromSuggestion(set: SuggestedSet, candidate: Pick<Candidate, "key" | "name">, runtime: BattleRuntime): TrainingMember {
   const base = createBuild(set.speciesId, runtime);
   const build: BattleBuild = base.game === "champions"
     ? { ...base, nature: set.nature, itemId: set.itemId, abilityId: set.abilityId, abilityActive: defaultAbilityActive(set.abilityId), points: { ...set.points } }
@@ -178,7 +175,6 @@ export function memberFromSuggestion(set: SuggestedSet, candidate: Pick<Candidat
     key: candidate.key, name: candidate.name, speciesId: set.speciesId,
     build: showdownNature(build), moves: moveSlots(set.moves, "suggested"),
     origin: "suggested", suggestion: { source: set.source, protectAdded: set.protectAdded },
-    ...(candidate.spriteName ? { spriteName: candidate.spriteName } : {}),
   };
 }
 
@@ -186,7 +182,6 @@ function memberFromEdit(edit: MemberEdit, candidate: Candidate): TrainingMember 
   return {
     key: candidate.key, name: candidate.name, speciesId: edit.build.speciesId,
     build: showdownNature(structuredClone(edit.build)), moves: structuredClone(edit.moves), origin: "edited",
-    ...(candidate.spriteName ? { spriteName: candidate.spriteName } : {}),
   };
 }
 
@@ -195,7 +190,6 @@ function memberFromPaste(candidate: Candidate): TrainingMember | null {
   return {
     key: candidate.key, name: candidate.name, speciesId: candidate.imported.build.speciesId,
     build: showdownNature(structuredClone(candidate.imported.build)), moves: structuredClone(candidate.imported.moves), origin: "imported",
-    ...(candidate.spriteName ? { spriteName: candidate.spriteName } : {}),
   };
 }
 

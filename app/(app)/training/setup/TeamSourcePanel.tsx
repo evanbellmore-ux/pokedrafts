@@ -2,7 +2,7 @@
 
 import { Fragment, useEffect, useId, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
-import PokemonSprite from "@/app/components/PokemonSprite";
+import BattleSprite from "@/app/components/BattleSprite";
 import { Alert, Button } from "@/app/components/ui";
 import PokePasteImporter from "@/app/(app)/calculator/PokePasteImporter";
 import { MyTeamPicker, OpponentPicker, OpponentQuickPicks, type OpponentQuickGroup } from "@/app/(app)/calculator/LeagueMatchupPicker";
@@ -195,7 +195,7 @@ export default function TeamSourcePanel({ role, team, source, ownMode, rosters, 
                     <Fragment key={candidate.key}>
                       {index > 0 && " · "}
                       <span className="inline-flex max-w-full items-center gap-1 align-middle">
-                        {species && <span aria-hidden="true" className="shrink-0"><PokemonSprite name={candidate.spriteName ?? species.name} size="sm" /></span>}
+                        {species && <BattleSprite speciesId={species.id} name={species.name} size="sm" />}
                         <span className="min-w-0 wrap-anywhere">{candidate.name}</span>
                       </span>
                     </Fragment>

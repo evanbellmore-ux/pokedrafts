@@ -29,7 +29,6 @@ export type TrainingMember = {
   origin: "suggested" | "imported" | "edited";
   /** Addendum A1.2: how the suggested set was made; present only with origin "suggested". */
   suggestion?: { source: SuggestionSource; protectAdded: boolean };
-  spriteName?: string;
 };
 export type TrainingTeam = { label: string; members: TrainingMember[] }; // exactly 6 at start
 export type TrainingSetup = {

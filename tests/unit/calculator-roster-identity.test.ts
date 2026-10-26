@@ -25,7 +25,7 @@ import type { TeamRoster } from "@/app/(app)/leagues/[leagueId]/team/roster";
 type Row = {
   slug: string; display_name: string; games: string[];
   hp: number; attack: number; defense: number; special_attack: number; special_defense: number; speed: number;
-  type1: string; type2: string | null;
+  type1: string; type2: string | null; sprite_url: string | null;
 };
 const rows = JSON.parse(readFileSync(join(process.cwd(), "data/pokemon/pokemon.json"), "utf8")) as Row[];
 
@@ -270,16 +270,18 @@ describe("league roster names from the Pool Builder", () => {
     expect(resolveRosterName(championsRuntime, "Floette")).toMatchObject({ status: "unavailable" });
   });
 
-  it("shows a pasted cosmetic form with its family's sprite, and other forms with their own", () => {
+  it("shows a pasted form with its own sprite: cosmetic forms, Megas and Minior's cores", () => {
     const sprite = vi.spyOn(pokemonSprite, "default");
+    // The sprite file under PokeAPI's sprites/pokemon/ (data/battle/sprites.json).
+    const files = () => sprite.mock.calls.map(([props]) => props.src?.replace(/^.*\/sprites\/pokemon\/|\.png$/g, ""));
     try {
       const choice = (speciesId: string) => ({ key: speciesId, name: championsRuntime.speciesById.get(speciesId)!.name, speciesId, source: null, reason: null });
       renderToStaticMarkup(createElement(RosterPicker, {
         panel: { status: "ready", teamName: "Pasted team", message: null, choices: [choice("florgeswhite"), choice("alcremiesaltedcream"), choice("charizardmegax"), choice("vivillonfancy")] },
         role: "own", side: "attacker", occupant: "Charizard", activeSource: null, onSelect: () => undefined, variant: "rail", runtime: championsRuntime,
       }));
-      expect(sprite.mock.calls.map(([props]) => props.name)).toEqual(["Florges", "Alcremie", "Charizard-Mega-X", "Vivillon-Fancy"]);
-      // Minior's cores keep their own artwork: the family's plain Minior is the Meteor Form's.
+      // Alcremie's flavours are PokeAPI's Strawberry Sweet forms.
+      expect(files()).toEqual(["671-white", "869-salted-cream-strawberry-sweet", "10034", "666-fancy"]);
       sprite.mockClear();
       const sv = runtimes.scarlet_violet;
       renderToStaticMarkup(createElement(RosterPicker, {
@@ -289,29 +291,32 @@ describe("league roster names from the Pool Builder", () => {
         ] },
         role: "own", side: "attacker", occupant: "Charizard", activeSource: null, onSelect: () => undefined, variant: "rail", runtime: sv,
       }));
-      // Showdown's plain Minior is the Red Core.
-      expect(sprite.mock.calls.map(([props]) => props.name)).toEqual(["Minior-Blue", "Minior-Red"]);
+      // Showdown's plain Minior is the Red Core (PokeAPI's minior-red), not the Meteor Form.
+      expect(files()).toEqual(["10140", "10136"]);
     } finally {
       sprite.mockRestore();
     }
   });
 
-  it("shows native-game roster shortcuts with that game's types and the roster name's sprite", () => {
+  it("shows native-game roster shortcuts with that game's types and the sprite of the league's own Pool Builder row", () => {
     const sv = runtimes.scarlet_violet;
     const state = rosterState(["Calyrex (Shadow Rider)", "Minior"]);
     const sprite = vi.spyOn(pokemonSprite, "default");
+    const srcs = () => sprite.mock.calls.map(([props]) => props.src);
+    const rowSprite = (name: string) => rows.find((row) => row.display_name === name)!.sprite_url;
     try {
       const html = renderToStaticMarkup(createElement(RosterPicker, {
         state, role: "own", side: "attacker", occupant: "Charizard", activeSource: null, onSelect: () => undefined, variant: "rail", runtime: sv,
       }));
-      expect(sprite.mock.calls.map(([props]) => props.name)).toEqual(["Calyrex (Shadow Rider)", "Minior"]);
+      // The Pool Builder's Minior is the Meteor Form.
+      expect(srcs()).toEqual(["Calyrex (Shadow Rider)", "Minior"].map(rowSprite));
       sprite.mockClear();
-      // Duplicate league names are not selectable but still show the roster name's sprite.
+      // Duplicate league names are not selectable but still show their sprite.
       renderToStaticMarkup(createElement(RosterPicker, {
         state: rosterState(["Maushold", "Maushold", "Mega Meowstic"]), role: "own", side: "attacker", occupant: "Charizard", activeSource: null,
         onSelect: () => undefined, variant: "rail", runtime: championsRuntime,
       }));
-      expect(sprite.mock.calls.map(([props]) => props.name)).toEqual(["Maushold", "Maushold", "Mega Meowstic"]);
+      expect(srcs()).toEqual(["Maushold", "Maushold", "Mega Meowstic"].map(rowSprite));
       expect(html).toContain("Psychic");
       expect(html).toContain("Ghost");
       expect(html).toContain("Rock");

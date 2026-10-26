@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
-import PokemonSprite from "@/app/components/PokemonSprite";
+import BattleSprite from "@/app/components/BattleSprite";
 import TypeBadge from "@/app/components/TypeBadge";
 import { Alert, Button } from "@/app/components/ui";
 import type { BattleRuntime } from "@/app/lib/battle/runtime";
@@ -73,7 +73,7 @@ export default function TeamPreview({ runtime, setup, request, lastPreview, erro
               <button type="button" aria-pressed={brought} aria-label={`Bring ${member.name}`} aria-describedby={`${id}-place-${index}`}
                 disabled={starting || full} onClick={() => setOrder(toggleBrought(order, index, max))}
                 className={`flex min-h-11 w-full min-w-0 items-start gap-2 rounded-lg border px-3 py-2 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus disabled:cursor-not-allowed ${brought ? "border-accent-border bg-accent-soft" : "border-line bg-panel enabled:hover:bg-panel-hover"}`}>
-                {species && <span aria-hidden="true" className="shrink-0"><PokemonSprite name={member.spriteName ?? species.name} size="md" /></span>}
+                {species && <BattleSprite speciesId={species.id} name={species.name} />}
                 <span className="min-w-0 flex-1">
                   <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
                     <span className="wrap-anywhere font-semibold text-text">{member.name}</span>
