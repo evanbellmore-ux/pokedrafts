@@ -56,13 +56,20 @@ export type League = {
   /** The winner of the final, or the top seed when there are no playoffs. */
   champion_member_id: string | null;
   /**
-   * Listed on /watch and readable by anyone through `get_public_league`
-   * (section 15). These three are missing on a database without
-   * 20261022120000_public_leagues.sql, so readers default them.
+   * Readable by anyone through `get_public_league` (section 15). These three
+   * are missing on a database without 20261022120000_public_leagues.sql, so
+   * readers default them.
    */
   is_public?: boolean;
   stream_url?: string | null;
   replay_links?: ReplayLinkRow[];
+  /**
+   * On the /watch list: a site admin approved it (section 16). Missing on a
+   * database without 20261026120000_watch_review.sql.
+   */
+  watch_listed?: boolean;
+  /** When a site admin last listed or unlisted it; null: never reviewed. */
+  watch_reviewed_at?: string | null;
 };
 
 /** One entry of `leagues.replay_links`: a titled Twitch or YouTube video link. */
@@ -218,7 +225,10 @@ export type InvitePreview = {
 /** A team as the public reads name it: never the coach's account. */
 export type PublicTeamRef = { team_name: string | null };
 
-/** One league of `list_public_leagues` (docs/release-architecture.md section 15). */
+/** A playoff match as the /watch list carries it: its round and status, in bracket order. */
+export type PublicPlayoffMatch = { round_number: number; status: MatchStatus | string };
+
+/** One league of `list_public_leagues` (docs/release-architecture.md sections 15 and 16). */
 export type PublicLeagueSummary = {
   id: string;
   name: string;
@@ -237,6 +247,8 @@ export type PublicLeagueSummary = {
   last_pick: (PublicTeamRef & { pick_number: number; pokemon_name: string }) | null;
   regular_played: number;
   regular_total: number;
+  /** The bracket's matches; missing on a database without 20261026120000_watch_review.sql. */
+  playoff_matches?: PublicPlayoffMatch[];
   champion: PublicTeamRef | null;
   stream_url: string | null;
   replay_links: ReplayLinkRow[];
@@ -274,7 +286,9 @@ export type PublicMatch = Pick<
   | "winner_remaining"
   | "home_seed"
   | "away_seed"
->;
+> &
+  /** The bracket's links (section 16); missing on a database without 20261026120000_watch_review.sql. */
+  Partial<Pick<LeagueMatch, "feeds_match_id" | "feeds_slot">>;
 
 /** Sprite and types of a Pokémon on a public league's board or rosters. */
 export type PublicPokemonInfo = {
@@ -303,6 +317,8 @@ export type PublicLeague = {
   champion_member_id: string | null;
   stream_url: string | null;
   replay_links: ReplayLinkRow[];
+  /** On the /watch list (section 16); missing on a database without 20261026120000_watch_review.sql. */
+  watch_listed?: boolean;
   server_time: string;
   coaches: PublicCoach[];
   picks: PublicPick[];
@@ -311,6 +327,31 @@ export type PublicLeague = {
   standings: LeagueStanding[];
   pokemon: Record<string, PublicPokemonInfo>;
 };
+
+/** `site_admin_status`: the account menu's check (section 16). */
+export type SiteAdminStatus = { admin: false } | { admin: true; watch_waiting: number };
+
+/** One public league on the admin's Watch listings page (`list_watch_review`). */
+export type WatchReviewLeague = {
+  id: string;
+  name: string;
+  created_at: string;
+  commissioner_team: string | null;
+  coach_count: number;
+  max_coaches: number;
+  draft_started: boolean;
+  draft_completed: boolean;
+  stream_url: string | null;
+  replay_links: ReplayLinkRow[];
+  watch_listed: boolean;
+  /** Null: never reviewed (waiting). */
+  watch_reviewed_at: string | null;
+};
+
+export type WatchReviewList = { server_time: string; leagues: WatchReviewLeague[] };
+
+/** `set_watch_listing`'s answer. */
+export type WatchListing = { id: string; watch_listed: boolean; watch_reviewed_at: string };
 
 /** Accepted keys for `update_league_settings`. */
 export type LeagueSettingsInput = Partial<{

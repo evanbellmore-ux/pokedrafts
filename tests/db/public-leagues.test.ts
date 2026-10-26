@@ -2,7 +2,9 @@
 // update_league_public_page, and the two reads anyone may call,
 // list_public_leagues and get_public_league. A private league must read
 // exactly like a missing one, and nothing a public league hands out may name
-// a coach's account, the invite code, the pool or the chat.
+// a coach's account, the invite code, the pool or the chat. The list holds
+// only leagues a site admin listed (20261026120000_watch_review.sql, covered
+// in watch-review.test.ts), so the list's fixtures are listed first.
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import {
   asAnon,
@@ -429,12 +431,17 @@ describe("public leagues: list_public_leagues", () => {
     drafting = await buildLeague(db, { coaches: 2, name: "Drafting Public" });
     paused = await buildLeague(db, { coaches: 1, name: "Paused Public" });
     hidden = await buildLeague(db, { coaches: 1, name: "Hidden League" });
+    const admin = await createUser(db);
+    await db.query("insert into public.site_admins (user_id) values ($1)", [admin]);
     for (const fixture of [idle, drafting, paused]) {
       await setPage(db, fixture.commissioner.userId, fixture.leagueId, {
         streamUrl: fixture === idle ? "https://www.youtube.com/@pokedrafts" : null,
         replays: fixture === idle ? [{ title: "Highlights", url: "https://clips.twitch.tv/SomeClip" }] : [],
       });
+      await rpcAs(db, admin, "set_watch_listing", { p_league_id: fixture.leagueId, p_listed: true });
     }
+    // A league that is listed but private stays off the list.
+    await rpcAs(db, admin, "set_watch_listing", { p_league_id: hidden.leagueId, p_listed: true });
     await rpcAs(db, drafting.commissioner.userId, "start_draft", { p_league_id: drafting.leagueId });
     await rpcAs(db, paused.commissioner.userId, "start_draft", { p_league_id: paused.leagueId });
     await rpcAs(db, paused.commissioner.userId, "pause_draft", { p_league_id: paused.leagueId });
@@ -444,7 +451,7 @@ describe("public leagues: list_public_leagues", () => {
     await db.end();
   });
 
-  it("lists public leagues only, running drafts first, for signed-out and signed-in callers alike", async () => {
+  it("lists listed public leagues only, running drafts first, for signed-out and signed-in callers alike", async () => {
     const signedOut = await listPublic(db, null);
     const signedIn = await listPublic(db, hidden.commissioner.userId);
     for (const list of [signedOut, signedIn]) {
@@ -488,6 +495,7 @@ describe("public leagues: list_public_leagues", () => {
       stream_url: "https://www.youtube.com/@pokedrafts",
       regular_played: 0,
       regular_total: 0,
+      playoff_matches: [],
       champion: null,
     });
     expect((idleRow?.replay_links as Replay[]).map((r) => r.title)).toEqual(["Highlights"]);

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { AiInputs } from "@/app/(app)/training/model/ai-inputs";
 import type { DecisionProvider, HabitsRecord, TurnRecord } from "@/app/(app)/training/model/decision";
 import { CLOSED_TEAM_SHEETS, DEFAULT_INFO, PERFECT_INFORMATION } from "@/app/(app)/training/model/info";
+import type { TrainingSituation } from "@/app/(app)/training/model/situation";
 import type { FromWorker } from "@/app/(app)/training/model/worker-protocol";
 import type { JointAction, TrainingSetup } from "@/app/(app)/training/model/view-types";
 import { createStubProvider } from "@/app/(app)/training/worker/stub-provider";
@@ -135,6 +136,34 @@ describe("worker-handler", () => {
       await flush();
       expect(last().board.turn).toBe(2);
     }
+  });
+
+  it("a situation's AI that throws at team preview still brings its dealt four, in the dealt order", async () => {
+    const stub = createStubProvider(null);
+    const failing: DecisionProvider = {
+      ...stub,
+      async beginDealt() { throw new Error("Engine failed."); },
+      async teamPreview() { throw new Error("Engine failed."); },
+    };
+    const { worker, posted, last } = harness(failing);
+    const [gyarados, pelipper, sneasler, archaludon] = AI_TEAM.members.map((member) => member.key);
+    const own = PLAYER_TEAM.members.slice(0, 4).map((member) => ({ key: member.key, hp: 100 }));
+    // Not the first four in team order: a fallback to "team 1234" would lead Gyarados and Pelipper.
+    const situation: TrainingSituation = {
+      request: { kind: "spot", spot: "down-one", level: "hard" }, spot: "down-one",
+      own: { members: own },
+      opponent: { members: [{ key: archaludon, hp: 100 }, { key: sneasler, hp: 60 }, { key: pelipper, hp: 100 }, { key: gyarados, hp: 0 }] },
+    };
+    worker.receive({ type: "start", battleId: 1, setup: { ...setup(), situation }, habits: null });
+    await flush(12);
+    expect(posted.filter((m) => m.type === "ai").find((m) => m.status !== "thinking")).toMatchObject({ status: "fallback" });
+    const board = last().board;
+    expect(board.turn).toBe(1);
+    // The dealt leads (the board mirrors the AI's side, so its first position shows on your right).
+    expect([board.active["opponent-right"]?.key, board.active["opponent-left"]?.key]).toEqual([archaludon, sneasler]);
+    expect(board.active["opponent-left"]?.hp).toMatchObject({ percent: 60 });
+    expect(board.team.opponent.find((mon) => mon.key === gyarados)?.fainted).toBe(true);
+    expect(posted.some((m) => m.type === "battle-error")).toBe(false);
   });
 
   it("builds no test oracle unless a test extra is on; forfeit ends with the seed", async () => {

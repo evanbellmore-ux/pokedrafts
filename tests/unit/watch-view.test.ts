@@ -1,11 +1,14 @@
 import { describe, expect, it } from "vitest";
 import {
+  LISTING_NOTES,
   NOT_LIVE,
   buildBrowseView,
   clockSecondsLeft,
   defaultSource,
   formatClock,
   leagueStatus,
+  listingState,
+  playoffProgress,
   type StreamStatus,
 } from "@/app/lib/watch/watch-view";
 import type { PublicLeague, PublicLeagueSummary } from "@/app/types/league";
@@ -122,6 +125,52 @@ describe("status lines", () => {
     ).toEqual({ tone: "champion", label: "Champion", detail: "Unnamed team" });
   });
 
+  it("name the playoffs by the round still being played, until there is a champion", () => {
+    const season = { draft_started: true, draft_completed: true, regular_played: 55, regular_total: 55 } as const;
+    // top_4 after the season: two semifinals feeding the final.
+    const top4 = (statuses: string[]) => [
+      { round_number: 12, status: statuses[0] },
+      { round_number: 12, status: statuses[1] },
+      { round_number: 13, status: statuses[2] },
+    ];
+    expect(leagueStatus(summary({ id: "p1", ...season, playoff_matches: top4(["upcoming", "upcoming", "upcoming"]) }))).toEqual({
+      tone: "season",
+      label: "Playoffs",
+      detail: "Semifinals · 0 of 2 played",
+    });
+    expect(leagueStatus(summary({ id: "p2", ...season, playoff_matches: top4(["completed", "upcoming", "upcoming"]) })).detail).toBe(
+      "Semifinals · 1 of 2 played",
+    );
+    expect(leagueStatus(summary({ id: "p3", ...season, playoff_matches: top4(["completed", "completed", "upcoming"]) })).detail).toBe("Final");
+    // top_6: the first round is the Quarterfinals (two matches; seeds 1 and 2 sit it out).
+    const top6 = [
+      { round_number: 4, status: "upcoming" },
+      { round_number: 4, status: "upcoming" },
+      { round_number: 5, status: "upcoming" },
+      { round_number: 5, status: "upcoming" },
+      { round_number: 6, status: "upcoming" },
+    ];
+    expect(playoffProgress(top6)).toBe("Quarterfinals · 0 of 2 played");
+    expect(playoffProgress([{ round_number: 3, status: "upcoming" }])).toBe("Final");
+    expect(playoffProgress([])).toBeNull();
+    expect(playoffProgress([{ round_number: 3, status: "completed" }])).toBeNull();
+    // The champion wins over the bracket, as before.
+    expect(
+      leagueStatus(summary({ id: "p4", ...season, playoff_matches: top4(["completed", "completed", "completed"]), champion: { team_name: "Rockets" } })),
+    ).toEqual({ tone: "champion", label: "Champion", detail: "Rockets" });
+  });
+
+  it("say when the regular season is over and no bracket or champion has come yet", () => {
+    const done = { draft_started: true, draft_completed: true, regular_played: 55, regular_total: 55 } as const;
+    expect(leagueStatus(summary({ id: "rs", ...done, playoff_matches: [] }))).toEqual({
+      tone: "season",
+      label: "Regular season complete",
+      detail: "55 matches played",
+    });
+    // A list from a database without the review file has no playoff matches at all.
+    expect(leagueStatus(summary({ id: "old", ...done })).label).toBe("Regular season complete");
+  });
+
   it("lead with the stream while it is on air", () => {
     const row = summary({ id: "l", draft_started: true, current_pick_number: 3, stream_url: "https://www.twitch.tv/x" });
     const [entry] = buildBrowseView([row], { "https://www.twitch.tv/x": live(1500) }).live;
@@ -187,5 +236,21 @@ describe("watch page", () => {
     expect(clockSecondsLeft({ ...running, draft_completed: true }, at("2026-10-22T12:00:37Z"))).toBeNull();
     expect(formatClock(83)).toBe("1:23");
     expect(formatClock(5)).toBe("0:05");
+  });
+});
+
+describe("Watch listing", () => {
+  it("reads a league's place on the list, and a row without the review fields as listed", () => {
+    expect(listingState({ watch_listed: true, watch_reviewed_at: "2026-10-26T10:00:00Z" })).toBe("listed");
+    expect(listingState({ watch_listed: false, watch_reviewed_at: null })).toBe("waiting");
+    expect(listingState({ watch_listed: false })).toBe("waiting");
+    expect(listingState({ watch_listed: false, watch_reviewed_at: "2026-10-26T10:00:00Z" })).toBe("unlisted");
+    // A database without 20261026120000_watch_review.sql lists every public league.
+    expect(listingState({})).toBe("listed");
+    expect(LISTING_NOTES).toEqual({
+      listed: "Anyone with the link can watch this league, and it is listed on Watch.",
+      waiting: "Anyone with the link can watch this league. It joins the list on Watch once a PokeDrafts admin approves it.",
+      unlisted: "Anyone with the link can watch this league. It is not listed on Watch.",
+    });
   });
 });

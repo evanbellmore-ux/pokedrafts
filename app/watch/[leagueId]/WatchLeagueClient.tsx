@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ExternalLink } from "lucide-react";
 import { EmptyState, PageHeader } from "@/app/components/ui";
+import { isPlayoffMatch } from "@/app/lib/league/bracket";
 import { teamNameLabel } from "@/app/lib/league/labels";
 import { getDraftRound } from "@/app/lib/league/draft";
 import { rpc } from "@/app/lib/rpc";
@@ -33,6 +34,7 @@ import StreamPlayer from "../StreamPlayer";
 import { useAutoRefresh } from "../useAutoRefresh";
 import { NoEmbed } from "../WatchBrowse";
 import WatchStatusLine from "../WatchStatusLine";
+import PublicBracket from "./PublicBracket";
 import PublicStandings from "./PublicStandings";
 
 /** A running draft is re-read this often; anything else once a minute. */
@@ -42,7 +44,7 @@ const IDLE_POLL_MS = 60_000;
 const STATUS_REFRESH_MS = 120_000;
 
 type Source = "stream" | number;
-type Panel = "board" | "standings";
+type Panel = "board" | "standings" | "bracket";
 
 type WatchLeagueClientProps = {
   initial: PublicLeague;
@@ -73,6 +75,9 @@ function asSummary(league: PublicLeague): PublicLeagueSummary {
       : null,
     regular_played: regular.filter((match) => match.status === "completed").length,
     regular_total: regular.length,
+    playoff_matches: league.matches
+      .filter(isPlayoffMatch)
+      .map((match) => ({ round_number: match.round_number, status: match.status })),
     champion: league.champion_member_id ? { team_name: names.get(league.champion_member_id) ?? null } : null,
     stream_url: league.stream_url,
     replay_links: league.replay_links,
@@ -82,7 +87,8 @@ function asSummary(league: PublicLeague): PublicLeagueSummary {
 
 /**
  * One public league: its stream (or a replay) next to a read-only draft
- * board and, once the draft is done, the standings. A signed-out visitor
+ * board and, once the draft is done, the standings and, once there is a
+ * bracket, the playoffs (shown first then). A signed-out visitor
  * cannot subscribe to the league's tables, so the page polls
  * `get_public_league`: every 10 s while the draft runs, else every minute.
  * The stream's live status comes from the server render, refreshed every
@@ -148,7 +154,19 @@ export default function WatchLeagueClient({ initial, status }: WatchLeagueClient
     picked === "stream" && stream ? "stream" : typeof picked === "number" && replays[picked] ? picked : fallbackSource;
 
   const [panel, setPanel] = useState<Panel | null>(null);
-  const shownPanel: Panel = league.draft_completed ? (panel ?? "standings") : "board";
+  const hasBracket = league.matches.some(isPlayoffMatch);
+  const panels: ReadonlyArray<readonly [Panel, string]> = [
+    ...(hasBracket ? [["bracket", "Playoffs"] as const] : []),
+    ["standings", "Standings"],
+    ["board", "Draft board"],
+  ];
+  const shownPanel: Panel = !league.draft_completed
+    ? "board"
+    : panel && panels.some(([value]) => value === panel)
+      ? panel
+      : hasBracket
+        ? "bracket"
+        : "standings";
 
   const board = useMemo(() => {
     const coaches = league.coaches.filter((coach) => coach.draft_position !== null);
@@ -277,12 +295,7 @@ export default function WatchLeagueClient({ initial, status }: WatchLeagueClient
               aria-label="Show"
               className="flex self-start rounded-lg border border-line bg-bg/40 p-1"
             >
-              {(
-                [
-                  ["standings", "Standings"],
-                  ["board", "Draft board"],
-                ] as const
-              ).map(([value, label]) => (
+              {panels.map(([value, label]) => (
                 <button
                   key={value}
                   type="button"
@@ -298,7 +311,9 @@ export default function WatchLeagueClient({ initial, status }: WatchLeagueClient
             </div>
           )}
 
-          {shownPanel === "standings" ? (
+          {shownPanel === "bracket" ? (
+            <PublicBracket league={league} />
+          ) : shownPanel === "standings" ? (
             <PublicStandings league={league} />
           ) : (
             <DraftBoard board={board} loading={false} pokemon={league.pokemon} />

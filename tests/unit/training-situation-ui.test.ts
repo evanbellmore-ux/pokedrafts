@@ -98,6 +98,36 @@ describe("the store's situations", () => {
     expect(fake.of("deal").at(-1)!.request).toEqual(DEALT.request);
   });
 
+  it("a worker that stops before turn 1 returns the battle to Setup with the fact; one past turn 1 stays", () => {
+    const { session, fake } = loaded();
+    session.startSituation(DEALT.request);
+    fake.emit({ type: "dealt", key: fake.of("deal").at(-1)!.key, setup: dealtSetup() });
+    const first = session.getSnapshot().battle!;
+    expect(first.phase.kind).toBe("starting");
+    fake.emit({ type: "load-error", message: "Worker crashed." });
+    expect(session.getSnapshot()).toMatchObject({ battle: null, setupError: "The battle engine stopped: Worker crashed.", engine: { status: "error" } });
+
+    // At team preview (turn 0), the same.
+    session.retryEngine();
+    fake.emit({ type: "loaded", ms: 1 });
+    session.startSituation(DEALT.request);
+    fake.emit({ type: "dealt", key: fake.of("deal").at(-1)!.key, setup: dealtSetup() });
+    const second = session.getSnapshot().battle!;
+    fake.emit({ type: "battle", battleId: second.id, seed: null, request: PREVIEW_REQUEST, board: boardView({ turn: 0 }), log: [], ended: null });
+    expect(session.getSnapshot().battle?.phase.kind).toBe("preview");
+    fake.emit({ type: "load-error", message: "Worker crashed." });
+    expect(session.getSnapshot().battle).toBeNull();
+
+    // Past turn 1 the board, the log and the autosave stay; Forfeit is on screen.
+    session.retryEngine();
+    fake.emit({ type: "loaded", ms: 1 });
+    session.start(trainingSetup());
+    const third = session.getSnapshot().battle!;
+    fake.emit({ type: "battle", battleId: third.id, seed: null, request: moveRequest(), board: boardView({ turn: 2 }), log: [], ended: null });
+    fake.emit({ type: "load-error", message: "Worker crashed." });
+    expect(session.getSnapshot().battle?.id).toBe(third.id);
+  });
+
   it("keeps only the newest deal, states a failed one, and a full battle drops one in progress", () => {
     const { session, fake } = loaded();
     session.startSituation({ kind: "random", level: "hard" });
@@ -222,6 +252,25 @@ describe("a dealt battle on screen", () => {
     lastPreview: null, habitsBefore: emptyHabits(), savedId: "s1", startedAt: 0, ...patch,
   });
   const render = (value: TrainingBattle) => renderToStaticMarkup(createElement(BattleScreen, { runtime, battle: value, session, habits: emptyHabits() }));
+
+  it("offers Back to setup until the first board, where Forfeit takes over", () => {
+    for (const waiting of [
+      battle({ phase: { kind: "starting" }, board: null }),
+      battle({ phase: { kind: "preview", request: PREVIEW_REQUEST }, board: boardView({ turn: 0 }) }),
+      // A Resume going in has no board either.
+      battle({ setup: trainingSetup(), phase: { kind: "starting" }, board: null, resumed: true }),
+    ]) {
+      session.changeTeams.mockClear();
+      const { result: html, elements } = capture(() => render(waiting));
+      expect(html).toMatch(/Starting the situation…|Resuming battle…/);
+      expect(buttons(elements).map((button) => textOf(button.props.children))).toEqual(["Back to setup"]);
+      (named(elements, "Back to setup")!.props.onClick as () => void)();
+      expect(session.changeTeams).toHaveBeenCalledOnce();
+    }
+    const { elements } = capture(() => render(battle()));
+    expect(named(elements, "Back to setup")).toBeUndefined();
+    expect(named(elements, "Forfeit")).toBeTruthy();
+  });
 
   it("waits for its position instead of showing team preview", () => {
     const html = render(battle({ phase: { kind: "preview", request: PREVIEW_REQUEST }, board: boardView({ turn: 0 }) }));

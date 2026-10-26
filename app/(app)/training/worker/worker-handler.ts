@@ -609,11 +609,14 @@ export function createTrainingWorker(deps: WorkerDeps): {
     };
   }
 
-  /** The seat's first legal choice (the AI's; yours in a guard playout), else Showdown's "default". */
+  /**
+   * The seat's first legal choice (the AI's; yours in a guard playout), else Showdown's "default". At a situation's team
+   * preview it is the seat's dealt order: the position goes in by battle order, so any other four would start another one.
+   */
   function fallbackChoice(s: BattleState, side: SideID = "p2"): string {
     const request = s.host.request(side);
     if (!request) return "default";
-    if ("teamPreview" in request) return teamChoice([1, 2, 3, 4]);
+    if ("teamPreview" in request) return teamChoice(s.dealt?.[side] ?? [1, 2, 3, 4]);
     const bench = request.side.pokemon.map((each) => s.keys.keyOf(side, identName(each.ident)));
     const legal = legalJointActions({ side, aiSide: side, request, bench, firstTurn: [false, false], megaUsed: true, keys: s.keys });
     try { return legal[0] ? toChoiceString(side, legal[0], request, s.keys, side) : "default"; } catch { return "default"; }

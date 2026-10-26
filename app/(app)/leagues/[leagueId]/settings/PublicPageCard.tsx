@@ -15,6 +15,7 @@ import {
   platformOf,
   readReplayEntries,
 } from "@/app/lib/watch/stream-links";
+import { LISTING_NOTES, listingState } from "@/app/lib/watch/watch-view";
 import type { League, ReplayLinkRow } from "@/app/types/league";
 
 type PublicPageCardProps = {
@@ -180,9 +181,7 @@ export default function PublicPageCard({ league, onSaved }: PublicPageCardProps)
         Public page
       </h2>
       <p className="mt-2 text-sm text-muted">
-        {saved.isPublic
-          ? "Anyone with the link can watch this league, and it is listed on Watch."
-          : "Only the league's coaches can see it."}
+        {saved.isPublic ? LISTING_NOTES[listingState(league)] : "Only the league's coaches can see it."}
       </p>
 
       {saved.isPublic && (

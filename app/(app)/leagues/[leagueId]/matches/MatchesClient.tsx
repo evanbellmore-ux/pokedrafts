@@ -382,7 +382,7 @@ export default function MatchesClient() {
           id="playoffs"
           aria-labelledby="playoffs-heading"
           tabIndex={-1}
-          className="flex scroll-mt-24 flex-col gap-4 rounded-xl border border-line bg-panel p-5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+          className="flex scroll-mt-[calc(var(--app-nav-height,3.5rem)+2.5rem)] flex-col gap-4 rounded-xl border border-line bg-panel p-5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
         >
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h2 id="playoffs-heading" className="text-lg font-semibold tracking-tight text-text">

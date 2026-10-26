@@ -57,6 +57,7 @@ app/
     dashboard/page.tsx            + DashboardClient.tsx (loading, delete), LeagueCard.tsx, DashboardSidebar.tsx (join by code, tools), dashboard.ts (pure helpers)
     builder/page.tsx              Pool Builder: BuilderClient.tsx (entry), RuleBuilder.tsx (the "Build from rules" card, section 13.7), FormatLibrary.tsx, PoolTable.tsx, hooks.ts, poolFormat.ts, resolvePokemon.ts
     calculator/page.tsx           Champions-only: CalculatorClient.tsx, PokemonPanel.tsx, BattleConditions.tsx, MoveResults.tsx; local engine/catalog, no database dependency (docs/champions-calculator.md)
+    admin/page.tsx                site admins only (404 for everyone else): WatchReviewClient.tsx, the Watch listings to approve or unlist (section 16)
     training/page.tsx             TrainingClient.tsx + BattleScreen.tsx, training-session.ts (module store), setup/, preview/, board/, actions/, log/, end/; the battle, simulator and AI run in one module worker (worker/, sim/, ai/, usage/); no database dependency (docs/training.md)
     leagues/new/page.tsx          + NewLeagueClient.tsx
     leagues/not-found.tsx         catches notFound() thrown by the league layout (a segment's own not-found.tsx only wraps its page, so the parent segment renders this)
@@ -762,3 +763,66 @@ The commissioner's Settings page gains a Public page card (`settings/PublicPageC
 1. Run `20261022120000_public_leagues.sql` in the SQL editor. It ends with `select * from public._migration_report();`, so no rows means nothing to fix.
 2. Optional, for live status: in Vercel (Production and Preview) set `TWITCH_CLIENT_ID` and `TWITCH_CLIENT_SECRET` (register an application at dev.twitch.tv/console with any OAuth redirect URL such as `https://www.pokedrafts.io`, client type Confidential, then New Secret) and `YOUTUBE_API_KEY` (Google Cloud console: enable the YouTube Data API v3, create an API key and restrict it to that API). They are server-only (no `NEXT_PUBLIC_` prefix) and take effect on the next deployment. Without them, live means a running draft.
 3. Deploy the client. A client that ships before step 1 shows "This feature is not available yet, please try again later." on `/watch` and on the Settings card until the file runs; members' league pages are unaffected either way.
+
+## 16. Watch listings and the playoffs on Watch
+
+Added 2026-10-26 from the pre-launch review. Until then `/watch`, which the landing page and the navigation link to, listed every public league and embedded whatever stream or replay its commissioner attached, so any new account could put any Twitch or YouTube content there, and only SQL could take it off. A league in its playoffs also read "In season · 55 of 55 matches played" with no bracket. Migration `supabase/migrations/20261026120000_watch_review.sql`. Section 15 stays as it is unless a line here says otherwise.
+
+### 16.1 Decisions
+
+- **A site admin approves listings.** A public league's own page, `/watch/<league id>`, works as soon as it is public, so a commissioner can share it; `/watch` lists it only once a site admin approved it (the owner's choice, 2026-10-26, over automatic minimums such as a started draft and two coaches, which two accounts of one person meet).
+- **Approval sticks.** A listed league stays listed when its commissioner changes the stream or the replays, and when it goes private and public again; an admin can unlist it at any time, and an unlisted league stays off until an admin lists it again (the owner's choice over re-approval on every change).
+- **An admin page in the app.** `/admin` (Watch listings) lists every public league in three groups, Waiting for review, Listed on Watch and Not listed, with what it would show and the action that moves it: Approve and Decline, Unlist, Approve. Admin accounts are rows of `site_admins`, added in the SQL editor; nobody else can open the page (a 404, as if it did not exist).
+- **Only listed leagues are indexed.** A public league that is not listed keeps working by its link but its page says `noindex`, so search engines carry only what an admin approved.
+- **The playoffs on Watch.** The status line names the playoffs by the round still being played; a league's page shows the bracket, first among Playoffs, Standings and Draft board once there is one.
+
+### 16.2 Data
+
+| Column on `leagues` | Type | Notes |
+| --- | --- | --- |
+| `watch_listed` | boolean | not null, default false; written only by `set_watch_listing` |
+| `watch_reviewed_at` | timestamptz | null until an admin first lists or unlists the league; null and not listed means waiting |
+
+Partial index `leagues_watch_listed_idx on leagues (id) where is_public and watch_listed` for the list. Existing public leagues start unreviewed, so `/watch` is empty until an admin approves them.
+
+`site_admins (user_id uuid primary key references auth.users on delete cascade, added_at timestamptz)`: RLS on, no policy, every privilege revoked from `anon` and `authenticated`, so no API role reads or writes it; the functions read it through `_is_site_admin`. The migration's comment and `docs/schema.md` give the insert.
+
+### 16.3 Functions
+
+| Function | Who | Behaviour | Returns / errors |
+| --- | --- | --- | --- |
+| `site_admin_status()` | authenticated | Whether the caller is a site admin, and for one how many public leagues were never reviewed. | jsonb `{ admin: false }` or `{ admin: true, watch_waiting }` |
+| `list_watch_review()` | site admin | Every public league, never reviewed first, then listed, then unlisted (newest first within each): name, `created_at`, the commissioner's team name, coach count and limit, draft state, stream, replays, `watch_listed`, `watch_reviewed_at`. No account ids. | jsonb `{ server_time, leagues }` (`WatchReviewList`). `not_site_admin` |
+| `set_watch_listing(p_league_id uuid, p_listed boolean)` | site admin | Locks the league and sets `watch_listed` and `watch_reviewed_at = now()`. | jsonb `{ id, watch_listed, watch_reviewed_at }`. `not_site_admin`, `invalid_listing`, `league_not_found` |
+
+Section 15.3 changes: `list_public_leagues` lists `is_public and watch_listed` leagues only and adds `playoff_matches: [{ round_number, status }]` (in bracket order) per league; `get_public_league` adds each match's `feeds_match_id` and `feeds_slot` (the bracket's links) and `watch_listed`. Internal helpers `_is_site_admin()` and `_require_site_admin()` (`not_authenticated`, `not_site_admin`). The file's Grants section adds the three admin functions to the catalog and re-grants the two reads; it names no read-only table. It replaces the two reads that the public leagues file created, so re-run it after any re-run of that file.
+
+### 16.4 Pages
+
+```
+app/
+  (app)/admin/
+    page.tsx                  checks site_admin_status on the server; anyone but an admin gets notFound()
+    WatchReviewClient.tsx     the three groups, loaded in the browser, Approve / Decline / Unlist, Refresh
+  components/AppNav.tsx       Watch listings in the account menu for an admin, with "N waiting" and a dot on the avatar
+  watch/[leagueId]/
+    PublicBracket.tsx         the read-only bracket, rounds one under another for the side column
+```
+
+- `/admin` is a signed-in section (`SIGNED_IN_SECTIONS`, so the proxy asks for a session and robots.txt disallows it) and the only other place besides the Watch pages that uses a server Supabase client, for its admin check. The list itself loads in the browser like the other signed-in pages.
+- The account menu asks `site_admin_status` once; for an admin it asks again on each page, so the count follows the reviews.
+- The commissioner's Public page card says where the league stands: listed on Watch, waiting for an admin's approval, or not listed (`LISTING_NOTES`).
+- **Status lines** (15.5) gain "Playoffs · Semifinals · 1 of 2 played" (the first round with a match left, named by its distance to the final; the count only when that round has more than one match) and "Regular season complete · 55 matches played" for a finished season with no bracket or champion yet. "Champion" still comes first.
+- **The league page** (15.5) shows Playoffs | Standings | Draft board once the draft is complete and a bracket exists, opening on Playoffs; without a bracket it is Standings | Draft board as before. The bracket uses `app/lib/league/bracket.ts` like the Matches page: "Winner of Semifinal 2" in an empty slot, the top seeds' byes in the round they sit out, a trophy on each winner, "Champion: Team" once crowned.
+
+### 16.5 Tests
+
+- `tests/db/watch-review.test.ts`: only a site admin lists, unlists or reads the review list (other accounts `not_site_admin`, a session without a user `not_authenticated`, `anon` `42501`); `site_admin_status` for everyone else and an admin's waiting count; `invalid_listing` and `league_not_found`; `site_admins` closed to every API role and RLS on; a commissioner's direct update of `watch_listed` changes nothing; a new public league's page works while `/watch` leaves it out; the review list's order and fields with no account id or invite code; approval through new links and a trip to private, unlisting until listed again; the playoff matches on the list before and after the bracket, and the bracket links on the page.
+- `tests/db/public-leagues.test.ts` lists its fixtures through an admin first and expects `playoff_matches`; `migrations.test.ts`, `review-applyability.test.ts` and `client-contract.test.ts` count twenty-two files and three more API functions (none for `anon`), and `castmirror-execution.test.ts` 37 public functions.
+- `tests/unit/watch-view.test.ts` (the playoffs and finished-season status lines, `playoffProgress`, `listingState` and the card's notes), `watch-review-ui.test.ts` (the bracket, the league page's panels, the admin page's 404, the review rows' actions, the menu link), plus the `/admin` cases in `proxy.test.ts` and `site-routes.test.ts`.
+
+### 16.6 Migration and release order
+
+1. Run `20261026120000_watch_review.sql` in the SQL editor; it ends with `select * from public._migration_report();` (no rows means nothing to fix). Until it runs, a deployed client's `/admin` is a 404 and the account menu shows no Watch listings.
+2. Add the admin account: `insert into public.site_admins (user_id) select id from auth.users where email = '<the email you sign in with>' on conflict do nothing;`
+3. Deploy the client, then approve the public leagues that should be on `/watch` at `/admin`. Run step 1 before deploying: the old client keeps working on the new functions (they only add fields), and the list is gated from the moment the file runs.
