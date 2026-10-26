@@ -1451,6 +1451,7 @@ describe("active matchup and selected-move summary", () => {
     matchup.defender.source = { ...matchup.defender.source, name: "Shellshock" };
     expect(summaryHTML(matchup).replace(/&#x27;/g, "'")).toMatch(/<div data-summary-combatant="defender"[^>]*><div aria-hidden="true" class="[^"]+"><\/div><p\b[^>]*>Opponent's team · Shellshock<\/p>/);
     const manual = summaryHTML(createMatchup());
-    for (const side of ["attacker", "defender"] as const) expect(manual).toMatch(new RegExp(`<div data-summary-combatant="${side}"[^>]*><div aria-hidden="true" class="[^"]+"></div><div\\b[^>]*><h3`));
+    // No team line: the card starts with its name row, the sprite beside the name.
+    for (const side of ["attacker", "defender"] as const) expect(manual).toMatch(new RegExp(`<div data-summary-combatant="${side}"[^>]*><div aria-hidden="true" class="[^"]+"></div><div\\b[^>]*><div\\b[^>]*><img [^>]*alt=""[^>]*><h3`));
   });
 });

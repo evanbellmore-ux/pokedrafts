@@ -1,3 +1,4 @@
+import BattleSprite from "@/app/components/BattleSprite";
 import TypeBadge from "@/app/components/TypeBadge";
 import type { BattleRuntime } from "@/app/lib/battle/runtime";
 import { SHEET_FIELD_LABEL, type SheetField } from "../model/info";
@@ -36,14 +37,17 @@ export default function OpponentSheet({ sheet, runtime }: { sheet: SheetView; ru
       {sheet.members.map((member) => {
         const species = runtime.speciesById.get(member.speciesId);
         return (
-          <li key={member.key} className="min-w-0 rounded-lg border border-line bg-bg px-3 py-2 text-sm">
-            <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-              <span className="wrap-anywhere font-semibold text-text">{species?.name ?? member.name}</span>
-              <span className="hidden flex-wrap gap-1 sm:flex">{species?.types.map((type) => <TypeBadge key={type} type={type} />)}</span>
-              <span className="text-xs text-muted sm:hidden">{species?.types.join(" / ")}</span>
+          <li key={member.key} className="flex min-w-0 items-start gap-2 rounded-lg border border-line bg-bg px-3 py-2 text-sm">
+            {species && <BattleSprite speciesId={species.id} name={species.name} />}
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                <span className="wrap-anywhere font-semibold text-text">{species?.name ?? member.name}</span>
+                <span className="hidden flex-wrap gap-1 sm:flex">{species?.types.map((type) => <TypeBadge key={type} type={type} />)}</span>
+                <span className="text-xs text-muted sm:hidden">{species?.types.join(" / ")}</span>
+              </div>
+              <p className="mt-1 wrap-anywhere text-xs text-text">{sheetFacts(member, runtime).join(" · ")}</p>
+              <p className="mt-0.5 wrap-anywhere text-xs text-muted">{sheetMoves(member, runtime)}</p>
             </div>
-            <p className="mt-1 wrap-anywhere text-xs text-text">{sheetFacts(member, runtime).join(" · ")}</p>
-            <p className="mt-0.5 wrap-anywhere text-xs text-muted">{sheetMoves(member, runtime)}</p>
           </li>
         );
       })}

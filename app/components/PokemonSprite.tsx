@@ -8,12 +8,14 @@ import {
   normalizePokemonName,
 } from "@/app/lib/pokemon";
 
-export type SpriteSize = "sm" | "md" | "lg" | "fill";
+export type SpriteSize = "sm" | "md" | "card" | "lg" | "fill";
 
-const SIZE_PX: Record<SpriteSize, number> = { sm: 32, md: 40, lg: 64, fill: 48 };
+const SIZE_PX: Record<SpriteSize, number> = { sm: 32, md: 40, card: 48, lg: 64, fill: 48 };
 const SIZE_CLASS: Record<SpriteSize, string> = {
   sm: "h-8 w-8",
   md: "h-10 w-10",
+  // A Pokémon's card in the calculator and Training.
+  card: "h-12 w-12",
   lg: "h-16 w-16",
   // Fills a sized parent, e.g. a roster slot.
   fill: "h-full w-full",
@@ -79,9 +81,13 @@ export type PokemonSpriteProps = {
   bare?: boolean;
   /**
    * A known image URL, used as is: no dex lookup and no PokéAPI fallback.
-   * For signed-out pages (the landing preview), where the dex is not readable.
+   * For signed-out pages (the landing preview), where the dex is not readable,
+   * and the calculator's and Training's slots (app/lib/battle/sprites.ts).
+   * null: known to have none, so the placeholder shows without a lookup.
    */
-  src?: string;
+  src?: string | null;
+  /** The name is shown beside it: the image has no text (alt=""), the placeholder no label. */
+  decorative?: boolean;
 };
 
 /**
@@ -95,19 +101,23 @@ export default function PokemonSprite({
   className = "",
   bare = false,
   src,
+  decorative = false,
 }: PokemonSpriteProps) {
   const key = normalizePokemonName(name);
+  // A given src stands for its own picture: a new one starts over, as a new name does.
+  const identity = src === undefined ? key : `${key} ${src ?? ""}`;
   const start = (): SpriteState =>
-    src ? { key, status: "ready", url: src } : initialState(name);
+    src ? { key: identity, status: "ready", url: src }
+      : src === null ? { key: identity, status: "failed" } : initialState(name);
   const [state, setState] = useState<SpriteState>(start);
 
-  // Reset when the name changes (derived state during render, not an effect).
-  if (state.key !== key) {
+  // Reset when the name or src changes (derived state during render, not an effect).
+  if (state.key !== identity) {
     setState(start());
   }
 
   useEffect(() => {
-    if (src || state.status !== "loading") return;
+    if (src !== undefined || state.status !== "loading") return;
     let active = true;
 
     void resolveSprite(name).then((url) => {
@@ -133,11 +143,12 @@ export default function PokemonSprite({
   }
 
   if (state.status === "failed") {
+    const label = decorative
+      ? { "aria-hidden": true }
+      : { role: "img", "aria-label": `${name} (no sprite available)`, title: name };
     return (
       <div
-        role="img"
-        aria-label={`${name} (no sprite available)`}
-        title={name}
+        {...label}
         className={`${box} flex items-center justify-center ${bare ? "text-xs" : "bg-panel-hover text-sm"} font-bold uppercase text-muted`}
       >
         {name.trim().charAt(0) || "?"}
@@ -154,16 +165,16 @@ export default function PokemonSprite({
     // eslint-disable-next-line @next/next/no-img-element -- sprites come from Supabase storage / PokeAPI and are tiny; the image optimizer adds nothing.
     <img
       src={state.url}
-      alt={name}
-      title={name}
+      alt={decorative ? "" : name}
+      title={decorative ? undefined : name}
       width={px}
       height={px}
       loading="lazy"
       decoding="async"
       onError={() => {
         // A given src is not the dex's answer, so it never poisons the cache.
-        if (!src) spriteCache.set(key, null);
-        setState({ key, status: "failed" });
+        if (src === undefined) spriteCache.set(key, null);
+        setState({ key: identity, status: "failed" });
       }}
       className={`${box} object-contain ${bare ? "" : tile}`.trim()}
     />

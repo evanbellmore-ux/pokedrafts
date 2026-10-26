@@ -1,4 +1,5 @@
 import { useId } from "react";
+import BattleSprite from "@/app/components/BattleSprite";
 import TypeBadge from "@/app/components/TypeBadge";
 import PokemonName from "@/app/(app)/calculator/PokemonName";
 import { nameText, type DoublesSlotId, type NameParts } from "@/app/lib/battle/doubles-types";
@@ -77,8 +78,12 @@ export default function BattleCard({ mon, slot, name, target, play }: { mon: Pok
           className="absolute inset-0 z-0 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus" />
       )}
       <div className={pickable ? "pointer-events-none relative z-10" : undefined}>
-      <div className="flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-1">
-        <h3 id={`${id}-name`} className="min-w-0 wrap-anywhere font-semibold text-text"><PokemonName parts={parts} /></h3>
+      <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+        {/* The sprite stays beside the name; it follows the form (a Mega Evolution, Aegislash's Blade Forme). */}
+        <div className="flex min-w-0 items-center gap-2">
+          <BattleSprite speciesId={mon.speciesId} name={mon.name} size="card" fainted={mon.fainted} />
+          <h3 id={`${id}-name`} className="min-w-0 wrap-anywhere font-semibold text-text"><PokemonName parts={parts} /></h3>
+        </div>
         {mon.mega && <span className="rounded border border-accent-border px-1.5 text-xs font-semibold text-accent-text">Mega</span>}
       </div>
       {!!target?.chips.length && <p data-training-card-chips className="mt-0.5 wrap-anywhere text-xs font-semibold text-accent-text">{target.chips.join(" · ")}</p>}

@@ -2,12 +2,12 @@
 
 import { useId } from "react";
 import { RefreshCw } from "lucide-react";
-import PokemonSprite from "@/app/components/PokemonSprite";
+import BattleSprite from "@/app/components/BattleSprite";
 import TypeBadge from "@/app/components/TypeBadge";
 import { Alert, Button, Field, Select } from "@/app/components/ui";
 import { ButtonLink } from "@/app/components/ui/Button";
 import type { DoublesSideId, DoublesSlotId } from "@/app/lib/battle/doubles-types";
-import { championsRuntime, cosmeticFamily, type BattleRuntime } from "@/app/lib/battle/runtime";
+import { championsRuntime, type BattleRuntime } from "@/app/lib/battle/runtime";
 import type { ChampionsSpecies } from "@/app/lib/battle/types";
 import { teamNameLabel } from "@/app/lib/league/labels";
 import type { CalculatorRosterState } from "./roster-data";
@@ -281,7 +281,6 @@ export function RosterPicker({ state, panel: providedPanel, role, side, activeSo
         <ul data-roster-row="list" aria-label={`${ownership} roster for ${occupant}`} className={rail ? "mt-3 grid grid-cols-1 gap-2" : "mt-3 grid gap-2 sm:grid-cols-2"}>
           {panel.choices.map((choice, index) => {
             const species = choice.speciesId ? runtime.speciesById.get(choice.speciesId) : null;
-            const spriteName = rosterSpriteName(choice, species, runtime);
             const selected = !!choice.source && choice.source.key === activeSource?.key;
             const unavailable = choice.source ? isDisabled?.(choice) ?? null : null;
             const reason = [choiceReason(choice, species), unavailable].filter(Boolean).join(" ") || null;
@@ -308,7 +307,7 @@ export function RosterPicker({ state, panel: providedPanel, role, side, activeSo
                 >
                   {rail ? (
                     <>
-                      {species && spriteName && <span aria-hidden="true" className="shrink-0"><PokemonSprite name={spriteName} size="md" /></span>}
+                      {species && <BattleSprite speciesId={species.id} name={species.name} />}
                       <span className="min-w-0 flex-1">{content}</span>
                     </>
                   ) : content}
@@ -335,14 +334,6 @@ export function railRows(panels: readonly Pick<RosterPanel, "choices">[]) {
 /** A rail's last shared row: it holds the rail's bottom padding level on both sides. */
 function RailEnd() {
   return <div aria-hidden="true" data-roster-row="end" />;
-}
-
-// League rosters store Pool Builder display names, which is what the sprite dex is keyed by.
-// A pasted cosmetic form (Florges-White) has no sprite of its own there: use its family's.
-// Minior's cores keep their own artwork (the plain Minior sprite is the Meteor Form's; Showdown's plain Minior is the Red Core).
-function rosterSpriteName(choice: RosterChoice, species: ChampionsSpecies | null | undefined, runtime: BattleRuntime) {
-  return choice.spriteName ?? (species ? (species.baseSpecies === "minior" ? (species.id === "minior" ? "Minior-Red" : undefined)
-    : cosmeticFamily(runtime, species.id)?.name) ?? species.name : undefined);
 }
 
 function choiceReason(choice: RosterChoice, species: ChampionsSpecies | null | undefined) {
@@ -383,14 +374,13 @@ function SlotRosterPicker({ id, panel, ownership, side, slots, pickerId, rail, r
         <ul data-roster-row="list" aria-label={`${ownership} roster`} className={rail ? "mt-3 grid grid-cols-1 gap-2" : "mt-3 grid gap-2 sm:grid-cols-2"}>
           {panel.choices.map((choice, index) => {
             const species = choice.speciesId ? runtime.speciesById.get(choice.speciesId) : null;
-            const spriteName = rosterSpriteName(choice, species, runtime);
             // A source active in one slot cannot also stand in the other (doubles-prep selectDoublesRoster).
             const activeIn = slots.find((slot) => !!choice.source && slot.activeSource?.key === choice.source.key);
             const reason = choiceReason(choice, species);
             return (
               <li key={choice.key} className={`min-w-0 rounded-lg border px-3 py-2 text-sm ${activeIn ? "border-accent-border bg-accent-soft" : "border-line bg-panel"}`}>
                 <div className="flex min-w-0 items-start gap-3">
-                  {species && spriteName && <span aria-hidden="true" className="shrink-0"><PokemonSprite name={spriteName} size="md" /></span>}
+                  {species && <BattleSprite speciesId={species.id} name={species.name} />}
                   <div className="min-w-0 flex-1">
                     <span className="block wrap-anywhere font-medium text-text">{choice.name}</span>
                     <ChoiceDetails choice={choice} species={species} />

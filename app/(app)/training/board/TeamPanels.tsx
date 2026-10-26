@@ -1,3 +1,4 @@
+import BattleSprite from "@/app/components/BattleSprite";
 import type { BattleRuntime } from "@/app/lib/battle/runtime";
 import { redactSheet, sheetFromTeam } from "../model/sheet";
 import type { BoardView, PokemonView, TrainingSetup } from "../model/view-types";
@@ -22,22 +23,25 @@ export function OwnTeamSummary({ team }: { team: readonly PokemonView[] }) {
         const spread = mon.points ? pointsText(mon.points) : null;
         const condition = mon.fainted ? null : [hpText(mon.hp), mon.status ? statusLabel(mon.status) : null].filter(Boolean).join(" · ");
         return (
-          <li key={mon.key} data-training-own-member={mon.key} className="min-w-0 rounded-lg border border-line bg-bg px-3 py-2 text-sm">
-            <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-              <span className="wrap-anywhere font-semibold text-text">{mon.name}</span>
-              <span className={`text-xs ${mon.fainted ? "font-semibold text-danger" : "text-muted"}`}>{placeOf(mon)}</span>
-              {condition && <span className="ms-auto tabular-nums text-xs text-text">{condition}</span>}
+          <li key={mon.key} data-training-own-member={mon.key} className="flex min-w-0 items-start gap-2 rounded-lg border border-line bg-bg px-3 py-2 text-sm">
+            <BattleSprite speciesId={mon.speciesId} name={mon.name} fainted={mon.fainted} />
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                <span className="wrap-anywhere font-semibold text-text">{mon.name}</span>
+                <span className={`text-xs ${mon.fainted ? "font-semibold text-danger" : "text-muted"}`}>{placeOf(mon)}</span>
+                {condition && <span className="ms-auto tabular-nums text-xs text-text">{condition}</span>}
+              </div>
+              <p className="mt-1 wrap-anywhere text-xs text-text">{[itemText(mon.item), abilityText(mon), mon.nature, spread ? `SPs: ${spread}` : null].filter(Boolean).join(" · ")}</p>
+              {mon.stats && <p className="mt-0.5 wrap-anywhere text-xs tabular-nums text-text" aria-label={statsLabel(mon.stats)}>{statsText(mon.stats)}</p>}
+              <ul className="mt-0.5 grid grid-cols-2 gap-x-3 text-xs text-muted">
+                {mon.moves.map((move) => (
+                  <li key={move.id} className="flex min-w-0 justify-between gap-2">
+                    <span className="min-w-0 wrap-anywhere text-text">{move.name}</span>
+                    {typeof move.pp === "number" && <span className="shrink-0 tabular-nums">{move.pp}/{move.maxpp ?? move.pp}</span>}
+                  </li>
+                ))}
+              </ul>
             </div>
-            <p className="mt-1 wrap-anywhere text-xs text-text">{[itemText(mon.item), abilityText(mon), mon.nature, spread ? `SPs: ${spread}` : null].filter(Boolean).join(" · ")}</p>
-            {mon.stats && <p className="mt-0.5 wrap-anywhere text-xs tabular-nums text-text" aria-label={statsLabel(mon.stats)}>{statsText(mon.stats)}</p>}
-            <ul className="mt-0.5 grid grid-cols-2 gap-x-3 text-xs text-muted">
-              {mon.moves.map((move) => (
-                <li key={move.id} className="flex min-w-0 justify-between gap-2">
-                  <span className="min-w-0 wrap-anywhere text-text">{move.name}</span>
-                  {typeof move.pp === "number" && <span className="shrink-0 tabular-nums">{move.pp}/{move.maxpp ?? move.pp}</span>}
-                </li>
-              ))}
-            </ul>
           </li>
         );
       })}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import BattleSprite from "@/app/components/BattleSprite";
 import TypeBadge from "@/app/components/TypeBadge";
 import { Button } from "@/app/components/ui";
 import { chanceText } from "@/app/lib/battle/chance";
@@ -196,7 +197,11 @@ export default function DoublesCard({ view, names, nameParts, runtime, rollMode,
     <>
       {slot.source && slot.source.name !== species?.name && <p className="wrap-anywhere text-xs font-semibold text-muted">{slot.source.name}</p>}
       <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
-        <h4 className="min-w-0 wrap-anywhere text-base font-semibold leading-snug text-text sm:text-lg"><PokemonName parts={nameParts} /></h4>
+        {/* The sprite stays beside the name; the form buttons wrap below them. */}
+        <div className="flex min-w-0 items-center gap-2">
+          <BattleSprite speciesId={slot.build.speciesId} name={species?.name ?? slot.build.speciesId} size="card" fainted={fainted} />
+          <h4 className="min-w-0 wrap-anywhere text-base font-semibold leading-snug text-text sm:text-lg"><PokemonName parts={nameParts} /></h4>
+        </div>
         {megaOptions.length > 0 && (
           <div role="group" aria-label={`${label} ${megaOptions.every((option) => option.label.startsWith("Mega")) ? "Mega forms" : "battle forms"}`} className="flex min-w-0 flex-wrap gap-1">
             {megaOptions.map((option) => {
