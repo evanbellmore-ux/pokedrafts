@@ -22,6 +22,7 @@ export const INDEXED_PATHS = ["/", "/login", "/signup", "/watch"] as const;
  * tests/unit/site-routes.test.ts checks this list against app/(app).
  */
 export const SIGNED_IN_SECTIONS = [
+  "/admin",
   "/builder",
   "/calculator",
   "/dashboard",

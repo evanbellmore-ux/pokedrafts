@@ -122,6 +122,8 @@ export default function BattleScreen({ runtime, battle, session, habits, deal }:
           <div className="flex flex-wrap items-center gap-2">
             <AIStatusPill ai={battle.ai} />
             {!ended && shownBoard && <Button variant="secondary" size="sm" className="min-h-11" onClick={() => { if (window.confirm("Forfeit this battle?")) session.forfeit(); }}>Forfeit</Button>}
+            {/* Until the first board (a situation going in, a Resume) there is nothing to forfeit, but always a way out. */}
+            {!ended && !shownBoard && <Button variant="secondary" size="sm" className="min-h-11" onClick={session.changeTeams}>Back to setup</Button>}
           </div>
         </header>
         {error && <Alert variant="error" title="Choice not accepted">{error}</Alert>}

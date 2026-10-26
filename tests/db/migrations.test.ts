@@ -11,6 +11,7 @@ import {
   SMALL_SPRITES_MIGRATION,
   UNDO_WHILE_PAUSED_MIGRATION,
   PUBLIC_LEAGUES_MIGRATION,
+  WATCH_REVIEW_MIGRATION,
   HARDENING_MIGRATION,
   PLAYOFFS_MIGRATION,
   POOL_BUILDER_MIGRATION,
@@ -57,6 +58,9 @@ const API_FUNCTIONS = [
   "update_league_public_page",
   "list_public_leagues",
   "get_public_league",
+  "site_admin_status",
+  "list_watch_review",
+  "set_watch_listing",
 ];
 
 const APP_TABLES = [
@@ -260,7 +264,8 @@ describe("migrations", () => {
     expect(migrations[18].name).toBe(DRAFT_TIMER_SWEEP_MIGRATION);
     expect(migrations[19].name).toBe(UNDO_WHILE_PAUSED_MIGRATION);
     expect(migrations[20].name).toBe(PUBLIC_LEAGUES_MIGRATION);
-    expect(migrations).toHaveLength(21);
+    expect(migrations[21].name).toBe(WATCH_REVIEW_MIGRATION);
+    expect(migrations).toHaveLength(22);
   });
 
   it("the shared test database was migrated by the global setup", async () => {

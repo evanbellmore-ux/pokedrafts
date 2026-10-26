@@ -13,6 +13,7 @@ this document describes what they produce. Apply them in filename order:
 | `20261020130000_draft_timer_sweep.sql` | The server-side draft clock (docs/release-architecture.md section 14): `_auto_pick_if_expired` (the body of `auto_pick_if_expired`, which now calls it), the sweep `_auto_pick_expired_drafts`, and, when pg_cron is enabled, the jobs that run it every minute and trim its run history daily (see [Draft clock sweep](#draft-clock-sweep)). Ends with a one-row select saying whether the sweep is scheduled. Idempotent. |
 | `20261021120000_undo_while_paused.sql` | `undo_last_pick` restarts the clock at `draft_paused_at` while the draft is paused, so the turn it hands back gets one full clock from Resume instead of the pause on top (docs/release-architecture.md section 14.6). Idempotent. |
 | `20261022120000_public_leagues.sql` | Public leagues (docs/release-architecture.md section 15): `leagues.is_public`, `stream_url` and `replay_links` with their checks and a partial index, the commissioner's `update_league_public_page`, and `list_public_leagues` / `get_public_league`, which anyone (`anon` included) may call and which return a public league's safe fields as JSON (see [Public leagues](#public-leagues)). No policy changes. Ends with `select * from public._migration_report();`. Idempotent. |
+| `20261026120000_watch_review.sql` | Watch listings and the playoffs on /watch (docs/release-architecture.md section 16): the [`site_admins`](#site_admins) table, `leagues.watch_listed` and `watch_reviewed_at` with a partial index, the admin's `site_admin_status`, `list_watch_review` and `set_watch_listing`, and new bodies for `list_public_leagues` (listed public leagues only, plus each league's playoff matches) and `get_public_league` (each match's bracket links, and `watch_listed`). No policy changes. Re-run it after any re-run of the public leagues file. Ends with `select * from public._migration_report();`. Idempotent. |
 
 The hardening migration drops **every** policy on the application tables and
 recreates the set in [Row level security](#row-level-security), and drops the
@@ -94,13 +95,17 @@ hardening migration copies the format onto every existing format-based league
 | `tiebreaker` | text | not null, default `head_to_head`, check in (`head_to_head`, `differential`): the tiebreaker applied first after win percentage and wins (see [Standings and playoffs](#standings-and-playoffs)) |
 | `playoff_format` | text | not null, default `none`, check in (`none`, `top_2`, `top_4`, `top_6`, `top_8`); `create_league` defaults it to `top_4` |
 | `champion_member_id` | uuid | fk `league_members(id)` on delete set null; the winner of the final, or the top seed once the regular season is complete in a league without playoffs; null until then |
-| `is_public` | boolean | not null, default false; the league is listed on /watch and anyone may read it through `get_public_league` |
+| `is_public` | boolean | not null, default false; anyone may read the league through `get_public_league` (its /watch/<id> page), and it is on the /watch list once `watch_listed` too |
 | `stream_url` | text | null, or the league's stream in one of the stored forms of [Public leagues](#public-leagues) (check `leagues_stream_url_check`, `_stream_url_ok`) |
 | `replay_links` | jsonb | not null, default `[]`; `[{ title, url, added_at }]`, at most 20 (check `leagues_replay_links_check`); written only by `update_league_public_page` |
+| `watch_listed` | boolean | not null, default false; a site admin approved the league for the /watch list (it shows there while `is_public`); written only by `set_watch_listing` |
+| `watch_reviewed_at` | timestamptz | null until a site admin first lists or unlists the league (null and not listed: waiting for review) |
 
 Index on `(draft_format_id)`, used by the `draft_formats` select policy, a
-partial index on `(champion_member_id)` for the foreign key, and the partial
-index `leagues_public_idx` on `(id) where is_public` for `list_public_leagues`.
+partial index on `(champion_member_id)` for the foreign key, the partial
+index `leagues_public_idx` on `(id) where is_public` (the admin's review list)
+and `leagues_watch_listed_idx` on `(id) where is_public and watch_listed` for
+`list_public_leagues`.
 
 Since this column is a second foreign key between `leagues` and
 `league_members` (the first is `league_members.league_id`), a PostgREST embed
@@ -319,6 +324,21 @@ Seed and refresh order (docs/release-architecture.md 13.9):
 Legacy (`id`, `league_id`, `member_id`, `pick_slot`, `created_at`). RLS enabled
 with no policies, so it is unreachable through the API.
 
+### `site_admins`
+
+The accounts that review the /watch list (docs/release-architecture.md
+section 16), from `20261026120000_watch_review.sql`.
+
+| Column | Type | Notes |
+| --- | --- | --- |
+| `user_id` | uuid | pk, fk `auth.users(id)` on delete cascade |
+| `added_at` | timestamptz | not null, default `now()` |
+
+RLS enabled with no policies, and every privilege revoked from `anon` and
+`authenticated`, so no API role reads or writes it (`42501`); the functions
+read it through `_is_site_admin`. Add an account in the SQL editor:
+`insert into public.site_admins (user_id) select id from auth.users where email = '<email>' on conflict do nothing;`
+
 ## Data fixes applied by the hardening migration
 
 - `league_members.role`: the historical `commisioner` typo is corrected, then
@@ -409,6 +429,9 @@ Every function is `language plpgsql security definer set search_path = public,
 extensions`, revoked from `public` and `anon`, and granted to `authenticated`.
 `get_server_time`, `get_invite_preview`, `is_league_member`,
 `list_public_leagues` and `get_public_league` are also granted to `anon`. Helpers prefixed with `_` are internal (no API grants).
+`site_admin_status`, `list_watch_review` and `set_watch_listing` are for site
+admins (see [Public leagues](#public-leagues)); the last two refuse anyone else
+with `not_site_admin`.
 
 Validation failures raise SQLSTATE `P0001` with a user-facing `message` and a
 `snake_case` code in `detail`. `friendlyError()` in the app shows the message
@@ -451,8 +474,11 @@ Codes shared by many functions: `not_authenticated` (no user),
 | `clear_playoffs(p_league_id uuid)` | commissioner | Deletes every playoff match, the `match_result` news of playoff matches, every `season` news row, and clears `champion_member_id`. Allowed with playoff results (the UI confirms first); the regular season is untouched. A league without playoffs has no bracket to remove and its champion is the top seed by rule, so with a complete regular season the call leaves seed 1 crowned (the same champion the data fix restores). | void |
 | `is_league_member(p_league_id uuid)` | policies | `true` when the caller has a member row. Security definer so the `league_members` policy does not recurse. | `boolean` |
 | `update_league_public_page(p_league_id uuid, p_is_public boolean, p_stream_url text, p_replay_links jsonb)` | commissioner | Saves the Public page card at once: the flag (null raises `invalid_public_setting`), the stream link (trimmed, blank means none, otherwise a stored stream form) and the replays (at most 20 `{ title, url }` objects, a trimmed title of 1..80 characters and a stored replay form, each link once). A link already listed keeps its `added_at`; a new one gets `now()`. | `jsonb { is_public, stream_url, replay_links }`. `invalid_public_setting`, `invalid_stream_link`, `invalid_replays`, `too_many_replays`, `invalid_replay_title`, `invalid_replay_link`, `duplicate_replay` |
-| `list_public_leagues()` | anon, authenticated | The 100 public leagues with the most recent activity, running drafts (started, not complete, not paused) first, each with its counts, draft and season progress, newest pick, champion, stream and replays. Coaches by team name only. | `jsonb { server_time, leagues: [...] }` |
-| `get_public_league(p_league_id uuid)` | anon, authenticated | One public league, or null when it is missing or private (the two read the same): settings, draft state, the member on the clock, coaches (member id, team name, draft position), picks, rosters, matches, standings, stream, replays and a `pokemon` map of sprite and types per name on the board. Never raises. | `jsonb` or null |
+| `list_public_leagues()` | anon, authenticated | The 100 listed public leagues (`is_public and watch_listed`) with the most recent activity, running drafts (started, not complete, not paused) first, each with its counts, draft and season progress, its playoff matches (`playoff_matches: [{ round_number, status }]` in bracket order), newest pick, champion, stream and replays. Coaches by team name only. | `jsonb { server_time, leagues: [...] }` |
+| `get_public_league(p_league_id uuid)` | anon, authenticated | One public league, listed or not, or null when it is missing or private (the two read the same): settings, draft state, the member on the clock, coaches (member id, team name, draft position), picks, rosters, matches with their bracket links (`feeds_match_id`, `feeds_slot`), standings, stream, replays, `watch_listed` and a `pokemon` map of sprite and types per name on the board. Never raises. | `jsonb` or null |
+| `site_admin_status()` | authenticated | Whether the caller is a site admin and, for one, how many public leagues were never reviewed. | `jsonb { admin: false }` or `{ admin: true, watch_waiting }` |
+| `list_watch_review()` | site admin | Every public league: never reviewed first, then listed, then unlisted, newest league first within each, with its name, `created_at`, the commissioner's team name, coach count and limit, draft state, stream, replays, `watch_listed` and `watch_reviewed_at`. | `jsonb { server_time, leagues: [...] }`. `not_site_admin` |
+| `set_watch_listing(p_league_id uuid, p_listed boolean)` | site admin | Locks the league and sets `watch_listed` and `watch_reviewed_at = now()`. Any league; only a public one shows. | `jsonb { id, watch_listed, watch_reviewed_at }`. `not_site_admin`, `invalid_listing`, `league_not_found` |
 
 ### Internal helpers
 
@@ -493,7 +519,9 @@ trigger function: plain `language plpgsql`, not security definer, since it
 only rewrites `new.id` and `new.created_at`). The public leagues file adds
 `_stream_url_ok` and `_replay_url_ok` (the stored link forms, immutable; the
 `stream_url` check uses the first), `_pokemon_name_key` and `_public_pokemon`
-(sprites and types for `get_public_league`, see [Public leagues](#public-leagues)). `_migration_report` is the
+(sprites and types for `get_public_league`, see [Public leagues](#public-leagues)). The watch review file adds
+`_is_site_admin` (the caller is in `site_admins`) and `_require_site_admin`
+(`not_authenticated` or `not_site_admin` otherwise). `_migration_report` is the
 operator-facing health check from
 [Verifying the migration](#verifying-the-migration); like the other helpers it
 has no API grants.
@@ -671,6 +699,14 @@ display names and slugs) and then `pokemon_dex`; a name found nowhere is left
 out. Signed-out visitors cannot read either table, and this is how the watch
 page shows sprites and types.
 
+`20261026120000_watch_review.sql` (section 16) puts a site admin between a
+public league and the /watch list: `list_public_leagues` returns only leagues
+with `watch_listed`, which only `set_watch_listing` writes, for a caller in
+[`site_admins`](#site_admins). A league's own page reads the same either way.
+Approval sticks: it survives new links and a trip to private and back, and an
+unlisted league stays off until an admin lists it again. Existing public
+leagues start unreviewed.
+
 ## Row level security
 
 RLS is enabled on every table. Only these policies exist after the hardening
@@ -691,7 +727,9 @@ migration:
 The public leagues file adds no policy: a public league is read only through
 `list_public_leagues` and `get_public_league` (see [Public leagues](#public-leagues)),
 and its tables stay member-only, so a signed-out visitor still cannot select
-or subscribe to them.
+or subscribe to them. The watch review file adds none either: `site_admins`
+has RLS on, no policy and no privileges for the API roles, and a commissioner's
+direct update of `leagues.watch_listed` matches no update policy (zero rows).
 
 The browser's only remaining direct writes are `draft_formats` (own rows),
 `draft_chat_messages` inserts and `leagues` deletes. PostgREST reports an
@@ -807,6 +845,13 @@ table, signed-in users can, neither can write it and the service role can;
 `_migration_report()` lists a missing `pokemon` unique constraint and a re-run
 adds it back; and `draft_formats.json` accepts a `rules` key while
 `_format_pool` and `update_league_pool` still copy only `{ name, points, tier }`),
+the public leagues and their review (`public-leagues.test.ts`, and
+`watch-review.test.ts`: only a site admin lists, unlists or reads the review
+list; signed-out callers, a session without a user and every other account are
+refused; `site_admins` is closed to every API role; a commissioner's direct
+write lists nothing; a new public league's page works while /watch leaves it
+out; approval sticks through new links and a trip to private; the playoff
+matches on the list and the bracket links on the page),
 the draft clock sweep (`draft-timer-sweep.test.ts`, in a database of its own
 because the sweep acts on every live draft: a turn taken with no signed-in
 user, running, paused, unstarted and finished drafts left alone, a whole draft

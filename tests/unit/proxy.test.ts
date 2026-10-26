@@ -381,6 +381,7 @@ describe("proxy: public and protected paths", () => {
 
   it.each([
     "/dashboard",
+    "/admin",
     "/builder",
     "/calculator",
     "/training",

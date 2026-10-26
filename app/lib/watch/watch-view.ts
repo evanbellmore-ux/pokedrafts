@@ -1,4 +1,5 @@
-import { pluralize, teamNameLabel } from "@/app/lib/league/labels";
+import { isMatchCompleted } from "@/app/lib/league/bracket";
+import { playoffRoundName, pluralize, teamNameLabel } from "@/app/lib/league/labels";
 import {
   platformOf,
   readReplayEntries,
@@ -6,7 +7,7 @@ import {
   type ReplayLink,
   type StreamLink,
 } from "@/app/lib/watch/stream-links";
-import type { PublicLeague, PublicLeagueSummary } from "@/app/types/league";
+import type { PublicLeague, PublicLeagueSummary, PublicPlayoffMatch } from "@/app/types/league";
 
 /**
  * What the Watch pages show (docs/release-architecture.md section 15): which
@@ -160,8 +161,25 @@ function draftDetail(league: PublicLeagueSummary): string {
 }
 
 /**
+ * Where the bracket stands: the first round with a match still to play, by
+ * its name ("Semifinals", from its distance to the final as on the Matches
+ * page), with that round's played count when it has more than one match.
+ * Null when there is no bracket or every match is final.
+ */
+export function playoffProgress(matches: readonly PublicPlayoffMatch[]): string | null {
+  const open = matches.filter((match) => !isMatchCompleted(match));
+  if (open.length === 0) return null;
+  const round = Math.min(...open.map((match) => match.round_number));
+  const last = Math.max(...matches.map((match) => match.round_number));
+  const name = playoffRoundName(2 ** Math.max(0, last - round));
+  const inRound = matches.filter((match) => match.round_number === round);
+  if (inRound.length < 2) return name;
+  return `${name} · ${inRound.length - open.filter((match) => match.round_number === round).length} of ${inRound.length} played`;
+}
+
+/**
  * The league's status on Watch: the stream while it is on air, then the
- * draft's progress, then the season's, then the champion.
+ * draft's progress, then the season's, the playoffs', then the champion.
  */
 export function leagueStatus(
   league: PublicLeagueSummary,
@@ -197,6 +215,14 @@ export function leagueStatus(
   if (league.champion) {
     return { tone: "champion", label: "Champion", detail: teamNameLabel(league.champion.team_name) };
   }
+  const playoffs = league.playoff_matches ?? [];
+  if (playoffs.length > 0) {
+    return { tone: "season", label: "Playoffs", detail: playoffProgress(playoffs) };
+  }
+  if (league.regular_total > 0 && league.regular_played >= league.regular_total) {
+    // Every regular match final, and no bracket or champion yet (a cleared bracket waits to be made again).
+    return { tone: "season", label: "Regular season complete", detail: `${pluralize(league.regular_total, "match", "matches")} played` };
+  }
   if (league.regular_total > 0) {
     return {
       tone: "season",
@@ -206,6 +232,22 @@ export function leagueStatus(
   }
   return { tone: "season", label: "Draft complete", detail: null };
 }
+
+/** A public league's place on the /watch list (section 16): approved, never reviewed, or kept off by an admin. */
+export type ListingState = "listed" | "waiting" | "unlisted";
+
+/** Without the review migration every public league is listed, so a row that lacks the fields reads as listed. */
+export function listingState(league: { watch_listed?: boolean; watch_reviewed_at?: string | null }): ListingState {
+  if (league.watch_listed ?? true) return "listed";
+  return league.watch_reviewed_at ? "unlisted" : "waiting";
+}
+
+/** What a public league's commissioner reads on the Public page card about the /watch list. */
+export const LISTING_NOTES: Record<ListingState, string> = {
+  listed: "Anyone with the link can watch this league, and it is listed on Watch.",
+  waiting: "Anyone with the link can watch this league. It joins the list on Watch once a PokeDrafts admin approves it.",
+  unlisted: "Anyone with the link can watch this league. It is not listed on Watch.",
+};
 
 export type WatchPhase = "setup" | "live" | "paused" | "completed";
 

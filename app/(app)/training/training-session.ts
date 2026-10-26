@@ -362,6 +362,13 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
           [speciesId, state.status === "loading" ? { status: "error" as const, message: message.message } : state]));
         set({ engine: { status: "error", message: message.message }, suggestions, moveOptions });
         failWaiting(message.message);
+        // A battle the worker had begun but not brought to turn 1 cannot go on (a situation's start has no Forfeit):
+        // back to Setup, which states the fact and offers Retry. One past turn 1 keeps its board, log and autosave.
+        const battle = snapshot.battle;
+        if (battle && battle.phase.kind !== "ended" && (battle.board?.turn ?? 0) < 1) {
+          chosenFrom = null;
+          set({ battle: null, setupError: `The battle engine stopped: ${message.message}` });
+        }
         return;
       }
       case "validated":

@@ -94,7 +94,7 @@ export default function InviteCard({
     <section
       id="invite"
       aria-labelledby="invite-heading"
-      className="scroll-mt-24 rounded-xl border border-line bg-panel p-5"
+      className="scroll-mt-[calc(var(--app-nav-height,3.5rem)+2.5rem)] rounded-xl border border-line bg-panel p-5"
     >
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">

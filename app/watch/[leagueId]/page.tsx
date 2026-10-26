@@ -10,7 +10,9 @@ type Props = { params: Promise<{ leagueId: string }> };
 
 /**
  * The league's name in the tab and in a shared link's preview. A private or
- * missing league gets the 404 page's title and stays out of search results.
+ * missing league gets the 404 page's title and stays out of search results,
+ * and so does a public one that is not listed on /watch (section 16): only
+ * leagues an admin approved are indexed.
  */
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { leagueId } = await params;
@@ -27,6 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: data.name,
     description,
     alternates: { canonical: `/watch/${data.id}` },
+    ...(data.watch_listed === false ? { robots: { index: false, follow: false } } : {}),
   };
 }
 

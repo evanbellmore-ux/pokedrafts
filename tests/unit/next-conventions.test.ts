@@ -48,6 +48,7 @@ describe("route map (docs section 3)", () => {
     expect(urls).toEqual(
       [
         "/",
+        "/admin",
         "/auth/callback",
         "/builder",
         "/calculator",

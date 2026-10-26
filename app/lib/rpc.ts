@@ -15,7 +15,10 @@ import type {
   PublicLeague,
   PublicLeagueList,
   ScheduleFormat,
+  SiteAdminStatus,
   UndoPickResult,
+  WatchListing,
+  WatchReviewList,
 } from "@/app/types/league";
 
 /**
@@ -242,6 +245,16 @@ export function createRpc(client: SupabaseClient = createClient()) {
     /** Anyone: one public league, or null when it is missing or private. */
     getPublicLeague: (leagueId: string) =>
       call<PublicLeague | null>(client, "get_public_league", { p_league_id: leagueId }),
+
+    /** Signed in: whether this account is a site admin, and then how many public leagues wait for review. */
+    siteAdminStatus: () => call<SiteAdminStatus>(client, "site_admin_status", {}),
+
+    /** Site admin: every public league with its review state (`not_site_admin` otherwise). */
+    listWatchReview: () => call<WatchReviewList>(client, "list_watch_review", {}),
+
+    /** Site admin: lists (true) or unlists (false) a league on /watch. */
+    setWatchListing: (leagueId: string, listed: boolean) =>
+      call<WatchListing>(client, "set_watch_listing", { p_league_id: leagueId, p_listed: listed }),
   };
 }
 
