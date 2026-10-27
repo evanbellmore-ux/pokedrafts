@@ -1,4 +1,5 @@
 import type { DoublesSideId } from "@/app/lib/battle/doubles-types";
+import { reportClientError } from "@/app/lib/error-reports";
 import type { HabitsRecord } from "./model/decision";
 import { emptyHabits, parseHabits } from "./model/habits-data";
 import {
@@ -350,6 +351,7 @@ export function createTrainingSession(options: TrainingSessionOptions): Training
         flush();
         return;
       case "load-error": {
+        reportClientError("training", message.message);
         // Requests waiting for the worker fail with it (Retry re-sends the suggestions; reopening an editor its move list).
         queuedMoves.clear();
         const suggestions = { ...snapshot.suggestions };

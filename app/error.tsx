@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import Button, { ButtonLink } from "@/app/components/ui/Button";
+import { reportClientError } from "@/app/lib/error-reports";
 
 export default function ErrorPage({
   error,
@@ -12,6 +13,7 @@ export default function ErrorPage({
 }) {
   useEffect(() => {
     console.error("[pokedrafts] route error", error);
+    reportClientError("page", error);
   }, [error]);
 
   return (

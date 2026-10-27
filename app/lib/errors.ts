@@ -1,10 +1,13 @@
 /**
  * Maps Supabase / PostgREST / auth / network errors to sentences that are
  * safe and useful to show to users. Raw database messages are logged to the
- * console and replaced with a generic sentence; messages raised by our own
- * Postgres functions (SQLSTATE P0001) are written for users and shown
- * verbatim, as are GoTrue auth messages.
+ * console (and reported while error reports are on, app/lib/error-reports.ts)
+ * and replaced with a generic sentence; messages raised by our own Postgres
+ * functions (SQLSTATE P0001) are written for users and shown verbatim, as are
+ * GoTrue auth messages.
  */
+
+import { reportClientError } from "./error-reports";
 
 export type ErrorLike = {
   code?: string | number | null;
@@ -116,11 +119,15 @@ export function isNetworkError(error: unknown): boolean {
   return !!like.message && NETWORK_PATTERNS.test(like.message);
 }
 
-/** Raw errors are logged, never displayed (release-architecture.md, 2). */
+/**
+ * Raw errors are logged, never displayed (release-architecture.md, 2), and
+ * reported from the browser while error reports are on (section 17).
+ */
 function logRawError(error: unknown): void {
   if (typeof console !== "undefined") {
     console.error("[pokedrafts] unexpected error", error);
   }
+  reportClientError("unexpected", error);
 }
 
 function isAuthError(error: unknown): boolean {
