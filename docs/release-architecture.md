@@ -42,6 +42,7 @@ app/
   global-error.tsx                root fallback (renders <html>/<body>)
   page.tsx                        public landing page (server). Logged-in users are redirected to /dashboard by the proxy.
   auth/callback/route.ts          exchanges ?code (PKCE) or ?token_hash&type, redirects to validated ?next
+  api/error-reports/route.ts      POST: one browser error report, written to the server log while error reports are on (section 17)
   (auth)/
     layout.tsx                    PublicShell (app/components/PublicShell.tsx): brand mark above one centred card, no AppNav; the invite page uses the same shell
     login/page.tsx                server wrapper + LoginForm (client)
@@ -293,6 +294,7 @@ Pages use `bg-bg`, `bg-panel`, `border-line`, `bg-accent text-on-accent`, `text-
 - `node scripts/check-client-contract.mjs` must exit 0 (it also runs inside `npm run test:db`).
 - `tests/db/` runs the migrations against an embedded Postgres (`embedded-postgres` package, initialised `UTF8` like Supabase) with a stub `auth` schema (`auth.uid()` reading `request.jwt.claim.sub`) and exercises every function in section 5 as different users, including the concurrency cases (two joins, two swaps for the same Pokémon, auto-pick from two clients, undo after a newer move), the RLS matrix (non-member cannot read a league; coach cannot update role), the Pool Builder dataset table (`pool-builder.test.ts`, section 13.8) and the server-side draft clock (`draft-timer-sweep.test.ts`, section 14.4). Script: `npm run test:db`.
 - `npm run check` = lint + `tsc --noEmit` + unit tests; `npm run build` must pass.
+- GitHub Actions runs `npm run check` and `npm run test:db` on every push to `main` and every pull request (`.github/workflows/ci.yml`, section 17.3); Vercel only builds.
 - Browser smoke test (Chrome pane) after migrations are applied to the live project: sign up, confirm, create league, invite, join, set order, run a 2-coach draft with one coach absent, report a result, standings, free-agent swap, undo.
 
 ## 10. Deployment hand-off
@@ -301,7 +303,7 @@ Pages use `bg-bg`, `bg-panel`, `border-line`, `bg-accent text-on-accent`, `text-
 2. In Supabase Auth settings add `<site>/auth/callback` to the redirect allow-list and set the Site URL.
    Change the "Confirm signup" and "Reset password" email templates to token-hash links so they work when opened in a different browser or device than the one that started the flow (PKCE `{{ .ConfirmationURL }}` links need the verifier cookie and otherwise land on `/login?error=auth-device`):
    `{{ .SiteURL }}/auth/callback?token_hash={{ .TokenHash }}&type=signup&next={{ .RedirectTo }}` for signup and `...&type=recovery&next={{ .RedirectTo }}` for recovery. `{{ .RedirectTo }}` is the `emailRedirectTo` / `redirectTo` value (`<origin>/auth/callback?next=<path>`), which the route unwraps to `<path>`.
-3. Set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` on the host. The service-role key is only needed by `scripts/` (`.env.scripts`).
+3. Set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` on the host. The service-role key is only needed by `scripts/` (`.env.scripts`). Optionally set `NEXT_PUBLIC_ERROR_REPORTING=on` too, for error reports in the host's logs (section 17); it takes effect on the next deployment.
 4. Seed `pokemon_dex` with `npm run seed:dex`, upload sprites to the `sprites` bucket, then `npm run seed:sprites` and `npm run seed:types`. Once `20260916120000_pool_builder.sql` is applied, `npm run seed:pokemon` loads the Pool Builder dataset (section 13.9); the app reads `pokemon_dex` only until then.
 5. Run `node scripts/check-client-contract.mjs` on the branch being deployed (exit 0) and ship the client and the hardening migration in the same window (README, "The deployed client must be on the RPC catalog first").
 6. Enable pg_cron (Integrations > Cron) and apply `20261020130000_draft_timer_sweep.sql`, so a pick clock runs out even when nobody has the draft room open; its result row should read `Scheduled: ...` (section 14.5).
@@ -826,3 +828,37 @@ app/
 1. Run `20261026120000_watch_review.sql` in the SQL editor; it ends with `select * from public._migration_report();` (no rows means nothing to fix). Until it runs, a deployed client's `/admin` is a 404 and the account menu shows no Watch listings.
 2. Add the admin account: `insert into public.site_admins (user_id) select id from auth.users where email = '<the email you sign in with>' on conflict do nothing;`
 3. Deploy the client, then approve the public leagues that should be on `/watch` at `/admin`. Run step 1 before deploying: the old client keeps working on the new functions (they only add fields), and the list is gated from the moment the file runs.
+
+## 17. Error reports and continuous integration
+
+Added 2026-10-27 from the pre-launch review, which found that nobody would see a production error and that no test ran automatically. Almost every write goes from the browser straight to a Supabase RPC, so a failure reached only the user's console; a server error showed only as a Vercel log line with a digest; Vercel only builds.
+
+### 17.1 Decisions
+
+- **No outside service.** The owner chose (2026-10-27) to keep error reports on PokeDrafts' own host rather than send them to Sentry or GlitchTip: the browser posts each report to `/api/error-reports`, which writes it to the server log next to the server's own errors. There is no grouping or alerting; Vercel's Logs search finds them (`error report`) for as long as the plan keeps runtime logs.
+- **Off unless switched on.** `NEXT_PUBLIC_ERROR_REPORTING=on` (also `1` or `true`) turns reports on. Next inlines it at build time, so a change takes a deployment. Unset (local development, the tests, CI), the browser sends nothing, the route answers 404 and the server logs nothing extra.
+- **No personal data.** A report holds the error's name, message, code, digest and stack, the page path and its kind; the route adds the browser's user agent and logs no other header. The browser sends it without cookies (`credentials: "omit"`), so it carries no session, and the proxy, which lets the path through (it is not a signed-in section), finds none to check. Query strings and fragments (the auth callback's `code` and `token_hash`, `next`), email addresses, JSON web tokens and bearer tokens are scrubbed from the text in the browser and again in the route, and a PostgREST error's `details` and `hint`, which can quote row values, are never sent.
+- **Bounded.** A page sends a repeated error once and ten reports at most. The route takes same-origin requests only (`Sec-Fetch-Site`, or the Origin's host against Host) with bodies up to 16 KB, and clips each field (message 500 characters, stack 2,000).
+- **No CSP change.** Reports go to the site's own origin, which `connect-src 'self'` already allows.
+
+### 17.2 Where reports come from
+
+| Kind | Source |
+| --- | --- |
+| `page` | `app/error.tsx` caught a render error. A Server Component's error arrives with only its digest; the server's line with the same digest has the message. |
+| `root` | `app/global-error.tsx` replaced the root layout. |
+| `uncaught` | `instrumentation-client.ts`: a window `error` that no boundary caught (an event handler, a timer), unless a browser extension's script threw it. |
+| `rejection` | `instrumentation-client.ts`: an `unhandledrejection`. |
+| `unexpected` | `friendlyError` hid a raw error behind `GENERIC_ERROR` or `FEATURE_UNAVAILABLE_ERROR` (`app/lib/errors.ts`). |
+| `training` | The Training battle engine's `load-error`: the worker did not load or stopped. |
+| `render`, `route`, `action`, `proxy` | `instrumentation.ts`'s `onRequestError` on the server, with the route file, method and path. Next does not call it for redirects or `notFound()`. |
+
+The browser skips `AbortError`, "ResizeObserver loop" and "Script error." and sends nothing while offline. Each report becomes one line, `[pokedrafts] error report {"source":"browser" or "server","kind":...}`, built in `app/lib/error-reports.ts`.
+
+### 17.3 Continuous integration
+
+`.github/workflows/ci.yml` runs on every push to `main` and every pull request, and by hand from the Actions tab (Run workflow): two jobs on `ubuntu-latest` with Node 24 and setup-node's npm cache, `npm ci` and then `npm run check` in one and `npm run test:db` in the other (embedded Postgres from `@embedded-postgres/linux-x64`, which the lockfile carries). It needs no secrets, since the tests stub their own environment. A newer push to a pull request cancels the older run.
+
+### 17.4 Tests
+
+`tests/unit/error-reports.test.ts`: the switch; scrubbing (a query string ending at a stack frame's line and column, emails, tokens, Firefox frames left alone); the route's 404 while off, 403 for other origins, 413 and 400, and its one line holding nothing of the request but the user agent; `onRequestError`'s line without headers; the browser's report without cookies or the page's query string, the repeat and per-page limits, the noise filters and offline; `friendlyError`'s report without `details` or `hint`; Training's `load-error`; the listeners in `instrumentation-client.ts`; and both error boundaries' calls. `next-conventions.test.ts` lists `/api/error-reports` in the route map, and `proxy.test.ts` checks that the proxy lets it through with no session and no auth call.

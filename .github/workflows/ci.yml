@@ -1,0 +1,47 @@
+# The gates on every push to main and every pull request
+# (docs/release-architecture.md section 17.3). Vercel only builds, so this is
+# where the tests run. The two jobs run side by side; "Run workflow" on the
+# Actions tab starts them by hand.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# A newer push to a pull request stops its older run; runs on main finish.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  check:
+    name: Lint, types and unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm run check
+
+  db:
+    name: Database tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      # Embedded Postgres 18 (@embedded-postgres/linux-x64); the runner's user is not root, which Postgres requires.
+      - run: npm run test:db

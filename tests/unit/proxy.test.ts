@@ -425,6 +425,17 @@ describe("proxy: unknown paths reach the 404 page", () => {
   });
 });
 
+describe("proxy: error reports", () => {
+  // The browser posts reports without cookies (app/lib/error-reports.ts), so
+  // the route must be reachable with no session (docs section 17.1).
+  it("lets /api/error-reports through without a session", async () => {
+    const response = await run("/api/error-reports", { claims: null });
+    expect(response.status).toBe(200);
+    expect(response.headers.get("location")).toBeNull();
+    expect(userCalls.count).toBe(0);
+  });
+});
+
 describe("proxy: Content-Security-Policy", () => {
   function nonceOf(policy: string | null) {
     return /'nonce-([^']+)'/.exec(policy ?? "")?.[1] ?? null;

@@ -1,10 +1,13 @@
 "use client";
 
+import { useEffect } from "react";
+import { reportClientError } from "@/app/lib/error-reports";
 import "./globals.css";
 
 /**
  * Replaces the root layout when it fails to render, so it must provide its
- * own <html> and <body>. Kept dependency-free apart from the global styles.
+ * own <html> and <body>. Kept dependency-free apart from the global styles
+ * and the error report (app/lib/error-reports.ts).
  */
 export default function GlobalError({
   error,
@@ -13,6 +16,10 @@ export default function GlobalError({
   error: Error & { digest?: string };
   retry: () => void;
 }) {
+  useEffect(() => {
+    reportClientError("root", error);
+  }, [error]);
+
   return (
     <html lang="en" data-pokemon-theme="normal">
       <body className="flex min-h-full flex-col bg-bg text-text">

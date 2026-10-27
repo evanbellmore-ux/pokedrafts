@@ -49,6 +49,7 @@ describe("route map (docs section 3)", () => {
       [
         "/",
         "/admin",
+        "/api/error-reports",
         "/auth/callback",
         "/builder",
         "/calculator",

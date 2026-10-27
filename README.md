@@ -371,6 +371,11 @@ with status 0 regardless of the results, so `tests/db/global-setup.ts` removes
 that hook once it has stopped the server, and `tests/db/exit-code.test.ts`
 checks the status of a failing run.
 
+GitHub Actions runs `npm run check` and `npm run test:db` on every push to
+`main` and on every pull request (`.github/workflows/ci.yml`: two jobs on
+Ubuntu with Node 24 and the npm cache). Vercel runs only the build, so this is
+where the tests run.
+
 ## Deploying
 
 1. Run `node scripts/check-client-contract.mjs` on the release branch; it must
@@ -382,8 +387,16 @@ checks the status of a failing run.
 2. Set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` on the
    host (Vercel or any Node host that runs `npm run build` and `npm start`). The
    service-role key is not needed by the app.
-3. Seed the dex, upload sprites, link them and backfill types.
-4. Do a smoke test: sign up, confirm the email, create a league, join with a
+3. Optional, error reports: set `NEXT_PUBLIC_ERROR_REPORTING=on` on the host
+   and deploy again (Next reads it at build time). The browser then posts its
+   errors to `/api/error-reports`, and they and the server's errors are written
+   to the host's logs as `[pokedrafts] error report {...}` lines; on Vercel,
+   search the project's Logs for `error report`. Vercel keeps runtime logs
+   for a limited time that depends on the plan. Unset, the browser sends
+   nothing and no report lines are written (docs/release-architecture.md
+   section 17).
+4. Seed the dex, upload sprites, link them and backfill types.
+5. Do a smoke test: sign up, confirm the email, create a league, join with a
    second account through the invite link, set the draft order, run a short
    draft, report a result, check the standings, make and undo a free-agent move.
 
