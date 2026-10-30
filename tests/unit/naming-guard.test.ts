@@ -352,7 +352,8 @@ describe("naming guard: names, never positions", () => {
       }
     }
     expect(hits).toEqual([]);
-  });
+    // Parses every source file under app/.
+  }, 30_000);
 
   it("the guard's patterns catch the removed labels", () => {
     for (const text of ["your left", "Opponent's right Pokémon", "Left foe", "Right foe", "Lead · left", "Garchomp (left)", "left HP", "Change left Pokémon"]) expect(POSITIONAL.test(text) || POSITION_WORDS.test(text), text).toBe(true);
