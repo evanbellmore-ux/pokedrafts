@@ -368,6 +368,8 @@ describe("proxy: public and protected paths", () => {
     "/invite/ABC123",
     "/watch",
     "/watch/8f3c9c1e-1111-4222-8333-444455556666",
+    "/privacy",
+    "/terms",
   ])("%s is reachable logged out", async (path) => {
     const response = await run(path, { claims: null });
     expect(response.status).toBe(200);
@@ -379,9 +381,18 @@ describe("proxy: public and protected paths", () => {
     expect(response.headers.get("location")).toBeNull();
   });
 
+  // The legal pages are linked from the Account page and must stay readable
+  // there: unlike /, /login and /signup they never bounce to the dashboard.
+  it.each(["/privacy", "/terms"])("%s renders for a signed-in user too", async (path) => {
+    const response = await run(path, { claims: { sub: "user-1" } });
+    expect(response.status).toBe(200);
+    expect(response.headers.get("location")).toBeNull();
+  });
+
   it.each([
     "/dashboard",
     "/admin",
+    "/account",
     "/builder",
     "/calculator",
     "/training",

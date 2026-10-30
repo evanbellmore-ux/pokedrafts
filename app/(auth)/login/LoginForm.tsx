@@ -18,6 +18,7 @@ export default function LoginForm({
   next,
   linkError = null,
   discord = false,
+  accountDeleted = false,
 }: {
   next: string;
   /**
@@ -31,6 +32,8 @@ export default function LoginForm({
   linkError?: LinkError | null;
   /** The Supabase project has Discord on: Continue with Discord shows above the form. */
   discord?: boolean;
+  /** The Account page just deleted the account (`/login?account=deleted`). */
+  accountDeleted?: boolean;
 }) {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -72,6 +75,12 @@ export default function LoginForm({
       <p className="mt-1 text-sm text-muted">
         Welcome back, coach. Log in to get to your leagues.
       </p>
+
+      {accountDeleted && (
+        <Alert variant="success" title="Account deleted" className="mt-5">
+          Your PokeDrafts account has been deleted and you are signed out.
+        </Alert>
+      )}
 
       {linkError === "other-device" && (
         <Alert
@@ -169,6 +178,28 @@ export default function LoginForm({
           </Link>
         </p>
       </div>
+
+      {/* Continue with Discord creates an account for someone new, so the
+          consent line from the sign-up page belongs here too. */}
+      {discord && (
+        <p className="mt-4 text-xs leading-relaxed text-muted">
+          By continuing with Discord, you agree to the{" "}
+          <Link
+            href="/terms"
+            className={`${linkClassName} font-medium text-accent-text hover:underline`}
+          >
+            Terms of Service
+          </Link>{" "}
+          and acknowledge the{" "}
+          <Link
+            href="/privacy"
+            className={`${linkClassName} font-medium text-accent-text hover:underline`}
+          >
+            Privacy Policy
+          </Link>
+          .
+        </p>
+      )}
     </>
   );
 }

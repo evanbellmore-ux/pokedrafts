@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import BrandMark from "@/app/components/BrandMark";
 import LeaguePreview from "@/app/components/LeaguePreview";
+import PublicFooter from "@/app/components/PublicFooter";
+import PublicHeader from "@/app/components/PublicHeader";
 import { ButtonLink } from "@/app/components/ui/Button";
-import { linkClassName } from "@/app/lib/theme";
 
 export const metadata: Metadata = {
   title: {
@@ -46,27 +45,7 @@ const steps = [
 export default function LandingPage() {
   return (
     <>
-      <header className="relative z-10">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-          <Link
-            href="/"
-            className={`${linkClassName} -ml-1 flex items-center gap-2.5 px-1 py-1`}
-          >
-            <BrandMark className="h-7 w-7" />
-            <span className="text-[15px] font-semibold tracking-tight text-text">
-              PokeDrafts
-            </span>
-          </Link>
-          <nav aria-label="Account" className="flex items-center gap-1.5">
-            <ButtonLink href="/login" variant="ghost" size="sm">
-              Log in
-            </ButtonLink>
-            <ButtonLink href="/signup" size="sm">
-              Sign up
-            </ButtonLink>
-          </nav>
-        </div>
-      </header>
+      <PublicHeader />
 
       <main id="main-content" className="flex flex-1 flex-col">
         {/* A faint wash of the theme's accent behind the hero, nothing more. */}
@@ -151,29 +130,7 @@ export default function LandingPage() {
         </section>
       </main>
 
-      <footer className="border-t border-line">
-        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-8 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
-          <div className="flex items-center gap-2">
-            <BrandMark className="h-5 w-5" />
-            <span className="text-sm font-semibold tracking-tight text-text">PokeDrafts</span>
-          </div>
-          <p className="text-xs text-faint">
-            PokeDrafts is a fan project and is not affiliated with Nintendo, Game
-            Freak or The Pokémon Company.
-          </p>
-          <div className="flex gap-4 text-sm">
-            <Link href="/watch" className={`${linkClassName} text-muted hover:text-text`}>
-              Watch live leagues
-            </Link>
-            <Link href="/login" className={`${linkClassName} text-muted hover:text-text`}>
-              Log in
-            </Link>
-            <Link href="/signup" className={`${linkClassName} text-muted hover:text-text`}>
-              Sign up
-            </Link>
-          </div>
-        </div>
-      </footer>
+      <PublicFooter />
     </>
   );
 }

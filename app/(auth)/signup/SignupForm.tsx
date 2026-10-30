@@ -203,6 +203,25 @@ export default function SignupForm({ next, discord = false }: { next: string; di
         </Button>
       </form>
 
+      {/* Below both ways in, so it covers Continue with Discord too. */}
+      <p className="mt-4 text-xs leading-relaxed text-muted">
+        By creating an account, you agree to the{" "}
+        <Link
+          href="/terms"
+          className={`${linkClassName} font-medium text-accent-text hover:underline`}
+        >
+          Terms of Service
+        </Link>{" "}
+        and acknowledge the{" "}
+        <Link
+          href="/privacy"
+          className={`${linkClassName} font-medium text-accent-text hover:underline`}
+        >
+          Privacy Policy
+        </Link>
+        .
+      </p>
+
       <p className="mt-6 text-sm text-muted">
         Already have an account?{" "}
         <Link

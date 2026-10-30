@@ -265,6 +265,7 @@ describe("call sites in the foundation track", () => {
     "app/(app)/builder/BuilderClient.tsx",
     "app/(app)/dashboard/DashboardClient.tsx",
     "app/(app)/leagues/new/NewLeagueClient.tsx",
+    "app/(app)/account/AccountClient.tsx",
   ];
 
   it.each(files)("%s classifies the session through getCurrentUser", (file) => {

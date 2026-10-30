@@ -30,13 +30,18 @@ function linkTags(source: string) {
 }
 
 const authLinkFiles = [
-  // The brand link of the auth pages and the invite page.
+  // The brand link of the auth pages and the invite page, and their legal links.
   "app/components/PublicShell.tsx",
   "app/(auth)/login/LoginForm.tsx",
   "app/(auth)/signup/SignupForm.tsx",
   "app/(auth)/forgot-password/ForgotPasswordForm.tsx",
   "app/(auth)/update-password/UpdatePasswordForm.tsx",
-  "app/page.tsx",
+  // The landing page, privacy policy and terms share this header and footer.
+  "app/components/PublicHeader.tsx",
+  "app/components/PublicFooter.tsx",
+  // Links inside the privacy policy and the terms, and on the Account page.
+  "app/(legal)/LegalDocument.tsx",
+  "app/(app)/account/AccountClient.tsx",
 ];
 
 describe("long words wrap inside a 375px viewport (docs 8.5)", () => {
@@ -127,24 +132,55 @@ describe("inline text links (docs 8.4)", () => {
   });
 });
 
-describe("landing page landmarks (docs 8.4)", () => {
-  it("renders <header> and <footer> outside <main>", () => {
-    // Element positions in JSX (comments may mention the tags in prose).
-    const source = read("app/page.tsx");
-    const header = source.indexOf("<header className=");
-    const headerEnd = source.indexOf("</header>");
-    const main = source.indexOf('<main id="main-content"');
+describe("public page landmarks (docs 8.4)", () => {
+  it("PublicHeader and PublicFooter are one <header> and one <footer> each", () => {
+    for (const [file, tag] of [
+      ["app/components/PublicHeader.tsx", "header"],
+      ["app/components/PublicFooter.tsx", "footer"],
+    ] as const) {
+      const source = read(file);
+      expect(source, file).toContain(`<${tag} className=`);
+      expect(source.match(new RegExp(`<${tag}\\b`, "g")), file).toHaveLength(1);
+      expect(source, file).not.toMatch(/<main\b/);
+    }
+  });
+
+  it.each(["app/page.tsx", "app/(legal)/layout.tsx"])(
+    "%s renders the header and footer outside <main>",
+    (file) => {
+      // Element positions in JSX (comments may mention the tags in prose).
+      const source = read(file);
+      const header = source.indexOf("<PublicHeader />");
+      const main = source.indexOf('<main id="main-content"');
+      const mainEnd = source.lastIndexOf("</main>");
+      const footer = source.indexOf("<PublicFooter />");
+      expect(header).toBeGreaterThan(-1);
+      expect(main).toBeGreaterThan(header);
+      expect(mainEnd).toBeGreaterThan(main);
+      expect(footer).toBeGreaterThan(mainEnd);
+      // Exactly one of each, so the checks above describe the whole page.
+      expect(source.match(/<main\b/g)).toHaveLength(1);
+      expect(source.match(/<PublicHeader\b/g)).toHaveLength(1);
+      expect(source.match(/<PublicFooter\b/g)).toHaveLength(1);
+      expect(source).not.toMatch(/<(header|footer)\b/);
+    }
+  );
+
+  it("PublicShell puts the legal links in a footer after <main>", () => {
+    const source = read("app/components/PublicShell.tsx");
     const mainEnd = source.lastIndexOf("</main>");
     const footer = source.indexOf("<footer className=");
-    expect(header).toBeGreaterThan(-1);
-    expect(headerEnd).toBeGreaterThan(header);
-    expect(main).toBeGreaterThan(headerEnd);
-    expect(mainEnd).toBeGreaterThan(main);
+    expect(mainEnd).toBeGreaterThan(-1);
     expect(footer).toBeGreaterThan(mainEnd);
-    // Exactly one of each, so the checks above describe the whole page.
-    expect(source.match(/<main\b/g)).toHaveLength(1);
-    expect(source.match(/<header\b/g)).toHaveLength(1);
-    expect(source.match(/<footer\b/g)).toHaveLength(1);
+    const links = source.slice(footer);
+    expect(links).toContain('href="/privacy"');
+    expect(links).toContain('href="/terms"');
+  });
+
+  it("PublicFooter links the privacy policy and the terms", () => {
+    const source = read("app/components/PublicFooter.tsx");
+    expect(source).toContain('{ href: "/privacy", label: "Privacy" }');
+    expect(source).toContain('{ href: "/terms", label: "Terms" }');
   });
 });
 

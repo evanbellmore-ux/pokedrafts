@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { ChevronDown, LoaderCircle, LogOut, ShieldCheck, UserRound } from "lucide-react";
+import { ChevronDown, LoaderCircle, LogOut, Settings, ShieldCheck, UserRound } from "lucide-react";
 import BrandMark from "@/app/components/BrandMark";
 import ThemeToggle from "@/app/components/ThemeToggle";
 import Alert from "@/app/components/ui/Alert";
@@ -46,7 +46,8 @@ function currentValue(pathname: string, item: NavItem): "page" | "true" | undefi
 
 /**
  * Signed-in header: the brand, text tabs with an accent underline on the
- * current page, and an account menu holding the type theme and Sign out.
+ * current page, and an account menu holding the type theme, the Account
+ * page link and Sign out.
  * One row needs about 680px (brand 123, tabs 448, account 61, two gaps), so
  * below `md` the tabs take their own full-width row: 350px of tabs at 13px
  * from 360px wide, 307px at 12px below that. It still scrolls sideways
@@ -204,12 +205,12 @@ export function AdminMenuLink({ waiting }: { waiting: number }) {
 
 /**
  * The avatar button and its panel: who is signed in, the type theme picker,
- * Watch listings for a site admin, and Sign out. The email comes from the
- * local session (no network call); until it is known the avatar shows a
- * generic person icon. Whether the account is a site admin is asked once
- * (a failed answer counts as no); for an admin it is asked again on every
- * page, so the waiting count (also a dot on the avatar) follows their
- * reviews.
+ * Watch listings for a site admin, the Account page (privacy links and
+ * Delete account) and Sign out. The email comes from the local session (no
+ * network call); until it is known the avatar shows a generic person icon.
+ * Whether the account is a site admin is asked once (a failed answer counts
+ * as no); for an admin it is asked again on every page, so the waiting count
+ * (also a dot on the avatar) follows their reviews.
  */
 function AccountMenu({
   signingOut,
@@ -295,6 +296,10 @@ function AccountMenu({
           <MenuSeparator />
         </>
       )}
+      <MenuLink href="/account">
+        <Settings className="h-4 w-4 text-muted" aria-hidden="true" />
+        Account
+      </MenuLink>
       <MenuItem onClick={onSignOut} disabled={signingOut} aria-busy={signingOut || undefined}>
         <LogOut className="h-4 w-4 text-muted" aria-hidden="true" />
         Sign out

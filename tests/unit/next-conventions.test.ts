@@ -48,6 +48,7 @@ describe("route map (docs section 3)", () => {
     expect(urls).toEqual(
       [
         "/",
+        "/account",
         "/admin",
         "/auth/callback",
         "/builder",
@@ -66,7 +67,9 @@ describe("route map (docs section 3)", () => {
         "/leagues/[leagueId]/team",
         "/leagues/new",
         "/login",
+        "/privacy",
         "/signup",
+        "/terms",
         "/training",
         "/update-password",
         "/watch",
@@ -88,6 +91,7 @@ describe("route map (docs section 3)", () => {
       "error.tsx",
       "global-error.tsx",
       "(auth)/layout.tsx",
+      "(legal)/layout.tsx",
       "(app)/layout.tsx",
       "(app)/loading.tsx",
       "(app)/leagues/[leagueId]/layout.tsx",
