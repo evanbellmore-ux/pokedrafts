@@ -1,6 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { connect, type Client } from "./harness";
 import {
+  ACCOUNT_DELETION_MIGRATION,
   BASE_MIGRATION,
   DRAFT_TIMER_SWEEP_MIGRATION,
   EXECUTION_MIGRATION,
@@ -62,6 +63,9 @@ const API_FUNCTIONS = [
   "site_admin_status",
   "list_watch_review",
   "set_watch_listing",
+  // 20261026130000_account_deletion.sql
+  "account_deletion_preview",
+  "delete_account",
 ];
 
 const APP_TABLES = [
@@ -88,7 +92,9 @@ async function functionNames(client: Client): Promise<string[]> {
   return rows.map((r) => r.proname);
 }
 
-async function assertHardenedState(client: Client): Promise<void> {
+// `cleanReport`: whether `_migration_report()` must be empty, which only a
+// database that holds nothing but the migrations can promise.
+async function assertHardenedState(client: Client, { cleanReport = true } = {}): Promise<void> {
   const names = await functionNames(client);
   for (const fn of API_FUNCTIONS) {
     expect(names, `function ${fn} should exist`).toContain(fn);
@@ -106,6 +112,17 @@ async function assertHardenedState(client: Client): Promise<void> {
   expect(columnNames).toContain("tiebreaker");
   expect(columnNames).toContain("playoff_format");
   expect(columnNames).toContain("champion_member_id");
+
+  // Account deletion: the marker on kept teams, and the transfer guard that
+  // a re-run of the hardening file alone would drop again.
+  const memberColumns = await client.query<{ column_name: string }>(
+    "select column_name from information_schema.columns where table_schema = 'public' and table_name = 'league_members'",
+  );
+  expect(memberColumns.rows.map((r) => r.column_name)).toContain("account_deleted_at");
+  const transfer = await client.query<{ def: string }>(
+    "select pg_get_functiondef('public.transfer_commissioner(uuid, uuid)'::regprocedure) as def",
+  );
+  expect(transfer.rows[0].def).toContain("member_account_deleted");
 
   const matchColumns = await client.query<{ column_name: string; is_nullable: string }>(
     "select column_name, is_nullable from information_schema.columns where table_schema = 'public' and table_name = 'league_matches'",
@@ -235,8 +252,10 @@ async function assertHardenedState(client: Client): Promise<void> {
   expect(formatIndex.rowCount).toBe(1);
 
   // Nothing was skipped or left NOT VALID on a clean database.
-  const report = await client.query("select * from public._migration_report()");
-  expect(report.rows, "the post-apply report should be empty").toEqual([]);
+  if (cleanReport) {
+    const report = await client.query("select * from public._migration_report()");
+    expect(report.rows, "the post-apply report should be empty").toEqual([]);
+  }
 }
 
 describe("migrations", () => {
@@ -250,7 +269,7 @@ describe("migrations", () => {
     await admin.end();
   });
 
-  it("ship the base, legacy, hardening, playoffs, pool builder, private Execution, join draft order, small sprites, draft timer sweep, undo while paused, public leagues, watch review and watch renames migrations in order", () => {
+  it("ship the base, legacy, hardening, playoffs, pool builder, private Execution, join draft order, small sprites, draft timer sweep, undo while paused, public leagues, watch review, account deletion and watch renames migrations in order", () => {
     const migrations = readMigrations();
     expect(migrations[0].name).toBe(BASE_MIGRATION);
     expect(migrations[9].name).toBe(HARDENING_MIGRATION);
@@ -266,12 +285,18 @@ describe("migrations", () => {
     expect(migrations[19].name).toBe(UNDO_WHILE_PAUSED_MIGRATION);
     expect(migrations[20].name).toBe(PUBLIC_LEAGUES_MIGRATION);
     expect(migrations[21].name).toBe(WATCH_REVIEW_MIGRATION);
-    expect(migrations[22].name).toBe(WATCH_RENAMES_MIGRATION);
-    expect(migrations).toHaveLength(23);
+    expect(migrations[22].name).toBe(ACCOUNT_DELETION_MIGRATION);
+    expect(migrations[23].name).toBe(WATCH_RENAMES_MIGRATION);
+    expect(migrations).toHaveLength(24);
   });
 
   it("the shared test database was migrated by the global setup", async () => {
-    await assertHardenedState(admin);
+    // Other files share this database and leave rows the report lists on
+    // purpose (security-attack-r3 rigs a format behind a finished league).
+    // Without a results cache vitest runs the larger files first, so whether
+    // they ran before this one depends on file sizes; the fresh database in
+    // the next test is where the empty report is checked.
+    await assertHardenedState(admin, { cleanReport: false });
   });
 
   it("apply on an empty database, and the hardening, playoffs and pool builder migrations are idempotent", async () => {
@@ -288,24 +313,32 @@ describe("migrations", () => {
 
       // Base schema is a no-op on a migrated database.
       await applyMigration(fresh, migrations[0]);
-      // The hardening, playoffs and pool builder files applied a second time,
-      // in filename order, succeed and leave the same state (the hardening
-      // re-creates the 7-parameter create_league, which the playoffs file
-      // drops again, and the hardening's own _migration_report, which the
-      // pool builder file extends again).
+      // The hardening, playoffs, pool builder and account deletion files
+      // applied a second time, in filename order, succeed and leave the same
+      // state (the hardening re-creates the 7-parameter create_league, which
+      // the playoffs file drops again, its own _migration_report, which the
+      // pool builder file extends again, and transfer_commissioner without
+      // the deleted-account check, which the account deletion file adds
+      // again).
       const hardening = migrations.find((m) => m.name === HARDENING_MIGRATION);
       const playoffs = migrations.find((m) => m.name === PLAYOFFS_MIGRATION);
       const poolBuilder = migrations.find((m) => m.name === POOL_BUILDER_MIGRATION);
-      if (!hardening || !playoffs || !poolBuilder) throw new Error("hardening, playoffs or pool builder migration missing");
+      const accountDeletion = migrations.find((m) => m.name === ACCOUNT_DELETION_MIGRATION);
+      if (!hardening || !playoffs || !poolBuilder || !accountDeletion) {
+        throw new Error("hardening, playoffs, pool builder or account deletion migration missing");
+      }
       await applyMigration(fresh, hardening);
       await applyMigration(fresh, playoffs);
       await applyMigration(fresh, poolBuilder);
+      await applyMigration(fresh, accountDeletion);
       await assertHardenedState(fresh);
-      // The playoffs file alone is idempotent as well, and so is the pool
-      // builder file.
+      // The playoffs file alone is idempotent as well, and so are the pool
+      // builder and account deletion files.
       await applyMigration(fresh, playoffs);
       await assertHardenedState(fresh);
       await applyMigration(fresh, poolBuilder);
+      await assertHardenedState(fresh);
+      await applyMigration(fresh, accountDeletion);
       await assertHardenedState(fresh);
 
       const policyCount = await fresh.query("select count(*)::int as n from pg_policies where schemaname = 'public'");
@@ -332,7 +365,7 @@ describe("migrations", () => {
     for (const fn of ["get_server_time", "get_invite_preview", "is_league_member", "list_public_leagues", "get_public_league"]) {
       expect(byName.get(fn)?.anon, `${fn} should be executable by anon`).toBe(true);
     }
-    for (const fn of ["create_league", "make_pick", "swap_free_agent", "join_league", "update_league_public_page"]) {
+    for (const fn of ["create_league", "make_pick", "swap_free_agent", "join_league", "update_league_public_page", "account_deletion_preview", "delete_account"]) {
       expect(byName.get(fn)?.anon, `${fn} should not be executable by anon`).toBe(false);
     }
     for (const row of rows) {

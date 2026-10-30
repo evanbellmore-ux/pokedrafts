@@ -27,6 +27,8 @@ const PUBLIC_EXACT = new Set([
   "/update-password",
   "/auth/callback",
   "/watch",
+  "/privacy",
+  "/terms",
 ]);
 
 const AUTH_ENTRY_PATHS = new Set(["/", "/login", "/signup"]);

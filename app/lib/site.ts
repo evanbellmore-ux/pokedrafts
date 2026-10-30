@@ -13,7 +13,7 @@ export const SITE_NAME = "PokeDrafts";
  * Each public league's /watch/<id> page carries its own canonical but is not
  * listed (the list of public leagues changes all the time).
  */
-export const INDEXED_PATHS = ["/", "/login", "/signup", "/watch"] as const;
+export const INDEXED_PATHS = ["/", "/login", "/signup", "/watch", "/privacy", "/terms"] as const;
 
 /**
  * The signed-in areas, one per top-level folder of app/(app). proxy.ts sends
@@ -22,6 +22,7 @@ export const INDEXED_PATHS = ["/", "/login", "/signup", "/watch"] as const;
  * tests/unit/site-routes.test.ts checks this list against app/(app).
  */
 export const SIGNED_IN_SECTIONS = [
+  "/account",
   "/admin",
   "/builder",
   "/calculator",

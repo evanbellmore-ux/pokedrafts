@@ -23,6 +23,7 @@ export const DRAFT_TIMER_SWEEP_MIGRATION = "20261020130000_draft_timer_sweep.sql
 export const UNDO_WHILE_PAUSED_MIGRATION = "20261021120000_undo_while_paused.sql";
 export const PUBLIC_LEAGUES_MIGRATION = "20261022120000_public_leagues.sql";
 export const WATCH_REVIEW_MIGRATION = "20261026120000_watch_review.sql";
+export const ACCOUNT_DELETION_MIGRATION = "20261026130000_account_deletion.sql";
 export const WATCH_RENAMES_MIGRATION = "20261027120000_watch_renames.sql";
 export const BASE_MIGRATION = "00000000000000_base_schema.sql";
 
@@ -48,7 +49,8 @@ export function readMigrations(): MigrationFile[] {
 
 // Everything a fresh Supabase project provides that the migrations rely on:
 // the API roles, pgcrypto in the "extensions" schema, auth.users + auth.uid(),
-// the realtime publication, a stub storage schema and Supabase's default grants
+// GoTrue's auth.audit_log_entries (its columns, no foreign key to users), the
+// realtime publication, a stub storage schema and Supabase's default grants
 // on public.
 export const SCAFFOLDING_SQL = `
 do $$
@@ -73,6 +75,13 @@ create schema if not exists auth;
 create table if not exists auth.users (
   id uuid primary key default gen_random_uuid(),
   email text
+);
+create table if not exists auth.audit_log_entries (
+  instance_id uuid,
+  id uuid primary key,
+  payload json,
+  created_at timestamptz,
+  ip_address varchar(64) not null default ''
 );
 create or replace function auth.uid() returns uuid
 language sql stable

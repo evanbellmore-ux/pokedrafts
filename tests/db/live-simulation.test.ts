@@ -584,4 +584,11 @@ describe("whole migration set applied by a non-superuser owner (Supabase postgre
     const report = await db.query<{ severity: string; item: string }>("select severity, item from public._migration_report()");
     expect(report.rows).toEqual([{ severity: "info", item: "storage" }]);
   });
+
+  it("warns when the owner may only read auth.users, since delete_account deletes from it", async () => {
+    // This role was given select and references on auth.users, not delete:
+    // the account deletion file still applies, and says what is missing.
+    const warnings = notices.filter((n) => n.severity === "WARNING").map((n) => n.message ?? "");
+    expect(warnings.some((w) => w.includes("may not delete from auth.users") && w.includes("account_deletion_unavailable"))).toBe(true);
+  });
 });

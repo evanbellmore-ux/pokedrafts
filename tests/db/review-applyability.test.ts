@@ -53,9 +53,9 @@ describe("review: re-running migration files", () => {
     await admin.end();
   });
 
-  it("all twenty-three files apply a second time in filename order and leave the hardened policy set", async () => {
+  it("all twenty-four files apply a second time in filename order and leave the hardened policy set", async () => {
     const migrations = readMigrations();
-    expect(migrations).toHaveLength(23);
+    expect(migrations).toHaveLength(24);
     expect(migrations.at(-1)?.name).toBe(WATCH_RENAMES_MIGRATION);
     for (const migration of migrations) {
       await applyMigration(db, migration);

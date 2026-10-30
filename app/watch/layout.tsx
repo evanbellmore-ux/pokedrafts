@@ -53,9 +53,17 @@ export default async function WatchLayout({ children }: { children: React.ReactN
               PokeDrafts is a fan project and is not affiliated with Nintendo, Game Freak or The
               Pokémon Company.
             </p>
-            <Link href="/signup" className={`${linkClassName} text-sm text-muted hover:text-text`}>
-              Run your own league
-            </Link>
+            <nav aria-label="Footer" className="flex flex-wrap gap-x-4 gap-y-2">
+              <Link href="/signup" className={`${linkClassName} text-sm text-muted hover:text-text`}>
+                Run your own league
+              </Link>
+              <Link href="/privacy" className={`${linkClassName} text-sm text-muted hover:text-text`}>
+                Privacy
+              </Link>
+              <Link href="/terms" className={`${linkClassName} text-sm text-muted hover:text-text`}>
+                Terms
+              </Link>
+            </nav>
           </div>
         </footer>
       )}

@@ -314,6 +314,9 @@ In the Supabase dashboard under **Authentication**:
   project's public auth settings: `app/lib/auth/providers.ts`). It signs the
   user in, creating the account on the first visit, and returns through
   `/auth/callback` like the email links, so the Redirect URLs above cover it.
+  Under **General Information** set the application's Terms of Service URL to
+  `<site>/terms` and its Privacy Policy URL to `<site>/privacy` (the public
+  pages in `app/(legal)/`).
 
 ## Seeding Pokémon data
 
@@ -448,3 +451,38 @@ docs/release-architecture.md section 15) ship in this order:
 3. Deploy the client. A client deployed before step 1 shows "This feature is
    not available yet" on /watch and on the Settings card's Public page until
    the file runs.
+
+Account deletion and the legal pages (`20261026130000_account_deletion.sql`,
+docs/release-architecture.md section 18) ship in this order:
+
+1. Run `20261026130000_account_deletion.sql` in the SQL editor (after every
+   earlier file). Its result row must read `true` in every column: the
+   functions' owner may delete from `auth.users` and
+   `auth.audit_log_entries`, signed-in users may delete their own account,
+   and only the owner may delete anyone else's.
+2. Deploy the client. A client deployed first shows "This feature is not
+   available yet" on the Account page until the file runs.
+3. In the Discord Developer Portal set the application's Terms of Service and
+   Privacy Policy URLs (see Auth settings).
+
+To delete someone's account when they ask by email (or a child's account),
+never use Authentication > Users > Delete user: it removes only the sign-in
+and leaves their leagues, member rows and draft formats behind. In the SQL
+editor instead:
+
+1. Find the id: `select id, email from auth.users where lower(email) = lower('<their email>');`
+2. Preview what happens to each league:
+   `select * from public._account_plan('<id>');`
+3. Delete it all in one transaction: `select public._delete_account('<id>');`
+   The result counts what went; `sign_in_deleted` is false when no sign-in
+   had that id (a typo, or an account deleted earlier).
+
+The same call cleans up after a dashboard deletion made in the past. These
+ids still hold data without a sign-in:
+
+```sql
+select lm.user_id from public.league_members lm
+where lm.account_deleted_at is null and not exists (select 1 from auth.users u where u.id = lm.user_id)
+union select l.commissioner_id from public.leagues l where not exists (select 1 from auth.users u where u.id = l.commissioner_id)
+union select f.created_by from public.draft_formats f where f.created_by is not null and not exists (select 1 from auth.users u where u.id = f.created_by);
+```

@@ -24,9 +24,28 @@ import {
   scanSource,
 } from "../../scripts/lib/client-contract.mjs";
 import { connect, type Client } from "./harness";
-import { DRAFT_TIMER_SWEEP_MIGRATION, HARDENING_MIGRATION, PLAYOFFS_MIGRATION, POOL_BUILDER_MIGRATION, PUBLIC_LEAGUES_MIGRATION, WATCH_RENAMES_MIGRATION, WATCH_REVIEW_MIGRATION, readMigrations } from "./migrations-lib";
+import {
+  ACCOUNT_DELETION_MIGRATION,
+  DRAFT_TIMER_SWEEP_MIGRATION,
+  HARDENING_MIGRATION,
+  PLAYOFFS_MIGRATION,
+  POOL_BUILDER_MIGRATION,
+  PUBLIC_LEAGUES_MIGRATION,
+  WATCH_RENAMES_MIGRATION,
+  WATCH_REVIEW_MIGRATION,
+  readMigrations,
+} from "./migrations-lib";
 
-const GRANTING_MIGRATIONS = [HARDENING_MIGRATION, PLAYOFFS_MIGRATION, POOL_BUILDER_MIGRATION, DRAFT_TIMER_SWEEP_MIGRATION, PUBLIC_LEAGUES_MIGRATION, WATCH_REVIEW_MIGRATION, WATCH_RENAMES_MIGRATION];
+const GRANTING_MIGRATIONS = [
+  HARDENING_MIGRATION,
+  PLAYOFFS_MIGRATION,
+  POOL_BUILDER_MIGRATION,
+  DRAFT_TIMER_SWEEP_MIGRATION,
+  PUBLIC_LEAGUES_MIGRATION,
+  WATCH_REVIEW_MIGRATION,
+  ACCOUNT_DELETION_MIGRATION,
+  WATCH_RENAMES_MIGRATION,
+];
 
 describe("client contract", () => {
   let db: Client;
@@ -54,7 +73,7 @@ describe("client contract", () => {
       order by 1
     `);
     expect(catalog).toEqual(rows.map((r) => r.fn));
-    expect(catalog).toHaveLength(37);
+    expect(catalog).toHaveLength(39);
     for (const legacy of LEGACY_RPCS) {
       expect(catalog).not.toContain(legacy);
     }
@@ -64,10 +83,11 @@ describe("client contract", () => {
     // read-only pokemon table), the draft timer file none either (its grants
     // section only revokes its two internal helpers), the public leagues file
     // its one write and two reads, the watch review file its three admin
-    // functions and the two reads it re-creates, the watch renames file the
-    // two admin reads it re-creates (its helper and trigger functions are
-    // revoked), and the base schema and the eight legacy files have no grants
-    // section.
+    // functions and the two reads it re-creates, the account deletion file
+    // its two new ones plus transfer_commissioner, which it re-creates, the
+    // watch renames file the two admin reads it re-creates (its helper and
+    // trigger functions are revoked), and the base schema and the eight
+    // legacy files have no grants section.
     const migrations = readMigrations();
     const hardening = migrations.find((m) => m.name === HARDENING_MIGRATION);
     const playoffs = migrations.find((m) => m.name === PLAYOFFS_MIGRATION);
@@ -75,10 +95,13 @@ describe("client contract", () => {
     const timerSweep = migrations.find((m) => m.name === DRAFT_TIMER_SWEEP_MIGRATION);
     const publicLeagues = migrations.find((m) => m.name === PUBLIC_LEAGUES_MIGRATION);
     const watchReview = migrations.find((m) => m.name === WATCH_REVIEW_MIGRATION);
+    const accountDeletion = migrations.find((m) => m.name === ACCOUNT_DELETION_MIGRATION);
     const watchRenames = migrations.find((m) => m.name === WATCH_RENAMES_MIGRATION);
-    if (!hardening || !playoffs || !poolBuilder || !timerSweep || !publicLeagues || !watchReview || !watchRenames) {
-      throw new Error("hardening, playoffs, pool builder, draft timer, public leagues, watch review or watch renames migration missing");
+    if (!hardening || !playoffs || !poolBuilder || !timerSweep || !publicLeagues || !watchReview || !accountDeletion || !watchRenames) {
+      throw new Error("hardening, playoffs, pool builder, draft timer, public leagues, watch review, account deletion or watch renames migration missing");
     }
+    expect(parseRpcCatalog(accountDeletion.sql)).toEqual(["account_deletion_preview", "delete_account", "transfer_commissioner"]);
+    expect(parseReadOnlyTables(accountDeletion.sql)).toEqual([]);
     expect(parseRpcCatalog(hardening.sql)).toHaveLength(28);
     expect(parseRpcCatalog(playoffs.sql)).toEqual([
       "clear_match_result",
@@ -113,7 +136,7 @@ describe("client contract", () => {
     // tables, so the gate's read-only list depended on the platform.
     const asCrlf = (sql: string) => sql.replace(/\r?\n/g, "\r\n");
     const asLf = (sql: string) => sql.replace(/\r\n?/g, "\n");
-    for (const migration of [hardening, playoffs, poolBuilder, timerSweep, publicLeagues, watchReview, watchRenames]) {
+    for (const migration of [hardening, playoffs, poolBuilder, timerSweep, publicLeagues, watchReview, accountDeletion, watchRenames]) {
       expect(grantsSection(asCrlf(migration.sql)), `${migration.name} grants section on CRLF`).toBe(grantsSection(asLf(migration.sql)));
     }
     expect(parseReadOnlyTables(asCrlf(poolBuilder.sql))).toEqual(["pokemon"]);

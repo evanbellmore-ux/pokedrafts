@@ -14,6 +14,7 @@ this document describes what they produce. Apply them in filename order:
 | `20261021120000_undo_while_paused.sql` | `undo_last_pick` restarts the clock at `draft_paused_at` while the draft is paused, so the turn it hands back gets one full clock from Resume instead of the pause on top (docs/release-architecture.md section 14.6). Idempotent. |
 | `20261022120000_public_leagues.sql` | Public leagues (docs/release-architecture.md section 15): `leagues.is_public`, `stream_url` and `replay_links` with their checks and a partial index, the commissioner's `update_league_public_page`, and `list_public_leagues` / `get_public_league`, which anyone (`anon` included) may call and which return a public league's safe fields as JSON (see [Public leagues](#public-leagues)). No policy changes. Ends with `select * from public._migration_report();`. Idempotent. |
 | `20261026120000_watch_review.sql` | Watch listings and the playoffs on /watch (docs/release-architecture.md section 16): the [`site_admins`](#site_admins) table, `leagues.watch_listed` and `watch_reviewed_at` with a partial index, the admin's `site_admin_status`, `list_watch_review` and `set_watch_listing`, and new bodies for `list_public_leagues` (listed public leagues only, plus each league's playoff matches) and `get_public_league` (each match's bracket links, and `watch_listed`). No policy changes. Re-run it after any re-run of the public leagues file. Ends with `select * from public._migration_report();`. Idempotent. |
+| `20261026130000_account_deletion.sql` | Account deletion (docs/release-architecture.md section 18): `league_members.account_deleted_at`, `_account_plan`, `account_deletion_preview`, the owner-only `_delete_account` with `delete_account` on top, and `transfer_commissioner` re-created with the deleted-account check. Ends with a select that says whether its owner may delete from `auth.users` and `auth.audit_log_entries` and that only the owner may delete any account. Idempotent; re-run it after any re-run of the hardening file. |
 | `20261027120000_watch_renames.sql` | Renames since a Watch approval (docs/release-architecture.md section 16.7): `leagues.name_changed_at` and `league_members.team_name_changed_at`, stamped by the `leagues_name_changed` and `league_members_team_name_changed` triggers when a name changes, the helper `_watch_renames`, and new bodies for `site_admin_status` (adds `watch_renamed`) and `list_watch_review` (adds `is_public` and `renamed`, lists renamed leagues first among the listed ones, and also lists listed leagues that are private now). No policy changes. Re-run it after any re-run of the watch review file. Ends with `select * from public._migration_report();`. Idempotent. |
 
 The hardening migration drops **every** policy on the application tables and
@@ -129,10 +130,21 @@ HTTP 300 ("more than one relationship was found").
 | `team_name_changed_at` | timestamptz | when `team_name` last changed, stamped by the `league_members_team_name_changed` trigger; null: not since `20261027120000_watch_renames.sql` ran |
 | `draft_position` | integer | null = spectator (does not draft) |
 | `free_agent_swaps_used` | integer | not null, default 0, check >= 0 |
+| `account_deleted_at` | timestamptz | null for every live coach; set by `delete_account` on a team it keeps |
 
 Constraints: unique `(league_id, user_id)`; unique `(league_id, draft_position)`
 **deferrable initially deferred** (so `set_draft_order` can reorder in one
 statement). Indexes on `(league_id)` and `(user_id)`.
+
+When a coach deletes their account, their row in a league whose draft has
+started stays, so the matches it played (`league_matches` cascades from both
+member columns), the standings, the bracket and a live draft's order are
+untouched for the other coaches: `delete_account` points `user_id` at a fresh
+random uuid that belongs to nobody and sets `account_deleted_at`. The team
+name, picks, roster and news stay; auto-pick drafts for it, and
+`transfer_commissioner` refuses it (`member_account_deleted`). A row in a
+league whose draft has not started is deleted instead, as `leave_league`
+would.
 
 ### `league_invites`
 
@@ -341,6 +353,8 @@ RLS enabled with no policies, and every privilege revoked from `anon` and
 `authenticated`, so no API role reads or writes it (`42501`); the functions
 read it through `_is_site_admin`. Add an account in the SQL editor:
 `insert into public.site_admins (user_id) select id from auth.users where email = '<email>' on conflict do nothing;`
+`delete_account` deletes the caller's row (it would cascade from `auth.users`
+anyway) and says so in its result.
 
 ## Data fixes applied by the hardening migration
 
@@ -454,7 +468,7 @@ Codes shared by many functions: `not_authenticated` (no user),
 | `rename_team(p_league_id uuid, p_team_name text)` | member | Trims and validates 1..40 chars, updates the caller's row. | void. `invalid_team_name` |
 | `leave_league(p_league_id uuid)` | coach | Only before the draft starts; the commissioner cannot leave. | void. `commissioner_cannot_leave`, `draft_already_started` |
 | `remove_member(p_league_id uuid, p_member_id uuid)` | commissioner | Only before the draft starts; never self. Deletes the member row, then rotates the league's invite code in the same transaction (`_rotate_invite`, exactly what `regenerate_invite` does), so the link the removed coach was invited with is dead the moment they are gone: `join_league` with it raises `invite_invalid` and `get_invite_preview` returns `invite_valid: false` with a null `league_id`, for the removed coach and for anyone they passed it to. The commissioner must copy and reshare the new link to whoever should still join (the removed coach included, if that is the intent); a refused call (`not_commissioner`, `member_not_found`, ...) leaves the invite as it was. | void. `draft_already_started`, `member_not_found`, `cannot_remove_self`, `invite_generation_failed` |
-| `transfer_commissioner(p_league_id uuid, p_member_id uuid)` | commissioner | Sets `commissioner_id` to that member's user and re-syncs `role` on every row. | void. `member_not_found`, `already_commissioner` |
+| `transfer_commissioner(p_league_id uuid, p_member_id uuid)` | commissioner | Sets `commissioner_id` to that member's user and re-syncs `role` on every row. A member whose `account_deleted_at` is set, or whose user has no `auth.users` row (`league_members.user_id` has no foreign key), belongs to nobody and is refused (re-created by `20261026130000_account_deletion.sql`). | void. `member_not_found`, `already_commissioner`, `member_account_deleted` |
 | `update_league_settings(p_league_id uuid, p_settings jsonb)` | commissioner | Keys: `name, max_coaches, point_budget, picks_per_team, pick_timer_seconds, free_agent_swap_limit, schedule_format, draft_format_id, playoff_format, tiebreaker`. Validates ranges; `max_coaches` may not drop below the member count. Once `draft_started`, changing `max_coaches`, `point_budget`, `picks_per_team` or `draft_format_id` raises `locked_during_draft` (sending the unchanged value is fine). `draft_format_id` only has to be visible to the caller when it changes: the league's current value is always accepted, so a settings form that echoes it back keeps working after `transfer_commissioner` even when the format is private to the previous commissioner (the new one reads it through league membership). Changing `draft_format_id` replaces `custom_pool` with a copy of the new format (`source: "format"`, checked by `_validate_pool`; a format that breaks the pool rules is refused and no setting changes), or clears it when the format is removed; an unchanged value leaves the pool alone. Keeps `league_invites.max_uses` in step. Playoff settings: echoing the current values is always fine; a change to `playoff_format` or `tiebreaker` raises `playoffs_started` once any playoff match is completed; once the draft has started a changed `top_N` needs at least N playing coaches (`not_enough_coaches`; before the draft any format is accepted since the coaches are not known yet); once the regular season is complete a change rebuilds the bracket (`_generate_playoffs`), or, with `playoff_format = 'none'`, deletes it and makes seed 1 the champion. A `tiebreaker` change on its own is held to nothing more than the last regular result was: in a league that cannot fill its unchanged format it is saved and the league stays without a bracket (a smaller format chosen here builds one), while a changed `top_N` still needs N playing coaches. The returned row reflects those changes. | the updated league row as `jsonb`. `invalid_settings`, `unknown_setting`, `invalid_name`, `invalid_max_coaches`, `max_coaches_below_members`, `invalid_point_budget`, `invalid_picks_per_team`, `invalid_pick_timer`, `invalid_swap_limit`, `invalid_schedule_format`, `invalid_playoff_format`, `invalid_tiebreaker`, `format_not_found`, `locked_during_draft`, `playoffs_started`, `not_enough_coaches`, `invalid_pool`, `duplicate_pokemon`, `invalid_points`, `invalid_tier` |
 | `update_league_pool(p_league_id uuid, p_pool jsonb)` | commissioner | Only before the draft. `{ version?, leagueName?, pokemon: [{ name, points, tier? }] }`: 1..2000 entries, unique non-empty trimmed names (case-insensitive, max 80 chars), integer points 1..20 (a number or a string of digits), `tier` must equal `21 - points` when given (filled in otherwise). These rules live in `_validate_pool`, which the format copies use too. Stored normalized in `custom_pool` as `{ version: "1.0", leagueName, pokemon }` in the order given: the client's `version` is ignored and `leagueName` is trimmed and capped at 60 characters (blank -> the league name), so the row every coach downloads stays small. | void. `draft_already_started`, `invalid_pool`, `duplicate_pokemon`, `invalid_points`, `invalid_tier` |
 | `reset_league_pool(p_league_id uuid)` | commissioner | Only before the draft. Copies the league's draft format onto `custom_pool` again, as the format is right now (the way to pick up edits made in the pool builder), checked by `_validate_pool`: an edit that breaks the pool rules is refused and the current pool stays. Without a format the pool becomes null. | void. `draft_already_started`, `invalid_pool`, `duplicate_pokemon`, `invalid_points`, `invalid_tier` |
@@ -482,6 +496,8 @@ Codes shared by many functions: `not_authenticated` (no user),
 | `site_admin_status()` | authenticated | Whether the caller is a site admin and, for one, how many public leagues were never reviewed and how many listed public leagues were renamed since their review. | `jsonb { admin: false }` or `{ admin: true, watch_waiting, watch_renamed }` |
 | `list_watch_review()` | site admin | Every public league, and every listed league that is private now: never reviewed first, then listed (renamed since review first), then unlisted, newest league first within each, with its name, `created_at`, `is_public`, the commissioner's team name, coach count and limit, draft state, stream, replays, `watch_listed`, `watch_reviewed_at` and `renamed` (`{ league, teams }`: whether the league's name changed and the current names of the renamed teams since the review; null when none changed or the league is not listed). | `jsonb { server_time, leagues: [...] }`. `not_site_admin` |
 | `set_watch_listing(p_league_id uuid, p_listed boolean)` | site admin | Locks the league and sets `watch_listed` and `watch_reviewed_at = now()`. Any league; only a public one shows. | `jsonb { id, watch_listed, watch_reviewed_at }`. `not_site_admin`, `invalid_listing`, `league_not_found` |
+| `account_deletion_preview()` | authenticated | Read-only: what `delete_account` would do for the caller, from `_account_plan`. Each list is ordered by league name; a league they hand over is in `handed_over_leagues` and, with their own team, in `removed_teams` or `kept_teams`. | `jsonb { deleted_leagues: [{ league_id, league_name }], handed_over_leagues: [{ league_id, league_name, new_commissioner_team }], removed_teams: [{ league_id, league_name, team_name }], kept_teams: [{ league_id, league_name, team_name }], draft_formats, chat_messages, site_admin }`. `not_authenticated` |
+| `delete_account()` | authenticated | `_delete_account(_caller_uid())`: the caller's own account. `_delete_account(p_uid uuid)` is the body, an internal helper revoked from every API role (`service_role` included) that the owner runs in the SQL editor for an emailed request; it needs no caller and works for an id whose `auth.users` row is already gone. It reads the person's email, locks every league in their plan in id order, deletes their `draft_chat_messages`, their `draft_formats` (leagues keep their `custom_pool`; `draft_format_id` goes null) and their [`site_admins`](#site_admins) row, then per plan row: deletes a league they run alone (everything in it cascades); hands a league they run with other active coaches to the one who joined first (`joined_at`, nulls last, then member id; teams of deleted accounts and rows without an `auth.users` row never inherit), setting `commissioner_id` and every row's `role` as `transfer_commissioner` does; and, in every league they did not delete, deletes their member row when its draft has not started or keeps their team when it has (see [`league_members`](#league_members)). Then deletes their `auth.users` row, whose identities, sessions and refresh tokens cascade, and last their rows in `auth.audit_log_entries`, by id (`payload->>'actor_id'`, `payload->'traits'->>'user_id'`) or by email in any case (`actor_username`, `traits.user_email`). When the function's owner may not delete from either auth table, the whole call rolls back with `account_deletion_unavailable`. | `jsonb { deleted_leagues, handed_over_leagues, removed_teams, kept_teams, draft_formats, chat_messages, site_admin, sign_in_deleted, audit_log_entries }` (the counts match the preview; `sign_in_deleted` is false when no `auth.users` row had the id). `not_authenticated` (`delete_account`), `account_id_required` (a null id), `account_deletion_unavailable` |
 
 ### Internal helpers
 
@@ -548,6 +564,21 @@ row and the champion), `_crown_top_seed` (seed 1 becomes the champion) and
 `_generate_playoffs(league_id, strict)` (replaces the bracket, seeded from the
 standings; with `strict` false a format the league cannot fill leaves it
 without a bracket instead of raising `not_enough_coaches`).
+
+The account deletion migration adds `_account_plan(uid)`: one row per league
+the person runs or belongs to (`league_id, league_name, draft_started,
+member_id, team_name, heir_member_id, heir_team_name, outcome`), where
+`outcome` is `delete_league` (they run it and no other active coach, a member
+whose `account_deleted_at` is null and whose user still has an `auth.users`
+row, is in it), `hand_over` (they run it and the
+heir is the active coach who joined first), `remove_team` (they coach in it
+before its draft) or `keep_team` (they coach in it after its draft started);
+their own row in a league they hand over follows the same draft rule.
+`account_deletion_preview` shows these rows and `_delete_account` (behind
+`delete_account`) carries them out; the owner previews someone else's with
+`select * from public._account_plan('<id>')` (docs/release-architecture.md
+section 18.7). The file drops and creates it on every run, since its row shape may
+change.
 
 ### Standings and playoffs
 
@@ -892,7 +923,22 @@ call shapes the pre-hardening client used and a write to a read-only table,
 every wrapper in `app/lib/rpc.ts` names a catalog function, and the gate
 passes on the working tree, so `npm run test:db` fails while the client still
 uses a dropped RPC or a direct write; the catalog and the read-only tables are
-the union of every migration's `Grants` section). `exit-code.test.ts`
+the union of every migration's `Grants` section), and account deletion
+(`account-deletion.test.ts`: the preview and the result for a person who runs
+a league alone, coaches before and after a draft, owns formats and chat
+messages and reviews Watch listings; a league they run passes to the coach
+with the earliest `joined_at` (a tie goes to the lower member id, a deleted
+account never inherits), before and after its draft, a public one keeping its
+listing; a league left only to deleted accounts
+counts as theirs alone; a
+team kept mid-draft is auto-picked to the end; a kept team cannot become
+commissioner, and neither can a member without a sign-in, who also never
+inherits; an owner without delete on `auth.users` or `auth.audit_log_entries`
+rolls the whole call back with `account_deletion_unavailable`; the owner's
+`_delete_account`, with no caller, deletes someone else's account the same
+way, cleans up after a dashboard deletion, returns zeros for a mistyped id and
+is not executable by any API role; every audit-log row naming the person by
+id or email goes and nobody else's does). `exit-code.test.ts`
 runs a failing one-file suite through the same global setup in a child process
 and checks that vitest exits 1: `embedded-postgres` registers an exit hook on
 import that used to end the process with status 0 after a failed run, and the

@@ -103,6 +103,9 @@ describe("wrapping app navigation", () => {
     expect(panel).toMatch(/^id="[^"]+" data-menu-panel="" hidden=""/);
     expect(panel).toContain("Signed in as");
     expect(panel).toMatch(/<button type="button"[^>]*>.*Sign out<\/button>/);
+    // The Account page (privacy links and Delete account) sits above Sign out.
+    expect(panel).toMatch(/<a [^>]*href="\/account"[^>]*>(?:(?!<\/a>).)*Account<\/a>/);
+    expect(panel.indexOf('href="/account"')).toBeLessThan(panel.indexOf("Sign out"));
   });
 
   it("measures the header, follows resizes and removes its observer on unmount", () => {

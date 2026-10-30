@@ -1,6 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { friendlyError, getErrorCode, getErrorDetailCode } from "@/app/lib/errors";
 import { createClient } from "@/app/lib/supabase/client";
+import type { AccountDeletionPreview, AccountDeletionResult } from "@/app/types/account";
 import type { DraftFormat } from "@/app/types/draft";
 import type {
   AutoPickResult,
@@ -23,7 +24,7 @@ import type {
 
 /**
  * Typed wrappers around the Postgres functions in
- * docs/release-architecture.md sections 5 and 12.5. Every wrapper resolves
+ * docs/release-architecture.md sections 5, 12.5, 15, 16 and 18. Every wrapper resolves
  * to `{ data, error, code }`: `error` has already been passed through
  * `friendlyError`, so pages can render it directly, and `code` lets a page
  * branch on *why* a call failed without matching the sentence. It is the
@@ -255,6 +256,16 @@ export function createRpc(client: SupabaseClient = createClient()) {
     /** Site admin: lists (true) or unlists (false) a league on /watch. */
     setWatchListing: (leagueId: string, listed: boolean) =>
       call<WatchListing>(client, "set_watch_listing", { p_league_id: leagueId, p_listed: listed }),
+
+    /** Section 18: what deleting the caller's account would remove and keep. */
+    accountDeletionPreview: () =>
+      call<AccountDeletionPreview>(client, "account_deletion_preview", {}),
+
+    /**
+     * Deletes the caller's account and its data, auth user included; a
+     * league they run with other coaches passes to the one who joined first.
+     */
+    deleteAccount: () => call<AccountDeletionResult>(client, "delete_account", {}),
   };
 }
 
