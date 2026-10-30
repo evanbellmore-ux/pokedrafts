@@ -3,13 +3,13 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { ExternalLink } from "lucide-react";
-import { Alert, Button, EmptyState, PageHeader, SkeletonLines } from "@/app/components/ui";
+import { Alert, Button, EmptyState, PageHeader, SkeletonLines, StatusPill } from "@/app/components/ui";
 import { pluralize, teamNameLabel } from "@/app/lib/league/labels";
 import { rpc } from "@/app/lib/rpc";
 import { linkClassName } from "@/app/lib/theme";
 import { platformOf, readReplayEntries, readStreamLink, streamLabel } from "@/app/lib/watch/stream-links";
 import { listingState, type ListingState } from "@/app/lib/watch/watch-view";
-import type { WatchReviewLeague } from "@/app/types/league";
+import type { WatchRenames, WatchReviewLeague } from "@/app/types/league";
 
 type LoadState =
   | { status: "loading" }
@@ -35,11 +35,23 @@ function draftState(league: WatchReviewLeague): string {
   return league.draft_started ? "Drafting" : "Setting up";
 }
 
+/** What a listed league renamed since its review, as one line (section 16.7). */
+export function renamesLine(renamed: WatchRenames): string {
+  const parts: string[] = [];
+  if (renamed.league) parts.push("New league name");
+  if (renamed.teams.length > 0) {
+    parts.push(`${renamed.teams.length === 1 ? "New team name" : "New team names"}: ${renamed.teams.join(", ")}`);
+  }
+  return parts.join(" · ");
+}
+
 /**
- * The admin's Watch listings: every public league in three groups (waiting,
- * listed, not listed) with what it would put on /watch, its stream and its
- * replays, and the one action that moves it. Approval sticks when the
- * commissioner later changes the links; Unlist takes it off again.
+ * The admin's Watch listings: every public league, and every listed one that
+ * is private now, in three groups (waiting, listed, not listed) with what it
+ * would put on /watch, its stream and its replays, and the actions that move
+ * it. Approval sticks when the commissioner later changes the links or a name
+ * changes; a renamed league is marked with its new names until Keep listed or
+ * Unlist (section 16.7).
  */
 export default function WatchReviewClient() {
   const [state, setState] = useState<LoadState>({ status: "loading" });
@@ -161,6 +173,10 @@ export function ReviewRow({
   const replays = readReplayEntries(league.replay_links);
   const created = formatDate(league.created_at);
   const reviewed = formatDate(league.watch_reviewed_at);
+  /** Only a listed league carries renames: marked until Keep listed or Unlist. */
+  const renamed = state === "listed" ? (league.renamed ?? null) : null;
+  /** Listed, but private now: off the Watch list until it is public again. */
+  const offWatch = state === "listed" && league.is_public === false;
   const facts = [
     `${teamNameLabel(league.commissioner_team)} runs it`,
     `${league.coach_count} of ${pluralize(league.max_coaches, "coach", "coaches")}`,
@@ -171,9 +187,15 @@ export function ReviewRow({
   return (
     <li className="flex flex-col gap-3 rounded-xl border border-line bg-panel p-4 sm:flex-row sm:items-start sm:justify-between">
       <div className="flex min-w-0 flex-col gap-1.5">
-        <Link href={`/watch/${league.id}`} className={`${linkClassName} wrap-anywhere font-semibold text-text hover:underline`}>
-          {league.name}
-        </Link>
+        <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+          <Link href={`/watch/${league.id}`} className={`${linkClassName} min-w-0 wrap-anywhere font-semibold text-text hover:underline`}>
+            {league.name}
+          </Link>
+          {renamed && <StatusPill tone="warning">Renamed since approval</StatusPill>}
+          {offWatch && <StatusPill>Private</StatusPill>}
+        </div>
+        {renamed && <p className="wrap-anywhere text-sm text-muted">{renamesLine(renamed)}</p>}
+        {offWatch && <p className="text-sm text-muted">Off Watch until it is public again.</p>}
         <p className="text-sm text-muted">{facts.join(" · ")}</p>
         <p className="min-w-0 text-sm text-muted">
           {stream ? (
@@ -214,9 +236,16 @@ export function ReviewRow({
       </div>
       <div className="flex shrink-0 flex-wrap gap-2">
         {state === "listed" ? (
-          <Button variant="secondary" size="sm" onClick={() => onReview(false)} disabled={busy} pending={pending === false} pendingText="Unlisting..." aria-label={`Unlist ${league.name}`}>
-            Unlist
-          </Button>
+          <>
+            {renamed && (
+              <Button size="sm" onClick={() => onReview(true)} disabled={busy} pending={pending === true} pendingText="Keeping..." aria-label={`Keep ${league.name} listed`}>
+                Keep listed
+              </Button>
+            )}
+            <Button variant="secondary" size="sm" onClick={() => onReview(false)} disabled={busy} pending={pending === false} pendingText="Unlisting..." aria-label={`Unlist ${league.name}`}>
+              Unlist
+            </Button>
+          </>
         ) : (
           <Button size="sm" onClick={() => onReview(true)} disabled={busy} pending={pending === true} pendingText="Approving..." aria-label={`Approve ${league.name}`}>
             Approve

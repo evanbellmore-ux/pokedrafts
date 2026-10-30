@@ -14,8 +14,7 @@ import type { BattleBuild, BattleConditions, BattleGame, BattleStatus, CombatSta
  * Force, Shadow Force and Sky Drop, against pinned Showdown c23d2e94. The numbers are the oracle's (sim-dfs.ts on the
  * scenarios of scripts/.cache/calc-audit/status2/build/w1a-h-cases.ts, which w1a-h-run.ts compares field by field), the
  * texts the app's facts. Level 50, 31 IVs, Serious, 0 EVs (Stat Points in Champions) unless set. The Sky Drop and
- * end-of-turn tests need integration 1a's kernel lines (W1A-H.md): they run once Sky Drop is modelled (WIRED); until then
- * Sky Drop keeps its guard (tested below).
+ * end-of-turn tests run on integration 1a's kernel lines (W1A-H.md), which model Sky Drop.
  */
 type Stat = "hp" | "atk" | "def" | "spa" | "spd" | "spe";
 type Mon = {
@@ -75,8 +74,6 @@ const reasonOf = (input: DoublesTurnInput) => { const result = calculateDoublesT
 const stepOf = (result: Ready, slot: DoublesSlotId) => result.steps.find((step) => step.slot === slot)!;
 const hitOf = (result: Ready, slot: DoublesSlotId, target: DoublesSlotId) => stepOf(result, slot).hits.find((hit) => hit.slot === target)!;
 const texts = (facts: { text: string }[] | undefined) => (facts ?? []).map((fact) => fact.text);
-/** Integration 1a's kernel lines are in (W1A-H.md I1–I4, I6, I7, one change): Sky Drop is modelled. */
-const WIRED = reasonOf(turn(await game(USUM), [mon("braviary", "keeneye", "skydrop", { target: PR }), lax(8), lax(24), mon("clefairy", "friendguard", null)])) !== REASONS.notIn2v2("Sky Drop");
 /** The E2 mixture of one field of a slot. */
 function mixture(out: ReturnType<typeof outcomes>, slot: DoublesSlotId, key: (m: NonNullable<ReturnType<typeof outcomes>["outcomes"][number]["mons"][DoublesSlotId]>) => string) {
   const map = new Map<string, number>();
@@ -331,12 +328,7 @@ describe("Track H: the corners the calculation does not read (not estimated)", (
 describe("Track H: Sky Drop (C21, CQ-SKD)", () => {
   const braviary = (extra: Partial<Mon> = {}) => mon("braviary", "keeneye", "skydrop", { evs: { spe: 252 }, target: PR, ...extra });
 
-  it.skipIf(WIRED)("before integration 1a's kernel lines: Sky Drop keeps today's guard", async () => {
-    const reason = reasonOf(turn(await game(USUM), [braviary(), lax(8), lax(24, "tackle", { target: OL }), mon("clefairy", "friendguard", "pound", { evs: { spe: 4 }, target: OL })]));
-    expect(reason).toBe("Sky Drop is not modelled in 2v2.");
-  });
-
-  it.runIf(WIRED)("CQ-SKD-01: Sky Drop lifts Clefairy: its Pound never runs; its partner's Tackle at Braviary misses; E2", async () => {
+  it("CQ-SKD-01: Sky Drop lifts Clefairy: its Pound never runs; its partner's Tackle at Braviary misses; E2", async () => {
     const input = turn(await game(USUM), [braviary(), lax(8), lax(24, "tackle", { target: OL }), mon("clefairy", "friendguard", "pound", { evs: { spe: 4 }, target: OL })]);
     const result = ready(input);
     expect(texts(stepOf(result, OL).facts)).toEqual(["Sky Drop: Braviary lifts Clefairy into the air."]);
@@ -347,12 +339,12 @@ describe("Track H: Sky Drop (C21, CQ-SKD)", () => {
     expect(mixture(out, PR, (m) => (m.volatiles ?? []).join(","))).toEqual({ "": 1 });
   });
 
-  it.runIf(WIRED)("CQ-SKD-02: its partner's Gust hits Braviary unboosted (Braviary 148–153)", async () => {
+  it("CQ-SKD-02: its partner's Gust hits Braviary unboosted (Braviary 148–153)", async () => {
     const result = ready(turn(await game(USUM), [braviary(), lax(8), mon("pidgeot", "keeneye", "gust", { evs: { spe: 0 }, target: OL }), mon("clefairy", "friendguard", "pound", { evs: { spe: 4 }, target: OL })]));
     expect(result.hp[OL]).toMatchObject({ min: 148, max: 153 });
   });
 
-  it.runIf(WIRED)("fails into a 200 kg Pokémon, which then acts; Spiky Shield blocks it with no contact damage", async () => {
+  it("fails into a 200 kg Pokémon, which then acts; Spiky Shield blocks it with no contact damage", async () => {
     const runtime = await game(USUM);
     const heavy = ready(turn(runtime, [braviary(), lax(8), lax(24), lax(4, "bodyslam", { target: OL })]));
     expect(texts(stepOf(heavy, OL).facts)).toEqual(["Sky Drop fails: Snorlax (opponent's, 2) weighs 200 kg or more."]);
@@ -362,12 +354,12 @@ describe("Track H: Sky Drop (C21, CQ-SKD)", () => {
     expect(shield.hp[OL]).toMatchObject({ min: 175, max: 175 });
   });
 
-  it.runIf(WIRED)("Gravity frees the lifted Pokémon, whose slower Body Slam then hits Braviary (135–141)", async () => {
+  it("Gravity frees the lifted Pokémon, whose slower Body Slam then hits Braviary (135–141)", async () => {
     const result = ready(turn(await game(USUM), [braviary(), lax(8), mon("bronzong", "levitate", "gravity", { evs: { spe: 252 } }), mon("clefable", "magicguard", "bodyslam", { ...slow, target: OL })]));
     expect(result.hp[OL]).toMatchObject({ min: 135, max: 141 });
   });
 
-  it.runIf(WIRED)("a lifted Rage Powder user draws no move; a Sky Drop user knocked out frees its target, whose Pound then runs", async () => {
+  it("a lifted Rage Powder user draws no move; a Sky Drop user knocked out frees its target, whose Pound then runs", async () => {
     const runtime = await game(USUM);
     const powder = ready(turn(runtime, [braviary(), lax(0, "tackle", { target: PL }), lax(24), mon("amoonguss", "regenerator", "ragepowder")]));
     expect(hitOf(powder, OR, PL)).toMatchObject({ kind: "calculated" });
@@ -375,19 +367,19 @@ describe("Track H: Sky Drop (C21, CQ-SKD)", () => {
     expect(freed.hp[OR]).toMatchObject({ min: 213, max: 217 });
   });
 
-  it.runIf(WIRED)("Sky Drop keeps its chosen target past a Follow Me (tracksTarget)", async () => {
+  it("Sky Drop keeps its chosen target past a Follow Me (tracksTarget)", async () => {
     const result = ready(turn(await game(USUM), [braviary({ target: PL }), lax(8), mon("clefairy", "friendguard", "pound", { evs: { spe: 4 }, target: OL }), mon("clefable", "magicguard", "followme")]));
     expect(texts(stepOf(result, OL).facts)).toEqual(["Sky Drop: Braviary lifts Clefairy into the air."]);
     expect(texts(stepOf(result, PL).skipped)).toEqual(["Lifted by Braviary (Sky Drop)."]);
   });
 
-  it.runIf(WIRED)("a sleeping lifted Pokémon's counter does not move (its BeforeMove is null before sleep's)", async () => {
+  it("a sleeping lifted Pokémon's counter does not move (its BeforeMove is null before sleep's)", async () => {
     const input = turn(await game(USUM), [braviary(), lax(8), lax(24), mon("clefable", "magicguard", "moonblast", { status: "slp", target: OL, carried: { sleep: { attempts: 1, rest: false } } })]);
     // One BeforeMove spent asleep before this turn: still 2 expected turns left (S uniform on 2–4, E[S − 1 | S > 1]).
     expect(mixture(outcomes(input), PR, (m) => `${m.build.status} ${m.sleepTurns}`)).toEqual({ "slp 2": 1 });
   });
 
-  it.runIf(WIRED)("a carried Dive stopped by a full paralysis is no longer under water at the end of turn: the Sandstorm hits it in every world", async () => {
+  it("a carried Dive stopped by a full paralysis is no longer under water at the end of turn: the Sandstorm hits it in every world", async () => {
     const result = ready(turn(await game(SV), [mon("dewgong", "thickfat", "dive", { status: "par", evs: { spe: 252 }, target: PL, carried: { charging: "dive" } }), lax(8), lax(4), lax(0)],
       { weather: "Sand" }, { weatherTurns: 3 }));
     const eot = result.endOfTurn;

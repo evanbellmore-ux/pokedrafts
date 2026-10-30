@@ -186,16 +186,17 @@ export default function AppNav() {
 
 /**
  * A site admin's way to the Watch listings page (section 16), with the count
- * of public leagues waiting for review.
+ * of leagues to review: public leagues waiting for review, and listed public
+ * leagues renamed since their approval (section 16.7).
  */
-export function AdminMenuLink({ waiting }: { waiting: number }) {
+export function AdminMenuLink({ toReview }: { toReview: number }) {
   return (
     <MenuLink href="/admin">
       <ShieldCheck className="h-4 w-4 text-muted" aria-hidden="true" />
       <span className="min-w-0 flex-1">Watch listings</span>
-      {waiting > 0 && (
+      {toReview > 0 && (
         <span className="rounded-full bg-accent-soft px-2 py-0.5 text-xs font-medium text-accent-text">
-          {waiting} waiting
+          {toReview} to review
         </span>
       )}
     </MenuLink>
@@ -208,7 +209,7 @@ export function AdminMenuLink({ waiting }: { waiting: number }) {
  * local session (no network call); until it is known the avatar shows a
  * generic person icon. Whether the account is a site admin is asked once
  * (a failed answer counts as no); for an admin it is asked again on every
- * page, so the waiting count (also a dot on the avatar) follows their
+ * page, so the count to review (also a dot on the avatar) follows their
  * reviews.
  */
 function AccountMenu({
@@ -221,7 +222,7 @@ function AccountMenu({
   pathname: string;
 }) {
   const [email, setEmail] = useState<string | null>(null);
-  const [waiting, setWaiting] = useState<number | null>(null);
+  const [toReview, setToReview] = useState<number | null>(null);
   /** False once the account is known not to be a site admin: never asked again. */
   const adminRef = useRef<boolean | null>(null);
 
@@ -245,7 +246,8 @@ function AccountMenu({
       if (!active) return;
       // A failed check (offline, or a database without the function) counts as no: it is not asked again.
       adminRef.current = data?.admin ?? false;
-      setWaiting(data?.admin ? data.watch_waiting : null);
+      // watch_renamed is missing on a database without 20261027120000_watch_renames.sql.
+      setToReview(data?.admin ? data.watch_waiting + (data.watch_renamed ?? 0) : null);
     });
     return () => {
       active = false;
@@ -267,7 +269,7 @@ function AccountMenu({
           >
             {initial || <UserRound className="h-4 w-4" />}
           </span>
-          {waiting !== null && waiting > 0 && (
+          {toReview !== null && toReview > 0 && (
             <span aria-hidden="true" className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-accent ring-2 ring-bg" />
           )}
           {signingOut ? (
@@ -289,9 +291,9 @@ function AccountMenu({
         <ThemeToggle />
       </div>
       <MenuSeparator />
-      {waiting !== null && (
+      {toReview !== null && (
         <>
-          <AdminMenuLink waiting={waiting} />
+          <AdminMenuLink toReview={toReview} />
           <MenuSeparator />
         </>
       )}

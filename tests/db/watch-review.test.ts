@@ -3,7 +3,10 @@
 // it; approval sticks until an admin unlists it. Only a site admin reviews,
 // and nobody reads the admin list through the API. The public reads also
 // carry the playoffs: each listed league's playoff matches, and each match's
-// bracket links on the league's page.
+// bracket links on the league's page. Renames since approval
+// (20261027120000_watch_renames.sql) keep a league listed but mark it on the
+// review list until an admin keeps or unlists it, and a listed league that
+// went private stays on that list.
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import {
   asAnon,
@@ -21,6 +24,7 @@ import {
   samplePool,
   type Client,
   type LeagueFixture,
+  type Participant,
 } from "./harness";
 
 type Replay = { title: string; url: string; added_at?: string };
@@ -28,6 +32,7 @@ type ReviewRow = {
   id: string;
   name: string;
   created_at: string;
+  is_public: boolean;
   commissioner_team: string | null;
   coach_count: number;
   max_coaches: number;
@@ -37,7 +42,9 @@ type ReviewRow = {
   replay_links: Replay[];
   watch_listed: boolean;
   watch_reviewed_at: string | null;
+  renamed: { league: boolean; teams: string[] } | null;
 };
+type AdminStatus = { admin: boolean; watch_waiting: number; watch_renamed: number };
 type ListRow = Record<string, unknown> & { id: string; playoff_matches: Array<{ round_number: number; status: string }> };
 type MatchRow = { id: string; round_number: number; match_number: number; stage: string; status: string; home_member_id: string | null; feeds_match_id: string | null; feeds_slot: string | null };
 
@@ -72,6 +79,32 @@ async function makeAdmin(db: Client): Promise<string> {
   const userId = await createUser(db);
   await db.query("insert into public.site_admins (user_id) values ($1)", [userId]);
   return userId;
+}
+
+async function reviewRow(db: Client, admin: string, leagueId: string): Promise<ReviewRow> {
+  const row = (await review(db, admin)).find((r) => r.id === leagueId);
+  if (!row) throw new Error("expected the league on the review list");
+  return row;
+}
+
+async function renamedCount(db: Client, admin: string): Promise<number> {
+  return (await rpcAs<AdminStatus>(db, admin, "site_admin_status")).watch_renamed;
+}
+
+function renameLeague(db: Client, league: LeagueFixture, name: string) {
+  return rpcAs(db, league.commissioner.userId, "update_league_settings", { p_league_id: league.leagueId, p_settings: { name } });
+}
+
+function renameTeam(db: Client, league: LeagueFixture, participant: Participant, name: string) {
+  return rpcAs(db, participant.userId, "rename_team", { p_league_id: league.leagueId, p_team_name: name });
+}
+
+/** A public league an admin listed. */
+async function listedLeague(db: Client, admin: string, name: string, coaches = 1): Promise<LeagueFixture> {
+  const league = await buildLeague(db, { coaches, name });
+  await setPage(db, league, {});
+  await setListing(db, admin, league.leagueId, true);
+  return league;
 }
 
 describe("watch review: who reviews", () => {
@@ -192,13 +225,15 @@ describe("watch review: the list and the page", () => {
     expect(await listedIds(db, waiting.commissioner.userId)).toEqual(ids);
   });
 
-  it("the review list holds every public league, waiting first, then listed, then unlisted", async () => {
+  it("the review list holds every public league and every listed private one, waiting first, then listed, then unlisted", async () => {
     const rows = await review(db, admin);
     const ours = rows.filter((r) => [waiting, listed, unlisted, privateLeague].some((f) => f.leagueId === r.id));
-    expect(ours.map((r) => r.name)).toEqual(["Waiting League", "Listed League", "Unlisted League"]);
+    // The private listed league is the newer of the two listed ones.
+    expect(ours.map((r) => r.name)).toEqual(["Waiting League", "Private Listed League", "Listed League", "Unlisted League"]);
     const state = (r: ReviewRow) => (r.watch_listed ? 1 : r.watch_reviewed_at === null ? 0 : 2);
     expect(rows.map(state)).toEqual([...rows.map(state)].sort((a, b) => a - b));
     expect(ours[0]).toMatchObject({
+      is_public: true,
       commissioner_team: "Commish",
       coach_count: 2,
       max_coaches: 2,
@@ -208,12 +243,14 @@ describe("watch review: the list and the page", () => {
       replay_links: [],
       watch_listed: false,
       watch_reviewed_at: null,
+      renamed: null,
     });
-    expect(ours[1].replay_links.map((r) => r.title)).toEqual(["Week 1"]);
-    expect(ours[1].watch_listed).toBe(true);
-    expect(Number.isNaN(Date.parse(String(ours[2].watch_reviewed_at)))).toBe(false);
+    expect(ours[1]).toMatchObject({ is_public: false, watch_listed: true, renamed: null });
+    expect(ours[2].replay_links.map((r) => r.title)).toEqual(["Week 1"]);
+    expect(ours[2]).toMatchObject({ is_public: true, watch_listed: true });
+    expect(Number.isNaN(Date.parse(String(ours[3].watch_reviewed_at)))).toBe(false);
     const text = JSON.stringify(ours);
-    for (const fixture of [waiting, listed, unlisted]) {
+    for (const fixture of [waiting, listed, unlisted, privateLeague]) {
       for (const participant of fixture.order) expect(text).not.toContain(participant.userId);
       expect(text).not.toContain(fixture.inviteCode);
     }
@@ -239,6 +276,167 @@ describe("watch review: the list and the page", () => {
     expect(await rpcAs(db, null, "get_public_league", { p_league_id: privateLeague.leagueId })).toBeNull();
     await setPage(db, privateLeague, {});
     expect(await listedIds(db)).toContain(privateLeague.leagueId);
+  });
+});
+
+describe("watch review: renames since approval", () => {
+  let db: Client;
+  let admin: string;
+
+  beforeAll(async () => {
+    db = await connect();
+    admin = await makeAdmin(db);
+  });
+
+  afterAll(async () => {
+    await db.end();
+  });
+
+  it("a league renamed after approval stays on /watch under its new name, marked and counted until an admin keeps it listed", async () => {
+    const league = await listedLeague(db, admin, "Approved Name League");
+    const before = await renamedCount(db, admin);
+    expect((await reviewRow(db, admin, league.leagueId)).renamed).toBeNull();
+
+    await renameLeague(db, league, "Renamed After Approval");
+    expect(await reviewRow(db, admin, league.leagueId)).toMatchObject({
+      name: "Renamed After Approval",
+      watch_listed: true,
+      renamed: { league: true, teams: [] },
+    });
+    expect(await renamedCount(db, admin)).toBe(before + 1);
+    const list = await rpcAs<{ leagues: ListRow[] }>(db, null, "list_public_leagues");
+    expect(list.leagues.find((l) => l.id === league.leagueId)?.name).toBe("Renamed After Approval");
+
+    // Keep listed is set_watch_listing(true) again: a new review time.
+    await setListing(db, admin, league.leagueId, true);
+    expect((await reviewRow(db, admin, league.leagueId)).renamed).toBeNull();
+    expect(await renamedCount(db, admin)).toBe(before);
+    expect(await listedIds(db)).toContain(league.leagueId);
+  });
+
+  it("team renames after approval list the new names, oldest rename first; unlisting ends the mark", async () => {
+    const league = await listedLeague(db, admin, "Team Rename League", 2);
+    await renameTeam(db, league, league.coaches[1], "Team Rocket");
+    await renameTeam(db, league, league.commissioner, "Aqua");
+    expect((await reviewRow(db, admin, league.leagueId)).renamed).toEqual({ league: false, teams: ["Team Rocket", "Aqua"] });
+    // A second rename of the same team keeps one entry, in its new place.
+    await renameTeam(db, league, league.coaches[1], "Team Magma");
+    expect((await reviewRow(db, admin, league.leagueId)).renamed).toEqual({ league: false, teams: ["Aqua", "Team Magma"] });
+
+    const before = await renamedCount(db, admin);
+    await setListing(db, admin, league.leagueId, false);
+    expect(await reviewRow(db, admin, league.leagueId)).toMatchObject({ watch_listed: false, renamed: null });
+    expect(await renamedCount(db, admin)).toBe(before - 1);
+  });
+
+  it("marks nothing for a rename before approval, a save with the same name, or a league that is not listed", async () => {
+    const league = await buildLeague(db, { coaches: 1, name: "Early Rename League" });
+    await setPage(db, league, {});
+    await renameLeague(db, league, "Early Rename League 2");
+    await renameTeam(db, league, league.coaches[0], "Early Team");
+    expect((await reviewRow(db, admin, league.leagueId)).renamed).toBeNull();
+    await setListing(db, admin, league.leagueId, true);
+    expect((await reviewRow(db, admin, league.leagueId)).renamed).toBeNull();
+
+    // The settings form sends the name with every save.
+    await renameLeague(db, league, "Early Rename League 2");
+    await rpcAs(db, league.commissioner.userId, "update_league_settings", { p_league_id: league.leagueId, p_settings: { pick_timer_seconds: 90 } });
+    await renameTeam(db, league, league.coaches[0], "Early Team");
+    expect((await reviewRow(db, admin, league.leagueId)).renamed).toBeNull();
+
+    await setListing(db, admin, league.leagueId, false);
+    await renameLeague(db, league, "Early Rename League 3");
+    expect((await reviewRow(db, admin, league.leagueId)).renamed).toBeNull();
+  });
+
+  it("lists renamed leagues first among the listed ones", async () => {
+    const older = await listedLeague(db, admin, "Older Listed League");
+    const newer = await listedLeague(db, admin, "Newer Listed League");
+    const position = (rows: ReviewRow[], fixture: LeagueFixture) => rows.findIndex((r) => r.id === fixture.leagueId);
+    let rows = await review(db, admin);
+    expect(position(rows, newer)).toBeLessThan(position(rows, older));
+
+    await renameLeague(db, older, "Older Listed League, renamed");
+    rows = await review(db, admin);
+    expect(position(rows, older)).toBeLessThan(position(rows, newer));
+    const listed = rows.filter((r) => r.watch_listed);
+    const firstPlain = listed.findIndex((r) => r.renamed === null);
+    expect(listed.slice(firstPlain).every((r) => r.renamed === null)).toBe(true);
+  });
+
+  it("stamps through two internal triggers; nobody writes a stamp through the API", async () => {
+    const { rows: triggers } = await db.query<{ table: string; tgname: string; fn: string }>(
+      `select t.tgrelid::regclass::text as table, t.tgname, p.proname as fn
+       from pg_trigger t join pg_proc p on p.oid = t.tgfoid
+       where t.tgrelid in ('public.leagues'::regclass, 'public.league_members'::regclass) and not t.tgisinternal
+       order by 1, 2`,
+    );
+    expect(triggers).toEqual([
+      { table: "league_members", tgname: "league_members_team_name_changed", fn: "_stamp_team_name_change" },
+      { table: "leagues", tgname: "leagues_name_changed", fn: "_stamp_league_name_change" },
+    ]);
+    const { rows: grants } = await db.query<{ proname: string; anon: boolean; authenticated: boolean }>(
+      `select p.proname, has_function_privilege('anon', p.oid, 'execute') as anon, has_function_privilege('authenticated', p.oid, 'execute') as authenticated
+       from pg_proc p
+       where p.pronamespace = 'public'::regnamespace and p.proname in ('_watch_renames', '_stamp_league_name_change', '_stamp_team_name_change')
+       order by 1`,
+    );
+    expect(grants).toEqual([
+      { proname: "_stamp_league_name_change", anon: false, authenticated: false },
+      { proname: "_stamp_team_name_change", anon: false, authenticated: false },
+      { proname: "_watch_renames", anon: false, authenticated: false },
+    ]);
+
+    const league = await listedLeague(db, admin, "Stamp Writer League");
+    await renameTeam(db, league, league.coaches[0], "Renamed Coach");
+    for (const sql of [
+      "update public.league_members set team_name_changed_at = null where league_id = $1",
+      "update public.leagues set name_changed_at = null where id = $1",
+    ]) {
+      const { rowCount } = await asUser(db, league.commissioner.userId, (c) => c.query(sql, [league.leagueId]));
+      expect(rowCount).toBe(0);
+    }
+    expect((await reviewRow(db, admin, league.leagueId)).renamed).toEqual({ league: false, teams: ["Renamed Coach"] });
+  });
+});
+
+describe("watch review: approved leagues that went private", () => {
+  let db: Client;
+  let admin: string;
+
+  beforeAll(async () => {
+    db = await connect();
+    admin = await makeAdmin(db);
+  });
+
+  afterAll(async () => {
+    await db.end();
+  });
+
+  it("stay on the review list, marked when renamed but counted only while public, and an admin can unlist them", async () => {
+    const league = await listedLeague(db, admin, "Gone Private League");
+    await setPage(db, league, { isPublic: false });
+    expect(await reviewRow(db, admin, league.leagueId)).toMatchObject({ is_public: false, watch_listed: true, renamed: null });
+
+    const before = await renamedCount(db, admin);
+    await renameLeague(db, league, "Gone Private, Renamed");
+    expect((await reviewRow(db, admin, league.leagueId)).renamed).toEqual({ league: true, teams: [] });
+    expect(await renamedCount(db, admin)).toBe(before);
+    await setPage(db, league, {});
+    expect(await renamedCount(db, admin)).toBe(before + 1);
+
+    // Unlisted while private: off the review list until it is public, then not listed.
+    await setPage(db, league, { isPublic: false });
+    await setListing(db, admin, league.leagueId, false);
+    expect((await review(db, admin)).map((r) => r.id)).not.toContain(league.leagueId);
+    await setPage(db, league, {});
+    expect(await listedIds(db)).not.toContain(league.leagueId);
+    expect(await reviewRow(db, admin, league.leagueId)).toMatchObject({ is_public: true, watch_listed: false, renamed: null });
+  });
+
+  it("a private league that was never approved is not on the review list", async () => {
+    const league = await buildLeague(db, { coaches: 1, name: "Never Public League" });
+    expect((await review(db, admin)).map((r) => r.id)).not.toContain(league.leagueId);
   });
 });
 

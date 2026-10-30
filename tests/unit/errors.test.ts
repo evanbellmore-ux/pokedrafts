@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   ALREADY_EXISTS_ERROR,
   CONNECTION_ERROR,
+  EMAIL_COOLDOWN_ERROR,
   EMAIL_UNAVAILABLE_ERROR,
   FEATURE_UNAVAILABLE_ERROR,
   GENERIC_ERROR,
@@ -9,6 +10,7 @@ import {
   PERMISSION_ERROR,
   SESSION_EXPIRED_ERROR,
   TOO_MANY_REQUESTS_ERROR,
+  emailCooldownError,
   friendlyError,
   getErrorDetailCode,
   isAppRaisedError,
@@ -116,6 +118,29 @@ describe("friendlyError", () => {
     expect(isEmailSendFailure({ message: "Error sending recovery email" })).toBe(false);
     expect(isEmailSendFailure(auth(400, "validation_failed", "Unable to validate email address: invalid format"))).toBe(false);
     expect(EMAIL_UNAVAILABLE_ERROR).toBe("We can't send email right now, please try again later.");
+  });
+
+  it("says how long to wait for GoTrue's per-address email cooldown, which shares the sending limit's code", () => {
+    const auth = (status: number, code: string | undefined, message: string) => ({ __isAuthError: true, name: "AuthApiError", status, code, message });
+    // supabase/auth generateFrequencyLimitErrorMessage: the seconds left, rounded down, always "seconds".
+    const cooldown = (seconds: number) => auth(429, "over_email_send_rate_limit", `For security purposes, you can only request this after ${seconds} seconds.`);
+    expect(friendlyError(cooldown(42))).toBe("Please wait 42 seconds before requesting another email.");
+    expect(friendlyError(cooldown(1))).toBe("Please wait 1 second before requesting another email.");
+    // Under a second left reads 0.
+    expect(friendlyError(cooldown(0))).toBe("Please wait 1 second before requesting another email.");
+    expect(emailCooldownError(cooldown(42))).toBe("Please wait 42 seconds before requesting another email.");
+    expect(isEmailSendFailure(cooldown(42))).toBe(false);
+    // An older GoTrue with no error code.
+    expect(friendlyError(auth(429, undefined, "For security purposes, you can only request this after 17 seconds."))).toBe("Please wait 17 seconds before requesting another email.");
+    // A cooldown message that gives no wait.
+    expect(friendlyError(auth(429, "over_email_send_rate_limit", "For security purposes, you can only request this once every 60 seconds"))).toBe(EMAIL_COOLDOWN_ERROR);
+    expect(EMAIL_COOLDOWN_ERROR).toBe("Please wait a moment before requesting another email.");
+    // The project's sending limit keeps the outage text.
+    expect(emailCooldownError(auth(429, "over_email_send_rate_limit", "email rate limit exceeded"))).toBeNull();
+    expect(friendlyError(auth(429, "over_email_send_rate_limit", "email rate limit exceeded"))).toBe(EMAIL_UNAVAILABLE_ERROR);
+    // The SMS cooldown, and the same words outside GoTrue, are not this one.
+    expect(emailCooldownError(auth(429, "over_sms_send_rate_limit", "For security purposes, you can only request this after 42 seconds."))).toBeNull();
+    expect(emailCooldownError({ message: "For security purposes, you can only request this after 42 seconds." })).toBeNull();
   });
 
   it("tells the user a function is missing from the database and logs which", () => {

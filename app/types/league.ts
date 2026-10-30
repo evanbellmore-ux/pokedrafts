@@ -328,14 +328,32 @@ export type PublicLeague = {
   pokemon: Record<string, PublicPokemonInfo>;
 };
 
-/** `site_admin_status`: the account menu's check (section 16). */
-export type SiteAdminStatus = { admin: false } | { admin: true; watch_waiting: number };
+/**
+ * `site_admin_status`: the account menu's check (section 16). `watch_renamed`
+ * (listed public leagues renamed since their review, section 16.7) is missing
+ * on a database without 20261027120000_watch_renames.sql.
+ */
+export type SiteAdminStatus = { admin: false } | { admin: true; watch_waiting: number; watch_renamed?: number };
 
-/** One public league on the admin's Watch listings page (`list_watch_review`). */
+/** The names a listed league changed since its review (section 16.7). */
+export type WatchRenames = {
+  /** The league's own name changed. */
+  league: boolean;
+  /** The current names of the renamed teams, oldest rename first. */
+  teams: string[];
+};
+
+/**
+ * One league on the admin's Watch listings page (`list_watch_review`): every
+ * public league, and every listed one that is private now. `is_public` and
+ * `renamed` are missing on a database without 20261027120000_watch_renames.sql.
+ */
 export type WatchReviewLeague = {
   id: string;
   name: string;
   created_at: string;
+  /** False: listed but private now, so off Watch until it is public again. */
+  is_public?: boolean;
   commissioner_team: string | null;
   coach_count: number;
   max_coaches: number;
@@ -346,6 +364,8 @@ export type WatchReviewLeague = {
   watch_listed: boolean;
   /** Null: never reviewed (waiting). */
   watch_reviewed_at: string | null;
+  /** Null: no name changed since the review, or not listed. */
+  renamed?: WatchRenames | null;
 };
 
 export type WatchReviewList = { server_time: string; leagues: WatchReviewLeague[] };

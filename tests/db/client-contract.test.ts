@@ -24,9 +24,9 @@ import {
   scanSource,
 } from "../../scripts/lib/client-contract.mjs";
 import { connect, type Client } from "./harness";
-import { DRAFT_TIMER_SWEEP_MIGRATION, HARDENING_MIGRATION, PLAYOFFS_MIGRATION, POOL_BUILDER_MIGRATION, PUBLIC_LEAGUES_MIGRATION, WATCH_REVIEW_MIGRATION, readMigrations } from "./migrations-lib";
+import { DRAFT_TIMER_SWEEP_MIGRATION, HARDENING_MIGRATION, PLAYOFFS_MIGRATION, POOL_BUILDER_MIGRATION, PUBLIC_LEAGUES_MIGRATION, WATCH_RENAMES_MIGRATION, WATCH_REVIEW_MIGRATION, readMigrations } from "./migrations-lib";
 
-const GRANTING_MIGRATIONS = [HARDENING_MIGRATION, PLAYOFFS_MIGRATION, POOL_BUILDER_MIGRATION, DRAFT_TIMER_SWEEP_MIGRATION, PUBLIC_LEAGUES_MIGRATION, WATCH_REVIEW_MIGRATION];
+const GRANTING_MIGRATIONS = [HARDENING_MIGRATION, PLAYOFFS_MIGRATION, POOL_BUILDER_MIGRATION, DRAFT_TIMER_SWEEP_MIGRATION, PUBLIC_LEAGUES_MIGRATION, WATCH_REVIEW_MIGRATION, WATCH_RENAMES_MIGRATION];
 
 describe("client contract", () => {
   let db: Client;
@@ -64,8 +64,10 @@ describe("client contract", () => {
     // read-only pokemon table), the draft timer file none either (its grants
     // section only revokes its two internal helpers), the public leagues file
     // its one write and two reads, the watch review file its three admin
-    // functions and the two reads it re-creates, and the base schema and the
-    // eight legacy files have no grants section.
+    // functions and the two reads it re-creates, the watch renames file the
+    // two admin reads it re-creates (its helper and trigger functions are
+    // revoked), and the base schema and the eight legacy files have no grants
+    // section.
     const migrations = readMigrations();
     const hardening = migrations.find((m) => m.name === HARDENING_MIGRATION);
     const playoffs = migrations.find((m) => m.name === PLAYOFFS_MIGRATION);
@@ -73,8 +75,9 @@ describe("client contract", () => {
     const timerSweep = migrations.find((m) => m.name === DRAFT_TIMER_SWEEP_MIGRATION);
     const publicLeagues = migrations.find((m) => m.name === PUBLIC_LEAGUES_MIGRATION);
     const watchReview = migrations.find((m) => m.name === WATCH_REVIEW_MIGRATION);
-    if (!hardening || !playoffs || !poolBuilder || !timerSweep || !publicLeagues || !watchReview) {
-      throw new Error("hardening, playoffs, pool builder, draft timer, public leagues or watch review migration missing");
+    const watchRenames = migrations.find((m) => m.name === WATCH_RENAMES_MIGRATION);
+    if (!hardening || !playoffs || !poolBuilder || !timerSweep || !publicLeagues || !watchReview || !watchRenames) {
+      throw new Error("hardening, playoffs, pool builder, draft timer, public leagues, watch review or watch renames migration missing");
     }
     expect(parseRpcCatalog(hardening.sql)).toHaveLength(28);
     expect(parseRpcCatalog(playoffs.sql)).toEqual([
@@ -93,6 +96,8 @@ describe("client contract", () => {
     expect(grantsSection(timerSweep.sql)).toContain("'public._auto_pick_expired_drafts()'");
     expect(parseRpcCatalog(publicLeagues.sql)).toEqual(["get_public_league", "list_public_leagues", "update_league_public_page"]);
     expect(parseRpcCatalog(watchReview.sql)).toEqual(["get_public_league", "list_public_leagues", "list_watch_review", "set_watch_listing", "site_admin_status"]);
+    expect(parseRpcCatalog(watchRenames.sql)).toEqual(["list_watch_review", "site_admin_status"]);
+    expect(grantsSection(watchRenames.sql)).toContain("'public._watch_renames(uuid)'");
     expect(parseReadOnlyTables(hardening.sql)).toEqual([]);
     expect(parseReadOnlyTables(playoffs.sql)).toEqual([]);
     expect(parseReadOnlyTables(poolBuilder.sql)).toEqual(["pokemon"]);
@@ -100,6 +105,7 @@ describe("client contract", () => {
     expect(parseReadOnlyTables(publicLeagues.sql)).toEqual([]);
     // site_admins is no read-only table: the API roles cannot read it at all.
     expect(parseReadOnlyTables(watchReview.sql)).toEqual([]);
+    expect(parseReadOnlyTables(watchRenames.sql)).toEqual([]);
     // The parser must see the same section whatever line endings the checkout
     // has: git's core.autocrlf (the Windows default) hands it CRLF files, and
     // a section boundary that only matched LF ran the pool builder's section
@@ -107,7 +113,7 @@ describe("client contract", () => {
     // tables, so the gate's read-only list depended on the platform.
     const asCrlf = (sql: string) => sql.replace(/\r?\n/g, "\r\n");
     const asLf = (sql: string) => sql.replace(/\r\n?/g, "\n");
-    for (const migration of [hardening, playoffs, poolBuilder, timerSweep, publicLeagues, watchReview]) {
+    for (const migration of [hardening, playoffs, poolBuilder, timerSweep, publicLeagues, watchReview, watchRenames]) {
       expect(grantsSection(asCrlf(migration.sql)), `${migration.name} grants section on CRLF`).toBe(grantsSection(asLf(migration.sql)));
     }
     expect(parseReadOnlyTables(asCrlf(poolBuilder.sql))).toEqual(["pokemon"]);

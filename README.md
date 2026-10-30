@@ -54,7 +54,8 @@ ordinary builds never fetch upstream or need a sibling checkout.
 
 ## Local setup
 
-1. Install Node 20+ and run `npm install`.
+1. Install Node 24, the version in `.nvmrc` (22.12 or a later 22.x also
+   works; vitest 5 does not run on Node 20), and run `npm install`.
 2. Create a Supabase project (or use an existing one) and note the project URL,
    anon key and service-role key from **Project Settings > API**.
 3. Copy the blocks from `.env.example` into two files in the project root:
@@ -267,12 +268,15 @@ order by 1, 2;
 
 In the Supabase dashboard under **Authentication**:
 
-- **URL Configuration > Site URL**: your deployed origin (for local work,
-  `http://localhost:3000`).
-- **URL Configuration > Redirect URLs**: add `<origin>/auth/callback` for every
-  origin you use (local and production). Sign-up confirmations and password
-  resets return through `/auth/callback`, which completes the login and then
-  redirects to the page the user came from.
+- **URL Configuration > Site URL**: `https://www.pokedrafts.io` (for a project
+  used only locally, `http://localhost:3000`).
+- **URL Configuration > Redirect URLs**: `https://www.pokedrafts.io/**`, plus
+  `http://localhost:3000/**` for local work against the same project.
+  Sign-up confirmations, password resets and Discord sign-ins return through
+  `<origin>/auth/callback?next=<path>`, which completes the login and then
+  redirects to the page the user came from. Supabase matches an entry against
+  the whole URL, query string included, so a bare `<origin>/auth/callback`
+  entry never matches; `**` matches any path and query.
 - **Email Templates**: change the link in **Confirm signup** and in **Reset
   password** from the default `{{ .ConfirmationURL }}` to a token-hash link:
 
@@ -400,6 +404,17 @@ where the tests run.
    second account through the invite link, set the draft order, run a short
    draft, report a result, check the standings, make and undo a free-agent move.
 
+Several later migrations need a one-time step in the dashboard or the SQL
+editor. [docs/release-architecture.md section 10](docs/release-architecture.md#10-deployment-hand-off)
+lists every step in order, including these:
+
+- pg_cron must be on before `20261020130000_draft_timer_sweep.sql` runs, so
+  pick clocks run out with every draft room closed (section 14.5).
+- Your account must be in `site_admins` after
+  `20261026120000_watch_review.sql` runs, so you can approve leagues for
+  /watch at /admin (section 16.6).
+- Custom SMTP (Auth settings above) must be on before real users sign up.
+
 Pool Builder v2 (the Pokémon dataset, `20260916120000_pool_builder.sql`) ships
 in this order:
 
@@ -409,8 +424,8 @@ in this order:
 2. Run `npm run seed:pokemon` with the service-role key in `.env.scripts`
    (1,237 upserts in the 2026-09-16 build, then it deletes rows that left the file and prints
    the counts; it exits 1 on any error and never touches another table).
-3. Deploy the client. Until step 2 runs, the builder shows "The Pokémon dataset
-   has not been loaded yet" and the rest of the app keeps using `pokemon_dex`;
+3. Deploy the client. Until step 2 runs, the builder shows "Building from rules
+   is not available right now" and the rest of the app keeps using `pokemon_dex`;
    the previous client keeps working after step 1, because the file adds no
    function and changes no policy on the other tables.
 4. To refresh the data later: `npm run data:pokemon` (add
