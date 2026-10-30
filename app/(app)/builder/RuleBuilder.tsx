@@ -650,8 +650,8 @@ export default function RuleBuilder({
 
           {datasetEmpty && (
             <EmptyState
-              title="The Pokémon dataset has not been loaded yet"
-              description="Seed the pokemon table (npm run seed:pokemon) to build pools from rules. Until then you can add Pokémon by name, upload a JSON file or load a saved format."
+              title="Building from rules is not available right now"
+              description="The Pokémon data it reads is missing. Adding Pokémon by name, uploading a JSON file and loading a saved format still work."
             />
           )}
 

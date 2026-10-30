@@ -14,6 +14,7 @@ this document describes what they produce. Apply them in filename order:
 | `20261021120000_undo_while_paused.sql` | `undo_last_pick` restarts the clock at `draft_paused_at` while the draft is paused, so the turn it hands back gets one full clock from Resume instead of the pause on top (docs/release-architecture.md section 14.6). Idempotent. |
 | `20261022120000_public_leagues.sql` | Public leagues (docs/release-architecture.md section 15): `leagues.is_public`, `stream_url` and `replay_links` with their checks and a partial index, the commissioner's `update_league_public_page`, and `list_public_leagues` / `get_public_league`, which anyone (`anon` included) may call and which return a public league's safe fields as JSON (see [Public leagues](#public-leagues)). No policy changes. Ends with `select * from public._migration_report();`. Idempotent. |
 | `20261026120000_watch_review.sql` | Watch listings and the playoffs on /watch (docs/release-architecture.md section 16): the [`site_admins`](#site_admins) table, `leagues.watch_listed` and `watch_reviewed_at` with a partial index, the admin's `site_admin_status`, `list_watch_review` and `set_watch_listing`, and new bodies for `list_public_leagues` (listed public leagues only, plus each league's playoff matches) and `get_public_league` (each match's bracket links, and `watch_listed`). No policy changes. Re-run it after any re-run of the public leagues file. Ends with `select * from public._migration_report();`. Idempotent. |
+| `20261027120000_watch_renames.sql` | Renames since a Watch approval (docs/release-architecture.md section 16.7): `leagues.name_changed_at` and `league_members.team_name_changed_at`, stamped by the `leagues_name_changed` and `league_members_team_name_changed` triggers when a name changes, the helper `_watch_renames`, and new bodies for `site_admin_status` (adds `watch_renamed`) and `list_watch_review` (adds `is_public` and `renamed`, lists renamed leagues first among the listed ones, and also lists listed leagues that are private now). No policy changes. Re-run it after any re-run of the watch review file. Ends with `select * from public._migration_report();`. Idempotent. |
 
 The hardening migration drops **every** policy on the application tables and
 recreates the set in [Row level security](#row-level-security), and drops the
@@ -100,6 +101,7 @@ hardening migration copies the format onto every existing format-based league
 | `replay_links` | jsonb | not null, default `[]`; `[{ title, url, added_at }]`, at most 20 (check `leagues_replay_links_check`); written only by `update_league_public_page` |
 | `watch_listed` | boolean | not null, default false; a site admin approved the league for the /watch list (it shows there while `is_public`); written only by `set_watch_listing` |
 | `watch_reviewed_at` | timestamptz | null until a site admin first lists or unlists the league (null and not listed: waiting for review) |
+| `name_changed_at` | timestamptz | when `name` last changed, stamped by the `leagues_name_changed` trigger; null: not since `20261027120000_watch_renames.sql` ran. Later than `watch_reviewed_at` on a listed league: renamed since its approval |
 
 Index on `(draft_format_id)`, used by the `draft_formats` select policy, a
 partial index on `(champion_member_id)` for the foreign key, the partial
@@ -124,6 +126,7 @@ HTTP 300 ("more than one relationship was found").
 | `role` | text | not null, default `coach`, check in (`commissioner`, `coach`) |
 | `joined_at` | timestamptz | `now()` |
 | `team_name` | text | check null or length 1..40 |
+| `team_name_changed_at` | timestamptz | when `team_name` last changed, stamped by the `league_members_team_name_changed` trigger; null: not since `20261027120000_watch_renames.sql` ran |
 | `draft_position` | integer | null = spectator (does not draft) |
 | `free_agent_swaps_used` | integer | not null, default 0, check >= 0 |
 
@@ -476,8 +479,8 @@ Codes shared by many functions: `not_authenticated` (no user),
 | `update_league_public_page(p_league_id uuid, p_is_public boolean, p_stream_url text, p_replay_links jsonb)` | commissioner | Saves the Public page card at once: the flag (null raises `invalid_public_setting`), the stream link (trimmed, blank means none, otherwise a stored stream form) and the replays (at most 20 `{ title, url }` objects, a trimmed title of 1..80 characters and a stored replay form, each link once). A link already listed keeps its `added_at`; a new one gets `now()`. | `jsonb { is_public, stream_url, replay_links }`. `invalid_public_setting`, `invalid_stream_link`, `invalid_replays`, `too_many_replays`, `invalid_replay_title`, `invalid_replay_link`, `duplicate_replay` |
 | `list_public_leagues()` | anon, authenticated | The 100 listed public leagues (`is_public and watch_listed`) with the most recent activity, running drafts (started, not complete, not paused) first, each with its counts, draft and season progress, its playoff matches (`playoff_matches: [{ round_number, status }]` in bracket order), newest pick, champion, stream and replays. Coaches by team name only. | `jsonb { server_time, leagues: [...] }` |
 | `get_public_league(p_league_id uuid)` | anon, authenticated | One public league, listed or not, or null when it is missing or private (the two read the same): settings, draft state, the member on the clock, coaches (member id, team name, draft position), picks, rosters, matches with their bracket links (`feeds_match_id`, `feeds_slot`), standings, stream, replays, `watch_listed` and a `pokemon` map of sprite and types per name on the board. Never raises. | `jsonb` or null |
-| `site_admin_status()` | authenticated | Whether the caller is a site admin and, for one, how many public leagues were never reviewed. | `jsonb { admin: false }` or `{ admin: true, watch_waiting }` |
-| `list_watch_review()` | site admin | Every public league: never reviewed first, then listed, then unlisted, newest league first within each, with its name, `created_at`, the commissioner's team name, coach count and limit, draft state, stream, replays, `watch_listed` and `watch_reviewed_at`. | `jsonb { server_time, leagues: [...] }`. `not_site_admin` |
+| `site_admin_status()` | authenticated | Whether the caller is a site admin and, for one, how many public leagues were never reviewed and how many listed public leagues were renamed since their review. | `jsonb { admin: false }` or `{ admin: true, watch_waiting, watch_renamed }` |
+| `list_watch_review()` | site admin | Every public league, and every listed league that is private now: never reviewed first, then listed (renamed since review first), then unlisted, newest league first within each, with its name, `created_at`, `is_public`, the commissioner's team name, coach count and limit, draft state, stream, replays, `watch_listed`, `watch_reviewed_at` and `renamed` (`{ league, teams }`: whether the league's name changed and the current names of the renamed teams since the review; null when none changed or the league is not listed). | `jsonb { server_time, leagues: [...] }`. `not_site_admin` |
 | `set_watch_listing(p_league_id uuid, p_listed boolean)` | site admin | Locks the league and sets `watch_listed` and `watch_reviewed_at = now()`. Any league; only a public one shows. | `jsonb { id, watch_listed, watch_reviewed_at }`. `not_site_admin`, `invalid_listing`, `league_not_found` |
 
 ### Internal helpers
@@ -521,7 +524,13 @@ only rewrites `new.id` and `new.created_at`). The public leagues file adds
 `stream_url` check uses the first), `_pokemon_name_key` and `_public_pokemon`
 (sprites and types for `get_public_league`, see [Public leagues](#public-leagues)). The watch review file adds
 `_is_site_admin` (the caller is in `site_admins`) and `_require_site_admin`
-(`not_authenticated` or `not_site_admin` otherwise). `_migration_report` is the
+(`not_authenticated` or `not_site_admin` otherwise). The watch renames file
+adds `_watch_renames(p_league_id)` (the names changed since a listed league's
+review, for `site_admin_status` and `list_watch_review`) and the trigger
+functions `_stamp_league_name_change` and `_stamp_team_name_change` (plain
+`language plpgsql`, not security definer, like `_chat_message_defaults`: they
+only set `new.name_changed_at` or `new.team_name_changed_at` when the name
+changes). `_migration_report` is the
 operator-facing health check from
 [Verifying the migration](#verifying-the-migration); like the other helpers it
 has no API grants.
@@ -705,7 +714,13 @@ with `watch_listed`, which only `set_watch_listing` writes, for a caller in
 [`site_admins`](#site_admins). A league's own page reads the same either way.
 Approval sticks: it survives new links and a trip to private and back, and an
 unlisted league stays off until an admin lists it again. Existing public
-leagues start unreviewed.
+leagues start unreviewed. `20261027120000_watch_renames.sql` (section 16.7)
+keeps approval through renames too, but a listed league whose name or a team's
+name changed after its review is marked on `list_watch_review` (`renamed`) and
+counted in `site_admin_status` (`watch_renamed`, public leagues only) until an
+admin lists it again or unlists it. Listed leagues that are private now stay
+on `list_watch_review` (`is_public` false), so an admin can unlist one before
+it is public again.
 
 ## Row level security
 
@@ -730,6 +745,9 @@ and its tables stay member-only, so a signed-out visitor still cannot select
 or subscribe to them. The watch review file adds none either: `site_admins`
 has RLS on, no policy and no privileges for the API roles, and a commissioner's
 direct update of `leagues.watch_listed` matches no update policy (zero rows).
+The watch renames file adds none: only its triggers write
+`leagues.name_changed_at` and `league_members.team_name_changed_at`, and a
+direct update of either matches no update policy (zero rows).
 
 The browser's only remaining direct writes are `draft_formats` (own rows),
 `draft_chat_messages` inserts and `leagues` deletes. PostgREST reports an
@@ -851,7 +869,12 @@ list; signed-out callers, a session without a user and every other account are
 refused; `site_admins` is closed to every API role; a commissioner's direct
 write lists nothing; a new public league's page works while /watch leaves it
 out; approval sticks through new links and a trip to private; the playoff
-matches on the list and the bracket links on the page),
+matches on the list and the bracket links on the page; a league or team
+renamed after approval stays listed, marked with the new names and counted
+until an admin lists it again or unlists it, with nothing marked for a rename
+before approval, the same name saved again or an unlisted league; the stamps'
+triggers and helper are internal; listed leagues that went private stay on the
+review list, counted only while public),
 the draft clock sweep (`draft-timer-sweep.test.ts`, in a database of its own
 because the sweep acts on every live draft: a turn taken with no signed-in
 user, running, paused, unstarted and finished drafts left alone, a whole draft

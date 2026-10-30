@@ -30,6 +30,8 @@ export const FEATURE_UNAVAILABLE_ERROR =
   "This feature is not available yet, please try again later.";
 export const EMAIL_UNAVAILABLE_ERROR =
   "We can't send email right now, please try again later.";
+export const EMAIL_COOLDOWN_ERROR =
+  "Please wait a moment before requesting another email.";
 
 /**
  * GoTrue could not send an auth email (sign-up confirmation, resend,
@@ -41,6 +43,17 @@ export const EMAIL_UNAVAILABLE_ERROR =
 const EMAIL_SEND_CODES = new Set(["over_email_send_rate_limit", "email_address_not_authorized"]);
 const EMAIL_SEND_PATTERNS =
   /email rate limit|error sending .*email|cannot be used as it is not authorized/i;
+
+/**
+ * GoTrue's per-address cooldown: one confirmation, recovery, magic link or
+ * email change mail per address per SMTP max frequency (60 s by default).
+ * It shares over_email_send_rate_limit with the sending limit above, so only
+ * the message tells them apart: "For security purposes, you can only request
+ * this after 42 seconds." (supabase/auth internal/api/errors.go,
+ * generateFrequencyLimitErrorMessage) against "email rate limit exceeded".
+ */
+const EMAIL_COOLDOWN_PATTERN = /you can only request this/i;
+const EMAIL_COOLDOWN_SECONDS = /after (\d+) seconds?/i;
 
 const AUTH_MESSAGES: Array<[RegExp, string]> = [
   [/invalid login credentials/i, "Incorrect email or password."],
@@ -131,8 +144,32 @@ function isAuthError(error: unknown): boolean {
   );
 }
 
-/** True when GoTrue could not send an auth email (EMAIL_SEND_CODES, EMAIL_SEND_PATTERNS). */
+/** GoTrue's per-address email cooldown (EMAIL_COOLDOWN_PATTERN); the SMS one has its own code. */
+function isEmailCooldown(error: unknown): boolean {
+  const like = asErrorLike(error);
+  if (!EMAIL_COOLDOWN_PATTERN.test(like.message ?? "")) return false;
+  return like.code === "over_email_send_rate_limit" || (like.code == null && isAuthError(error));
+}
+
+/**
+ * The sentence for GoTrue's per-address email cooldown: the wait its message
+ * gives (at least a second, as GoTrue rounds down), or EMAIL_COOLDOWN_ERROR
+ * when it gives none. Null for any other error.
+ */
+export function emailCooldownError(error: unknown): string | null {
+  if (!isEmailCooldown(error)) return null;
+  const match = EMAIL_COOLDOWN_SECONDS.exec(asErrorLike(error).message ?? "");
+  if (!match) return EMAIL_COOLDOWN_ERROR;
+  const seconds = Math.max(1, Number(match[1]));
+  return `Please wait ${seconds} ${seconds === 1 ? "second" : "seconds"} before requesting another email.`;
+}
+
+/**
+ * True when GoTrue could not send an auth email (EMAIL_SEND_CODES,
+ * EMAIL_SEND_PATTERNS); false for the address's cooldown.
+ */
 export function isEmailSendFailure(error: unknown): boolean {
+  if (isEmailCooldown(error)) return false;
   const like = asErrorLike(error);
   if (typeof like.code === "string" && EMAIL_SEND_CODES.has(like.code)) return true;
   return isAuthError(error) && EMAIL_SEND_PATTERNS.test(like.message ?? "");
@@ -150,6 +187,11 @@ export function friendlyError(error: unknown): string {
   const message = like.message?.trim() ?? "";
 
   if (isNetworkError(error)) return CONNECTION_ERROR;
+
+  // Before the email limit, whose code it shares, and the 429 rule: how long
+  // this address waits for its next email.
+  const cooldown = emailCooldownError(error);
+  if (cooldown) return cooldown;
 
   // Before the 429 rule: the email limit is the project's, not the user's attempts.
   if (isEmailSendFailure(error)) return EMAIL_UNAVAILABLE_ERROR;

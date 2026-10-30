@@ -12,6 +12,7 @@ import {
   UNDO_WHILE_PAUSED_MIGRATION,
   PUBLIC_LEAGUES_MIGRATION,
   WATCH_REVIEW_MIGRATION,
+  WATCH_RENAMES_MIGRATION,
   HARDENING_MIGRATION,
   PLAYOFFS_MIGRATION,
   POOL_BUILDER_MIGRATION,
@@ -249,7 +250,7 @@ describe("migrations", () => {
     await admin.end();
   });
 
-  it("ship the base, legacy, hardening, playoffs, pool builder, private Execution, join draft order, small sprites, draft timer sweep, undo while paused and public leagues migrations in order", () => {
+  it("ship the base, legacy, hardening, playoffs, pool builder, private Execution, join draft order, small sprites, draft timer sweep, undo while paused, public leagues, watch review and watch renames migrations in order", () => {
     const migrations = readMigrations();
     expect(migrations[0].name).toBe(BASE_MIGRATION);
     expect(migrations[9].name).toBe(HARDENING_MIGRATION);
@@ -265,7 +266,8 @@ describe("migrations", () => {
     expect(migrations[19].name).toBe(UNDO_WHILE_PAUSED_MIGRATION);
     expect(migrations[20].name).toBe(PUBLIC_LEAGUES_MIGRATION);
     expect(migrations[21].name).toBe(WATCH_REVIEW_MIGRATION);
-    expect(migrations).toHaveLength(22);
+    expect(migrations[22].name).toBe(WATCH_RENAMES_MIGRATION);
+    expect(migrations).toHaveLength(23);
   });
 
   it("the shared test database was migrated by the global setup", async () => {

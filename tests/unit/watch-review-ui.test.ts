@@ -3,7 +3,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { AdminMenuLink } from "@/app/components/AppNav";
 import AdminPage from "@/app/(app)/admin/page";
-import WatchReviewClient, { REVIEW_GROUPS, ReviewRow } from "@/app/(app)/admin/WatchReviewClient";
+import WatchReviewClient, { REVIEW_GROUPS, ReviewRow, renamesLine } from "@/app/(app)/admin/WatchReviewClient";
 import PublicBracket, { bracketMatches } from "@/app/watch/[leagueId]/PublicBracket";
 import WatchLeagueClient from "@/app/watch/[leagueId]/WatchLeagueClient";
 import { NOT_LIVE } from "@/app/lib/watch/watch-view";
@@ -205,11 +205,13 @@ describe("the admin's Watch listings", () => {
     replay_links: [{ title: "Draft night", url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ", added_at: "2026-10-02T12:00:00Z" }],
     watch_listed: false,
     watch_reviewed_at: null,
+    is_public: true,
+    renamed: null,
   };
-  const renderRow = (state: "waiting" | "listed" | "unlisted", pending: boolean | null = null) => {
+  const renderRow = (state: "waiting" | "listed" | "unlisted", pending: boolean | null = null, league: WatchReviewLeague = row) => {
     const onReview = vi.fn();
     const { result: html, elements } = capture(() =>
-      renderToStaticMarkup(createElement(ReviewRow, { league: row, state, busy: pending !== null, pending, onReview })),
+      renderToStaticMarkup(createElement(ReviewRow, { league, state, busy: pending !== null, pending, onReview })),
     );
     const buttons = elements.filter((element) => element.type === "button");
     return { html, buttons, onReview };
@@ -248,11 +250,46 @@ describe("the admin's Watch listings", () => {
     expect(declining.html).not.toContain("Approving...");
   });
 
-  it("links a site admin to it from the account menu, with the waiting count", () => {
-    const html = renderToStaticMarkup(createElement(AdminMenuLink, { waiting: 2 }));
+  it("marks a listed league renamed since approval with its new names, and offers Keep listed and Unlist", () => {
+    const listed = { ...row, watch_listed: true, watch_reviewed_at: "2026-10-03T12:00:00Z" };
+    const renamed = renderRow("listed", null, { ...listed, renamed: { league: true, teams: ["Team Rocket", "Aqua"] } });
+    expect(renamed.html).toContain("Renamed since approval");
+    expect(renamed.html).toContain("New league name · New team names: Team Rocket, Aqua");
+    expect(renamed.buttons.map((button) => button.props["aria-label"])).toEqual(["Keep Nothing But Draft League listed", "Unlist Nothing But Draft League"]);
+    (renamed.buttons[0].props.onClick as () => void)();
+    (renamed.buttons[1].props.onClick as () => void)();
+    expect(renamed.onReview.mock.calls).toEqual([[true], [false]]);
+    expect(renderRow("listed", true, { ...listed, renamed: { league: false, teams: ["Aqua"] } }).html).toContain("Keeping...");
+
+    // Not renamed, or a database without the renames file: no mark, Unlist only.
+    for (const league of [listed, { ...listed, renamed: undefined, is_public: undefined }]) {
+      const plain = renderRow("listed", null, league);
+      expect(plain.html).not.toContain("Renamed since approval");
+      expect(plain.html).not.toContain("Private");
+      expect(plain.buttons.map((button) => textOf(button.props.children))).toEqual(["Unlist"]);
+    }
+    // Renames only mark a listed league.
+    expect(renderRow("unlisted", null, { ...row, watch_reviewed_at: "2026-10-03T12:00:00Z", renamed: { league: true, teams: [] } }).html).not.toContain("Renamed since approval");
+  });
+
+  it("says a listed league that is private now is off Watch, and still offers Unlist", () => {
+    const { html, buttons } = renderRow("listed", null, { ...row, watch_listed: true, watch_reviewed_at: "2026-10-03T12:00:00Z", is_public: false });
+    expect(html).toContain("Private");
+    expect(html).toContain("Off Watch until it is public again.");
+    expect(buttons.map((button) => textOf(button.props.children))).toEqual(["Unlist"]);
+  });
+
+  it("writes the renames as one line", () => {
+    expect(renamesLine({ league: true, teams: [] })).toBe("New league name");
+    expect(renamesLine({ league: false, teams: ["Aqua"] })).toBe("New team name: Aqua");
+    expect(renamesLine({ league: true, teams: ["Team Rocket", "Aqua"] })).toBe("New league name · New team names: Team Rocket, Aqua");
+  });
+
+  it("links a site admin to it from the account menu, with the count to review", () => {
+    const html = renderToStaticMarkup(createElement(AdminMenuLink, { toReview: 2 }));
     expect(html).toMatch(/<a [^>]*href="\/admin"/);
     expect(html).toContain("Watch listings");
-    expect(html).toContain("2 waiting");
-    expect(renderToStaticMarkup(createElement(AdminMenuLink, { waiting: 0 }))).not.toContain("waiting");
+    expect(html).toContain("2 to review");
+    expect(renderToStaticMarkup(createElement(AdminMenuLink, { toReview: 0 }))).not.toContain("to review");
   });
 });

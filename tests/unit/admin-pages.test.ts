@@ -559,7 +559,9 @@ describe("Pool Builder rule card (docs section 13.7)", () => {
   });
 
   it("shows the empty state, the hand-built pill and the mobile disclosure", () => {
-    expect(card).toContain('title="The Pokémon dataset has not been loaded yet"');
+    expect(card).toContain('title="Building from rules is not available right now"');
+    // User-facing text, not the operator's seeding step.
+    expect(card).not.toMatch(/npm run|seed:pokemon|pokemon table/);
     expect(card).toContain("This format was built by hand");
     expect(card).toMatch(/aria-expanded=\{expanded\}/);
     // The body is unmounted while collapsed, so the reference goes with it
