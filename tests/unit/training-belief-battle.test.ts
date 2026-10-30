@@ -9,6 +9,8 @@ import { createChooser } from "../../scripts/lib/showdown-sim/fixtures.mjs";
 // SPEC §9.2 / §9.3 / §13.3: battles rebuilt from the AI's seat, hidden durations redrawn from public counts.
 
 const strip = (lines: readonly string[]) => lines.filter((line) => !line.startsWith("|t:|") && line !== "|");
+/** A serialized battle with its log's wall-clock stamps (`|t:|<unix seconds>`) blanked: two builds can straddle a second. */
+const untimed = (json: string) => json.replace(/"\|t:\|\d+"/g, '"|t:|"');
 const hiddenInPlay = (battle: { getAllPokemon(): { status: string; volatiles: Record<string, unknown> }[] }) =>
   battle.getAllPokemon().some((p) => p.status === "slp" || p.status === "frz" || p.volatiles.confusion || p.volatiles.lockedmove || p.volatiles.twoturnmove || p.volatiles.partiallytrapped);
 
@@ -156,7 +158,7 @@ describe("buildBeliefBattle", () => {
     expect(() => structuredClone(inputs)).not.toThrow();
     const a = buildBeliefBattle(structuredClone(inputs), seat.truthWorld(), runtime);
     const b = buildBeliefBattle(structuredClone(inputs), seat.truthWorld(), runtime);
-    expect(a.json).toBe(b.json);
+    expect(untimed(a.json)).toBe(untimed(b.json));
     expect((inputs.request as ShowdownRequest).side.id).toBe("p2");
   });
 });
